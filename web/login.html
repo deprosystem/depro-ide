@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="Windows-1251">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            .butt {clear: both; float: left; margin-left: 25px; margin-top: 10px; cursor: pointer; border: 2px threedhighlight outset; 
+                padding-left: 5px; padding-right: 5px; background-color: #ddd"}
+        </style>
+        <script src="js/ajax/ajax.js" ></script>
+        <script>
+            currentProject = null;
+            function setRegister() {
+                nameGr.style.display = "block";
+                register.style.display = "none";
+                nameUs.focus();
+            }
+            
+            function sendAuth() {
+                let data;
+                let url;
+                if (nameGr.style.display == "block") {
+                    url = "auth/register";
+                    data = JSON.stringify({userName: nameUs.value, login: login.value, password: password.value});
+                } else {
+                    url = "auth/login";
+                    data = JSON.stringify({login: login.value, password: password.value});
+                }
+                doServer("POST", url, cbLoginRegistr, data);
+            }
+            
+            function cbLoginRegistr(res) {
+                window.top.initialView(res);
+            }
+/*
+            function sendAuth() {
+                if (nameGr.style.display == "block") {
+                    form_auth.action = "auth/register";
+                } else {
+                    form_auth.action = "auth/login";
+                }
+                form_auth.submit();
+            }
+*/
+            function keyUpSend(e) {
+                if (e.which == 13) {
+                    sendAuth();
+                }
+            }
+        </script>
+    </head>
+    <body Onload = "login.focus();">
+        <form id="form_auth" action="auth/login" method="post" accept-charset="Windows-1251" target="_self">
+            <div id="nameGr" style="float: left; margin-top: 10px; display: none">
+                <div style="float: left; width: 100px;">Name</div>
+                <input style="float: left; margin-left:5px" id="nameUs" type="text" name="name" size="15">
+            </div>
+            <div style="float: left; margin-top: 10px">
+                <div style="float: left; width: 100px;">Login</div>
+                <input style="float: left; margin-left:5px" id="login" type="text" name="login" size="15" onkeyup="keyUpSend(event)">
+            </div>
+            <div style="float: left; margin-top: 10px">
+                <div style="float: left; width: 100px;">Password</div>
+                <input style="float: left; margin-left:5px" id="password" type="password" name="password" size="15">
+            </div>    
+            <div class="butt" onclick="sendAuth()">Send</div>
+            <div class="butt" id="register" onclick="setRegister()">Register</div>
+
+        </form>
+    </body>
+</html>

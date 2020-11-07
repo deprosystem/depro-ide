@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>IDE DePro</title>
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        <link rel="stylesheet" href="css/index.css" type="text/css">
+        <link rel="stylesheet" href="css/hamburger.css" type="text/css">
+        <link rel="stylesheet" href="css/pickerColor.css" type="text/css">
+        
+        <script src="js/ajax/ajax.js" ></script>
+        <script src="js/header_nav.js"></script>
+        <script src="js/menu/menuProcessing.js" ></script>
+        <script src="js/menu/menuIndex.js" ></script>
+        <script src="js/menu/contMenuNav.js"></script>
+        <script src="js/components/editParams.js" ></script>
+        <script src="js/components/contentParam.js" ></script>
+        <script src="js/components/specialViews.js" ></script>
+        <script src="js/editData/editData.js" ></script>
+        <script src="js/editData/metaData.js" ></script>
+        <script src="js/editData/editArrayData.js" ></script>
+        <script src="js/initial.js"></script>
+        <script src="js/tool.js"></script>
+        <script src="js/selectData.js"></script>
+        <script src="js/cookie.js"></script>
+        <script src="js/layoutIndex.js" charset="UTF-8"></script>
+        <script src="js/paramComponent.js"></script>
+        <script src="js/editComponentsUX.js"></script>
+        <script src="js/setComponent.js"></script>
+        <script src="js/moveResize/movePanel.js" ></script>
+        <script src="js/moveResize/moveElement.js" ></script>
+        <script src="js/stylePr.js"></script>
+        <script src="js/screens.js" ></script>
+        <script src="js/valid.js" ></script>
+        <script src="js/windMethods.js"></script>
+        
+        <script src="js/logFooter.js" ></script>
+        <script src="js/navigatorEl.js" ></script>
+        
+        <script src="js/pickerColor/picker.js"></script>
+        <script src="js/pickerColor/my_picker.js"></script>
+        <script src="js/pickerColor/Lib.js" ></script>
+        
+        <script src="js/drawable.js"></script>
+    </head>
+    <body>
+
+        <div id="header">
+            <div id="container_hamburger" onclick="mainMenuShow()">    
+                <div id="hamburger1" class="hamburger1" ></div>
+                <div id="hamburger2" class="hamburger2" ></div>
+                <div id="hamburger3" class="hamburger3" ></div> 
+            </div>
+            <div id="plus_screen" onclick="plusScreen()" style="height: 100%; float: left; margin-left: 70px; cursor: pointer;display: none;">
+                <img width="16" height="16" style="float: left; margin-top: 2px" src="img/plus_24.png">
+                <div style="height: 100%; float: left; margin-left: 2px;">Screen</div>
+            </div>
+            
+            <div onclick="editUX_UI()" id="ux_ui">UI</div>
+            <div class="header-info">
+                <div class="infoHeadLabel">project:</div>
+                <div id="info_project" class="infoHead"></div>
+            </div>
+            <div class="header-info">
+                <div class="infoHeadLabel">Active: </div>
+                <div id="info_active" class="infoHead"></div>
+                <div class="infoHeadLabel">Type insert: </div>
+                <div id="info_type_insert" class="infoHead"></div>
+            </div>
+            <div class="header-info">
+                <div class="infoHeadLabel">User:</div>
+                <div id="info_user" class="infoHead"></div>
+            </div>
+        </div>
+        <div id="hintMenuMain" style="position: absolute; top: 23px; left: 30px; background-color: #55f; color: white; 
+             display: none; z-index: 1; padding-left: 5px; padding-right: 5px">Меню</div>
+        <div id="menuMain" class="menu_main" style="margin-left: 15px; position: absolute; top: 24px; z-index: 100; display: none"></div>
+        <div id="compon">
+            <div id="listCompon">
+                <div id="category"></div>
+                <div id="type_view"></div>
+            </div>
+            <div id="hierarhy">
+                <div id="navigatorEl" style="position: absolute; left: 5px; top: 5px; right: 0px; bottom: 0px;">
+
+                </div>
+            </div>
+            <div id="separator" onmousedown="sepMove(event)"></div>
+            <div id="list_screens">
+
+            </div>
+        </div>
+        <div id="content_v" onclick="hideSelectEl(event)">
+            <div id="root-g">
+                <div id="root">
+                    <div class="contourEl" onmousedown="moveElement(event)">
+                        <div class="contourRT" onmousedown="resizeContour(event)"></div>
+                        <div class="contourLT" onmousedown="resizeContour(event)"></div>
+                        <div class="contourLB" onmousedown="resizeContour(event)"></div>
+                        <div class="contourRB" onmousedown="resizeContour(event)"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="haracteristicks">
+            <div id="layout-par">
+<!--                <div id="right-bord"></div>     -->
+                <div id="el_type" style="padding-left: 10px; display: inline-block"></div><br>
+                <div class="el_id" style="padding-left: 5px; margin-top: 10px; display: inline-block">
+                        <div style="width: 20px">id: </div>
+                        <input id="el_id_input" type="text" size="25"/>
+                </div>
+                <div id="m_propBody" style="position:absolute;left: 0px;right: 0px;bottom: 10px;top: 50px;margin-top: 10px">
+                    <div id='m_bmPEhead'>
+                        <div class="m_bmPE" onclick='m_bmStart(this)'>Layout</div>
+                        <div class="m_bmPE" onclick='m_bmStart(this)'>Content</div>
+                    </div>
+                    <div style='height: 5px;background: #c1e1fc'></div>
+                    <div id="m_bmPEbody" style="position: absolute;left: 0px;top: 27px;right: 0px;bottom: 10px;overflow-y:auto">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="footer">
+            <div id="footer_inf">
+                
+            </div>
+            <div id="footer-tool">
+                <div id="dev"  style="height: 100%; float: left"></div>
+                <div id="scale"  style="height: 100%; float: left; margin-left: 10px">
+                    <img id="scaleMinus" width="20" height="20" onclick="scaleMinus()" style="float: left;" src="img/minus.png">
+                    <div id="scaleValue" style="height: 100%; float: left; margin-left: 5px; margin-right: 5px">100%</div>
+                    <img id="scalePlus" width="20" height="20" onclick="scalePlus()" style="float: left;" src="img/plus.png">
+                </div>
+
+            </div>
+        </div>
+
+        <div id="popUp" style="position: absolute; background-color: #eee; border: 2px solid #777; z-index: 1001; display: none">
+            <div id="popUpTitle" onmousedown="movePanel(event)" style="top: 0px; width: 100%; height: 20px; cursor: move">
+                <div style="width: 20px; height: 20px; right: 0px; position: absolute; background-color: #ccc; 
+                     cursor: pointer; padding-left: 8px; padding-top: 5px" onclick="closepopUp()">*</div>
+            </div>
+            <div id="popUpContainer" style="padding: 3px">
+
+            </div>
+        </div>
+
+        <div id="n_contextMenu">
+          <div id="n_contextNameOb"></div>
+          <div id="n_contextActive" class="n_contextSub" onMouseover="n_ovRM(this)" onMouseout="n_outRM(this)" onclick='n_clElement(this)'>Зробити активним</div>
+          <div class="n_contextSub" onMouseover="n_ovRM(this)" onMouseout="n_outRM(this)" onclick='n_clActive(this)'>Активна ROOT</div>
+          <hr size="1">
+          <div class="n_contextSub" onMouseover="n_ovRM(this)" onMouseout="n_outRM(this)" onclick='n_clDelete(this)'>Delete</div>
+<!--          <div id="can_hide" class="n_contextSub" onMouseover="n_ovRM(this)" onMouseout="n_outRM(this)" onclick='n_clHideShow(this)'>Hidden\Show</div>      -->
+        </div>
+
+        <div id="windImg" style="right: 250px; top:35px;">
+            <div class='titleWind' onmousedown="moveWind(event)">
+                <div class="titleWindName">Select image</div>
+                <IMG SRC="img/x.gif" class='titleWindClose' onclick="closeWind(event)">
+            </div>
+            <div id="selImg" style="padding-left: 5px; height: 300px; overflow: auto;"></div>
+        </div>
+        
+        <div id="windEditForm">
+            <div class='titleWind' onmousedown="moveWind(event)">
+                <div class="titleWindName"></div>
+                <IMG SRC="img/x.gif" class='titleWindClose' onclick="closeWind(event)">
+            </div>
+            <div id="windEditBody" style="padding-left: 5px; height: 350px; overflow: auto;"></div>
+        </div>
+        
+        <div id="windSelectColor">
+            <div class='titleWind' onmousedown="moveWind(event)">
+                <div class="titleWindName"></div>
+                <IMG SRC="img/x.gif" class='titleWindClose' onclick="closeWind(event)">
+            </div>
+            <div id="windColorBody">
+                <div style="width: 320px; height: 190px; position: absolute; top: 0px; right: 0px">
+                    <div class="picker" id="primary_block" >
+                        <div id="line">
+                            <div id="arrows">
+                                <div class="left_arrow"></div>
+                                <div class="right_arrow"></div>
+                            </div>
+                        </div>
+
+                        <div id="block_picker">
+                            <img src="img/bgGradient.png" class="bk_img">
+                            <div class="circle" id="circle"></div>
+                        </div>
+
+                    </div>
+                    <div style="position:absolute; width:70px; top:0px; right: 5px">
+                        <div id="phonColor"></div>
+                        <div id="old_color"></div>
+                        <div id="out_color"></div>
+                        <div id="out_color_text" >ffffff</div>
+                        <div id="out_color_ok" onclick='setPickerColorResulr()'>oK</div>
+                        <div id="out_color_cancel" onclick='cancelSelectColor()'>Cancel</div>
+                    </div>
+                </div>
+                
+                <div id="alphaColor"></div>
+                <div id="alpha_pos">
+                    <div id="alpha_arrow" onmousedown="moveAlphaInd(event)"></div>
+                </div>
+
+                <div id="alphaGrad"></div>
+
+                <div style="position: absolute; lrft: 0px; top: 0px; width: 250px; height: 415px; background-color: white;">
+                    <div id="listColorView">
+                        
+                    </div>
+                </div>
+
+                <div id="hideColorList" style="position: absolute; lrft: 0px; top: 0px; z-index: 10; width: 250px; height: 415px; background-color: #0005; display: none"></div>
+                
+                <div id="presetColor">
+                    <div style="margin-top: 5px;">
+                        <div class="oneColor"></div>
+                        <div class="oneColor"></div>
+                        <div class="oneColor">darck</div>
+                        <div class="oneColor">ligth</div>
+                    </div>
+                    <div style="clear: both; float: left">
+                        <div class="oneColor">primary</div>
+                        <div id="presetColor_0" onclick="setSystemColor(this)" oncontextmenu="changeSystemColor(this);return false;" class="oneColor" style="cursor: pointer"></div>
+                        <div id="presetColor_1" onclick="setSystemColor(this)" oncontextmenu="changeSystemColor(this);return false;" class="oneColor" style="cursor: pointer"></div>
+                        <div id="presetColor_2" onclick="setSystemColor(this)" oncontextmenu="changeSystemColor(this);return false;" class="oneColor" style="cursor: pointer"></div>
+                    </div>
+                    <div style="margin-top: 5px; clear: both; float: left">
+                        <div class="oneColor">accent</div>
+                        <div id="presetColor_3" onclick="setSystemColor(this)" oncontextmenu="changeSystemColor(this);return false;" class="oneColor" style="cursor: pointer"></div>
+                        <div id="presetColor_4" onclick="setSystemColor(this)" oncontextmenu="changeSystemColor(this);return false;" class="oneColor" style="cursor: pointer"></div>
+                        <div id="presetColor_5" onclick="setSystemColor(this)" oncontextmenu="changeSystemColor(this);return false;" class="oneColor" style="cursor: pointer"></div>
+                    </div>
+                    <div style="margin-top: 5px; clear: both; float: left">
+                        <div class="oneColor">grey</div>
+                        <div id="presetColor_6" onclick="setSystemColor(this)" oncontextmenu="changeSystemColor(this);return false;" class="oneColor" style="cursor: pointer"></div>
+                        <div id="presetColor_7" onclick="setSystemColor(this)" oncontextmenu="changeSystemColor(this);return false;" class="oneColor" style="cursor: pointer"></div>
+                        <div id="presetColor_8" onclick="setSystemColor(this)" oncontextmenu="changeSystemColor(this);return false;" class="oneColor" style="cursor: pointer"></div>
+                    </div>
+                    <div style="margin-top: 5px; clear: both; float: left">
+                        <div class="oneColor">error</div>
+                        <div id="presetColor_9" onclick="setSystemColor(this)" oncontextmenu="changeSystemColor(this);return false;" class="oneColor" style="cursor: pointer"></div>
+                        <div id="presetColor_10" onclick="setSystemColor(this)" oncontextmenu="changeSystemColor(this);return false;" class="oneColor" style="cursor: pointer"></div>
+                        <div id="presetColor_11" onclick="setSystemColor(this)" oncontextmenu="changeSystemColor(this);return false;" class="oneColor" style="cursor: pointer"></div>
+                    </div>
+                    <div style="margin-top: 5px;">
+                        <div class="oneColor"></div>
+                        <div class="oneColor"></div>
+                        <div class="oneColor">title</div>
+                        <div class="oneColor">coment</div>
+                    </div>
+                    <div style="clear: both; float: left">
+                        <div class="oneColor">text</div>
+                        <div id="presetColor_12" onclick="setSystemColor(this)" oncontextmenu="changeSystemColor(this);return false;" class="oneColor" style="cursor: pointer"></div>
+                        <div id="presetColor_13" onclick="setSystemColor(this)" oncontextmenu="changeSystemColor(this);return false;" class="oneColor" style="cursor: pointer"></div>
+                        <div id="presetColor_14" onclick="setSystemColor(this)" oncontextmenu="changeSystemColor(this);return false;" class="oneColor" style="cursor: pointer"></div>
+                    </div>
+                </div>
+                
+                <div id="hidePresetColor" style="position: absolute; right: 0px; top: 240px; width: 230px; height: 175px; z-index: 10; background-color: #0005; display: none"></div>
+                
+            </div>
+        </div>
+        
+        <div id="drawableWindow">
+            <div class='titleWind' onmousedown="moveWind(event)">
+                <div class="titleWindName">Drawable</div>
+                <IMG SRC="img/x.gif" class='titleWindClose' onclick="drawableCanc(event)">
+            </div>
+            <div class="windContent" style="padding-left: 10px; overflow: auto;">
+                <div class="el_id" style="margin-top: 5px;">
+                        <div style="width: 20px">id: </div>
+                        <input id="drawable_id" type="text" size="25"/>
+                </div>
+                <div style="margin-top: 10px">
+                    <div style="float: left; margin-right: 15px;">Corners:</div> 
+                    <img class="cross" width="18" height="18" onclick="cornersAllClear(this)" src="img/cross.png">
+                </div>
+                <div style="clear: both; float: left; border: 1px solid #000; padding: 5px;">
+                    <div style="clear: both; float: left;">
+                        <div style="width: 50px; float: left; ">Radius:</div>
+                        <div onclick="setCorners(this)" class="el_marg_pad">2</div>
+                        <div onclick="setCorners(this)" class="el_marg_pad">4</div>
+                        <div onclick="setCorners(this)" class="el_marg_pad">8</div>
+                        <div onclick="setCorners(this)" class="el_marg_pad">12</div>
+                        <div onclick="setCorners(this)" class="el_marg_pad">16</div>
+                        <div onclick="setCorners(this)" class="el_marg_pad">20</div>
+                        <div onclick="setCorners(this)" class="el_marg_pad">24</div>
+                        <input id="radiusCorners" type="number" min="0" onchange="changeCornersRadius(this)" style="width: 40px; margin-left: 5px">
+                    </div>
+                    <div style="clear: both; float: left; width: 120px; height: 60px; outline: 5px #bbbbbb solid; outline-offset: -12px;
+                         display: flex; justify-content: space-between;">
+                        <div style="display: flex; flex-direction: column; justify-content: space-between;">
+                            <input id="radiusLT" type="number" min="0" onchange="changeRadius(this)" style="width: 40px; z-index: 1">
+                            <input id="radiusBL" type="number" min="0" onchange="changeRadius(this)" style="width: 40px; z-index: 1">
+                        </div>
+                        <div style="display: flex; flex-direction: column; justify-content: space-between;">
+                            <input id="radiusTR" type="number" min="0" onchange="changeRadius(this)" style="width: 40px; z-index: 1">
+                            <input id="radiusRB" type="number" min="0" onchange="changeRadius(this)" style="width: 40px; z-index: 1">
+                        </div>
+                    </div>
+                </div>
+                <div style="clear: both; float: left; margin-top: 10px">
+                    <div style="float: left; margin-right: 15px;">Border:</div> 
+                    <img class="cross" width="18" height="18" onclick="borderClear(this)" src="img/cross.png">
+                </div>
+                <div style="clear: both; float: left; border: 1px solid #000; padding: 5px;">
+                    <div id="stBordSol" onclick="styleBorderSol()" style="float: left; width: 25px; height: 12px; margin-top: 3px; border: 2px solid #000; cursor: pointer"></div>
+                    <div id="stBordDash" onclick="styleBorderDash()" style="float: left; width: 25px; height: 12px; margin-left: 5px; margin-top: 3px; border: 2px #000 dashed; cursor: pointer"></div>
+                    <div style="float: left; margin-left: 5px;">color:</div>
+                    <div id="colorBorder" onclick="setBorderColor()" 
+                         style="float: left; margin-left: 5px; width: 25px; height: 12px; margin-top: 3px; border: 1px solid #000; cursor: pointer"></div>
+                    <div style="float: left; margin-left: 5px;">width:</div>
+                    <input id="widthBorder" type="number" min="0" onchange="changeWidthBorder(this)" style="width: 40px; margin-left: 5px">
+                </div>
+                <div style="clear: both; float: left; margin-top: 10px">
+                    <div style="float: left; margin-right: 15px;">Color:</div> 
+                    <img class="cross" width="18" height="18" onclick="gradientClear()" src="img/cross.png">
+                </div>
+                <div id="gradientDraw" style="clear: both; float: left; border: 1px solid #000; padding: 5px;">
+                    <div id="colorDraw_1" onclick="setColorDrawable_1()" style="float: left; width: 25px; height: 15px; border: 1px solid #000; cursor: pointer"></div>
+                    <div id="colorDraw_2" onclick="setColorDrawable_2()" style="float: left; margin-left: 5px; width: 25px; height: 15px; border: 1px solid #000; cursor: pointer"></div>
+                    <div style="float: left; margin-right: 5px; margin-left: 5px">gradient: </div>
+                    <img class="gradImg" width="18" height="18" onclick="setGradient(0)" src="img/cross.png">
+                    <img class="gradImg" width="18" height="18" onclick="setGradient(1)" src="img/bt.png">
+                    <img class="gradImg" width="18" height="18" onclick="setGradient(2)" src="img/bl_tr.png">
+                    <img class="gradImg" width="18" height="18" onclick="setGradient(3)" src="img/lr.png">
+                    <img class="gradImg" width="18" height="18" onclick="setGradient(4)" src="img/br.png">
+                </div>
+                <div class="btnClick" onclick="drawableOk()" style="clear: both;">oK</div>
+                <div class="btnClick" onclick="drawableCanc()">Cancel</div>
+            </div>
+        </div>
+        
+        <div id="commonWindow">
+            <div class='titleWind'  onmousedown="moveWind(event)">
+                <div class="titleWindName"></div>
+                <IMG SRC="img/x.gif" class='titleWindClose' onclick="closeCommonWindow(event)">
+            </div>
+            <div class="windContent" style="position: absolute;left: 0px;right: 0px;top: 20px;bottom: 0px;padding-left: 5px; overflow: auto;"></div>
+        </div>
+        
+        <div id="uploadPanel" style="position: absolute; background: white; width: 100%; height: 100%; background-color: #0000;
+             z-index: 110; display: none; align-items: center; justify-content: center">
+            <iframe id="uploadFrame" name="frameUpload" src="upload.html" height="250" width="450" style="background: #eee">
+                
+            </iframe>
+        </div>
+        
+        <div id="windList" >
+            <div class='titleWind' onmousedown="moveWind(event)">
+                <div class="titleWindName">Select project</div>
+                <IMG SRC="img/x.gif" class='titleWindClose' onclick="closeWind(event)">
+            </div>
+            <div id="listBody" style="padding-left: 5px; height: 400px; overflow: auto;"></div>
+        </div>
+        
+        <div id="windHelp">
+            <div class='titleWind' onmousedown="moveWind(event)">
+                <div class="titleWindName">Help</div>
+                <IMG SRC="img/x.gif" class='titleWindClose' onclick="hiddenWindHelp(event)">
+            </div>
+            <div id="helpBody" style="padding-left: 5px; height: 400px; overflow: auto;"></div>
+        </div>
+        <div id='blockAllHalp' onclick="hiddenWindHelp()" style="background-color: #ccc7; top: 0px;left: 0px;right: 0px;bottom: 0px;z-index: 1000;position: absolute;display: none"></div> <!-- перекриває всі інші елементи, щоб вони не сприймали подій від миші    -->
+        <div id='n_blockAll' onclick="n_hiddenContMenu()" style="background-color: #ccc4; top: 0px;left: 0px;right: 0px;bottom: 0px;z-index: 1000;position: absolute;display: none"></div> <!-- перекриває всі інші елементи, щоб вони не сприймали подій від миші    -->
+        
+        <div id="loginPanel" style="position: absolute; background: white; width: 100%; height: 100%;
+                z-index: 110; display: flex; align-items: center; justify-content: center">
+            <iframe name="frameAuth" src="login.html" height="250" style="background: #eee">
+                
+            </iframe>
+        </div>
+    </body>
+</html>

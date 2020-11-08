@@ -1,8 +1,12 @@
 var components = new Array(
+/*
         {name: "ToolBar", viewBaseId: "tool_bar", type: "ToolBar", onlyOne: true, editParam: '<div style="display: inline-block; vertical-align: top; margin-right: 5px">img back</div>'
             +'<img class="img_back img_style" onclick="setImgBack()" width="24" height="24">'
             +'<div style="margin-left: 5px; display: inline-block; vertical-align: top; margin-right: 5px">hamburger</div>'
             +'<img class="img_hamburger img_style" onclick="setImgHamburg()" width="24" height="24">', 
+            specialView: ""},
+*/
+        {name: "ToolBar", viewBaseId: "tool_bar", type: "ToolBar", onlyOne: true, editParam: paramToolBar, 
             specialView: ""},
         {name: "MenuBottom", viewBaseId: "menu_b", type: "MenuBottom", onlyOne: true, editParam: '', 
             specialView: '<div onclick="editMenu_b()" style="display: inline-block; vertical-align: top; cursor:pointer;margin-left: 20px">formation of menu</div>'},
@@ -504,7 +508,7 @@ function jsonNoViewParent(el) {
             return value;
         });
 }
-// ??????????????????????????????????? служебный в верху
+// ??????????????????????????????????? служебный
 
 
 function newComponent(i) {

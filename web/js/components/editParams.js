@@ -1,5 +1,8 @@
 
-//var methodModel = '<select class="model_method" onchange="changeMethod(this)"><option>GET</option><option>POST</option><option>TEST</option></select>';
+var paramToolBar = '<div style="display: inline-block; vertical-align: top; margin-right: 5px">img back</div>'
+            +'<img class="img_back img_style" onclick="setImgBack()" width="24" height="24">'
+            +'<div style="margin-left: 5px; display: inline-block; vertical-align: top; margin-right: 5px">hamburger</div>'
+            +'<img class="img_hamburger img_style" onclick="setImgHamburg()" width="24" height="24">';
 
 var methodModel = '<div><select class="model_method" onchange="changeMethod(this)"><option>GET</option><option>POST</option><option>TEST</option></select>'
             +'<div class="test" onclick="formTestData(this)" style="display:none;vertical-align:top;cursor:pointer;;margin-left:20px">Formation of test data</div>'

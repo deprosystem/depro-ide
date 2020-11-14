@@ -19,7 +19,7 @@ public class BaseDB {
     public String urlDB;
     public String userNameDB = "mobi";
     public String passwordDB = "mobi";
-    public String nameDB = "ide";
+    public String nameDB = "ide_depro";
     
     public Gson gson = new Gson();
     

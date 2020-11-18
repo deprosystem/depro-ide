@@ -10,7 +10,7 @@
     var popUpContainer;
     var scaleValue;
     var pxIn100mm = 630;
-    var compon, content;
+    var content;
     var header, footer;
     var layoutParam, textValue;
 //    var listCompon, hierarhy, separator;
@@ -71,7 +71,7 @@
         DENSITY = ux_ui.clientWidth / pxIn100mm;
         MEASURE = DENSITY * SCALE;
         setDp();
-        ux_ui.style.width = '50px';
+        ux_ui.style.width = '100%';
         
         setSelectDevice();
         sizeDevice = document.getElementById('id-device');

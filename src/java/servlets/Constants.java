@@ -2,7 +2,7 @@ package servlets;
 
 public class Constants {
 //    public final static boolean isLocale = false;
-    public static String NAME_IDE = "DeProIDE";
+    public static String NAME_IDE = "depro-ide";
     public static String BaseURL;
     public static int MATCH = -1, WRAP = -2;
     public static int[] standartDimens = {2, 4, 8, 12, 14, 16, 18, 20, 24, 28, 32, 40, 56};
@@ -11,8 +11,8 @@ public class Constants {
     public static int[] ANGLES = {0, 90, 45, 0, 315};
     public final static int GET = 0, POST = 1, TEST = 2;
     
-    public static String PROJECTS_DATA = "projectdata/", 
-            USERS_DATA = "usersdata/";
+    public static String PROJECTS_DATA = "projectdataIDE/", 
+            USERS_DATA = "usersdataIDE/";
     public static final String TOOL = "ToolBar", PANEL = "Panel", SCROLLPANEL = "ScrollView",
             LIST = "List", PAGER = "Pager", TAB = "TabLayout", DRAWER = "Drawer", SCROLL = "ScrollPanel",
             MENU_B = "MenuBottom", MENU = "Menu", GALLERY = "Gallery", INDICATOR = "Indicator", 

@@ -1,7 +1,7 @@
-#container_hamburger {width: 20px; height: 20px; position: absolute; left: 20px; cursor: pointer;}
-#hamburger1 {top: 3px; background: #000; height: 1.5px; width: 20px; position: absolute; display: inline-block; transform-origin: 5%; }
-#hamburger2 {top: 9px; background: #000; height: 1.5px; width: 20px; position: absolute; display: inline-block; }
-#hamburger3 {top: 16px; background: #000; height: 1.5px; width: 20px; position: absolute; display: inline-block; transform-origin: 5%;}
+#panel_hamburger {width: 30px; height: 100%;background-color: var(--c_yelow);float: left;cursor: pointer;padding-left: 14px}
+#hamburger1 {top: 11px; background: #000; height: 1.5px; width: 15px; position: absolute; display: inline-block; transform-origin: 5%; }
+#hamburger2 {top: 16px; background: #000; height: 1.5px; width: 15px; position: absolute; display: inline-block; }
+#hamburger3 {top: 21px; background: #000; height: 1.5px; width: 15px; position: absolute; display: inline-block; transform-origin: 5%;}
 .hamburger1{ transform: rotate(0deg); transition: transform 0.5s linear; } 
 .hamburger1_open{ transform: rotate(45deg); transition: transform 0.5s linear; }
 .hamburger3{ transform: rotate(0deg); transition: transform 0.5s linear; } 

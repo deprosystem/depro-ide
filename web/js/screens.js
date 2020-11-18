@@ -57,6 +57,7 @@ function plusScreen() {
     list_screens.append(ns);
     list_screens.scrollTop = list_screens.scrollHeight;
     setScreenView();
+    container_scr.scroll_y.resize(container_scr);
 }
 
 function selScreen(event) {
@@ -346,6 +347,11 @@ function newScreen() {
             +'<div class="list_components" style="margin-left: 30px; margin-top: 5px;"></div</div>';
     return container.firstChild;
 }
+/*
+function areaSize(e) {
+    console.log("WWWW="+e.which);
+}
+*/
 
 function viewComment(el) {
     var tt = currentScreenView.getElementsByClassName("comment");
@@ -367,6 +373,7 @@ function viewComment(el) {
                 s.src = "img/shewron_down_26.png";
             }
         }
+        container_scr.scroll_y.resize(container_scr);
     }
 }
 
@@ -459,6 +466,7 @@ function selComponType(i) {
     list_screens.scrollTop = list_screens.scrollHeight;
     addNewComponent(i);
     idComponentNum ++;
+    container_scr.scroll_y.resize(container_scr);
 }
 
 function selComponent(event) {
@@ -553,6 +561,7 @@ function del_screen(el) {
         }
     }
     parent.parentNode.removeChild(parent);
+    container_scr.scroll_y.resize(container_scr);
 }
 
 function del_compon(el) {

@@ -5,7 +5,9 @@ function initialView(AuthResult) {
     let prof = ar.profile;
     setCookie("auth_token", AuthToken);
     setCookie("user", prof.userName);
-    info_user.innerHTML = prof.userName;
+    if (prof.userName != undefined && prof.userName.length > 0) {
+        info_user.innerHTML = prof.userName.substring(0, 1);
+    }
     if (prof.project != null) {
 
     }
@@ -21,11 +23,13 @@ function initialView(AuthResult) {
     formMenuEl_UX();
     var ins = new insertHtml();
     ins.get('m_bmPEbody', 'layout/layoutParam.html', m_bmStart);
+/*
     if (projectName == "") {
-        info_project.innerHTML = 'NOT';
+        project_name.innerHTML = 'NOT';
     } else {
-        info_project.innerHTML = projectName;
+        project_name.innerHTML = projectName;
     }
+*/
 }
     
 function eventFocusBlur() {

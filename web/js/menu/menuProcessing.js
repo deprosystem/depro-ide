@@ -163,26 +163,6 @@ function dataFromForm() {
     return strJson;
 }
 
-function cbCreateProject(res) {
-    plus_screen.style.display = "block";
-    openMenu();
-    currentProject = JSON.parse(res);
-    info_project.innerHTML = currentProject.nameProject;
-    listScreen = JSON.parse(currentProject.screens);
-    listColor = JSON.parse(currentProject.colors);
-    listDimens = JSON.parse(currentProject.dimens);
-    listValueAppParam = JSON.parse(currentProject.appParam);
-    if (currentProject.style != null) {
-        listStyle = JSON.parse(currentProject.style);
-    }
-    setListColor();
-    listDrawable = JSON.parse(currentProject.drawable);
-    setMaxIndexDrawable();
-    setLayout();
-    list_screens.innerHTML = "";
-    setListScreen();
-}
-
 function clearRoot() {
     var contour = root.getElementsByClassName('contourEl')[0];
     var cont_1 = contour.cloneNode(true);
@@ -865,4 +845,25 @@ function saveAll() {
             return value;
         });
     localStorage.setItem('resultUI', JSON.stringify(par));
+}
+
+function cbCreateProject(res) {
+    plus_screen.style.display = "block";
+    openMenu();
+    currentProject = JSON.parse(res);
+    project_name_bl.style.display = "block";
+    project_name.innerHTML = currentProject.nameProject;
+    listScreen = JSON.parse(currentProject.screens);
+    listColor = JSON.parse(currentProject.colors);
+    listDimens = JSON.parse(currentProject.dimens);
+    listValueAppParam = JSON.parse(currentProject.appParam);
+    if (currentProject.style != null) {
+        listStyle = JSON.parse(currentProject.style);
+    }
+    setListColor();
+    listDrawable = JSON.parse(currentProject.drawable);
+    setMaxIndexDrawable();
+    setLayout();
+    list_screens.innerHTML = "";
+    setListScreen();
 }

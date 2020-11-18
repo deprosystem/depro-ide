@@ -1,0 +1,30 @@
+
+/*
+.viewport-wrapper {height: 294px; position: relative; overflow: hidden; border: solid 1px #dedede; border-width: 1px 0;}
+*/
+.viewport {width: 100%; overflow: hidden; position: absolute; left: 0; top: 0px; bottom: 0px;background-color: white}
+.content {position: absolute;overflow-x: hidden; left: 0; right:-17px;height: 100%; overflow-y: scroll;}
+/*
+.content-scroll {height: 100%; overflow-y: scroll; right: -17px;}
+*/
+/*
+.content-list {padding: 0 20px 0 17px; -webkit-user-select: none; user-select: none;}
+	.content-list li + li {margin-top: 10px;}
+*/
+/* scroll bar */
+.scrollbar, .scroller {width: 5px; position: absolute; top: 0;}
+.scrollbar {right: 0; bottom: 0;}
+.scroller {left: 0; border-radius: 2px; background: #51aeff; cursor: pointer;}
+.scroll_line {width: 1px; position: absolute; top: 0;right: 1.5px; bottom: 0;background: #51aeff;}
+
+/* Hacks */
+/*
+_:-ms-input-placeholder, :root .content-list {padding-left: 20px;}
+*/
+/*
+@media screen and (max-width:670px) {
+	h1 {text-align: center;}
+	.wrap > div .container + .container {margin-left: auto;}
+	.container {float: none; margin: 0 auto 30px;}
+}
+*/

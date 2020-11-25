@@ -43,12 +43,14 @@
     onload = function () {
       /* Определяем браузер */
       var br = navigator.userAgent;
-      if (br.indexOf("Opera") != -1) browser = 'o';
-      else {
-        if (br.indexOf("MSIE") != -1) browser = 'i';
-        else {
-          if (br.indexOf("Firefox") != -1) browser = 'f';
-        }
+      if (br.indexOf("Opera") > -1) {
+          browser = 'o';
+      } else if (br.indexOf("MSIE") > -1) {
+          browser = 'i';
+      } else if (br.indexOf("Firefox") > -1) {
+          browser = 'f';
+      } else if (br.indexOf("Chrome") > -1) {
+          browser = 'c';
       }
     }
 

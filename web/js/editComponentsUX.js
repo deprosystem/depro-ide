@@ -260,17 +260,17 @@ function newItemAndr(item, colorId) {
     container.innerHTML = str;
     return container.firstChild;
 }
-
+/*
 function clickUpURL(e) {
     let a = e.currentTarget;
     currentComponentDescr.model.url = a.value;
 }
-
+*/
 function clickUpDrawer(e) {
     let a = e.currentTarget;
     currentComponentDescr.view.drawer_fragm = a.value;
 }
-
+/*
 function changeUrlParam(v) {
     currentComponentDescr.model.param = v;
 }
@@ -283,12 +283,16 @@ function changeMethod(el) {
             test[0].style.display = "inline-block";
         }
     } else {
+/*
         let test = el.parentElement.getElementsByClassName("test");
         if (test != null) {
             test[0].style.display = "none";
         }
+*/
+/*
     }
 }
+*/
 
 function formTestData(el) {
     let dat = currentComponentDescr.model.data;
@@ -790,7 +794,7 @@ function newItemFromString(str) {
     container.innerHTML = str;
     return container.firstChild
 }
-
+/*
 function editDataModel() {
     editDataWind(metaModel, currentComponentDescr.model.data, cbSaveDataModel);
 }
@@ -798,7 +802,7 @@ function editDataModel() {
 function cbSaveDataModel() {
     
 }
-
+*/
 function createTabLayoutCont() {
     currentElement = createNewEl();
     p = {typeUxUi: "ui"};
@@ -817,11 +821,11 @@ function changeTab(el) {
     let st = el.options[el.selectedIndex].value;
     currentComponentDescr.view.tabLayout = st;
 }
-
+/*
 function navigatorCompon() {
     editDataWind(metaNavigator, currentComponentDescr.navigator);
 }
-
+*/
 function checkToolBarDrawer(el) {
     currentComponentDescr.view.toolInDrawer = el.checked;
 }

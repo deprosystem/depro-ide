@@ -849,6 +849,7 @@ function saveAll() {
 
 function cbCreateProject(res) {
     plus_screen.style.display = "block";
+    corners.style.display = "block";
     openMenu();
     currentProject = JSON.parse(res);
     project_name_bl.style.display = "block";

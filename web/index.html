@@ -5,6 +5,7 @@
         <title>IDE DePro</title>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Proxima Nova" rel="stylesheet">
 
         <link rel="stylesheet" href="css/index.css" type="text/css">
         <link rel="stylesheet" href="css/hamburger.css" type="text/css">
@@ -20,6 +21,11 @@
         <script src="js/components/editParams.js" ></script>
         <script src="js/components/contentParam.js" ></script>
         <script src="js/components/specialViews.js" ></script>
+        <script src="js/uxComponents/uxSeparators.js" ></script>
+        <script src="js/uxComponents/uxNavigator.js" ></script>
+        <script src="js/uxComponents/uxToolBar.js" ></script>
+        <script src="js/uxComponents/uxList.js" ></script>
+        <script src="js/uxComponents/model.js" ></script>
         <script src="js/editData/editData.js" ></script>
         <script src="js/editData/metaData.js" ></script>
         <script src="js/editData/editArrayData.js" ></script>
@@ -57,11 +63,16 @@
             </div>
 
             <div id="project_name_bl" style="background-color:var(--c_blue);float: left;width:100px;height: 100%;display:none">
-                <div id="project_name" style="color:white;margin-left:5px;margin-top: 9px"></div>
+                <div id="project_name" style="color:white;text-align:center;margin-top: 9px"></div>
             </div>
             <div id="plus_screen" onclick="plusScreen()" style="height: 100%; float: left; margin-left: 10px; cursor: pointer;display: none;">
-                <img width="16" height="16" style="float: left; margin-top: 2px" src="img/plus_24.png">
-                <div style="height: 100%; float: left; margin-left: 2px;margin-top: 9px;color:white">Screen</div>
+                <img width="16" height="16" style="float: left; margin-top: 9px" src="img/add.png">
+                <div style="height: 100%; float: left; margin-left: 5px;margin-top: 10px;color:#ffffffcc">Screen</div>
+            </div>
+            
+            <div id="corners" style="height: 100%; float: left; margin-left: 10px;display: none;">
+                <img width="15" height="14" onclick="undo()" style="float: left; margin-top: 9px;cursor: pointer;" src="img/corner-no_act-left.png">
+                <img width="15" height="14" onclick="restore()" style="float: left; margin-top: 9px;cursor: pointer;margin-left: 5px;" src="img/corner-no_act-right.png">
             </div>
             
             <div onclick="editUX_UI()" id="ux_ui_w">
@@ -72,14 +83,14 @@
                 <div id="info_user" style="margin-top:5px;text-align:center;color:black;font-size:12px;font-weight:bold;"></div>
             </div>
             
-            <div style="height: 100%;float:right; margin-right:25px; ">
+            <div id="type_insert" style="height: 100%;float:right;width:150px;margin-right:10px;display:none">
                 <div style="color: #b1b1b1;font-size: 10px;margin-top: 4px;">Type insert</div>
-                <div id="info_type_insert" style="clear: both;color: white;font-size: 12px;">RelativeLayout</div>
+                <div id="info_type_insert" style="clear: both;color: white;font-size: 12px;"></div>
             </div>
             
-            <div style="height: 100%;float:right; margin-right:25px; ">
+            <div id="active" style="height: 100%;float:right;width:150px;margin-right:10px;display:none">
                 <div style="color: #b1b1b1;font-size: 10px;margin-top: 4px;">Active</div>
-                <div id="info_active" style="clear: both;color: white;font-size: 12px;">RelativeLayout</div>
+                <div id="info_active" style="clear: both;color: white;font-size: 12px;"></div>
             </div>
         </div>
         <div id="hintMenuMain" style="position: absolute; top: 23px; left: 30px; background-color: #55f; color: white; 
@@ -127,6 +138,9 @@
             </div>
         </div>
         <div id="content_v" onclick="hideSelectEl(event)">
+            <div id="ram1">
+                <div id="ram2"></div>
+            </div>
             <div id="root-g">
                 <div id="root">
                     <div class="contourEl" onmousedown="moveElement(event)">

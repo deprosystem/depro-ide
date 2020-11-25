@@ -3,13 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/js/header_nav.js</file>
-            <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/js/scrollCustom.js</file>
+            <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/js/uxComponents/uxToolBar.js</file>
             <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/js/screens.js</file>
-            <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/css/scroll_b.css</file>
             <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/index.html</file>
-            <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/layout/layoutParam.html</file>
-            <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/js/layoutIndex.js</file>
+            <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/js/uxComponents/model.js</file>
+            <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/js/uxComponents/uxList.js</file>
+            <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/js/components/editParams.js</file>
             <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/css/index.css</file>
         </group>
     </open-files>

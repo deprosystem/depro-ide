@@ -2,7 +2,6 @@
 	'use strict';
 	function ScrollBox(container, nameEvent) {
 		this.nameEvent = nameEvent;
-//		this.viewport = container.querySelector('.viewport');
 		this.viewport = container;
                 container.scroll_y = this;
 		this.content = this.viewport.querySelector('.content');

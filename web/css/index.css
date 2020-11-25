@@ -1,30 +1,31 @@
 
 :root {--h_header: 35px; --h_footer: 20px; --h_footer_1: 21px; --w_left: 300px; --w_right: 250px; --w_ux: 450px;
-       --left_compon:0px; --time_anim:2000ms;
-    --w_ux_p: 60%; --w_ux_r: 0px; --c_line: #2c3336;--c_blue:#1dace9;--c_yelow:#ffc700;--c_content:#FAF8ED}
+       --left_compon:0px; --w_ux_p: 60%; --w_ux_r: 0px; 
+       --c_line: #2c3336;--c_blue:#1dace9;--c_yelow:#ffc700;--c_content:#FfFBEF; --c_screen:#DAF0FA;--c_screen_hover:#d5f0ff;
+       --c_compon:#f7f7f7;--c_component:#fff;--c_input:#cbe4ef;--c_separator:#7ac;--c_scroll:#1DACE9;--c_yelow_lite:#FAF1CF;
+}
 html,body {margin: 0; width: 100%; height: 100%;}
-body {font-family: 'Roboto', sans-serif;font-size:12px}
+body {font-family: 'Proxima Nova', sans-serif;font-size:12px}
+
+select {-webkit-appearance: none; -moz-appearance: none; appearance:none;text-indent:1px;text-overflow: '';background: url("chevron_down.png") no-repeat right center #fff;}
+select::-ms-expand {display: none;}
 
 #footer {background-color: #eee; left: 0; position: absolute; bottom: 0; width: 100%; height: var(--h_footer); border-top: 1px solid #aaa}
 #footer_inf {width: 300px; height: 100%; float: left;}
 #footer-tool {width: 300px; height: 100%; float: right; right: 0px; border-left: 2px solid #aaa;}
 #header{background-color: var(--c_line); height: var(--h_header); position: absolute; width: 100%;}
 
-/*#compon{position: absolute; background-color: #eee; left: 0px; width: var(--w_ux_p); top: var(--h_header); bottom: var(--h_footer); transition: width 2000ms;}
-*/
-#compon{position: absolute; background-color: #eee; left: var(--left_compon); width: 60%; top: var(--h_header); bottom: var(--h_footer);transition: left 2000ms;}
+#compon{position: absolute; background-color:var(--c_compon); left: var(--left_compon); width: 60%; top: var(--h_header); bottom: var(--h_footer);transition: left 400ms;}
 #compon_ui {position: absolute; background-color: #eee; left: 0px; width: 300px; top: var(--h_header); bottom: var(--h_footer);display:none}
 #haracteristicks{position: absolute;overflow-y: hidden; background-color: #eee; right: 0px; width: 320px; top: var(--h_header); bottom: var(--h_footer);}
 #content_v{position: absolute; overflow: auto; left: var(--w_ux_p); right: var(--w_ux_r); top: var(--h_header); bottom: var(--h_footer);
-           background-color:var(--c_content);transition: left 2000ms, right 2000ms;}
+           background-color:var(--c_content);transition: left 400ms, right 400ms;}
 #ux_ui_w{height: 100%;float: right; cursor: pointer; width:var(--h_header); background-color:var(--c_blue);}
 #ux_ui_w:hover {background-color: #0055E9;}
 
 .container {position: absolute; left: 0px; top: 0px; bottom: 0px; right: 3px;background-color: white}
-#list_screens {background-color: white; margin-left:8px;margin-right:8px; margin-bottom:10px;-webkit-user-select: none; user-select: none;}
-/*
-#list_screens {background-color: white; position: absolute; left: 0px; top: 0px; bottom: 0px; right: 3px; padding-left: 10px; overflow-y: scroll; overflow-x: hidden;margin-bottom:10px}
-*/
+#list_screens {margin-left:8px;margin-right:8px; margin-bottom:10px;-webkit-user-select: none; user-select: none;}
+
 .infoHeadLabel {height: 100%; float: left; margin-left: 5px; font-size: 14px; margin-top: 2px;}
 .infoHead {height: 100%; float: left; margin-left: 5px; color: #00f;}
 .header-info {width: 270px; height: 100%; border-left: 2px ridge #aaa; float: right;overflow: hidden}
@@ -59,11 +60,17 @@ li:hover ul {display: block;}
 .em_sebody {width: 100px; margin-left: 50px; padding: 10px; border:  1px solid black; z-index: 10; background-color: white; 
          visibility: hidden; position: absolute;}
 .navbody div {color: black; height: 7mm; cursor: pointer;}
-.type-compon:hover {background-color: #def;} 
+.type-compon:hover {background-color: #def;}
+/*
+#ram1 {position: absolute;width: 280px;height: 480px;left: 350px;top: 25px;background: #FFFFFF;box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.05), inset 0px 4px 40px rgba(0, 0, 0, 0.30);border-radius: 20px;}
+#ram2 {position: absolute;left: 10px;top: 10px;right: 10px;bottom:20px;background: #FFFFFF;border: 1px solid rgba(97, 97, 97, 0.18);box-sizing: border-box;box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.05);border-radius: 20px;}
+*/
+
+#ram1 {position: absolute;width: 280px;height: 480px;left: 350px;top: 25px;box-shadow: 0px 20px 60px rgba(0, 0, 0, 0.05), inset 0px 4px 50px rgba(0, 0, 0, 0.25);border-radius: 40px;}
+#ram2 {position: absolute;left: 10px;top: 10px;right: 10px;bottom:20px;background:#FFFFFF;border: 1px solid rgba(97, 97, 97, 0.18);box-sizing: border-box;box-shadow: 0px 20px 60px rgba(0, 0, 0, 0.05);border-radius: 35px;}
 
 #root-g {border: 15px solid black; border-radius: 20px; margin-left: 50px; margin-top: 25px; position: absolute;}
 #root {background-color: white; position: absolute; overflow: hidden; font-family: 'Roboto', sans-serif;}
-
 #root:hover .element {outline: 2px solid #777}
 #root .element:hover {outline: 2px solid #55f}
 .element hr{height: 0px;background: #0000;border: 0;margin: 2px 0 2px 0;}
@@ -75,32 +82,50 @@ li:hover ul {display: block;}
 .contourRT {width: 5px; height: 5px; background-color: #00f; position: absolute; right: 0px; top: 0px; cursor: ne-resize}
 
 #windImg {z-index: 101; position: absolute; width: 250px; background: #eeeeee; border: 2px threedhighlight outset; display: none}
+/*
 .titleWind {text-align: center; margin-left: 2px; margin-top: 2px; height: 19px; background: #99CCFF; cursor: move;}
 .titleWindName {float: left; padding-left: 10px}
 .titleWindClose {background-color: buttonface; float: right; margin-top: 3px; margin-right: 1px; border: 2px buttonhighlight outset; cursor: pointer;}
+*/
+.titleWind {height: 56px;background:#f3f8ff;cursor:move;border-radius: 5px 5px 0px 0px;}
+.titleWindName {float: left; padding-left: 16px;font-size:18px;margin-top:16px;font-family:Proxima Nova;font-style:normal;font-weight: bold;}
+.titleWindClose {float: right; margin-top: 20px; margin-right: 20px;cursor: pointer;}
 .baseWind {z-index: 101; position: absolute; width: 200px; border: 2px threedhighlight outset; display: none}
 
 #windEditForm {z-index: 102; position: absolute; width: 350px; background: #eeeeee; border: 2px threedhighlight outset;
                left: 250px; top:35px; display: none}
 #commonWindow {z-index: 100; position: absolute; background: #eeeeee; border: 2px threedhighlight outset; top:35px; display: none}
+/*
 .dataWindow {z-index: 100; position: absolute; background: #eeeeee; border: 2px threedhighlight outset; top:35px; }
+*/
+.dataWindow {z-index: 100; position: absolute;background:#ffffff; border: 1px solid #1dace9;top:35px;box-shadow: 0px 30px 100px rgba(0, 0, 0, 0.1);border-radius: 5px;}
+
 #drawableWindow {z-index: 100; position: absolute; background: #eeeeee; border: 2px threedhighlight outset; top:35px; display: none;  
                  width: 350px; height: 350px; right: 150px;}
 #windSelectColor {z-index: 101; position: absolute; width: 587px; height: 445px; background: #f1f1f1; outline: 2px threedhighlight outset;
                left: 250px; top:35px; display: none}
-.screen {margin-top: 5px; padding-top: 5px; padding-left: 10px; padding-bottom: 5px;background-color: #def;}
-.screen:hover {background-color: #cde;}
-.screen_sel {margin-top: 5px; padding-top: 5px;padding-left: 10px; padding-bottom: 5px; background-color: #cde;}
-.screen_sel:hover {background-color: #bcd;}
-.type_screen {margin-left: 5px;}
+.screen {margin-top: 15px;margin-right:5px;padding-top: 5px;padding-bottom: 5px;background-color:white;
+        border: 1px solid #def;box-shadow:3px 3px 10px #abca;border-radius:4px;}
+.screen:hover {background-color:var(--c_screen_hover);}
+.screen_sel {margin-top: 15px;margin-right:5px;padding-top: 5px;padding-bottom: 5px; background-color:var(--c_screen);
+        border: 1px solid #def;box-shadow:3px 3px 10px #abca;border-radius:4px;}
+.screen_sel:hover {background-color:var(--c_screen_hover);}
+
+/*.type_screen {margin-left: 5px;}
+*/
+
 .type_component {cursor: pointer}
 .type_component:hover {background-color: #def;}
-.component {margin-top: 5px; padding-top: 5px;background-color: #dfe;}
-.component:hover {background-color: #cfe;}
-.component_sel {margin-top: 5px; padding-top: 5px;background-color: #ced;}
-.component_sel:hover {background-color: #cfe;}
+.component {margin-top: 5px; padding-top: 5px;padding-left:5px;background-color:var(--c_component);border: 1px solid rgba(29, 172, 233, 0.5);box-sizing: border-box;
+               box-shadow: 0px 16px 32px 2px rgba(97, 97, 97, 0.05);border-radius: 4px}
+.component:hover {background-color: #ebfaff;}
+.component_sel {margin-top: 5px; padding-top: 5px;padding-left:5px;background-color:var(--c_component);border: 1px solid rgba(29, 172, 233, 0.5);box-sizing: border-box;
+               box-shadow: 0px 16px 32px 2px rgba(97, 97, 97, 0.05);border-radius: 4px;}
+.component_sel:hover {background-color: #ebfaff;}
+/*
 .delete_obj {float: right; width: 20px; cursor: pointer; padding-left: 5px;}
 .delete_obj:hover {background-color: #e88}
+*/
 .help {float: right; width: 20px; cursor: pointer; padding-left: 5px;}
 .help:hover {background-color: #aaf}
 .delete_obj_flex {margin-left:auto;width: 20px; cursor: pointer; padding-left: 5px;}
@@ -111,6 +136,10 @@ li:hover ul {display: block;}
 #windHelp {z-index: 1001; position: absolute; width: 600px; background: #f1f1f1; outline: 2px threedhighlight outset; padding: 5px;
                left: 200px; top:35px; display: none}
 .gradImg {cursor: pointer; width: 18px; height: 18px;}
+.input_style {border: 1px solid #bbd4ef; border-radius:5px;height:24px;padding-left:4px;}
+
+.select_f {border: 1px solid #bbd4ef; border-radius:5px;height:28px;padding-left:0px}
+.select_c {border: 1px solid #bbd4ef; border-radius:5px;height:28px;padding-left:4px}
 
 #n_contextMenu {position: fixed; z-index: 1005; visibility: hidden; font-size: small; background: #fafafa;  width: 130px; border: 1px black outset;}
 .n_contextSub { text-indent: 10px; cursor: pointer;}
@@ -144,9 +173,9 @@ li:hover ul {display: block;}
 .file_el:hover {background: gold}
 
 /*              SCROLL          */
-.viewport {width: 100%; overflow: hidden; position: absolute; left: 0; top: 0px; bottom: 0px;background-color: white}
+.viewport {width: 100%; overflow: hidden; position: absolute; left: 0; top: 0px; bottom: 0px;}
 .content {position: absolute;overflow-x: hidden; left: 0; right:-17px;height: 100%; overflow-y: scroll;}
 .scrollbar, .scroller {width: 5px; position: absolute; top: 0;}
 .scrollbar {right: 0; bottom: 0;}
-.scroller {left: 0; border-radius: 2px; background: #51aeff; cursor: pointer;}
-.scroll_line {width: 1px; position: absolute; top: 0;right: 1.5px; bottom: 0;background: #51aeff;}
+.scroller {left: 0; border-radius: 2px; background: var(--c_scroll); cursor: pointer;}
+.scroll_line {width: 1px; position: absolute; top: 0;right: 1.5px; bottom: 0;background:var(--c_scroll);}

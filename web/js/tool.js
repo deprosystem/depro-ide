@@ -5,8 +5,8 @@ function tooltipMessage(target, message) {
     let x = xy.left;
     let y = xy.top;
     let dv = document.createElement('div');
-    if (y > 40) {
-        y -= 40;
+    if (y > 30) {
+        y -= 30;
     } else {
         y += 20;
     }
@@ -14,7 +14,7 @@ function tooltipMessage(target, message) {
     if ((wD - x) < maxW) {
         x = wD - maxW - 20;
     }
-    dv.style.cssText = "position:absolute;max-width:" + maxW + "px;padding:5px;background:#def;border:1px solid black;left:" + x + "px;top:" + y + "px;z-index:100";
+    dv.style.cssText = "position:absolute;max-width:" + maxW + "px;padding:5px;background:var(--c_yelow_lite);border:1px solid #ffc700;border-radius:8px;left:" + x + "px;top:" + y + "px;z-index:100";
     dv.innerHTML = message;
     document.body.append(dv);
     setTimeout(function(){ document.body.removeChild(dv);},2000);

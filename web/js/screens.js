@@ -6,13 +6,14 @@ var components = new Array(
             +'<img class="img_hamburger img_style" onclick="setImgHamburg()" width="24" height="24">', 
             specialView: ""},
 */
-        {name: "ToolBar", viewBaseId: "tool_bar", type: "ToolBar", onlyOne: true, editParam: paramToolBar, 
+
+        {name: "ToolBar", uxFunc: uxToolBar, viewBaseId: "tool_bar", type: "ToolBar", onlyOne: true, editParam: "", 
             specialView: ""},
         {name: "MenuBottom", viewBaseId: "menu_b", type: "MenuBottom", onlyOne: true, editParam: '', 
             specialView: '<div onclick="editMenu_b()" style="display: inline-block; vertical-align: top; cursor:pointer;margin-left: 20px">formation of menu</div>'},
         {name: "Menu", viewBaseId: "menu", type: "Menu", onlyOne: true, editParam: '', 
             specialView: '<div onclick="editMenu()" style="display: inline-block; vertical-align: top; cursor:pointer;margin-left: 20px">formation of menu</div>'},
-        {name: "List", viewBaseId: "list", type: "List", onlyOne: false, editParam: modelList, 
+        {name: "List", uxFunc: uxList, viewBaseId: "list", type: "List", onlyOne: false, editParam: modelList, 
             specialView: methodModel},
         {name: "Pager", viewBaseId: "pager", type: "Pager", onlyOne: false, editParam: paramPager, 
             specialView: ''},
@@ -29,6 +30,7 @@ var components = new Array(
                 );
         
 var list_cont;
+var uxFunction;
 
 var listScreen = [];
 var currentScreenView, currentComponentView;
@@ -38,6 +40,13 @@ var idScreenNum, idComponentNum;
 var positionScreen = 0;
 
 function plusScreen() {
+    if (currentScreenView != null) {
+        currentScreenView.className = "screen";
+        let listC = currentScreenView.getElementsByClassName("list_components");
+        if (listC != null && listC.length > 0) {
+            listC[0].style.display = "none";
+        }
+    }
     currentScreen = {screenName: "SCREEN_" + idScreenNum, screenId: idScreenNum, screenComment: "", animate: 0, castom: "", typeScreen: 0, 
         title: "", titleParam: "", components: []};
     currentScreen.layout = 
@@ -66,6 +75,10 @@ function selScreen(event) {
     }
     if (currentScreenView != null) {
         currentScreenView.className = "screen";
+        let listC = currentScreenView.getElementsByClassName("list_components");
+        if (listC != null && listC.length > 0) {
+            listC[0].style.display = "none";
+        }
     }
     currentScreenView = event.currentTarget;
     setSelectScreen();
@@ -73,6 +86,10 @@ function selScreen(event) {
 
 function setSelectScreen() {
     currentScreenView.className = "screen_sel";
+    let listC = currentScreenView.getElementsByClassName("list_components");
+    if (listC != null && listC.length > 0) {
+        listC[0].style.display = "block";
+    }
     var id = currentScreenView.idScreen;
     if (currentScreen != null && id != currentScreen.screenId) {
         var ik = listScreen.length;
@@ -115,6 +132,10 @@ function setListScreen() {
 
         currentScreenView = ns;
         currentScreenView.className = "screen";
+        let listC = currentScreenView.getElementsByClassName("list_components");
+        if (listC != null && listC.length > 0) {
+            listC[0].style.display = "none";
+        }
         ns.addEventListener('click', selScreen, true);
         setSelected("type_screen", currentScreen.typeScreen);
         setSelected("anim_screen", currentScreen.animate);
@@ -162,6 +183,10 @@ function setListScreen() {
         if (vv_0 != null) {
             currentScreenView = vv_0[0];
             currentScreenView.className = "screen_sel";
+            let listC = currentScreenView.getElementsByClassName("list_components");
+            if (listC != null && listC.length > 0) {
+                listC[0].style.display = "block";
+            }
         }
         if (currentScreenView != null) {
             let el_1 = currentScreenView.getElementsByClassName("list_components");
@@ -316,9 +341,9 @@ function setValueComponent(nc, compLayout, comp_descr) {
 }
 
 function setSelected(cl, val) {
-    var ss = currentScreenView.getElementsByClassName(cl);
-    if (ss != null) {
-        var el = ss[0];
+    let ss = currentScreenView.getElementsByClassName(cl);
+    if (ss != null && ss.length > 0) {
+        let el = ss[0];
         el.options[val].selected = true;
     }
 }
@@ -326,25 +351,39 @@ function setSelected(cl, val) {
 function newScreen() {
     var container = document.createElement('div')
     container.innerHTML = '<div class="screen_sel">'
-            +'<input class="name_screen" onkeyup="return checkNameKey(event)" onkeydown="return checkNameKeyD(event)" placeholder="Name screen" type="text" size="15" value="'+ currentScreen.screenName + '"/>'
-            +'<select class="type_screen" onchange="changeType(this)"><option>Activity</option><option>Fragment</option></select>'
-            +'<div style="margin-left: 5px; display: inline-block; color: #777">Animation</div>'
-            +'<select style="margin-left: 5px;" onchange="changeAnim(this)" class="anim_screen"><option>No</option><option>L R</option><option>R L</option><option>B T</option><option>T B</option></select>'
-
-            +'<div onclick="viewComment(this)" style="cursor: pointer; margin-left: 5px; display: inline-block; color: #777;"><div style="display: inline-block;">Comment </div>'
-            +'<img class="shewron" width="16" height="16" src="img/shewron_down_26.png"></div>'
-
-            +'<div class="delete_obj" onclick="del_screen(this)"><img width="18" height="18" src="img/cross.png"></div>'
-            +'<div onclick="plusCompon(this)" style="cursor: pointer; float: right; display: inline-block; margin-right: 5px;">'
-            +'<img width="16" height="16" style="float: left; margin-top: 2px" src="img/plus_24.png">'
-            +'<div style="height: 100%; float: left; margin-left: 2px;">Component</div></div>'
-            +'<div style="margin-top: 2px">'
-                +'<input class="title " onkeyup="return clickUpTitle(event)" placeholder="Title screen" value="' + currentScreen.title + '" type="text" style="margin-left: 120px; vertical-align: top;"/>'
-                +'<input class="title" onchange="changeTitleParam(this.value)" placeholder="Title parameters" value="' + currentScreen.titleParam + '" type="text" style="margin-left: 5px; vertical-align: top;"/>'
+        +'<div style="float:left;width:3px;height:40px;"></div>'
+        +'<div style="padding-bottom:15px;height:30px;margin-left:10px">'
+            +'<div style="float:left;"><div style="color: #2228;font-size: 10px;margin-left:4px">Name</div>'
+            +'<input class="name_screen input_style" onkeyup="return checkNameKey(event)" onkeydown="return checkNameKeyD(event)" style="font-size:12px;color:#110000;font-weight:600" type="text" size="15" value="'+ currentScreen.screenName + '"/>'
             +'</div>'
-            +'<div class="comment" style="display: none;"><textarea onchange="changeComment(this.value)" style="margin-left:10px" rows="3" cols="100" maxlength="400">' 
-            + currentScreen.screenComment + '</textarea></div>'
-            +'<div class="list_components" style="margin-left: 30px; margin-top: 5px;"></div</div>';
+    
+            +'<div style="float:left;margin-left:10px;"><div style="color:#2228;font-size: 10px;margin-left:4px">Type</div>'
+            +'<select class="type_screen select_' + browser + '" onchange="changeType(this)" style="width:88px;font-size:12px;color:#110000;"><option>Activity</option><option>Fragment</option></select>'
+            +'</div>'
+    
+            +'<div style="float:left;margin-left:10px"><div style="color:#2228;font-size: 10px;margin-left:4px">Animation</div>'
+            +'<select class="anim_screen select_' + browser + '" style="width:50px;font-size:12px;color:#110000;" onchange="changeAnim(this)"><option>No</option><option>L R</option><option>R L</option><option>B T</option><option>T B</option></select>'
+            +'</div>'
+
+            +'<div style="float:left;margin-left:10px"><div style="color: #2228;font-size: 10px;margin-left:4px">Title screen</div>'
+            +'<input class="name_screen input_style" onkeyup="return clickUpTitle(event)" value="' + currentScreen.title + '" type="text" size="14"/>'
+            +'</div>'
+    
+            +'<div style="float:left;margin-left:10px"><div style="color: #2228;font-size: 10px;margin-left:4px">Title parameters</div>'
+            +'<input class="name_screen input_style" onchange="changeTitleParam(this.value)" value="' + currentScreen.titleParam + '" type="text" size="14"/>'
+            +'</div>'
+    
+            +'<div onclick="viewComment(this)" style="float:left;margin-left:10px;cursor:pointer"><div style="color:#2228;font-size:10px;margin-left:4px">Description</div>'
+            +'<img width="20" height="20" style="margin-top:3px;" src="img/roll.png">'
+            +'</div>'
+
+            +'<img onclick="del_screen(this)" style="float:right;cursor:pointer;margin-top:14.5px;margin-right:10px" width="18" height="18" src="img/close-o.png">'
+            +'<img onclick="plusCompon(this)" style="float:right;cursor:pointer;margin-top:15px;margin-right:10px" width="16" height="16" src="img/add_blue.png">'
+        +'</div>'
+
+        +'<textarea class="comment" style="display:none;margin-left:10px;border:1px solid #C5DCFA;box-sizing: border-box;border-radius: 8px;" onchange="changeComment(this.value)" rows="3" cols="110" maxlength="500">' + currentScreen.screenComment + '</textarea>'
+        +'<div class="list_components" style="margin-top:5px;margin-right:8px;margin-left:10px"></div>'
+    +'</div>';
     return container.firstChild;
 }
 /*
@@ -388,6 +427,7 @@ function checkNameKeyD(e) {
             k == 'ArrowLeft' || k == 'ArrowRight' || k == 'Delete' || k == 'Backspace')  {
         return true;
     } else {
+        tooltipMessage(e.currentTarget, "Только английские буквы, _ и цифры");
         return false;
     }
 }
@@ -420,7 +460,6 @@ function setToolTitle(value) {
 }
 
 function changeTitleParam(v) {
-//    currentComponentDescr.view.titleParam = v;
     currentScreen.titleParam = v;
 }
 
@@ -433,7 +472,9 @@ function changeAnim(el) {
 }
 
 function plusCompon(el) {
-    var el_1 = el.parentNode.getElementsByClassName("list_components");
+    let parentPlus = el.parentElement;
+    let parent = parentPlus.parentElement;
+    var el_1 = parent.getElementsByClassName("list_components");
     if (el_1 != undefined) {
         list_cont = el_1[0];
         if (list_cont != null) {
@@ -520,21 +561,35 @@ function jsonNoViewParent(el) {
 
 
 function newComponent(i) {
+    if (i == 0 || i == 3) {
+        uxFunction = new components[i].uxFunc();
+    } else {
+        uxFunction = undefined;
+    }
+    var str;
     var container = document.createElement('div')
-    var str = '<div class="component_sel"><div class="name_compon" style="display: inline-block;">' + components[i].name + '</div>'
+    if (uxFunction != undefined) {
+        let parComp = uxFunction.getParamComp();
+        str = '<div class="component_sel">'
+            +'<div class="name_compon" style="float:left;">' + parComp.name + '</div>'
+            +'<div class="special_func" style="display: inline-block;margin-left:20px;">' + uxFunction.getSpecialView() + '</div>'
+            +'<img onclick="del_compon(this)" style="float:right;cursor:pointer;margin-top:3px;margin-right:10px" width="18" height="18" src="img/close-o.png">'
+            +'<div class="component_param" style="padding: 5px;">' + uxFunction.getEditParam() + '</div>'
+            +'</div>';
+    } else {
+        str = '<div class="component_sel"><div class="name_compon" style="display: inline-block;">' + components[i].name + '</div>'
             +'<div class="special_func" style="display: inline-block;margin-left:20px;">' + components[i].specialView + '</div>'
-            +'<div class="delete_obj" style="margin-right:20px;" onclick="del_compon(this)">'
-            +'<img width="18" height="18" src="img/cross.png"></div>'
-            +'<div class="help" style="margin-right: 5px;" onclick="help_compon(' + "'" + components[i].type + "'" + ')">'
-            +'<img width="18" height="18" src="img/help.png"></div>'
+            +'<img onclick="del_compon(this)" style="float:right;cursor:pointer;margin-top:3px;margin-right:10px" width="18" height="18" src="img/close-o.png">'
             +'<div class="component_param" style="padding: 5px;">' + components[i].editParam + '</div>'
             +'</div>';
+    }
     container.innerHTML = str;
     return container.firstChild;
 }
 
 function del_screen(el) {
-    let parent = el.parentElement;
+    let parentDel = el.parentElement;
+    let parent = parentDel.parentElement;
     let nn = parent.getElementsByClassName("name_screen");
     let ik = listScreen.length;
     let iEl = -1;
@@ -656,4 +711,12 @@ function setViewId(id) {
     } else {
         return id;
     }
+}
+
+function undo() {
+    
+}
+
+function restore() {
+    
 }

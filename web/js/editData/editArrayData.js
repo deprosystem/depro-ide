@@ -4,11 +4,11 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
     let tableEdit, tableEditRows, tabContainer, tabTool;
     let tabHeader, tabBody;
     let widthTabl;
-    let hTitle = 22, hTool = 24, wNum = 20; // ширина колонки с номером строки
+    let hTitle = 30, hTool = 50, wNum = 24; // ширина колонки с номером строки
     let hDopEl;
     let countRows;
     let imgSetValue;
-    let colorTitle = "#b0e0e6", colorSelect = "#ced", colorNew = "#dfe", 
+    let  colorSelect = "#f3f8ff", colorNew = "#f5f9ff", 
             colorDel, colorErrorTr, colorErrorTh;
     if (meta == null) {
         return null;
@@ -41,25 +41,25 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
             hDopEl = dopEl.clientHeight;
         }
         tabHeader = document.createElement('div');
-        tabHeader.style.cssText = "white-space:nowrap;height:" + hTitle + "px;";
+        tabHeader.style.cssText = "white-space:nowrap;height:" + hTitle + "px;color:#110000;font-size:12px;";
         let dv = document.createElement('div');
         dv.innerHTML = "&nbsp;";
-        dv.style.cssText = "border-top:1px solid black;border-right:1px solid black;border-left:1px solid black;background:" + colorTitle + ";text-align: center;display:inline-block;height:100%;";
+        dv.style.cssText = "display:inline-block;height:100%;";
         tabHeader.appendChild(dv);
         for (let i = 0; i < ikM; i++) {
             dv = document.createElement('div');
             dv.innerHTML = edMeta[i].title;
-            dv.style.cssText = "border-top:1px solid black;border-right:1px solid black;background:" + colorTitle + ";text-align: center;display:inline-block;height:100%;";
+            dv.style.cssText = "display:inline-block;height:100%;margin-top:7px;";
             tabHeader.appendChild(dv);
         }
         dv = document.createElement('div');
         dv.innerHTML = "&nbsp;";
-        dv.style.cssText = "border-top:1px solid black;border-right:1px solid black;background:" + colorTitle + ";text-align: center;display:inline-block;height:100%;";
+        dv.style.cssText = "display:inline-block;height:100%;";
         tabHeader.appendChild(dv);
         tabContainer.appendChild(tabHeader);
         
         tabTool = document.createElement('div');
-        tabTool.style.cssText = "height:" + hTool + "px;background:#eee;bottom:0px;width:180px;position:absolute;border-top:1px solid black;";
+        tabTool.style.cssText = "height:" + hTool + "px;bottom:0px;right:0px;left:0px;position:absolute;border-top:1px solid #C5DCFA;";
         let addBl = createAddItem();
         let saveBl = createSaveData();
         addBl.addEventListener("click", function(event){addItem(event)}, true);
@@ -75,7 +75,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
         tableEdit = document.createElement('table');
         tableEdit.className = "edit_data";
         tableEdit.style.borderCollapse = "collapse";
-        tableEdit.style.background = "#fff";
+        tableEdit.style.backgroundColor = "#fff";
         tabBody.appendChild(tableEdit);
 
         if (ikD > 0) {
@@ -120,7 +120,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
         }
         widthTabl = tableEdit.clientWidth + 17;
         tabBody.style.width = widthTabl + 'px';
-        tabTool.style.width = tableEdit.clientWidth + 'px';
+//        tabTool.style.width = tableEdit.clientWidth + 'px';
         countRows = tableEditRows.length;
     }
     
@@ -129,7 +129,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
     };
     
     function mouseoverTr(event) {
-        hoverTr(event, "#def");
+        hoverTr(event, "#f3f7ff");
     }
     
     function mouseoutTr(event) {
@@ -138,10 +138,10 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
     
     function createDel() {
         let td = document.createElement('td');
-        td.style.border = "1px solid black";
-        let dv = document.createElement('div');
-        dv.style.cssText = "width:" + wNum + "px;text-align: center;cursor:pointer";
-        dv.innerHTML = "X";
+//        td.style.border = "1px solid black";
+        let dv = document.createElement('img');
+        dv.style.cssText = "width:16px;height:16px;margin-left:5px;cursor:pointer";
+        dv.src = "img/close-o.png";
         dv.addEventListener("click", function(event){delRow(event)}, true);
         td.appendChild(dv);
         return td;
@@ -173,22 +173,25 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
     function hoverTr(event, color) {
         let tr = event.currentTarget;
         let act = document.activeElement;
-        tr.style.background = color;
+//        tr.style.background = color;
         let cells = tr.getElementsByTagName("td");
-        let ik = cells.length;
-        for (let i = 0; i < ik; i++) {
+        let ik = cells.length - 1;
+        for (let i = 1; i < ik; i++) {
+            cells[i].style.backgroundColor = color;
+/*
             let first = cells[i].firstElementChild;
             if (first != act) {
                 first.style.background = color;
             }
+*/
         }
     }
     
     function createCellNum(j) {
         let td = document.createElement('td');
-        td.style.border = "1px solid black";
+//        td.style.border = "1px solid black";
         let dv = document.createElement('div');
-        dv.style.cssText = "width:" + wNum + "px;text-align:right";
+        dv.style.cssText = "width:" + wNum + "px;text-align:right;margin-right:4px;";
         dv.innerHTML = j;
         td.appendChild(dv);
         return td;
@@ -197,7 +200,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
     function createTD(i, item) {
         let met = edMeta[i];
         let td = document.createElement('td');
-        td.style.border = "1px solid black";
+        td.style.border = "1px solid #C5DCFA";
         if (met.type == null) {
             met.type = TYPE_TEXT;
         }
@@ -219,6 +222,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
                     inp.style.marginLeft = met.marg + "px";
                     inp.style.marginRight = met.marg + "px";
                 }
+                inp.style.backgroundColor = "#0000";
                 td.appendChild(inp);
                 break;
             case TYPE_SELECT:
@@ -244,6 +248,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
                     }
 */
                 }
+                img.style.backgroundColor = "#0000";
                 if (vv != null && vv != "") {
                     img.src = vv;
                     img.srcElem = vv;
@@ -282,6 +287,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
                 }
                 inp.addEventListener('focus', function(event){focusInput(event)}, false);
                 inp.addEventListener('blur', function(event){blurInput(event)}, false);
+                inp.style.backgroundColor = "#0000";
                 td.appendChild(inp);
         }
         return td;
@@ -330,6 +336,8 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
         }
         let selSel = formSelectForEditData(met.select, vv);
         selSel.style.width = met.len + "px";
+        selSel.style.border = "none";
+        selSel.style.backgroundColor = "#0000";
         return selSel;
     }
     
@@ -338,7 +346,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
     }
     
     function blurInput(e) {
-        e.currentTarget.style.background = "";
+        e.currentTarget.style.background = "#0000";
     }
     
     function tooltip(target, message) {

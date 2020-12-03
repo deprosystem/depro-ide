@@ -1,6 +1,7 @@
 package servlets;
 
 import com.google.gson.JsonSyntaxException;
+import db.ProjectDB;
 import db.UserDB;
 import entity.AuthResult;
 import entity.DataServlet;
@@ -54,6 +55,12 @@ public class Auth extends BaseServlet {
                     ar.token = ds.token;
                     user.password = null;
                     ar.profile = user;
+                    ProjectDB projectDb = new ProjectDB(request);
+                    if (user.projectId > -1) {
+                        ar.project = projectDb.getProjectById(String.valueOf(user.projectId));
+                    } else {
+                        ar.listProject = projectDb.getListProject(user.userId);
+                    }
                     sendResult(response, gson.toJson(ar));
                 }
                 break;

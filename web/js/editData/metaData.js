@@ -10,7 +10,7 @@ var metaNavigator = {titleForm:"Navigator", description:
     }
     
 var metaMenu = {titleForm:"Menu", description:
-    [{name: "icon", title:"Icon",len:20,type:TYPE_IMG,marg:10},
+    [{name: "icon", title:"Icon",len:20,type:TYPE_IMG,marg:5},
     {name: "title", title:"Title",len:20},
     {name: "screen", title:"Screen",len:8,valid:{latin:true}},
     {name: "start", title:"Start",type:TYPE_BOOLEAN,marg:15},

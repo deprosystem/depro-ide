@@ -23,7 +23,13 @@ function setMarker() {
 }
 
 cbSRC = function(res, param) {
-    windImg.style.display = 'block';
+    let windMenu = formWind(250, 300, 40, 250, "Select image");
+    let viewport = document.createElement('div');
+    viewport.className = "viewport";
+    let content = document.createElement('div');
+    content.className = "content";
+    viewport.appendChild(content);
+    windMenu.appendChild(viewport);
     if (res == "") return;
     listImg = JSON.parse(res);
     var str = '';
@@ -32,14 +38,18 @@ cbSRC = function(res, param) {
         var ii = path.lastIndexOf("/");
         var nam = path.substring(ii + 1);
         nam = nam.substring(0, nam.indexOf('.'))
-        str += '<div style="clear: both; margin-top: 5px; height: 30px; cursor: pointer" onClick="' + param + '(' + i + ')">' 
-                + '<img width="30" height="30" style="float: left; margin-right: 5px" src="' + path + '"><div>' + nam + '</div></div>'
+        str += '<div style="clear: both;height:50px;cursor: pointer;position:relative" onClick="' + param + '(' + i + ',this)">' 
+                +'<img width="40" height="40" style="position:absolute;margin-left:5px;margin-top:5px" src="img/chess_2.png">'
+                +'<img width="40" height="40" style="position:absolute;margin-left:5px;margin-top:5px" src="' + path + '">'
+                +'<div style="position:absolute;margin-left:50px;margin-top:12px;font-size:16px">' + nam + '</div></div>'
     }
-    selImg.innerHTML = str;
+    content.innerHTML = str;
+    let scrollVert = new scrollX(viewport, "scroll");
+    scrollVert.init();
 }
 
-function selectMyMarker(i) {
-    windImg.style.display = 'none';
+function selectMyMarker(i, el) {
+    closeDataWindow(el);
     var nn = listImg[i];
     let img = currentComponentView.getElementsByClassName("my_marker");
     if (img == null) {
@@ -50,8 +60,8 @@ function selectMyMarker(i) {
     currentComponentDescr.param.myMarker = nn;
 }
 
-function selectMarker(i) {
-    windImg.style.display = 'none';
+function selectMarker(i, el) {
+    closeDataWindow(el);
     var nn = listImg[i];
     let img = currentComponentView.getElementsByClassName("marker");
     if (img == null) {
@@ -71,8 +81,8 @@ function createMarker(nn) {
     return container.firstChild
 }
 
-function selectImgBack(i) {
-    windImg.style.display = 'none';
+function selectImgBack(i, el) {
+    closeDataWindow(el);
     var nn = listImg[i];
     let img = currentComponentView.getElementsByClassName("img_back");
     if (img == null) {
@@ -87,8 +97,10 @@ function selectImgBack(i) {
     }
 }
 
-function selectImgHamburg(i) {
-    windImg.style.display = 'none';
+
+
+function selectImgHamburg(i, el) {
+    closeDataWindow(el);
     var nn = listImg[i];
     let img = currentComponentView.getElementsByClassName("img_hamburger");
     if (img == null) {
@@ -883,7 +895,7 @@ function checkZoomBut(el) {
 */
 function help_compon(type) {
     windHelp.style.display = "block";
-    blockAllHalp.style.display = "block";
+    blockAllHelp.style.display = "block";
     var ins = new insertHtml();
     let url = 'help/' + type + '.html';
     ins.get('helpBody', url);
@@ -891,7 +903,7 @@ function help_compon(type) {
 
 function hiddenWindHelp() {
     windHelp.style.display = "none";
-    blockAllHalp.style.display = "none";
+    blockAllHelp.style.display = "none";
 }
 
 function changeTextColorTab(el) {

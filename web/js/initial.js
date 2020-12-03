@@ -6,10 +6,7 @@ function initialView(AuthResult) {
     setCookie("auth_token", AuthToken);
     setCookie("user", prof.userName);
     if (prof.userName != undefined && prof.userName.length > 0) {
-        info_user.innerHTML = prof.userName.substring(0, 1);
-    }
-    if (prof.project != null) {
-
+        info_user.innerHTML = prof.userName.substring(0, 1).toUpperCase();
     }
     window.onbeforeunload = function(e) {
         if (isSystemChange || isLayoutChange) {
@@ -23,6 +20,25 @@ function initialView(AuthResult) {
     formMenuEl_UX();
     var ins = new insertHtml();
     ins.get('m_bmPEbody', 'layout/layoutParam.html', m_bmStart);
+    currentProject = ar.project;
+    if (currentProject == null) {
+        if (ar.listProject != null && ar.listProject.length > 0) {
+            listMenu_UX[0].children[1].domElement.className = 'subMainMenu';
+            setListProject(ar.listProject);
+        } else {
+            shutScreen.style.display = "block";
+            shutScreen.innerHTML = '<div style="font-size:34px;margin-top:50px;margin-left:50px;">You have no projects</div>';
+            listMenu_UX[0].children[1].domElement.className = 'subMainMenuNo';
+        }
+    }
+
+    
+/*
+    if (ar.project != null) {
+        currentProject = ar.project;
+        cbCreateProjectDop();
+    }
+*/
 /*
     if (projectName == "") {
         project_name.innerHTML = 'NOT';
@@ -51,16 +67,20 @@ function inFocus() {
 }
 
 function m_bmStart(el) {
-  var chB=m_bmPEbody.children;
-  var chH=m_bmPEhead.children;
-  if (!el) el = chH[0];
-  for(var i = 0; i < chH.length; i++) {
-    if (el === chH[i]) {
-      chH[i].style.background = '#c1e1fc';
-      chB[i].style.display = 'block';
-    } else {
-      chH[i].style.background = '#eeeeee';
-      chB[i].style.display = 'none';
+    var chB=m_bmPEbody.children;
+    var chH=m_bmPEhead.children;
+    if (!el) el = chH[0];
+    for(var i = 0; i < chH.length; i++) {
+        if (el === chH[i]) {
+            chH[i].style.background = '#c1e1fc';
+            chB[i].style.display = 'block';
+        } else {
+            chH[i].style.background = '#eeeeee';
+            chB[i].style.display = 'none';
+        }
     }
-  }
+    if (currentProject != null) {
+        listMenu_UX[0].children[1].domElement.className = 'subMainMenu';
+        cbCreateProjectDop();
+    }
 }

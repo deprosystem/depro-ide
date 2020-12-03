@@ -21,9 +21,9 @@ public class ProjectDB extends BaseDB {
     public long createProjectId(ProjectM pc) {
         long res = -1;
         try (Connection connection = getDBConnection(); Statement statement = connection.createStatement()) {
-            String str = "INSERT INTO projects (user_id, project_name, package, project_comment, app_name, resurse_ind, strings, app_param, color, style, drawable, dimens, screens) VALUES ("
+            String str = "INSERT INTO projects (user_id, project_name, package, project_comment, app_name, resurse_ind, strings, app_param, color, style, drawable, dimens, screens, date_create) VALUES ("
                     + pc.userId + ",'" + pc.nameProject + "','" + pc.namePackage + "','" + pc.comment + "','" + pc.nameAPP + "','" + pc.resurseInd + "','" + pc.strings + "','" + pc.appParam + "','" + pc.colors + "','" 
-                    + pc.style + "','" + pc.drawable + "','" + pc.dimens + "','" + pc.screens + "');";
+                    + pc.style + "','" + pc.drawable + "','" + pc.dimens + "','" + pc.screens + "'," + pc.dateCreate + ");";
             int updateCount = statement.executeUpdate(str, Statement.RETURN_GENERATED_KEYS);
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
               if (generatedKeys.next()) {
@@ -76,8 +76,20 @@ public class ProjectDB extends BaseDB {
     
     public void changeProject(ProjectM pc) {
         String strUpd = "UPDATE projects SET ";
-        strUpd += "project_name ='" + pc.nameProject +  "', package='" + pc.namePackage +  "', project_comment='" + pc.comment + "', app_name ='" + pc.nameAPP + "', logo ='" + pc.logo 
-                +"' WHERE project_id = " + pc.projectId;
+        strUpd += "project_name ='" + pc.nameProject +  "', package='" + pc.namePackage +  "', project_comment='" + pc.comment + "', app_name ='" + pc.nameAPP 
+                + "', logo ='" + pc.logo + "', image ='" + pc.image + "' WHERE project_id = " + pc.projectId;
+        try (Connection connection = getDBConnection(); Statement statement = connection.createStatement()) {
+            statement.executeUpdate(strUpd);
+        } catch (SQLException ex) {
+            System.out.println("changeProject error="+ex);
+        } catch (ClassNotFoundException ex) {
+            System.out.println("changeProject error="+ex);
+        }
+    }
+    
+    public void changeProjectImage(ProjectM pc) {
+        String strUpd = "UPDATE projects SET ";
+        strUpd += "image ='" + pc.image + "' WHERE project_id = " + pc.projectId;
         try (Connection connection = getDBConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(strUpd);
         } catch (SQLException ex) {
@@ -100,6 +112,9 @@ public class ProjectDB extends BaseDB {
                 pm.nameAPP = res.getString("app_name");
                 pm.comment = res.getString("project_comment");
                 pm.logo = res.getString("logo");
+                pm.dateCreate = res.getLong("date_create");
+                pm.image = res.getString("image");
+                pm.listUsers = "[{\"userId\":" + userId + ",\"color\":\"#ff1eac\",\"litera\":\"B\"}]";
                 lp.add(pm);
             }
         } catch (SQLException ex) {
@@ -161,5 +176,17 @@ public class ProjectDB extends BaseDB {
             System.out.println("getProjectById error="+ex);
         }
         return pm;
+    }
+    
+    public void setLastProject(String idUser, String idProject) {
+        String strUpd = "UPDATE users SET ";
+        strUpd += "project_id = " + idProject + " WHERE user_id = " + idUser;
+        try (Connection connection = getDBConnection(); Statement statement = connection.createStatement()) {
+            statement.executeUpdate(strUpd);
+        } catch (SQLException ex) {
+            System.out.println("setLastProject error="+ex);
+        } catch (ClassNotFoundException ex) {
+            System.out.println("setLastProject error="+ex);
+        }
     }
 }

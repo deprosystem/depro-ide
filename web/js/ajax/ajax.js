@@ -18,7 +18,8 @@ function doServer(metod, url, callBack, data, paramCallBack){
             } else {
 console.log("AJAX="+req.responseText);
                 var mes = JSON.parse(req.responseText).message;
-                alert("doServer status=" + req.status + " " + mes);
+                dialogError("Server error", "status=" + req.status + " " + mes);
+//                alert("doServer status=" + req.status + " " + mes);
             }
         }
     };

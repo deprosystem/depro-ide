@@ -29,7 +29,7 @@ function moveElement(event) {
 }
 
 function mouseUpEl(e) {
-    writeFooter("");
+    footer_inf.innerHTML = "";
     if (document.onmousemove == null) {
         return;
     }
@@ -95,7 +95,7 @@ function moveEl(event) {
     if (new_x <= parentWpx && new_y <= parentHpx) {
         currentElement.style.marginTop = new_y + px;
         currentElement.style.marginLeft = new_x + px;
-        writeFooter('Y='+(new_y/ MEASURE).toFixed(1)+"dp X="+(new_x/ MEASURE).toFixed(1)+'dp');
+        footer_inf.innerHTML = 'Y='+(new_y/ MEASURE).toFixed(1)+"dp X="+(new_x/ MEASURE).toFixed(1)+'dp';
     }
 }
 

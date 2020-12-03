@@ -33,12 +33,18 @@ public class UploadFile extends BaseServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response, DataServlet ds) {
         switch (ds.query) {
             case "/upload/image":
-                String projectId = request.getHeader("projectId");
-                if (projectId == null) {
-                    String[] parAr = request.getParameterValues("projectId");
-                    if (parAr != null) {
-                        projectId = parAr[0];
-                    } else {
+                String nameFile = "";
+                String[] parArNameFile = request.getParameterValues("nameFile");
+                if (parArNameFile != null) {
+                    nameFile = parArNameFile[0];
+                }
+                String projectId;
+                String[] parAr = request.getParameterValues("projectId");
+                if (parAr != null) {
+                    projectId = parAr[0];
+                } else {
+                    projectId = request.getHeader("projectId");
+                    if (projectId == null) {
                         try {
                             sendHTML("notParam.html", response.getWriter(), "<div>Not param projectId</div>");
                             break;
@@ -54,20 +60,24 @@ public class UploadFile extends BaseServlet {
                 String userDataPath = Constants.PROJECTS_DATA + resurseInd;
                 String appPath = ds.patchOutsideProject;
                 String projectPath = appPath + userDataPath;
-//                String appPath = request.getServletContext().getRealPath("");
-//                String projectPath = appPath + File.separator + userDataPath;
                 
+                String fileName = "";
                 try {
                     String savePathRes = projectPath + "/";
                     List<Part> fileParts;
                     fileParts = request.getParts().stream().filter(part -> "imgFile".equals(part.getName())).collect(Collectors.toList());
                     for (Part filePart : fileParts) {
-                        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+                        fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+                        String fileExt = fileName.substring(fileName.lastIndexOf(".") + 1);
                         InputStream inputStream = filePart.getInputStream();
                         if (fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase().equals("zip")) {
                             unZip(inputStream, savePathRes);
                         } else {
                             byte[] buffer = new byte[1000];
+                            if (nameFile.length() > 0) {
+                                fileName = nameFile + "." + fileExt;
+                            }
+                            createDir(projectPath);
                             FileOutputStream outputStream = new FileOutputStream(projectPath + File.separator + fileName);
                             while (inputStream.available() > 0) {
                                 int count = inputStream.read(buffer);
@@ -77,14 +87,19 @@ public class UploadFile extends BaseServlet {
                             outputStream.close();
                         }
                     }
-                    sendHTML("uploadImg.html", response.getWriter());
+                    if (nameFile.length() == 0) {
+                        sendHTML("uploadImg.html", response.getWriter());
+                    } else {
+                        proj.image = userDataPath + "/" + fileName;
+                        projectDb.changeProjectImage(proj);
+                        sendResult(response, userDataPath + "/" + fileName);
+                    }
                 } catch (IOException ex) {
                     System.out.println("UploadFile error: "+ex);
                 } catch (ServletException ex) {
                     System.out.println("UploadFile error: "+ex);
                 }
                 break;
-                
         }
     }
 

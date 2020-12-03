@@ -126,6 +126,7 @@ function scaleMinus() {
         setDp();
         setRoot();
         changeRoot()
+        content_src.scroll_y.resize(content_src);
     }
 }
 
@@ -138,6 +139,7 @@ function scalePlus() {
         setDp();
         setRoot();
         changeRoot()
+        content_src.scroll_y.resize(content_src);
     }
 }
 
@@ -168,6 +170,9 @@ function mainMenuShow() {
         hamburger2.style.display = 'none';
         hamburger3.className = 'hamburger3_open';
         menuMain.style.display = "block";
+        if (listProjects.style.display != "none") {
+            listProjects.style.display = "none";
+        }
     } else {
         hamburger1.className = 'hamburger1';
         hamburger2.style.display = 'inline-block';

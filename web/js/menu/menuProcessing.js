@@ -25,14 +25,15 @@ var listNameScreen = [];
 var listAppParam, listValueAppParam;
 
 function createProject() {
-    windEditForm.style.display = "block";
+//    windEditForm.style.display = "block";
     listEdit = [];
     listEdit[0] = {name : "nameProject", label : "Project name", type : TYPE_String, valid: validEmpty};
     listEdit[1] = {name : "namePackage", label : "Package name", type : TYPE_String, valid: validEmpty, value: "com.example.ide"};
     listEdit[2] = {name : "nameAPP", label : "APP name", type : TYPE_String, valid: validEmpty};
     listEdit[3] = {name : "comment", label : "Comment", type : TYPE_StringAr};
-    funcSendCreateData = sendCreateProject;
-    setCreateData(listEdit, "Create project");
+//    funcSendCreateData = sendCreateProject;
+    let windMenu = formWind(250, 300, 40, 200, "New project");
+    setCreateData(listEdit, windMenu, sendCreateProject);
 }
 
 function openProject() {
@@ -83,7 +84,7 @@ function formAppParam() {
     return res;
 }
 
-function setCreateData(p, title) {
+function setCreateData(p, wind) {
     var str = "";
     var ik = p.length;
     for (var i = 0; i < ik; i++) {
@@ -104,14 +105,16 @@ function setCreateData(p, title) {
         }
         
     }
-    str += '<div class="button" >Send</div>';
+//    str += '<div class="button" >Send</div>';
+/*
     var nn = windEditForm.getElementsByClassName("titleWindName")[0];
     nn.innerHTML = title;
     var el = document.getElementById("windEditBody");
-    el.innerHTML = str;
-    el.getElementsByClassName("button")[0].onclick = funcSendCreateData;
-    el.getElementsByTagName('input')[0].focus();
-    el.onkeyup = keyUpCreateData;
+*/
+    wind.innerHTML = str;
+//    el.getElementsByClassName("button")[0].onclick = funcSendCreateData;
+    wind.getElementsByTagName('input')[0].focus();
+    wind.onkeyup = keyUpCreateData;
 }
 
 function keyUpCreateData(e) {
@@ -398,21 +401,138 @@ function cbSaveProject(res) {
 }
 
 function cbListProject(res) {
-    var list = JSON.parse(res);
+    setListProject(JSON.parse(res));
+}
+
+function setListProject(list) {
     var ik = list.length;
-    var strList = "";;
+    var strList = "";
+    listProjects.style.display = "block";
+    listProjectsScr.innerHTML = "";
+    let content = document.createElement('div');
+    content.className = "content";
+    listProjectsScr.appendChild(content);
     for (var i = 0; i < ik; i++) {
-        var p = list[i];
-        strList += '<div style="clear: both; margin-top: 5px; height: 30px; cursor: pointer" onClick="selectProject(' + p.projectId + ')">' 
-                + '<img width="30" height="30" style="float: left; margin-right: 5px" src="'
-                + p.logo + '"><div>' + p.nameProject + '</div></div>'
+        content.appendChild(oneProject(list[i]));
     }
-    listBody.innerHTML = strList;
-    windList.style.display = "block";
+    let scrollVert = new scrollX(listProjectsScr, "scroll");
+    scrollVert.init();
+}
+
+function oneProject(p) {
+    let container = document.createElement('div')
+    let ds = "23.01.1234";
+    if (p.dateCreate !=0) {
+        let dd = new Date(p.dateCreate);
+        ds = dd.getDay() + "." + dd.getMonth() + "." + dd.getYear();
+    }
+    let stUsers = "";
+    if (p.listUsers != null && p.listUsers.length > 0) {
+        let jsonUsers = JSON.parse(p.listUsers);
+        let ik = jsonUsers.length;
+        if (ik > 0) {
+            stUsers = '<div style="position:absolute;right:0px;bottom:42px">';
+            for (let i = 0; i < ik; i++) {
+                let us = jsonUsers[i];
+                stUsers += '<div style="float:right;background-color:' + us.color + ';width: 22px;height: 22px;border-radius: 11px;margin-right:16px;">'
+                    +'<div style="margin-top:5px;text-align:center;color:black;font-size:12px;font-weight:bold;">' + us.litera + '</div>'
+                +'</div>';
+            }
+            stUsers += '</div>';
+        }
+    }
+    let urlImgProject = 'visibility:hidden"';
+    if (p.image != null && p.image.length > 0) {
+        urlImgProject = '" src="' + p.image + '"';
+    }
+
+    let imgProject = '<img class="imgProject" width=360 height=160 style="position:absolute;left:0px;top:0px;object-fit:contain;border-radius:4px 4px 0px 0px;' + urlImgProject + '>';
+    let imgClick = '<div onclick="sendImageProject(' + p.projectId 
+            + ",'imageProject',this" + ')" style="width:60px;height:60px;position:absolute;left:150px;top:50px;cursor:pointer;border-radius:50%;'
+            +'background:radial-gradient(circle closest-side,#dddd, #0000);">'
+            +'<img width="20" height="20" style="position:absolute;left:20px;top:20px;" src="img/download.png">'
+        +'</div>';
+    let st = '<div class="projectView">'
+            +imgProject
+            +'<img onclick="projectMenu(this,' + p.projectId + ')" width="20" height="30" style="position:absolute;right:14px;top:14px;cursor:pointer" src="img/more-vertical.png">'
+            +'<div onclick="selectProject(' + p.projectId + ')" style="position:absolute;width:100%;height:78px;cursor:pointer;bottom:0px;border-radius:0px 0px 4px 4px;border-top:1px solid #1dace9"></div>'
+            +'<div class="projectName">' + p.nameProject + '</div>'
+            +'<div class="projectDate">' + ds + '</div>'
+            + stUsers
+        +'</div>'
+    container.innerHTML = st;
+    return container.firstChild
+}
+
+function sendImageProject(id, nameFile, el) {
+    let windMenu = formWind(350, 300, 40, 250, "Upload project image");
+    let inputFile = newElementFromString('<input type="file" accept="image/*" name="imgFile" multiple style="display: none"/>');
+    windMenu.appendChild(inputFile);
+    let contInp = newElementFromString('<div style="margin-top:20px;margin-left:16px;"></div');
+    windMenu.appendChild(contInp);
+    let inputFileView = newElementFromString('<input class="input_style" type="text" readonly style="width: 200px;float:left;height:28px"/>');
+    contInp.appendChild(inputFileView);
+    let buttonFileView = newElementFromString('<div class="button_blue">'
+                +'<div style="text-align:center;margin-top:7px;color:#fff">Choose file</div>'+'</div>');
+    contInp.appendChild(buttonFileView);
+    buttonFileView.addEventListener("click", function(){inputFile.click();}, true);
+    inputFile.addEventListener("change", function(){inputFileView.value = inputFile.files[0].name;}, true);
+    let footer = createFooter(56);
+    windMenu.appendChild(footer);
+    let buttonSend = createButtonBlue('Send', 70);
+    footer.appendChild(buttonSend);
+    let buttonCancel = createButtonWeite('Cancel', 70);
+    footer.appendChild(buttonCancel);
+    let paramForCB = {wind:windMenu, elImg:el};
+    buttonSend.addEventListener("click", function(){
+        let formData = new FormData ();
+        formData.append ("projectId", id);
+        formData.append ("nameFile", nameFile);
+        formData.append ("imgFile", inputFile.files [0]);
+        doServer("POST", "upload/image", cbImageProject, formData, paramForCB)
+    }, true);
+    buttonCancel.addEventListener("click", function(){closeWindow(buttonCancel);}, true);
+}
+
+function cbImageProject(res, par) {
+    closeWindow(par.wind);
+    let el = par.elImg;
+    let el1 = el.parentElement;
+    let elImg = el1.getElementsByClassName("imgProject");
+    if (elImg != null) {
+        let imgProj = elImg[0];
+        imgProj.style.visibility = "visible";
+        imgProj.src = res;
+    }
+}
+
+function projectMenu(el, id) {
+    if (el.popup == null) {
+        let paramForClick = {elem:el,idProj:id};
+        el.popup = popupMenu(el, 80, "Edit,Image,Delete", clickMenu, paramForClick);
+    } else {
+        el.popup.parentNode.removeChild(el.popup);
+        el.popup = null;
+    }
+}
+
+function clickMenu(i, el, id) {
+    switch (i) {
+        case 0:
+            
+            break;
+        case 1:
+            sendImageProject(id, 'imageProject', el);
+            break;
+        case 2:
+            
+            break;
+    }
 }
 
 function selectProject(id) {
-    windList.style.display = "none";
+    listProjectsScr.innerHTML = "";
+    listProjects.style.display = "none";
     doServer("get", "project/getproject?id=" + id, cbCreateProject);
 }
 
@@ -848,10 +968,13 @@ function saveAll() {
 }
 
 function cbCreateProject(res) {
-    plus_screen.style.display = "block";
-    corners.style.display = "block";
-    openMenu();
+//    plus_screen.style.display = "block";
+//    corners.style.display = "block";
+//    openMenu();
     currentProject = JSON.parse(res);
+    cbCreateProjectDop();
+    shutScreen.style.display = "none";
+/*
     project_name_bl.style.display = "block";
     project_name.innerHTML = currentProject.nameProject;
     listScreen = JSON.parse(currentProject.screens);
@@ -867,4 +990,32 @@ function cbCreateProject(res) {
     setLayout();
     list_screens.innerHTML = "";
     setListScreen();
+*/
+}
+
+function cbCreateProjectDop() {
+    ux_ui_w.style.display = "block";
+    plus_screen.style.display = "block";
+    corners.style.display = "block";
+    openMenu();
+    project_name_bl.style.display = "block";
+    project_name.innerHTML = currentProject.nameProject;
+    listScreen = JSON.parse(currentProject.screens);
+    listColor = JSON.parse(currentProject.colors);
+    listDimens = JSON.parse(currentProject.dimens);
+    listValueAppParam = JSON.parse(currentProject.appParam);
+    if (currentProject.style != null) {
+        listStyle = JSON.parse(currentProject.style);
+    }
+    setListColor();
+    listDrawable = JSON.parse(currentProject.drawable);
+    setMaxIndexDrawable();
+    setLayout();
+    list_screens.innerHTML = "";
+    setListScreen();
+}
+
+function closeListProj() {
+    listProjectsScr.innerHTML = "";
+    listProjects.style.display = "none";
 }

@@ -8,6 +8,8 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
     let hDopEl;
     let countRows;
     let imgSetValue;
+    let tabViewport;
+    let scrollVert;
     let  colorSelect = "#f3f8ff", colorNew = "#f5f9ff", 
             colorDel, colorErrorTr, colorErrorTh;
     if (meta == null) {
@@ -33,7 +35,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
         let met;
         
         tabContainer = document.createElement('div');
-        tabContainer.style.cssText = "position:relative;height:100%;overflow-x:auto";
+        tabContainer.style.cssText = "position:relative;height:100%;;-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;-o-user-select: none;user-select: none; ";
         edDomEl.appendChild(tabContainer);
         hDopEl = 0;
         if (dopEl != null) {
@@ -60,18 +62,23 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
         
         tabTool = document.createElement('div');
         tabTool.style.cssText = "height:" + hTool + "px;bottom:0px;right:0px;left:0px;position:absolute;border-top:1px solid #C5DCFA;";
-        let addBl = createAddItem();
         let saveBl = createSaveData();
+        let addBl = createAddItem();
         addBl.addEventListener("click", function(event){addItem(event)}, true);
         saveBl.addEventListener("click", function(event){saveData(event)}, true);
-        tabTool.appendChild(addBl);
         tabTool.appendChild(saveBl);
+        tabTool.appendChild(addBl);
         tabContainer.appendChild(tabTool);
-        
+
+        tabViewport = document.createElement('div');
+        tabViewport.className = "viewport";
+        tabViewport.style.cssText = "bottom:" + (hTool + 1) + "px;position:absolute;top:" + (hTitle + hDopEl) + "px";
         tabBody = document.createElement('div');
-        tabBody.style.cssText = "overflow-y:auto;bottom:" + hTool + "px;position:absolute;top:" + (hTitle + hDopEl) + "px";
-        tabContainer.appendChild(tabBody);
-        
+        tabBody.className = "content";
+//        tabBody.style.cssText = "overflow:hidden;";
+        tabViewport.appendChild(tabBody);
+        tabContainer.appendChild(tabViewport);
+
         tableEdit = document.createElement('table');
         tableEdit.className = "edit_data";
         tableEdit.style.borderCollapse = "collapse";
@@ -103,6 +110,8 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
         if (tableEditRows != null && tableEditRows.length > 0) {
             formHeader(tableEditRows);
         }
+        scrollVert = new scrollX(tabViewport, "scroll");
+        scrollVert.init();
     }
     
     function formHeader(tableEditRows) {
@@ -231,22 +240,23 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
                 }
                 break;
             case TYPE_IMG:
+                let divImg = document.createElement('div');
+                divImg.style.backgroundImage = "url(img/chess_2.png)";
+                divImg.style.backgroundSize = "contain";
                 let img = document.createElement('img');
                 img.style.width = met.len + "px";
+                divImg.style.width = (met.len + 4) + "px";
                 if (met.h != null) {
                     img.style.height = met.h + "px";
+                    divImg.style.height = (met.h + 4) + "px";
                 } else {
                     img.style.height = met.len + "px";
+                    divImg.style.height = (met.len + 4) + "px";
                 }
                 let vv = "";
                 if (item != null) {
                     let nameV = met.name;
                     vv = item[nameV];
-/*
-                    if (vv == null) {
-                        vv = "aa";
-                    }
-*/
                 }
                 img.style.backgroundColor = "#0000";
                 if (vv != null && vv != "") {
@@ -254,11 +264,14 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
                     img.srcElem = vv;
                 }
                 if (met.marg != null) {
-                    img.style.marginLeft = met.marg + "px";
-                    img.style.marginRight = met.marg + "px";
+                    divImg.style.marginLeft = met.marg + "px";
+                    divImg.style.marginRight = met.marg + "px";
+                    img.style.marginLeft = "2px";
+                    img.style.marginTop = "2px";
                 }
                 img.addEventListener('click', function(event){selecktImg(event)}, false);
-                td.appendChild(img);
+                divImg.appendChild(img);
+                td.appendChild(divImg);
                 break;
             default:
                 inp = document.createElement('input');
@@ -364,7 +377,8 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
         if ((wD - x) < maxW) {
             x = wD - maxW - 20;
         }
-        dv.style.cssText = "position:absolute;max-width:" + maxW + "px;padding:5px;background:#def;border:1px solid black;left:" + x + "px;top:" + y + "px;z-index:100";
+        dv.style.cssText = "position:absolute;max-width:" + maxW + "px;padding:5px;background:var(--c_yelow_lite);border:1px solid #ffc700;border-radius:8px;left:" 
+                + x + "px;top:" + y + "px;z-index:100";
         dv.innerHTML = message;
         document.body.append(dv);
         setTimeout(function(){ document.body.removeChild(dv);},2000);
@@ -479,15 +493,15 @@ function editFloat(event) {
     
     function createAddItem() {
         var container = document.createElement('div')
-        container.innerHTML = '<div style="cursor: pointer;margin-left:5px;margin-top:3px;float: left;">'
-                +'<img width="16" height="16" style="float: left; margin-top: 2px" src="img/plus_24.png">'
-                +'<div style="float: left; margin-left: 3px;">Add</div></div>';
+        container.innerHTML = '<div style="cursor:pointer;width: 80px;height:30px;background:#1DACE9;border-radius:4px;margin-right:15px;margin-top:10px;float:right;">'
+                +'<div style="text-align: center;margin-top:7px;color:#fff">Add</div></div>';
         return container.firstChild;
     }
     
     function createSaveData() {
         var container = document.createElement('div')
-        container.innerHTML = '<div style="cursor: pointer;margin-left:15px;margin-top:3px;float: left;">Save</div></div>';
+        container.innerHTML = '<div style="cursor:pointer;width:78px;border:1px solid #1DACE9;height:28px;border-radius:4px;margin-right:10px;margin-top:10px;float:right;">'
+                +'<div style="text-align: center;margin-top:7px;color:#1DACE9">Save</div></div>';
         return container.firstChild;
     }
     
@@ -495,6 +509,7 @@ function editFloat(event) {
         createNewTR();
         tableEditRows = tabBody.getElementsByTagName('tr');
         countRows = tableEditRows.length;
+        scrollVert.resize(e);
     }
     
     function createNewTR() {

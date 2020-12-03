@@ -16,4 +16,7 @@ public class ProjectM {
     public String drawable;
     public String screens;
     public String resurseInd;
+    public long dateCreate;
+    public String image;
+    public String listUsers;
 }

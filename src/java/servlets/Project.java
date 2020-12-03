@@ -3,6 +3,7 @@ package servlets;
 import com.google.gson.JsonSyntaxException;
 import db.ProjectDB;
 import db.SQL;
+import db.UserDB;
 import entity.DataServlet;
 import entity.ListScreen;
 import java.io.File;
@@ -10,6 +11,7 @@ import java.io.File;
 import projects.ProjectM;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -52,6 +54,7 @@ public class Project extends BaseServlet {
                         pc.appParam = formAppParam();
                         pc.screens = formScreens();
                         pc.resurseInd = createRandomStr(20);
+                        pc.dateCreate = new Date().getTime();
                         id = projectDb.createProjectId(pc);
                         pc.projectId = id;
 //                        createBaseRes(request.getServletContext().getRealPath("") + File.separator, pc.resurseInd);
@@ -79,6 +82,7 @@ public class Project extends BaseServlet {
                     break;
                 case "/project/getproject":
                     String idPr = request.getParameter("id");
+                    projectDb.setLastProject(String.valueOf(ds.userId), idPr);
                     sendResult(response, gson.toJson(projectDb.getProjectById(idPr)));
                     break;
                 case "/project/change":

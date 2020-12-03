@@ -88,4 +88,16 @@ public class UserDB extends BaseDB{
         return res;
     }
     
+    public void setLastProject(String idUser, long idProject) {
+        String strUpd = "UPDATE users SET ";
+        strUpd += "project_id = " + idProject + " WHERE user_id = " + idUser;
+        try (Connection connection = getDBConnection(); Statement statement = connection.createStatement()) {
+            statement.executeUpdate(strUpd);
+        } catch (SQLException ex) {
+            System.out.println("setLastProject error="+ex);
+        } catch (ClassNotFoundException ex) {
+            System.out.println("setLastProject error="+ex);
+        }
+    }
+
 }

@@ -10,21 +10,21 @@
     var popUpContainer;
     var scaleValue;
     var pxIn100mm = 630;
-    var content;
-    var header, footer;
+//    var content;
+//    var header;
     var layoutParam, textValue;
 //    var listCompon, hierarhy, separator;
     var px = 'px';
     var h_body, w_body;
-    var h_header = 20, h_footer = 20, h_content;
-    var w_left;
+//    var h_header = 20, h_content;
+//    var w_left;
     var percent_w_compon = 0.6;
     var browser = 'f';
     var delta_w = 0;
     var delta_h = 0;
     var min_sep = 200, max_sep = 500;
     var marginCompon = 4;
-    var headerTool;
+//    var headerTool;
     var root_g, root;
     var contourEl;
     var typeInsert, insertTypeFull;
@@ -62,7 +62,7 @@
         contourEl = document.getElementsByClassName('contourEl')[0];
         popUpTitle = document.getElementById('popUpTitle');
         popUpContainer = document.getElementById('popUpContainer');
-        headerTool = document.getElementById('header-tool');
+//        headerTool = document.getElementById('header-tool');
 //        navigatorEl = document.getElementById('navigatorEl');
         scaleValue = document.getElementById('scaleValue');
         layoutParam = document.getElementById('layout-par');
@@ -106,7 +106,7 @@
     }
 
     function setSelectDevice() {
-        var strSel = '<select name="device" id="id-device" onchange="changeDevice(value)" style="width: 100px; height: 100%; margin-left: 5px">\n';
+        var strSel = '<select name="device" class=select_' + browser + ' id="id-device" onchange="changeDevice(value)" style="width: 100px;height:26px">\n';
         for (var i = 0; i < sizeDeviceArray.length; i++) {
             var d = sizeDeviceArray[i];
             if (i == 1) {
@@ -123,6 +123,9 @@
     function setRoot() {
         screenWpx = screenW * MEASURE;
         screenHpx = screenH * MEASURE;
+        root_boarder.style.width = (screenWpx + 20) + px;
+        root_boarder.style.height = (screenHpx + 30) + px;
+
         root_g.style.width = screenWpx + px;
         root_g.style.height = screenHpx + px;
         root.style.width = screenWpx + px;

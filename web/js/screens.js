@@ -48,7 +48,7 @@ function plusScreen() {
         }
     }
     currentScreen = {screenName: "SCREEN_" + idScreenNum, screenId: idScreenNum, screenComment: "", animate: 0, castom: "", typeScreen: 0, 
-        title: "", titleParam: "", components: []};
+        title: "", titleParam: "", components: [], textErrors: "", levelErrors: 0};
     currentScreen.layout = 
             {type:"RelativeLayout",typeFull:{name:"RelativeLayout",typeBlock:2},parent:null,width:-1,height:-1,gravLayout:{h:4,v:4},gravity:{h:4,v:4},itemNav:{}, 
                 viewId:"root", parent:null, children:[]};
@@ -64,6 +64,7 @@ function plusScreen() {
     ns.addEventListener('click', selScreen, true);
     idScreenNum ++;
     list_screens.append(ns);
+console.log("list_screens.scrollHeight="+list_screens.scrollHeight);
     list_screens.scrollTop = list_screens.scrollHeight;
     setScreenView();
     container_scr.scroll_y.resize(container_scr);
@@ -73,18 +74,23 @@ function selScreen(event) {
     if (currentScreenView != null && currentScreenView.idScreen == event.currentTarget.idScreen) {
         return;
     }
+    selScreenView(event.currentTarget);
+}
+
+function selScreenView(scr, goto) {
     if (currentScreenView != null) {
+        oneScreenValid(currentScreen, currentScreenView);
         currentScreenView.className = "screen";
         let listC = currentScreenView.getElementsByClassName("list_components");
         if (listC != null && listC.length > 0) {
             listC[0].style.display = "none";
         }
     }
-    currentScreenView = event.currentTarget;
-    setSelectScreen();
+    currentScreenView = scr;
+    setSelectScreen(goto);
 }
 
-function setSelectScreen() {
+function setSelectScreen(goto) {
     currentScreenView.className = "screen_sel";
     let listC = currentScreenView.getElementsByClassName("list_components");
     if (listC != null && listC.length > 0) {
@@ -106,6 +112,9 @@ function setSelectScreen() {
     if (currentScreen != null) {
         currentChildren = currentScreen.layout.children;
         setScreenView();
+    }
+    if (goto != null) {
+        list_screens.scrollTop = goto
     }
 }
 
@@ -351,7 +360,7 @@ function setSelected(cl, val) {
 function newScreen() {
     var container = document.createElement('div')
     container.innerHTML = '<div class="screen_sel">'
-        +'<div style="float:left;width:3px;height:40px;"></div>'
+        +'<div class="error_screen" style="float:left;width:3px;height:40px;"></div>'
         +'<div style="padding-bottom:15px;height:30px;margin-left:10px">'
             +'<div style="float:left;"><div style="color: #2228;font-size: 10px;margin-left:4px">Name</div>'
             +'<input class="name_screen input_style" onkeyup="return checkNameKey(event)" onkeydown="return checkNameKeyD(event)" style="font-size:12px;color:#110000;font-weight:600" type="text" size="15" value="'+ currentScreen.screenName + '"/>'
@@ -574,7 +583,7 @@ function newComponent(i) {
             +'<div class="name_compon" style="float:left;">' + parComp.name + '</div>'
             +'<div class="special_func" style="display: inline-block;margin-left:20px;">' + uxFunction.getSpecialView() + '</div>'
             +'<img onclick="del_compon(this)" style="float:right;cursor:pointer;margin-top:3px;margin-right:10px" width="18" height="18" src="img/close-o.png">'
-            +'<div class="component_param" style="padding: 5px;">' + uxFunction.getEditParam() + '</div>'
+            +'<div class="component_param" style="padding-left: 5px;">' + uxFunction.getEditParam() + '</div>'
             +'</div>';
     } else {
         str = '<div class="component_sel"><div class="name_compon" style="display: inline-block;">' + components[i].name + '</div>'

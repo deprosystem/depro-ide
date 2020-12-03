@@ -12,14 +12,36 @@
                 margin-left: 190px;
                 width: 50px;
                 height: 50px;
+/*
                 -webkit-animation: infinite rotate-block 1s;
                 -moz-animation: infinite rotate-block 1s;
                 -o-animation: infinite rotate-block 1s;
                 animation: infinite rotate-block 1s;
+*/
+                
+    -webkit-animation: rotation 2s linear infinite;
+    -moz-animation: rotation 2s linear infinite;
+    -ms-animation: rotation 2s linear infinite
+/*
                 border-left:5px solid #00f;
                 border-top:5px solid #00f;
                 border-radius: 50%
+*/
             }
+            
+@-webkit-keyframes rotation {
+    0%   { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+@-moz-keyframes rotation {
+    0%   { -moz-transform: rotate(0deg); }
+    100% { -moz-transform: rotate(360deg); }
+}
+@-ms-keyframes rotation {
+    0%   { -ms-transform: rotate(0deg); }
+    100% { -ms-transform: rotate(360deg); }
+}
+/*
             @-webkit-keyframes rotate-block {
               0%   {-webkit-transform: rotate(0deg);}
               100% {-webkit-transform: rotate(360deg);}
@@ -36,6 +58,36 @@
               0%   {transform: rotate(0deg);}
               100% {transform: rotate(360deg);}
             }
+*/
+
+
+    #rotor {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 50px;
+      height: 50px;
+      margin: -25px 0 0 -25px;
+      -webkit-animation: spin 1s linear infinite;
+      -moz-animation: spin 1s linear infinite;
+      animation: spin 1s linear infinite;
+    }
+    @-moz-keyframes spin {
+      100% {
+        -moz-transform: rotate(360deg);
+      }
+    }
+    @-webkit-keyframes spin {
+      100% {
+        -webkit-transform: rotate(360deg);
+      }
+    }
+    @keyframes spin {
+      100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+      }
+    }
         </style>
         <script>
             function sendFile() {
@@ -43,7 +95,8 @@
                 project_id.value = window.top.currentProject.projectId;
                 upload.submit();
                 upload.style.display = "none";
-                progr.style.display = "block";
+//                Rotate.start();
+                rotor.style.display = "block";
                 pp.style.display = "block";
             }
         </script>
@@ -57,7 +110,6 @@
             <div onclick="browse.click();" style="cursor:pointer;">
             <input type="text" id="filename" readonly style="width: 250px"/>
             <input type="button" value="Choose a zip file"/>
-<!--            <input type="button" value="Choose a zip file" id="fakeBrowse" onclick="browse.click();"/>      -->
             </div>
             <br>
             <br><br>
@@ -65,6 +117,14 @@
             <div class="butt" id="canc" onclick="window.top.cancelUploadImg();">Cancel</div>
         </form>
         <p id="pp" style="display: none">Data is being transferred to the server</p>
+        <img id="rotor" class="image" src="img/progress.png" alt="" style="display: none">
+<!--        
+        <div id="rotor">this will rotate 360 deg like marquee</div>
+
+        <img id="progr" src="img/progress.png">
+-->
+<!--
         <div id="progr"></div>
+-->
     </body>
 </html>

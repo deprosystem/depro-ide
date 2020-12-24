@@ -1,22 +1,21 @@
 var MATCH = -1, WRAP = -2;
 var paramCompon;
-var el_w_input, el_w_wrap, el_w_match;
-var el_h_input, el_h_wrap, el_h_match;
+//var el_w_input, el_w_wrap;
+//var el_h_input, el_h_wrap, el_h_match;
 //var el_id_input;
-var bg_color;
+//var bg_color;
 var selectGravityL;
 var marginBlock, paddingBlock;
 var listImg;
+var fonSel = "#deeaff";
+var fonNo = "#0000";
 
 function setParamCompon() {
     layoutParam.style.display = 'block';
     paramCompon = currentElement.android;
-    el_type = document.getElementById('el_type');
     marginBlock = document.getElementById('margin_block');
     paddingBlock = document.getElementById('padding_block');
-    if (el_type != null) {
-        el_type.innerHTML = paramCompon.type;
-    }
+    el_type.innerHTML = paramCompon.type;
 
     if (paramCompon.viewId != undefined) {
         el_id_input.value = paramCompon.viewId;
@@ -26,10 +25,10 @@ function setParamCompon() {
     el_id_input.onkeydown = keydown_el_id;
     if (paramCompon.gravLayout != null) {
         if (paramCompon.gravLayout.h != null) {
-            var child_h = document.getElementById("gravLayoutH").children;
+            var child_h = gravLayoutH.children;
             for (var i = 0; i < 3; i++) {
                 if (i == paramCompon.gravLayout.h) {
-                    child_h[i].style.backgroundColor = "#0f0";
+                    child_h[i].style.backgroundColor = fonSel;
                 } else {
                     child_h[i].style.backgroundColor = '';
                 }
@@ -39,7 +38,7 @@ function setParamCompon() {
             var child_h = document.getElementById("gravLayoutV").children;
             for (var i = 0; i < 3; i++) {
                 if (i == paramCompon.gravLayout.v) {
-                    child_h[i].style.backgroundColor = "#0f0";
+                    child_h[i].style.backgroundColor = fonSel;
                 } else {
                     child_h[i].style.backgroundColor = '';
                 }
@@ -52,7 +51,7 @@ function setParamCompon() {
             var child_h = document.getElementById("gravityH").children;
             for (var i = 0; i < 3; i++) {
                 if (i == paramCompon.gravity.h) {
-                    child_h[i].style.backgroundColor = "#0f0";
+                    child_h[i].style.backgroundColor = fonSel;
                 } else {
                     child_h[i].style.backgroundColor = '';
                 }
@@ -62,7 +61,7 @@ function setParamCompon() {
             var child_h = document.getElementById("gravityV").children;
             for (var i = 0; i < 3; i++) {
                 if (i == paramCompon.gravity.v) {
-                    child_h[i].style.backgroundColor = "#0f0";
+                    child_h[i].style.backgroundColor = fonSel;
                 } else {
                     child_h[i].style.backgroundColor = '';
                 }
@@ -80,36 +79,36 @@ function setParamCompon() {
     formListViewId(toRightOfParam, 'ToRightOf');
     formListViewId(toLeftOfParam, 'ToLeftOf');
 
-    el_w_match = document.getElementById('el_w_match');
+//    el_w_match = document.getElementById('el_w_match');
     el_w_match.onclick = click_el_w_match;
-    el_w_wrap = document.getElementById('el_w_wrap');
+//    el_w_wrap = document.getElementById('el_w_wrap');
     el_w_wrap.onclick = click_el_w_wrap;
-    el_w_input = document.getElementById('el_w_input');
+//    el_w_input = document.getElementById('el_w_input');
     el_w_input.onkeydown = keydown_el_w_input;
     el_w_input.value = '';
     el_w_match.style.backgroundColor = '#fff';
     el_w_wrap.style.backgroundColor = '#fff';
     if (paramCompon.width == MATCH) {
-        el_w_match.style.backgroundColor = '#0fa';
+        el_w_match.style.backgroundColor = fonSel;
     } else if (paramCompon.width == WRAP) {
-        el_w_wrap.style.backgroundColor = '#0fa';
+        el_w_wrap.style.backgroundColor = fonSel;
     } else {
         el_w_input.value = paramCompon.width;
     }
     
-    el_h_match = document.getElementById('el_h_match');
+//    el_h_match = document.getElementById('el_h_match');
     el_h_match.onclick = click_el_h_match;
-    el_h_wrap = document.getElementById('el_h_wrap');
+//    el_h_wrap = document.getElementById('el_h_wrap');
     el_h_wrap.onclick = click_el_h_wrap;
-    el_h_input = document.getElementById('el_h_input');
+//    el_h_input = document.getElementById('el_h_input');
     el_h_input.onkeydown = keydown_el_h_input;
     el_h_input.value = '';
     el_h_match.style.backgroundColor = '#fff';
     el_h_wrap.style.backgroundColor = '#fff';
     if (paramCompon.height == MATCH) {
-        el_h_match.style.backgroundColor = '#0fa';
+        el_h_match.style.backgroundColor = fonSel;
     } else if (paramCompon.height == WRAP) {
-        el_h_wrap.style.backgroundColor = '#0fa';
+        el_h_wrap.style.backgroundColor = fonSel;
     } else {
         el_h_input.value = paramCompon.height;
     }
@@ -127,7 +126,7 @@ function setParamCompon() {
     clearMargPadParam(pad);
     setMargPadParam(pad, valuePad);
     
-    bg_color = document.getElementById('bg_color');
+//    bg_color = document.getElementById('bg_color');
     if (paramCompon.background == null) {
         bg_color.style.backgroundColor = '#ffffff';
     } else {
@@ -180,6 +179,9 @@ function setContent() {
             }
             break;
         case 'ImageView' :
+            uiFunction = eval("new ui" + paramCompon.type + "();");
+            uiFunction.setContent(paramCompon);
+/*
             contentImg.style.display = 'block';
             var ssrc = paramCompon.src;
             if (ssrc != undefined) {
@@ -190,6 +192,7 @@ function setContent() {
             if (paramCompon.formResourse != null) {
                 check_form_img.checked = paramCompon.formResourse;
             }
+*/
             break;
         case 'ToolBar' :
             contentTool.style.display = 'block';
@@ -212,6 +215,10 @@ function setContent() {
             contentOthers.style.display = 'block';
             contentOthers.innerHTML = formIndicatorContent(paramCompon);
             break;
+        case 'TabLayout' :
+            uiFunction = eval("new ui" + paramCompon.type + "();");
+            uiFunction.setContent(paramCompon);
+            break;
     }
 }
 
@@ -228,7 +235,7 @@ function setMargPadParam(elMP, func) {
             var isVal = false;
             while (childEl != last) {
                 if (childEl.innerHTML == value) {
-                    childEl.style.backgroundColor = '#0f0';
+                    childEl.style.backgroundColor = fonSel;
                     isVal = true;
                     break;
                 }
@@ -306,7 +313,7 @@ function setSelectValue(el, value) {
     var last = el.lastElementChild;
     while (childEl != last) {
         if (childEl.innerHTML == value) {
-            childEl.style.backgroundColor = '#0f0';
+            childEl.style.backgroundColor = fonSel;
         } else {
             childEl.style.backgroundColor = '';
         }
@@ -329,14 +336,14 @@ function keydown_el_id(e) {
 
 function click_el_w_match() {
     el_w_wrap.style.backgroundColor = '';
-    el_w_match.style.backgroundColor = '#0fa';
+    el_w_match.style.backgroundColor = fonSel;
     paramCompon.width = MATCH;
     el_w_input.value = '';
     viewCompon();
 }
 
 function click_el_w_wrap() {
-    el_w_wrap.style.backgroundColor = '#0fa';
+    el_w_wrap.style.backgroundColor = fonSel;
     el_w_match.style.backgroundColor = '';
     paramCompon.width = WRAP;
     el_w_input.value = '';
@@ -354,14 +361,14 @@ function keydown_el_w_input(e) {
 
 function click_el_h_match() {
     el_h_wrap.style.backgroundColor = '';
-    el_h_match.style.backgroundColor = '#0fa';
+    el_h_match.style.backgroundColor = fonSel;
     el_h_input.value = '';
     paramCompon.height = MATCH;
     viewCompon();
 }
 
 function click_el_h_wrap() {
-    el_h_wrap.style.backgroundColor = '#0fa';
+    el_h_wrap.style.backgroundColor = fonSel;
     el_h_match.style.backgroundColor = '';
     el_h_input.value = '';
     paramCompon.height = WRAP;
@@ -402,7 +409,7 @@ function gravLayoutHorisontal(el, val) {
         p.gravLayout.h = NONE;
     } else {
         p.gravLayout.h = val;
-        el.style.backgroundColor = '#0f0';
+        el.style.backgroundColor = fonSel;
     }
     p.toRightOf = "";
     p.toLeftOf = "";
@@ -419,7 +426,7 @@ function gravLayoutVertical(el, val) {
         p.gravLayout.v = NONE;
     } else {
         p.gravLayout.v = val;
-        el.style.backgroundColor = '#0f0';
+        el.style.backgroundColor = fonSel;
     }
     viewCompon();
 }
@@ -434,7 +441,7 @@ function gravHorisontal(el, val) {
         p.gravity.h = NONE;
     } else {
         p.gravity.h = val;
-        el.style.backgroundColor = '#0f0';
+        el.style.backgroundColor = fonSel;
     }
     viewCompon();
 }
@@ -449,7 +456,7 @@ function gravVertical(el, val) {
         p.gravity.v = NONE;
     } else {
         p.gravity.v = val;
-        el.style.backgroundColor = '#0f0';
+        el.style.backgroundColor = fonSel;
     }
     viewCompon();
 }
@@ -462,7 +469,7 @@ function setMargin(el) {
     var p = currentElement.android;
     var type = el.parentNode.firstElementChild.innerHTML;
     margPadClear(el);
-    el.style.backgroundColor = '#0f0';
+    el.style.backgroundColor = fonSel;
     var value = el.innerHTML;
     switch (type) {
         case 'L:':
@@ -604,7 +611,7 @@ function setPadding(el) {
     var p = currentElement.android;
     var type = el.parentNode.firstElementChild.innerHTML;
     margPadClear(el);
-    el.style.backgroundColor = '#0f0';
+    el.style.backgroundColor = fonSel;
     var value = el.innerHTML;
     switch (type) {
         case 'L:':
@@ -694,14 +701,15 @@ function checkFormString(el) {
     currentElement.android.formStringRes = el.checked;
 }
 */
+/*
 function checkFormResourse(el) {
     currentElement.android.formResourse = el.checked;
 }
-
+*/
 function setTextSize(el) {
     var p = currentElement.android;
     textSizeClear(el, true);
-    el.style.backgroundColor = '#0f0';
+    el.style.backgroundColor = fonSel;
     var value = el.innerHTML;
     textSize.value = value;
     p.textSize = parseInt(value);
@@ -711,7 +719,7 @@ function setTextSize(el) {
 function setToolTextSize(el) {
     var p = currentElement.android;
     textSizeClear(el, true);
-    el.style.backgroundColor = '#0f0';
+    el.style.backgroundColor = fonSel;
     var value = el.innerHTML;
     textSize.value = value;
     p.textSize = parseInt(value);
@@ -721,7 +729,7 @@ function setToolTextSize(el) {
 function setEditTextSize(el) {
     var p = currentElement.android;
     textSizeClear(el, true);
-    el.style.backgroundColor = '#0f0';
+    el.style.backgroundColor = fonSel;
     var value = el.innerHTML;
     editTextSize.value = value;
     p.textSize = parseInt(value);
@@ -755,7 +763,7 @@ function textSizeClear(el, lastClear) {
         last.value = '';
     }
 }
-
+/*
 function setSRC() {
     doServer("GET", 'images/list', cbImgSRC);
 }
@@ -788,7 +796,7 @@ function selectImg(i) {
     }
     viewCompon();
 }
-
+*/
 function changeScaleType(el) {
     currentElement.android.scaleType = el.selectedIndex;
     viewCompon();
@@ -819,14 +827,17 @@ function setToLeftOf(el) {
 }
 
 function checkVisibility(el) {
-    currentElement.android.visibility = el.checked;
-    if (el.checked) {
+    let check = visibility.src.indexOf("check-sel") == -1;
+    currentElement.android.visibility = check;
+    if (check) {
+        visibility.src = "img/check-sel.png";
         let vv = "block";
         if (currentElement.oldDisplay != null) {
             vv = currentElement.oldDisplay;
         }
         currentElement.style.display = vv;
     } else {
+        visibility.src = "img/check-act.png";
         currentElement.oldDisplay = currentElement.style.display;
         currentElement.style.display = "none";
     }

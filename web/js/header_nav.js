@@ -7,9 +7,9 @@ function editUX_UI() {
         active.style.display = "block";
         plus_screen.style.display = "none";
         corners.style.display = "none";
-        document.documentElement.style.setProperty('--w_ux_p', '300px');
-        document.documentElement.style.setProperty('--w_ux_r', '320px');
-        document.documentElement.style.setProperty('--left_compon', '300px');
+        document.documentElement.style.setProperty('--w_ux_p', '18%');
+        document.documentElement.style.setProperty('--w_ux_r', '22%');
+        document.documentElement.style.setProperty('--left_compon', '18%');
     } else {
         isUX = true;
         ux_ui.innerHTML = "UI";
@@ -25,5 +25,6 @@ function editUX_UI() {
 }
 
 function endAnimUX() {
-        compon_ui.style.display = "none";
-    }
+    compon_ui.style.display = "none";
+}
+

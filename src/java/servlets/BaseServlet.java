@@ -33,6 +33,7 @@ public abstract class BaseServlet extends HttpServlet{
     
     public Gson gson = new Gson();
     public BaseDB baseDb;
+    public boolean isSerwer;
     
     protected abstract void processRequest(HttpServletRequest request, 
             HttpServletResponse response, DataServlet ds);
@@ -92,8 +93,10 @@ System.out.println("query="+ds.query);
     public String getPatchOutsideProject(HttpServletRequest request) {
         String st = request.getServletContext().getRealPath("");
         if (st.indexOf(File.separator) != 0) {
+            isSerwer = false;
             return st + File.separator;
         } else {
+            isSerwer = true;
             int i = st.indexOf(Constants.NAME_IDE);
             return st.substring(0, i);
         }
@@ -140,7 +143,7 @@ System.out.println("query="+ds.query);
         err.status = "error";
         err.title = "Ошибка";
         err.message = message;
-        sendResult(response, gson.toJson(err), HttpServletResponse.SC_NOT_FOUND);   // 404
+        sendResult(response, gson.toJson(err), HttpServletResponse.SC_BAD_REQUEST);   // 404
     }
     
     public String getStringRequest(HttpServletRequest request) throws IOException {

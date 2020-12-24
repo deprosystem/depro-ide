@@ -12,7 +12,7 @@
     var pxIn100mm = 630;
 //    var content;
 //    var header;
-    var layoutParam, textValue;
+    var textValue;
 //    var listCompon, hierarhy, separator;
     var px = 'px';
     var h_body, w_body;
@@ -65,7 +65,7 @@
 //        headerTool = document.getElementById('header-tool');
 //        navigatorEl = document.getElementById('navigatorEl');
         scaleValue = document.getElementById('scaleValue');
-        layoutParam = document.getElementById('layout-par');
+//        layoutParam = document.getElementById('layout-par');
         textValue = document.getElementById('text_text_value');
         setTypeInsert('RelativeLayout');
         insertTypeFull = {name: 'RelativeLayout', typeBlock: 2};

@@ -15,16 +15,21 @@ import entity.ListItemStyle;
 import entity.ListScreen;
 import entity.ParamSave;
 import entity.Screen;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -59,8 +64,8 @@ public class ExportResult extends BaseServlet {
         long projectId;
         String SAVE_DIR = "";
         String zipFileName;
-        String downloadExport_1 = "<h3>Data for export prepared.</h3>\n<div class=\"butt\" onclick=\"closeCommonWindow(event)\"><a href=\"";
-        String downloadExport_2 = "\" download onclick=\"closeCommonWindow(event)\" style=\"text-decoration: none;\">Download</a></div>\n<div class=\"butt\" onclick=\"closeCommonWindow(event)\">Cancel</div>";
+//        String downloadExport_1 = "<h3>Data for export prepared.</h3>\n<div class=\"butt\" onclick=\"closeCommonWindow(event)\"><a href=\"";
+//        String downloadExport_2 = "\" download onclick=\"closeCommonWindow(event)\" style=\"text-decoration: none;\">Download</a></div>\n<div class=\"butt\" onclick=\"closeCommonWindow(event)\">Cancel</div>";
         String idPr = request.getParameterValues("projectId")[0];
         projectId = Long.valueOf(idPr);
         projectM = projectDb.getProjectById(idPr);
@@ -86,6 +91,7 @@ public class ExportResult extends BaseServlet {
         setColorAlpha(projectM);
 
         switch (ds.query) {
+            case "/export/apk":
             case "/export/android":
                 createBaseProject(realPath, basePath,  userProjPath, basePath + projectPath);
                 createDepro(basePath + javaPath, projectM, parSave);
@@ -110,10 +116,72 @@ public class ExportResult extends BaseServlet {
                 copyFile(realPath + "/android_base/git_ignor_app", basePath + userProjPath + "/app/.gitignore");
                 setFileAndroid(realPath + "/android_base/settings", basePath + userProjPath + "/settings.gradle", arChange);
 
-//                String exportFileName = userPath + zipFileName;
-                String exportFileName = userPath + projectM.nameProject + ".zip";
-                zipRes(basePath + exportFileName, basePath + userProjPath, lengthBase);
-                sendResult(response, downloadExport_1 + exportFileName + downloadExport_2);
+                
+                if (ds.query.equals("/export/apk")) {
+                    PrintWriter writer;
+                    try {
+                        writer = new PrintWriter(basePath + userProjPath +  "/local.properties", "UTF-8");
+                        if (isSerwer) {
+                            writer.println("sdk.dir=/home/jura/android/cmdline-tools");
+                        } else {
+                            writer.println("sdk.dir=C\\:\\\\Users\\\\jura\\\\AppData\\\\Local\\\\Android\\\\Sdk");
+                        }
+                        writer.close();
+                    } catch (FileNotFoundException | UnsupportedEncodingException ex) {
+                        System.out.println("Error form local.properties " + ex);
+                    }
+                    
+                    List<String> progr = new ArrayList();
+                    if (isSerwer) {
+                        progr.add("/opt/gradle/gradle-5.5/bin/gradle");
+                    } else {
+                        progr.add("gradle.bat");
+                    }
+                    progr.add("build");
+                    
+                    String pathProject = basePath + userProjPath;
+                    ProcessBuilder builder;
+                    Process process;
+System.out.println("pathProject="+pathProject+"<< progr="+progr.get(0)+"<<");
+
+                    builder = new ProcessBuilder(progr);
+                    builder = builder.directory(new File(pathProject));
+
+                    try {
+                        process = builder.start();
+                    } catch (IOException ex) {
+                        System.out.println("Compile Process Error="+ ex + "\n");
+                        return;
+                    }
+
+                    try ( BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream())) ) {
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            if (line != null) {
+                                System.out.println(line);
+                            }
+                        }
+                    } catch (IOException | NullPointerException ex) {
+                        System.out.println("Compil WRITE Error="+ ex);
+                    }
+
+                    try {
+                        process.waitFor();
+                    } catch (InterruptedException ex) {
+                        System.out.println("Compil waitFor Error="+ ex);
+                    }
+
+                    String resultFile = userPath + projectM.nameProject + "/app/build/outputs/apk/debug/app-debug.apk";
+                    System.out.println("resultFile="+resultFile);
+                    sendResult(response, resultFile);
+                } else {
+                    String exportFileName = userPath + projectM.nameProject + ".zip";
+                    zipRes(basePath + exportFileName, basePath + userProjPath, lengthBase);
+//                    sendResult(response, downloadExport_1 + exportFileName + downloadExport_2);
+                    String resultFile = userPath + projectM.nameProject + "/app/build/outputs/apk/debug/app-debug.apk";
+                    System.out.println("resultFile="+exportFileName);
+                    sendResult(response, exportFileName);
+                }
                 break;
         }
     }

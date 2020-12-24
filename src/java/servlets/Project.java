@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -86,23 +88,29 @@ public class Project extends BaseServlet {
                     sendResult(response, gson.toJson(projectDb.getProjectById(idPr)));
                     break;
                 case "/project/change":
-                    pc = null;
+                    String projectId = request.getHeader("projectId");
+                    String stReq = "";
                     try {
-                        pc = gson.fromJson(getStringRequest(request), ProjectM.class);
-                        pc.userId = ds.userId;
-                        if (pc.logo == null) {
-                            pc.logo = "";
-                        }
-                        if (pc.comment == null) {
-                            pc.comment = "";
-                        }
-                    } catch (JsonSyntaxException | IOException e) {
+                        stReq = getStringRequest(request);
+                    } catch (IOException e) {
                         System.out.println(e);
                         sendError(response, "Project create error " + e.toString());
                     }
-                    if (pc != null) {
-                        projectDb.changeProject(pc);
-                        sendResultOk(response);
+                    if (stReq != null && stReq.length() > 0) {
+                        pc = null;
+                        pc = gson.fromJson(stReq, ProjectM.class);
+                        if (pc != null) {
+                            pc.userId = ds.userId;
+                            if (pc.logo == null) {
+                                pc.logo = "";
+                            }
+                            if (pc.comment == null) {
+                                pc.comment = "";
+                            }
+                            projectDb.changeProject(pc, projectId);
+                            sendResult(response, gson.toJson(projectDb.getProjectById(projectId)));
+//                            sendResultOk(response);
+                        }
                     }
                     break;
                 case "/project/getparam":

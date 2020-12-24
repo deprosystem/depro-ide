@@ -9,7 +9,6 @@ var onkeyupJump;
 var processingSelectedIMG;
 var indListEdit;
 var funcSendCreateData;
-var extraOptions;
 
 var isColorChange = false;
 var isProjectChange = false;
@@ -23,18 +22,6 @@ var isScreenChange = false;
 var isLayoutChange = false;
 var listNameScreen = [];
 var listAppParam, listValueAppParam;
-
-function createProject() {
-//    windEditForm.style.display = "block";
-    listEdit = [];
-    listEdit[0] = {name : "nameProject", label : "Project name", type : TYPE_String, valid: validEmpty};
-    listEdit[1] = {name : "namePackage", label : "Package name", type : TYPE_String, valid: validEmpty, value: "com.example.ide"};
-    listEdit[2] = {name : "nameAPP", label : "APP name", type : TYPE_String, valid: validEmpty};
-    listEdit[3] = {name : "comment", label : "Comment", type : TYPE_StringAr};
-//    funcSendCreateData = sendCreateProject;
-    let windMenu = formWind(250, 300, 40, 200, "New project");
-    setCreateData(listEdit, windMenu, sendCreateProject);
-}
 
 function openProject() {
     doServer("POST", "project/list", cbListProject);
@@ -84,86 +71,170 @@ function formAppParam() {
     return res;
 }
 
-function setCreateData(p, wind) {
-    var str = "";
-    var ik = p.length;
-    for (var i = 0; i < ik; i++) {
-        pp = p[i];
-        switch (pp.type) {
-            case TYPE_String:
-                let vv = "";
-                if (pp.value != null) {
-                    vv = ' value="' + pp.value + '"';
-                }
-                str += '<div style="float: left; margin-top: 10px"> <div style="float: left; width: 100px;">'+ p[i].label 
-                + '</div><input style="float: left; margin-left:5px" type="text"' + vv + ' size="25"/></div>\n';
-                break;
-            case TYPE_StringAr:
-                str += '<div style="float: left; margin-top: 10px"> <div style="float: left; width: 100px;">'+ p[i].label 
-                + '</div><textarea style="margin-left:5px" rows="5" size="35"></textarea></div>\n';
-                break;
-        }
-        
+function createProject() {
+    shutScreen.style.display = "none";
+    listEdit = [{name : "nameProject", label : "Project name", type : TYPE_String, valid: validName},
+    {name : "namePackage", label : "Package name", type : TYPE_String, valid: validEmpty, value: "com.example.ide"},
+    {name : "nameAPP", label : "APP name", type : TYPE_String, valid: validEmpty},
+    {name : "comment", label : "Description", type : TYPE_StringAr}];
+    setCreateData(1);       // 1 - create, 0 - chang
+}
+
+function changeProject() {
+    listEdit = [{name : "nameProject", label : "nameProject", type : TYPE_String, valid: validEmpty, value: currentProject.nameProject},
+        {name : "namePackage", label : "Package name", type : TYPE_String, valid: validEmpty, value: currentProject.namePackage},
+        {name : "nameAPP", label : "nameAPP", type : TYPE_String, valid: validEmpty, value: currentProject.nameAPP},
+        {name : "comment", label : "Description", type : TYPE_StringAr, value: currentProject.comment},
+        {name : "logo", label : "Logo", type : TYPE_Image, value: currentProject.logo}];
+    setCreateData(0);
+}
+
+function setCreateData(oper) {      //  oper = 1 - create, 0 - chang
+    let str = "";
+    let ik = listEdit.length;
+    let h;
+    let titl;
+    if (oper == 0) {
+        h = 450;
+        titl = "Change Project";
+    } else {
+        h = 400;
+        titl = "New project";
     }
-//    str += '<div class="button" >Send</div>';
-/*
-    var nn = windEditForm.getElementsByClassName("titleWindName")[0];
-    nn.innerHTML = title;
-    var el = document.getElementById("windEditBody");
-*/
-    wind.innerHTML = str;
-//    el.getElementsByClassName("button")[0].onclick = funcSendCreateData;
-    wind.getElementsByTagName('input')[0].focus();
-    wind.onkeyup = keyUpCreateData;
-}
-
-function keyUpCreateData(e) {
-    if (e.which == 13) {
-        document.getElementById("windEditBody").onkeyup = null;
-        funcSendCreateData();
-    }
-}
-
-function sendCreateProject() {
-    windEditForm.style.display = "none";
-    extraOptions = [];
-    doServer("POST", "project/create", cbCreateProject, dataFromForm());
-}
-
-function dataFromForm() {
-    var elDiv = windEditBody.children;
-    var ik = listEdit.length;
-    var strJson = "{";
-    var sep = "";
+    let wind = formWind(300, h, 40, 200, titl);
+    wind.style.paddingLeft = "16px";
+    wind.style.paddingRight = "16px";
     for (var i = 0; i < ik; i++) {
         pp = listEdit[i];
+        let label = document.createElement("div");
+        label.style.cssText = "margin-top: 16px;font-size:10px";
+        label.innerHTML = pp.label;
+        wind.appendChild(label);
+        let inpEl;
+        let vv;
         switch (pp.type) {
             case TYPE_String:
-                strJson += sep + '"' + pp.name + '":"' + elDiv[i].getElementsByTagName("input")[0].value + '"'
+                vv = "";
+                if (pp.value != null) {
+                    vv = pp.value;
+                }
+                inpEl = document.createElement("input");
+                if (pp.valid == validName) {
+                    inpEl.addEventListener("keydown",function(event){checkLatinKey(event)}, true);
+                }
+                inpEl.style.cssText = "font-weight:400";
+                inpEl.className = "input_style form";
+                inpEl.size = "40";
+                inpEl.value = vv;
                 break;
             case TYPE_StringAr:
-                strJson += sep + '"' + pp.name + '":"' + elDiv[i].getElementsByTagName("textarea")[0].value + '"'
+                inpEl = document.createElement("textarea");
+                inpEl.className = "form";
+                inpEl.rows = "3";
+                inpEl.cols = "31";
+                inpEl.style.cssText = "font-weight:400;border:1px solid #C5DCFA;box-sizing: border-box;border-radius: 8px;";
+//                + '<textarea name="' + pp.name + '" class="form" style="font-weight:400;border:1px solid #C5DCFA;box-sizing: border-box;border-radius: 8px;" rows="3" cols="31"></textarea>';
                 break;
             case TYPE_Image:
-                strJson += sep + '"' + pp.name + '":"' + elDiv[i].getElementsByTagName("img")[0].src + '"'
+//                str += '<div style="margin-top: 16px;font-size:10px">'+ pp.label + '</div>'
+//                + '<img onclick="setImg(this)" class="imgLogo" src="' + pp.value + '" width="30" height="30" style="cursor:pointer">';
+                inpEl = document.createElement("img");
+                inpEl.style.cursor = "pointer";
+                if (pp.value != null) {
+                    inpEl.src = pp.value;
+                }
+                inpEl.width = "30";
+                inpEl.height = "30";
+                let divVal = document.createElement('div');
+                divVal.style.display = "none";
+                divVal.className = "form";
+                divVal.name = pp.name;
+                wind.appendChild(divVal);
+                let parLogo = {"img": inpEl, "val":divVal};
+                inpEl.addEventListener("click",function(event){selectListImage(event, resultSelectLogo, parLogo)}, true);
                 break;
         }
-        sep = ',';
+        inpEl.name = pp.name;
+        wind.appendChild(inpEl);
     }
-    ik = extraOptions.length;
-    for (var i = 0; i < ik; i++) {
-        var pp = extraOptions[i];
-        switch (pp.type) {
-            case TYPE_String:
-                strJson += sep + '"' + pp.name + '":"' + pp.value + '"';
-                break;
-            case TYPE_Int:
-                strJson += sep + '"' + pp.name + '":' + pp.value;
-                break;
+
+//    wind.innerHTML = str;
+    wind.getElementsByTagName('input')[0].focus();
+
+    wind.addEventListener("keyup", function(event){if (event.which == 13) {
+        closeWindow(wind);
+        sendCreateProject(formDataJson(wind), oper);
+    }}, true);
+    
+    let footer = createFooter(56);
+    wind.appendChild(footer);
+    let buttonSend = createButtonBlue('Send', 70);
+    buttonSend.addEventListener("click", function(event){sendCreateProject(formDataJson(wind), oper);closeWindow(wind);}, true);
+    footer.appendChild(buttonSend);
+    let buttonCancel = createButtonWeite('Cancel', 70);
+    buttonCancel.addEventListener("click", function(event){closeWindow(wind);}, true);
+    footer.appendChild(buttonCancel);
+}
+
+function resultSelectLogo(i, param) {
+    let nn = listImage[i];
+    param.img.src = nn;
+    param.val.innerHTML = nn;
+}
+
+function formDataJson(wind) {
+    let listForm = wind.getElementsByClassName("form");
+    let ik = listForm.length;
+    let obj = {};
+    for (let i = 0; i < ik; i++) {
+        el = listForm[i];
+        if (el.tagName == 'DIV') {
+            obj[el.name] = el.innerHTML;
+        } else {
+            obj[el.name] = el.value;
         }
     }
-    strJson += '}';
-    return strJson;
+    let st = JSON.stringify(obj);
+    return st;
+}
+
+function sendCreateProject(data, oper) {
+    let url;
+    if (oper == 0) {
+        url = "project/change";
+    } else {
+        url = "project/create";
+    }
+    doServer("POST", url, cbCreateProject, data, oper);
+}
+
+function cbCreateProject(res, oper) {
+    if (oper != 0) {
+        listImage = null;
+    }
+    currentProject = JSON.parse(res);
+    cbCreateProjectDop();
+}
+function cbCreateProjectDop() {
+    ux_ui_w.style.display = "block";
+    plus_screen.style.display = "block";
+    corners.style.display = "block";
+    openMenu();
+    project_name_bl.style.display = "block";
+    project_name.innerHTML = currentProject.nameProject;
+    listScreen = JSON.parse(currentProject.screens);
+    listColor = JSON.parse(currentProject.colors);
+    listDimens = JSON.parse(currentProject.dimens);
+    listValueAppParam = JSON.parse(currentProject.appParam);
+    if (currentProject.style != null) {
+        listStyle = JSON.parse(currentProject.style);
+    }
+    setListColor();
+    listDrawable = JSON.parse(currentProject.drawable);
+    setMaxIndexDrawable();
+    setLayout();
+    list_screens.innerHTML = "";
+    setListScreen();
 }
 
 function clearRoot() {
@@ -219,10 +290,17 @@ function setScreenElements(el, children) {
                 newEl.appendChild(typeEl);
                 break;
             case 'ImageView' :
+                uiFunction = eval("new ui" + p.type + "()");
+                uiFunction.setElementUI(p, newEl, el);
+/*
                 typeEl = createDivImg();
                 newEl.appendChild(typeEl);
+*/
                 break;
             case 'ToolBar' :
+                uiFunction = eval("new ui" + p.type + "()");
+                uiFunction.setElementUI(p, newEl, el);
+/*
                 typeEl = createForToolBar();
                 newEl.appendChild(typeEl);
                 let tit = typeEl.getElementsByClassName("title")[0];
@@ -239,8 +317,12 @@ function setScreenElements(el, children) {
                         img.src = newNode.imgBack;
                     }
                 }
+*/
                 break;
             case 'MenuBottom' :
+                uiFunction = eval("new ui" + p.type + "()");
+                uiFunction.setElementUI(p, newEl, el);
+/*
                 typeEl = createDivMenuB();
                 newEl.appendChild(typeEl);
                 myCompon = myComponent(p.viewId);
@@ -251,10 +333,13 @@ function setScreenElements(el, children) {
                         showMenuB(menuList, typeEl);
                     }
                 }
+*/
                 break;
             case 'List' :
-                formBelow(p, el, "ToolBar");
-                formAbove(p, el, "MenuBottom");
+                uiFunction = eval("new ui" + p.type + "()");
+                uiFunction.setElementUI(p, newEl, el);
+//                formBelow(p, el, "ToolBar");
+//                formAbove(p, el, "MenuBottom");
                 break;
             case 'Menu' :
                 myCompon = myComponent(p.viewId);
@@ -265,19 +350,32 @@ function setScreenElements(el, children) {
                 formAbove(p, el, "MenuBottom");
                 break;
             case 'Map' :
+                uiFunction = eval("new ui" + p.type + "()");
+                uiFunction.setElementUI(p, newEl, el);
+/*
                 formBelow(p, el, "ToolBar");
                 formAbove(p, el, "MenuBottom");
                 typeEl = createDivImg();
                 newEl.appendChild(typeEl);
                 p.src = "img/map.png";
                 myCompon = myComponent(p.viewId);
-                newEl.appendChild(createMarker(myCompon.param.marker));
+                if (myCompon.param.marker != null) {
+                    newEl.appendChild(createMarker(myCompon.param.marker));
+                }
+*/
                 break;
             case 'Pager' :
+                uiFunction = eval("new ui" + p.type + "()");
+                uiFunction.setElementUI(p, newEl, el);
+/*
                 formBelow(p, el, "ToolBar,TabLayout");
                 formAbove(p, el, "MenuBottom");
+*/
                 break;
             case 'TabLayout' :
+                uiFunction = eval("new ui" + p.type + "()");
+                uiFunction.setElementUI(p, newEl, el);
+/*
                 typeEl = createDivTab();
                 newEl.appendChild(typeEl);
 //                viewComponElem(newEl);
@@ -289,6 +387,7 @@ function setScreenElements(el, children) {
                     }
                 }
                 formBelow(p, el, "ToolBar");
+*/
                 break;
         }
         viewComponElem(newEl);
@@ -346,7 +445,7 @@ function formBelow(pp, el, st) { // Пошук в el елементів тип �
         pp.below = maxViewId;
     }
 }
-
+/*
 function myComponent(id) {
     let ik = currentScreen.components.length;
     if (ik > 0) {
@@ -361,7 +460,7 @@ function myComponent(id) {
         return null;
     }
 }
-
+*/
 function getComponent(id) {
     let ik = currentScreen.components.length;
     if (ik > 0) {
@@ -376,12 +475,12 @@ function getComponent(id) {
         return null;
     }
 }
-
+/*
 function openMenuScreen() {
     listMenu_UX[1].children[2].domElement.className = 'subMainMenuNo';
     listMenu_UX[1].children[3].domElement.className = 'subMainMenu';
 }
-
+*/
 function openMenu() {
     listMenu_UX[0].children[2].domElement.className = 'subMainMenu';
     listMenu_UX[0].children[3].domElement.className = 'subMainMenu';
@@ -390,6 +489,7 @@ function openMenu() {
     listMenu_UX[1].children[0].domElement.className = 'subMainMenu';
     listMenu_UX[1].children[1].domElement.className = 'subMainMenu';
     listMenu_UX[1].children[2].domElement.className = 'subMainMenu';
+    listMenu_UX[1].children[3].domElement.className = 'subMainMenu';
 }
 
 function cbSaveProject(res) {
@@ -442,16 +542,18 @@ function oneProject(p) {
         }
     }
     let urlImgProject = 'visibility:hidden"';
-    if (p.image != null && p.image.length > 0) {
+    if (p.image != null && p.image.length > 0 && p.image != 'null') {
         urlImgProject = '" src="' + p.image + '"';
     }
 
     let imgProject = '<img class="imgProject" width=360 height=160 style="position:absolute;left:0px;top:0px;object-fit:contain;border-radius:4px 4px 0px 0px;' + urlImgProject + '>';
+/*
     let imgClick = '<div onclick="sendImageProject(' + p.projectId 
             + ",'imageProject',this" + ')" style="width:60px;height:60px;position:absolute;left:150px;top:50px;cursor:pointer;border-radius:50%;'
             +'background:radial-gradient(circle closest-side,#dddd, #0000);">'
             +'<img width="20" height="20" style="position:absolute;left:20px;top:20px;" src="img/download.png">'
         +'</div>';
+*/
     let st = '<div class="projectView">'
             +imgProject
             +'<img onclick="projectMenu(this,' + p.projectId + ')" width="20" height="30" style="position:absolute;right:14px;top:14px;cursor:pointer" src="img/more-vertical.png">'
@@ -464,9 +566,12 @@ function oneProject(p) {
     return container.firstChild
 }
 
-function sendImageProject(id, nameFile, el) {
-    let windMenu = formWind(350, 300, 40, 250, "Upload project image");
-    let inputFile = newElementFromString('<input type="file" accept="image/*" name="imgFile" multiple style="display: none"/>');
+function sendImageProject(id, nameFile, el, title, accept) {
+    let windMenu = formWind(350, 300, 40, 250, title);
+    if (accept == null) {
+        accept = "image/*";
+    }
+    let inputFile = newElementFromString('<input type="file" accept="' + accept + '" name="imgFile" multiple style="display: none"/>');
     windMenu.appendChild(inputFile);
     let contInp = newElementFromString('<div style="margin-top:20px;margin-left:16px;"></div');
     windMenu.appendChild(contInp);
@@ -489,20 +594,23 @@ function sendImageProject(id, nameFile, el) {
         formData.append ("projectId", id);
         formData.append ("nameFile", nameFile);
         formData.append ("imgFile", inputFile.files [0]);
-        doServer("POST", "upload/image", cbImageProject, formData, paramForCB)
+        doServer("POST", "upload/image", cbImageProject, formData, paramForCB, windMenu);
     }, true);
     buttonCancel.addEventListener("click", function(){closeWindow(buttonCancel);}, true);
 }
 
 function cbImageProject(res, par) {
     closeWindow(par.wind);
-    let el = par.elImg;
-    let el1 = el.parentElement;
-    let elImg = el1.getElementsByClassName("imgProject");
-    if (elImg != null) {
-        let imgProj = elImg[0];
-        imgProj.style.visibility = "visible";
-        imgProj.src = res;
+    listImage = null;
+    if (par.elImg != null) {
+        let el = par.elImg;
+        let el1 = el.parentElement;
+        let elImg = el1.getElementsByClassName("imgProject");
+        if (elImg != null) {
+            let imgProj = elImg[0];
+            imgProj.style.visibility = "visible";
+            imgProj.src = res;
+        }
     }
 }
 
@@ -522,7 +630,7 @@ function clickMenu(i, el, id) {
             
             break;
         case 1:
-            sendImageProject(id, 'imageProject', el);
+            sendImageProject(id, 'imageProject', el, "Project image");
             break;
         case 2:
             
@@ -533,7 +641,11 @@ function clickMenu(i, el, id) {
 function selectProject(id) {
     listProjectsScr.innerHTML = "";
     listProjects.style.display = "none";
-    doServer("get", "project/getproject?id=" + id, cbCreateProject);
+    doServer("get", "project/getproject?id=" + id, cbGetProject);
+}
+
+function cbGetProject(res) {
+    cbCreateProject(res, 2);
 }
 
 function setSignChanges() {
@@ -555,66 +667,13 @@ function deleteProject() {
 }
 
 function uploadImage() {
+    sendImageProject(currentProject.projectId, "", null, "Set of icons for the project", "application/zip")
+/*
     uploadPanel.style.display = "flex";
     if (uploadFrame.src != "upload.html") {
         uploadFrame.src = "upload.html";
     }
-}
-
-function changeProject() {
-    windEditForm.style.display = "block";
-    listEdit = [];
-    listEdit[0] = {name : "nameProject", label : "nameProject", type : TYPE_String, valid: validEmpty, value: currentProject.nameProject};
-    listEdit[1] = {name : "namePackage", label : "Package name", type : TYPE_String, valid: validEmpty, value: currentProject.namePackage};
-    listEdit[2] = {name : "nameAPP", label : "nameAPP", type : TYPE_String, valid: validEmpty, value: currentProject.nameAPP};
-    listEdit[3] = {name : "comment", label : "comment", type : TYPE_StringAr, value: currentProject.comment};
-    listEdit[4] = {name : "logo", label : "logo", type : TYPE_Image, value: currentProject.logo};
-    setInputForm(listEdit, sendChange, "Change Project");
-}
-
-function setInputForm(p, clickRun, title) {
-    var str = "";
-    var ik = p.length;
-    for (var i = 0; i < ik; i++) {
-        pp = p[i];
-        switch (pp.type) {
-            case TYPE_String:
-                str += '<div style="float: left; margin-top: 10px"> <div style="float: left; width: 100px;">'+ p[i].label + '</div>'
-                + '<input style="float: left; margin-left:5px" type="text" size="25" value="' + p[i].value + '"/></div>\n';
-                break;
-            case TYPE_StringAr:
-                str += '<div style="float: left; margin-top: 10px"> <div style="float: left; width: 100px;">'+ p[i].label 
-                + '</div><textarea style="margin-left:5px" rows="5" size="35">' + p[i].value + '</textarea></div>\n';
-                break;
-            case TYPE_Image:
-                str += '<div style="float: left; margin-top: 10px"> <div style="float: left; width: 100px;">'+ p[i].label + '</div>'
-                + '<img class="imgLogo" src="' + p[i].value + '" width="30" height="30" style="float: left; margin-left:5px">'
-                + '<div onclick="chooseImg(' + i + ')" style="float: left; margin-left: 15px; cursor: pointer; border: 2px threedhighlight outset; ' 
-                + 'padding-left: 15px; padding-right: 15px; padding-bottom: 4px; padding-top: 4px; background-color: #ddd">Choose</div></div>\n';
-                break;
-        }
-        
-    }
-    str += '<div class="button" style="clear: both;">Send</div><div class="button" onclick="closeWindEditForm();">Cancel</div>';
-    var nn = windEditForm.getElementsByClassName("titleWindName")[0];
-    nn.innerHTML = title;
-    var el = document.getElementById("windEditBody");
-    el.innerHTML = str;
-    el.getElementsByTagName('input')[0].focus();
-    el.getElementsByClassName('button')[0].onclick = clickRun;
-    onkeyupJump = clickRun;
-    el.onkeyup = keyupHand;
-}
-
-function chooseImg(i) {
-    indListEdit = i;
-    processingSelectedIMG = procSelectImg;
-    selectLoadImg();
-}
-
-function procSelectImg(adrImg) {
-    listEdit[indListEdit].value = adrImg;
-    document.getElementById("windEditBody").getElementsByClassName("imgLogo")[0].src = adrImg;
+*/
 }
 
 function keyupHand(e) {
@@ -638,31 +697,6 @@ function cbChangeProject(res) {
     
 }
 
-function selectLoadImg() {
-    doServer("GET", 'images/list', cbSelectImg);
-}
-
-cbSelectImg = function(res) {
-    windImg.style.display = 'block';
-    if (res == "") return;
-    listImg = JSON.parse(res);
-    var str = '';
-    for (var i = 0; i < listImg.length; i++) {
-        var path = listImg[i];
-        var ii = path.lastIndexOf("\\");
-        var nam = path.substring(ii + 1);
-        str += '<div style="clear: both; margin-top: 5px; height: 30px; cursor: pointer" onClick="isSelectImg(' + i + ')">' 
-                + '<img width="30" height="30" style="float: left; margin-right: 5px" src="' + path + '"><div>' 
-                + nam.substring(0, nam.indexOf('.')) + '</div></div>'
-    }
-    selImg.innerHTML = str;
-}
-
-function isSelectImg(i) {
-    windImg.style.display = 'none';
-    processingSelectedIMG(listImg[i]);
-}
-
 function setLayoutChange() {
     isScreenChange = true;
     isLayoutChange = true;
@@ -673,9 +707,32 @@ function cancelUploadImg() {
     alert("Files successfully transferred to server");
 }
 
-function generateProject() {
+function generateAPK() {
+    generateProject(true)
+}
+
+function generateProject(apk) {
     if (validDeclare()) {
-        doServer("GET", "export/android?projectId=" + currentProject.projectId, cbGenerateProject);
+        let title;
+        let url;
+        if (apk != null && apk) {
+            title = "Create APK";
+            url = "export/apk";
+        } else {
+            title = "Create project";
+            url = "export/android";
+        }
+        let windMenu = formWind(250, 300, 40, 250, title);
+        let fileCreate = document.createElement("div");
+        fileCreate.style.cssText = "text-align:center; margin-top:20px;";
+        fileCreate.innerHTML = "APK file generated";
+        windMenu.appendChild(fileCreate);
+        let buttSave = createButtonBlue("Save", 80);
+        buttSave.addEventListener("click", function(){closeWindow(buttSave);}, true);
+        buttSave.style.marginTop = "25px";
+        buttSave.className = "save-apk";
+        windMenu.appendChild(buttSave);
+        doServer("GET", url + "?projectId=" + currentProject.projectId, cbGenerateProject, null, windMenu, windMenu);
     }
 }
 
@@ -827,9 +884,14 @@ function isScreenDeclare(name) {
     return res;
 }
 
-function cbGenerateProject(res) {
-    var wind = commonWindow(250, 350, 35, 270, "Download project");
-    wind.innerHTML = res;
+function cbGenerateProject(res, wind) {
+    let save = wind.getElementsByClassName("save-apk")[0];
+    if (save != null) {
+        save.firstElementChild.innerHTML = '<a href="' + res + '" download style="text-decoration: none;color:#fff">Save</a>';
+    }
+    
+//    var wind = commonWindow(250, 350, 35, 270, "Download project");
+//    wind.innerHTML = res;
 }
 
 function setAppParameters() {
@@ -965,54 +1027,6 @@ function saveAll() {
             return value;
         });
     localStorage.setItem('resultUI', JSON.stringify(par));
-}
-
-function cbCreateProject(res) {
-//    plus_screen.style.display = "block";
-//    corners.style.display = "block";
-//    openMenu();
-    currentProject = JSON.parse(res);
-    cbCreateProjectDop();
-    shutScreen.style.display = "none";
-/*
-    project_name_bl.style.display = "block";
-    project_name.innerHTML = currentProject.nameProject;
-    listScreen = JSON.parse(currentProject.screens);
-    listColor = JSON.parse(currentProject.colors);
-    listDimens = JSON.parse(currentProject.dimens);
-    listValueAppParam = JSON.parse(currentProject.appParam);
-    if (currentProject.style != null) {
-        listStyle = JSON.parse(currentProject.style);
-    }
-    setListColor();
-    listDrawable = JSON.parse(currentProject.drawable);
-    setMaxIndexDrawable();
-    setLayout();
-    list_screens.innerHTML = "";
-    setListScreen();
-*/
-}
-
-function cbCreateProjectDop() {
-    ux_ui_w.style.display = "block";
-    plus_screen.style.display = "block";
-    corners.style.display = "block";
-    openMenu();
-    project_name_bl.style.display = "block";
-    project_name.innerHTML = currentProject.nameProject;
-    listScreen = JSON.parse(currentProject.screens);
-    listColor = JSON.parse(currentProject.colors);
-    listDimens = JSON.parse(currentProject.dimens);
-    listValueAppParam = JSON.parse(currentProject.appParam);
-    if (currentProject.style != null) {
-        listStyle = JSON.parse(currentProject.style);
-    }
-    setListColor();
-    listDrawable = JSON.parse(currentProject.drawable);
-    setMaxIndexDrawable();
-    setLayout();
-    list_screens.innerHTML = "";
-    setListScreen();
 }
 
 function closeListProj() {

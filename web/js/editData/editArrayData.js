@@ -128,7 +128,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
             tit[i].style.width = cellW + 'px';
         }
         widthTabl = tableEdit.clientWidth + 17;
-        tabBody.style.width = widthTabl + 'px';
+//        tabBody.style.width = widthTabl + 'px';
 //        tabTool.style.width = tableEdit.clientWidth + 'px';
         countRows = tableEditRows.length;
     }
@@ -259,6 +259,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
                     vv = item[nameV];
                 }
                 img.style.backgroundColor = "#0000";
+                img.style.cursor = "pointer";
                 if (vv != null && vv != "") {
                     img.src = vv;
                     img.srcElem = vv;
@@ -269,7 +270,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
                     img.style.marginLeft = "2px";
                     img.style.marginTop = "2px";
                 }
-                img.addEventListener('click', function(event){selecktImg(event)}, false);
+                img.addEventListener('click', function(event){selecktImgArrayData(event)}, false);
                 divImg.appendChild(img);
                 td.appendChild(divImg);
                 break;
@@ -306,38 +307,18 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
         return td;
     }
     
-    function selecktImg(e) {
-        imgSetValue = e.currentTarget;
-        doServer("GET", 'images/list', callBackSRC);
+    function selecktImgArrayData(e) {
+        selectListImage(e, setImgEditData, e.currentTarget);
+//        imgSetValue = e.currentTarget;
+//        doServer("GET", 'images/list', callBackSRC);
+    }
+    
+    function setImgEditData(i, par) {
+        let nn = listImage[i];
+        par.src = nn;
+        par.srcElem = nn;
     }
 
-    callBackSRC = function(res) {
-        windImg.style.display = 'block';
-        if (res == "") return;
-        listImg = JSON.parse(res);
-        var str = '';
-        selImg.innerHTML = "";
-        for (var i = 0; i < listImg.length; i++) {
-            var path = listImg[i];
-            var ii = path.lastIndexOf("/");
-            var nam = path.substring(ii + 1);
-            nam = nam.substring(0, nam.indexOf('.'))
-            let elList = document.createElement('div');
-            elList.style.cssText = "clear: both; margin-top: 5px; height: 30px; cursor: pointer";
-            elList.innerHTML = '<img width="30" height="30" style="float: left; margin-right: 5px" src="' + path + '"><div>' + nam + '</div>';
-            elList.srcElem = path;
-            elList.addEventListener('click', function(event){selectImgEditData(event)}, false);
-            selImg.appendChild(elList);
-        }
-    }
-    
-    function selectImgEditData(e) {
-        windImg.style.display = 'none';
-        let el = e.currentTarget;
-        imgSetValue.src = el.srcElem;
-        imgSetValue.srcElem = el.srcElem;
-    }
-    
     function setSelect(met, item) {
         let vv;
         if (item != null) {
@@ -453,36 +434,36 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
             }
         }
     }
-    
-function editFloat(event) {
-    let k = event.keyCode;
-    let z = event.key;
-    if (k < 47) {
-        return true;
-    }
-    if ((k > 47 && k < 58) || k == 173 || z == ".") {
-        if (k == 173) {
-            if (event.target.selectionStart > 0) {
-                event.preventDefault();
-                tooltipMessage(event.target, "Минус не в начале");
-                return false;
-            }
-        } else if (z == ".") {
-            let vv = event.target.value;
-            if (vv.indexOf(".") > -1) {
-                event.preventDefault();
-                tooltipMessage(event.target, "Точка уже есть");
-                return false;
-            }
+
+    function editFloat(event) {
+        let k = event.keyCode;
+        let z = event.key;
+        if (k < 47) {
+            return true;
         }
-        return true;
-    } else {
-        event.preventDefault();
-        tooltipMessage(event.target, "Только цифры");
-        return false;
+        if ((k > 47 && k < 58) || k == 173 || z == ".") {
+            if (k == 173) {
+                if (event.target.selectionStart > 0) {
+                    event.preventDefault();
+                    tooltipMessage(event.target, "Минус не в начале");
+                    return false;
+                }
+            } else if (z == ".") {
+                let vv = event.target.value;
+                if (vv.indexOf(".") > -1) {
+                    event.preventDefault();
+                    tooltipMessage(event.target, "Точка уже есть");
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            event.preventDefault();
+            tooltipMessage(event.target, "Только цифры");
+            return false;
+        }
     }
-}
-    
+
     function upDown(cC, cR) {
         let row = tableEditRows[cR];
         let cells = row.getElementsByTagName('td');
@@ -565,6 +546,13 @@ function editFloat(event) {
                         break;
                     case "SELECT":
                         item[edMeta[1].name] = elem.options[elem.selectedIndex].value;
+                        break;
+                    case "DIV":
+                        let elImg = elem.getElementsByTagName("img");
+                        if (elImg != null && elImg.length > 0) {
+                            elImg = elImg[0];
+                            item[edMeta[i1].name] = elImg.srcElem;
+                        }
                         break;
                     case "IMG":
                         item[edMeta[i1].name] = elem.srcElem;

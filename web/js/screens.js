@@ -1,36 +1,6 @@
-var components = new Array(
-/*
-        {name: "ToolBar", viewBaseId: "tool_bar", type: "ToolBar", onlyOne: true, editParam: '<div style="display: inline-block; vertical-align: top; margin-right: 5px">img back</div>'
-            +'<img class="img_back img_style" onclick="setImgBack()" width="24" height="24">'
-            +'<div style="margin-left: 5px; display: inline-block; vertical-align: top; margin-right: 5px">hamburger</div>'
-            +'<img class="img_hamburger img_style" onclick="setImgHamburg()" width="24" height="24">', 
-            specialView: ""},
-*/
-
-        {name: "ToolBar", uxFunc: uxToolBar, viewBaseId: "tool_bar", type: "ToolBar", onlyOne: true, editParam: "", 
-            specialView: ""},
-        {name: "MenuBottom", viewBaseId: "menu_b", type: "MenuBottom", onlyOne: true, editParam: '', 
-            specialView: '<div onclick="editMenu_b()" style="display: inline-block; vertical-align: top; cursor:pointer;margin-left: 20px">formation of menu</div>'},
-        {name: "Menu", viewBaseId: "menu", type: "Menu", onlyOne: true, editParam: '', 
-            specialView: '<div onclick="editMenu()" style="display: inline-block; vertical-align: top; cursor:pointer;margin-left: 20px">formation of menu</div>'},
-        {name: "List", uxFunc: uxList, viewBaseId: "list", type: "List", onlyOne: false, editParam: modelList, 
-            specialView: methodModel},
-        {name: "Pager", viewBaseId: "pager", type: "Pager", onlyOne: false, editParam: paramPager, 
-            specialView: ''},
-        {name: "TabLayout", viewBaseId: "tab_layout", type: "TabLayout", onlyOne: false, editParam: paramTab, 
-            specialView: ''},
-        {name: "Drawer", viewBaseId: "drawer", type: "Drawer", onlyOne: true, editParam: paramDrawer, 
-            specialView: ''},
-        {name: "Panel", viewBaseId: "panel", type: "Panel", onlyOne: false, editParam: paramPanel, 
-            specialView: methodModel},
-        {name: "ScrollPanel", viewBaseId: "scroll_panel", type: "ScrollPanel", onlyOne: true, editParam: paramPanel, 
-            specialView: methodModel},
-        {name: "Map", viewBaseId: "map", type: "Map", onlyOne: true, editParam: paramMap, 
-            specialView: methodModel}
-                );
-        
+var components = ["ToolBar", "MenuBottom", "Menu", "List", "Pager", "TabLayout", "Drawer", "Panel", "ScrollPanel", "Map"];
 var list_cont;
-var uxFunction;
+var uxFunction, uiFunction;
 
 var listScreen = [];
 var currentScreenView, currentComponentView;
@@ -40,13 +10,7 @@ var idScreenNum, idComponentNum;
 var positionScreen = 0;
 
 function plusScreen() {
-    if (currentScreenView != null) {
-        currentScreenView.className = "screen";
-        let listC = currentScreenView.getElementsByClassName("list_components");
-        if (listC != null && listC.length > 0) {
-            listC[0].style.display = "none";
-        }
-    }
+    hideScreen();
     currentScreen = {screenName: "SCREEN_" + idScreenNum, screenId: idScreenNum, screenComment: "", animate: 0, castom: "", typeScreen: 0, 
         title: "", titleParam: "", components: [], textErrors: "", levelErrors: 0};
     currentScreen.layout = 
@@ -64,8 +28,7 @@ function plusScreen() {
     ns.addEventListener('click', selScreen, true);
     idScreenNum ++;
     list_screens.append(ns);
-console.log("list_screens.scrollHeight="+list_screens.scrollHeight);
-    list_screens.scrollTop = list_screens.scrollHeight;
+    screen_container.scrollTop = screen_container.scrollHeight;
     setScreenView();
     container_scr.scroll_y.resize(container_scr);
 }
@@ -78,6 +41,12 @@ function selScreen(event) {
 }
 
 function selScreenView(scr, goto) {
+    hideScreen();
+    currentScreenView = scr;
+    setSelectScreen(goto);
+}
+
+function hideScreen() {
     if (currentScreenView != null) {
         oneScreenValid(currentScreen, currentScreenView);
         currentScreenView.className = "screen";
@@ -85,17 +54,18 @@ function selScreenView(scr, goto) {
         if (listC != null && listC.length > 0) {
             listC[0].style.display = "none";
         }
+        let tt = currentScreenView.getElementsByClassName("comment");
+        if (tt != null) {
+            var t = tt[0];
+            if (t.style.display == "block") {
+                t.style.display = "none";
+            }
+        }
     }
-    currentScreenView = scr;
-    setSelectScreen(goto);
 }
 
 function setSelectScreen(goto) {
     currentScreenView.className = "screen_sel";
-    let listC = currentScreenView.getElementsByClassName("list_components");
-    if (listC != null && listC.length > 0) {
-        listC[0].style.display = "block";
-    }
     var id = currentScreenView.idScreen;
     if (currentScreen != null && id != currentScreen.screenId) {
         var ik = listScreen.length;
@@ -111,10 +81,19 @@ function setSelectScreen(goto) {
     }
     if (currentScreen != null) {
         currentChildren = currentScreen.layout.children;
+        let listC = currentScreenView.getElementsByClassName("list_components");
+        if (listC != null && listC.length > 0) {
+            let listComp = listC[0];
+            listComp.style.display = "block";
+            let first = listComp.firstElementChild;
+            if (first != null) {
+                selComponentAll(first);
+            }
+        }
         setScreenView();
     }
     if (goto != null) {
-        list_screens.scrollTop = goto
+        screen_container.scrollTop = goto;
     }
 }
 
@@ -162,7 +141,7 @@ function setListScreen() {
             let typeComp = comp.type;
             let iT = -1;
             for (let t = 0; t < tk; t++) {
-                if (components[t].type == typeComp) {
+                if (components[t] == typeComp) {
                     iT = t;
                     break;
                 }
@@ -173,9 +152,11 @@ function setListScreen() {
                 nc.componentId = maxIdComponentNum;
                 nc.addEventListener('click', selComponent, true);
                 nc.className = "component";
+                currentComponent = comp;
+                currentComponentView = nc;
+                uxFunction = eval("new ux" + components[iT] + "();");
                 setValueComponent(nc, comp, currentComponentDescr);
                 list_cont.append(nc);
-                currentComponentView = nc;
                 maxIdComponentNum ++;
             }
         }
@@ -227,126 +208,8 @@ function getComponentDescrById(id) {
 
 function setValueComponent(nc, compLayout, comp_descr) {
     let cont = nc.getElementsByClassName("component_param")[0];
-    if (cont == null) return;
-    switch (compLayout.type) {
-        case "ScrollPanel":
-        case "Panel" :
-        case "List" :
-            let met = nc.getElementsByClassName("model_method");
-            if (met != null) {
-                if (comp_descr.model.method != null) {
-                    met = met[0];
-                    met[comp_descr.model.method].selected = true;
-                    changeMethod(met);
-                }
-            }
-            if (comp_descr.model.url != null && comp_descr.model.url.length > 0) {
-                let url = cont.getElementsByClassName("url")[0];
-                if (url != null) {
-                    url.value = comp_descr.model.url;
-                }
-            }
-            if (comp_descr.model.param != null && comp_descr.model.param.length > 0) {
-                let param = cont.getElementsByClassName("param")[0];
-                if (param != null) {
-                    param.value = comp_descr.model.param;
-                }
-            }
-            break;
-        case "Pager" :
-            let selTab = cont.firstElementChild.getElementsByClassName("select_tab");
-            if (selTab != null) {
-                selTab[0].innerHTML = formSelectForElem("TabLayout", "changeTab", comp_descr.view.tabLayout);
-            }
-            break;
-        case "TabLayout" :
-
-            break;
-        case "Drawer" :
-                let fragm = cont.getElementsByClassName("drawer_fragm")[0];
-                if (fragm != null && comp_descr.view.drawer_fragm != null) {
-                    fragm.value = comp_descr.view.drawer_fragm;
-                }
-                let tool_dr = cont.getElementsByClassName("tool_drawer")[0];
-                if (tool_dr != null) {
-                    tool_dr.firstElementChild.checked = comp_descr.view.toolInDrawer;
-                }
-                let menu_dr = cont.getElementsByClassName("menu_drawer")[0];
-                if (menu_dr != null) {
-                    menu_dr.firstElementChild.checked = comp_descr.view.menubInDrawer;
-                }
-            break;
-        case "ToolBar" :
-            if (compLayout.imgBack != null && compLayout.imgBack != "") {
-                let img = cont.getElementsByClassName("img_back")[0];
-                if (img != null) {
-                    img.src = compLayout.imgBack;
-                }
-            }
-            if (compLayout.imgHamburg != null && compLayout.imgHamburg != "") {
-                let img = cont.getElementsByClassName("img_hamburger")[0];
-                if (img != null) {
-                    img.src = compLayout.imgHamburg;
-                }
-            }
-            break;
-        case "Map" :
-            if (comp_descr.model.url != null && comp_descr.model.url.length > 0) {
-                let url = cont.getElementsByClassName("url")[0];
-                if (url != null) {
-                    url.value = comp_descr.model.url;
-                }
-            }
-            if (comp_descr.model.param != null && comp_descr.model.param.length > 0) {
-                let param = cont.getElementsByClassName("param")[0];
-                if (param != null) {
-                    param.value = comp_descr.model.param;
-                }
-            }
-            let par = comp_descr.param;
-            if (par != null) {
-                if (par.longitude != null && par.longitude.length > 0) {
-                    let long = cont.getElementsByClassName("long")[0];
-                    if (long != null) {
-                        long.value = par.longitude;
-                    }
-                }
-                if (par.latitude != null && par.latitude.length > 0) {
-                    let lat = cont.getElementsByClassName("lat")[0];
-                    if (lat != null) {
-                        lat.value = par.latitude;
-                    }
-                }
-                if (par.levelZoom != null && par.levelZoom.length > 0) {
-                    let zoom = cont.getElementsByClassName("zoom")[0];
-                    if (zoom != null) {
-                        zoom.value = par.levelZoom;
-                    }
-                }
-                if (par.myMarker != null && par.myMarker.length > 0) {
-                    let myMark = cont.getElementsByClassName("my_marker")[0];
-                    if (myMark != null) {
-                        myMark.src = par.myMarker;
-                    }
-                }
-                if (par.marker != null && par.marker.length > 0) {
-                    let Mark = cont.getElementsByClassName("marker")[0];
-                    if (Mark != null) {
-                        Mark.src = par.marker;
-                    }
-                }
-                let elem = cont.getElementsByClassName("target_but")[0];
-                if (elem != null) {
-                    elem.firstElementChild.checked = comp_descr.view.targetButton;
-                }
-                elem = cont.getElementsByClassName("zoom_but")[0];
-                if (elem != null) {
-                    elem.firstElementChild.checked = comp_descr.view.zoomButtons;
-                }
-            }
-            break;
-    }
-            
+//    if (cont == null) return;
+    uxFunction.setValue(cont);
 }
 
 function setSelected(cl, val) {
@@ -390,36 +253,37 @@ function newScreen() {
             +'<img onclick="plusCompon(this)" style="float:right;cursor:pointer;margin-top:15px;margin-right:10px" width="16" height="16" src="img/add_blue.png">'
         +'</div>'
 
-        +'<textarea class="comment" style="display:none;margin-left:10px;border:1px solid #C5DCFA;box-sizing: border-box;border-radius: 8px;" onchange="changeComment(this.value)" rows="3" cols="110" maxlength="500">' + currentScreen.screenComment + '</textarea>'
+        +'<textarea class="comment" style="display:none;margin-left:10px;border:1px solid #C5DCFA;box-sizing: border-box;border-radius: 8px;" onchange="changeComment(this.value)" rows="3" cols="108" maxlength="2000">' + currentScreen.screenComment + '</textarea>'
         +'<div class="list_components" style="margin-top:5px;margin-right:8px;margin-left:10px"></div>'
     +'</div>';
     return container.firstChild;
 }
-/*
-function areaSize(e) {
-    console.log("WWWW="+e.which);
-}
-*/
 
 function viewComment(el) {
     var tt = currentScreenView.getElementsByClassName("comment");
+/*
     var ss = currentScreenView.getElementsByClassName("shewron");
     var s = null;
     if (ss != null) {
         s = ss[0];
     }
+*/
     if (tt != null) {
         var t = tt[0];
         if (t.style.display == "none") {
             t.style.display = "block";
+/*
             if (s != null) {
                 s.src = "img/shewron_up_26.png";
             }
+*/
         } else {
             t.style.display = "none";
+/*
             if (s != null) {
                 s.src = "img/shewron_down_26.png";
             }
+*/
         }
         container_scr.scroll_y.resize(container_scr);
     }
@@ -487,32 +351,42 @@ function plusCompon(el) {
     if (el_1 != undefined) {
         list_cont = el_1[0];
         if (list_cont != null) {
-            var wind = commonWindow(250, 350, 70, 400, "Type component");
-            wind.innerHTML = "";
+            let wind = formWind(250, 450, 40, 350, "Type component", true);
             var ik = components.length;
-            for (var i = 0; i < ik; i++) {
-                wind.append(newTypeComponent(i));
+            for (let i = 0; i < ik; i++) {
+                let item = document.createElement("div");
+                item.className = "itemList";
+                if (i == 0) {
+                    item.style.borderTop = "1px solid #" + "fff";
+                }
+                let txtItem = document.createElement("div");
+                txtItem.className = "itemListTxt";
+                txtItem.style.cssText = "cursor:pointer;font-size:14px;width:100%;margin-top:7px;float:left;color:#555";
+                txtItem.innerHTML = components[i];
+//                txtItem.innerHTML = components[i].name;
+                item.appendChild(txtItem);
+                txtItem.addEventListener("click", function(){
+                    closeWindow(wind);
+                    selComponType(i);
+                }, true);
+                wind.appendChild(item);
             }
+            resizeScrol(wind);
         }
     }
 }
 
-function newTypeComponent(i) {
-    var container = document.createElement('div')
-    container.innerHTML = '<div class="type_component" onclick="selComponType('+i+')">' + components[i].name + '</div';
-    return container.firstChild;
-}
-
 function selComponType(i) {
-    closeCommonWindow();
     var nc = newComponent(i);
     nc.componentId = idComponentNum;
+//    nc.uxFunc = components[i].uxFunc;
     nc.addEventListener('click', selComponent, true);
     list_cont.append(nc);
     if (currentComponentView != null) {
         currentComponentView.className = "component";
     }
     currentComponentView = nc;
+    currentComponentView.className = "component_sel";
     list_screens.scrollTop = list_screens.scrollHeight;
     addNewComponent(i);
     idComponentNum ++;
@@ -536,14 +410,18 @@ function selComponentAll(el) {
     var ik = currentChildren.length;
     currentComponent = null;
     currentComponentDescr = null;
+    uxFunction = null;
     for (var i = 0; i < ik; i++) {
         var ls = currentChildren[i];
         if (id == ls.componentId) {
             currentComponent = ls;
+            uxFunction = eval("new ux" + currentComponent.type + "();");
             break;
         }
     }
-    currentComponentDescr = getComponentDescrById(currentComponent.viewId);
+    if (currentComponent != null) {
+        currentComponentDescr = getComponentDescrById(currentComponent.viewId);
+    }
 }
 
 // ??????????????????????????????????? служебный
@@ -570,28 +448,15 @@ function jsonNoViewParent(el) {
 
 
 function newComponent(i) {
-    if (i == 0 || i == 3) {
-        uxFunction = new components[i].uxFunc();
-    } else {
-        uxFunction = undefined;
-    }
-    var str;
+    uxFunction = eval("new ux" + components[i] + "();");
+    let parComp = uxFunction.getParamComp();
+    var str = '<div class="component_sel">'
+            +'<div class="name_compon" style="float:left">' + parComp.name + '</div>'
+            +'<div class="special_func" style="float:left;margin-top:3px;margin-left:20px;">' + uxFunction.getSpecialView() + '</div>'
+            +'<img onclick="del_compon(this)" style="float:right;cursor:pointer;margin-top:3px;margin-right:10px" width="18" height="18" src="img/close-o.png">'
+            +'<div class="component_param" style="padding: 5px;clear:both">' + uxFunction.getEditParam() + '</div>'
+            +'</div>';
     var container = document.createElement('div')
-    if (uxFunction != undefined) {
-        let parComp = uxFunction.getParamComp();
-        str = '<div class="component_sel">'
-            +'<div class="name_compon" style="float:left;">' + parComp.name + '</div>'
-            +'<div class="special_func" style="display: inline-block;margin-left:20px;">' + uxFunction.getSpecialView() + '</div>'
-            +'<img onclick="del_compon(this)" style="float:right;cursor:pointer;margin-top:3px;margin-right:10px" width="18" height="18" src="img/close-o.png">'
-            +'<div class="component_param" style="padding-left: 5px;">' + uxFunction.getEditParam() + '</div>'
-            +'</div>';
-    } else {
-        str = '<div class="component_sel"><div class="name_compon" style="display: inline-block;">' + components[i].name + '</div>'
-            +'<div class="special_func" style="display: inline-block;margin-left:20px;">' + components[i].specialView + '</div>'
-            +'<img onclick="del_compon(this)" style="float:right;cursor:pointer;margin-top:3px;margin-right:10px" width="18" height="18" src="img/close-o.png">'
-            +'<div class="component_param" style="padding: 5px;">' + components[i].editParam + '</div>'
-            +'</div>';
-    }
     container.innerHTML = str;
     return container.firstChild;
 }
@@ -633,77 +498,27 @@ function del_compon(el) {
 }
 
 function addNewComponent(i) {
-    let comp = components[i];
-    let viewId = setViewId(comp.viewBaseId);
-    switch (comp.name) {
-        case "ToolBar" :
-            currentComponent = {type: comp.type, componentId: idComponentNum, viewId: viewId, typeUxUi: "ux", componParam:{type:0},
-                    typeFull: {name: comp.type, typeBlock: 0}, gravLayout: {h: 3, v: 3}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
-                width:-1,height:56,topMarg:"",leftMarg:"",itemNav:{},textColor:101,textSize:20,background:0, viewElement: null,children:[]};
-            currentComponentDescr = {type:comp.type,componentId: idComponentNum,model:{},view:{viewId: viewId, title:"", titleParam: ""}};
-            break;
-        case "MenuBottom" :
-            currentComponent = {type: comp.type, componentId: idComponentNum, viewId: viewId, typeUxUi: "ux", componParam:{type:1},
-                    typeFull: {name: comp.type, typeBlock: 0}, gravLayout: {h: 3, v: 2}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
-                width:-1,height:56,topMarg:"",leftMarg:"",itemNav:{},background:0, viewElement: null,children:[]};
-            currentComponentDescr = {type:comp.type,componentId: idComponentNum,model:{menuList:{colorNormId:3,colorSelId:4,list:[]}},view:{viewId: viewId}};
-            break;
-        case "Menu" :
-            currentComponent = {type: comp.type, componentId: idComponentNum, viewId: viewId, typeUxUi: "ux", componParam:{type:2},
-                    typeFull: {name: comp.type, typeBlock: 10}, gravLayout: {h: 3, v: 3}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
-                width:-1,height:-1,itemNav:{},viewElement: null,children:[]};
-            currentComponentDescr = {type:comp.type,componentId: idComponentNum,model:{menuList:{colorNormId:0,colorSelId:1,colorEnabl:6,list:[]}},view:{viewId: viewId}};
-            break;
-        case "List" :
-            currentComponent = {type: comp.type, componentId: idComponentNum, viewId: viewId, typeUxUi: "ux", componParam:{type:2},
-                    typeFull: {name: comp.type, typeBlock: 10}, gravLayout: {h: 3, v: 3}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
-                width:-1,height:-1,itemNav:{},viewElement: null,children:[]};
-            currentComponentDescr = {type:comp.type,componentId: idComponentNum,model:{method:0,data:[]},view:{viewId: viewId},navigator:[]};
-            break;
-        case "Panel" :
-            currentComponent = {type: comp.type, componentId: idComponentNum, viewId: viewId, typeUxUi: "ux", componParam:{type:7},
-                    typeFull: {name: comp.type, typeBlock: 10}, gravLayout: {h: 3, v: 3}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
-                width:-1,height:-1,itemNav:{},viewElement: null,children:[]};
-            currentComponentDescr = {type:comp.type,componentId: idComponentNum,model:{method:0,data:[]},view:{viewId: viewId},navigator:[]};
-            break;
-        case "ScrollPanel" :
-            currentComponent = {type: comp.type, componentId: idComponentNum, viewId: viewId, typeUxUi: "ux", componParam:{type:9},
-                    typeFull: {name: comp.type, typeBlock: 10}, gravLayout: {h: 3, v: 3}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
-                width:-1,height:-1,itemNav:{},viewElement: null,children:[]};
-            currentComponentDescr = {type:comp.type,componentId: idComponentNum,model:{method:0,data:[]},view:{viewId: viewId},navigator:[]};
-            break;
-        case "Pager" :
-            currentComponent = {type: comp.type, componentId: idComponentNum, viewId: viewId, typeUxUi: "ux", componParam:{type:4}, // componParam:{type:3 для ComponTextView
-                    typeFull: {name: comp.type, typeBlock: 0}, gravLayout: {h: 3, v: 3}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}},
-                width:-1,height:-1,itemNav:{},viewElement: null,children:[]};
-            currentComponentDescr = {type:comp.type,componentId: idComponentNum,model:{},view:{viewId: viewId}};
-            break;
-        case "TabLayout" :
-            currentComponent = {type: comp.type, componentId: idComponentNum, viewId: viewId, typeUxUi: "ux", componParam:{type:5},
-                    typeFull: {name: comp.type, typeBlock: 0}, gravLayout: {h: 3, v: 3}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
-                    tabLayout:{indColor:3, textColor:3,textSelect:4,indHeight:2},
-                width:-1,height:56,background:0,itemNav:{},viewElement: null,children:[]};
-            currentComponentDescr = {type:comp.type,componentId: idComponentNum,model:{menuList:{list:[]}},view:{viewId: viewId}};
-            break;
-        case "Drawer" :
-            currentComponent = {type: comp.type, componentId: idComponentNum, viewId: viewId, typeUxUi: "ux", componParam:{type:6},
-                    typeFull: {name: comp.type, typeBlock: 10}, gravLayout: {h: 3, v: 3}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
-                width:-1,height:-1,itemNav:{},viewElement: null,children:[]};
-            currentComponentDescr = {type:comp.type,componentId: idComponentNum,model:{},view:{viewId: viewId}};
-            break;
-        case "Map" :
-            currentComponent = {type: comp.type, componentId: idComponentNum, viewId: viewId, typeUxUi: "ux", componParam:{type:11},
-                    typeFull: {name: comp.type, typeBlock:0}, gravLayout: {h: 3, v: 3}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
-                width:-1,height:-1,itemNav:{},viewElement: null,children:[]};
-            currentComponentDescr = {type:comp.type,componentId: idComponentNum,model:{method:0,data:[]},view:{viewId: viewId},param:{}};
-            break;
-    }
+    let viewId = setViewId(uxFunction.param.viewBaseId);
+    uxFunction.addComponent(viewId);
     currentScreen.components.push(currentComponentDescr);
     currentChildren.push(currentComponent);
     setValueComponent(currentComponentView, currentComponent, currentComponentDescr);
     setScreenView();
 }
-
+/*
+function getComponentById(id) {
+    let ik = currentChildren.length;
+    for (let i = 0; i < ik; i++) {
+        let ls = currentChildren[i];
+        if (ls.typeUxUi == "ux") {
+            if (ls.viewId == id) {
+                return ls;
+            }
+        }
+    }
+    return null;
+}
+*/
 function setViewId(id) {
     let ik = currentChildren.length;
     let count = 0;

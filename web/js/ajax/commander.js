@@ -15,6 +15,8 @@ function getCommanderRoot() {
     if (i > 0) {
         var d = rc.dir.substring(0, i);
         doServer("GET", 'commander/list_dir?dir=' + d, cbCommander);
+    } else if (i == 0) {
+        doServer("GET", 'commander/list_dir?dir=/', cbCommander);
     }
 }
 
@@ -50,7 +52,7 @@ function cbCommander(res) {
     var list = document.getElementById("list_file");
     list.innerHTML = "";
     var i = posSlash(rc.dir);
-    if (i > 0) {
+    if (i >= 0) {
         list.append(createNewElRoot());
     }
     for (var i = 0; i < ik; i++) {

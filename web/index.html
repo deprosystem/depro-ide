@@ -4,11 +4,11 @@
         <meta charset="utf-8">
         <title>IDE DePro</title>
 
-<!--
-        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
--->
-        <link href="https://fonts.googleapis.com/css?family=Proxima Nova" rel="stylesheet">
 
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+<!--
+        <link href="https://fonts.googleapis.com/css?family=Proxima Nova" rel="stylesheet">
+-->
         <link rel="stylesheet" href="css/index.css" type="text/css">
         <link rel="stylesheet" href="css/hamburger.css" type="text/css">
         <link rel="stylesheet" href="css/pickerColor.css" type="text/css">
@@ -17,23 +17,44 @@
 -->
         <script src="js/ajax/ajax.js" ></script>
         <script src="js/header_nav.js"></script>
+        <script src="js/helpLinks.js"></script>
+        <script src="js/uiCommonUse/uiAny.js" ></script>
+        <script src="js/uiElements/uiToolBar.js" ></script>
+        <script src="js/uiElements/uiMenuBottom.js" ></script>
+        <script src="js/uiElements/uiImageView.js" ></script>
+        <script src="js/uiElements/uiMap.js" ></script>
+        <script src="js/uiElements/uiTabLayout.js" ></script>
+        <script src="js/uiElements/uiPager.js" ></script>
+
+        <script src="js/uiElements/uiList.js" ></script>
+        <script src="js/paramComponent.js"></script>
         <script src="js/menu/menuProcessing.js" ></script>
         <script src="js/menu/menuIndex.js" ></script>
         <script src="js/menu/contMenuNav.js"></script>
         <script src="js/menu/popupMenu.js"></script>
-        <script src="js/components/editParams.js" ></script>
         <script src="js/components/contentParam.js" ></script>
         <script src="js/components/specialViews.js" ></script>
-        <script src="js/uxComponents/uxSeparators.js" ></script>
         <script src="js/uxComponents/uxNavigator.js" ></script>
+        <script src="js/uxCommonUse/uxSeparators.js" ></script>
+        <script src="js/uxCommonUse/model.js" ></script>
+        <script src="js/uxCommonUse/formElemUI.js" ></script>
+        <script src="js/uxComponents/uxPager.js" ></script>
+        <script src="js/uxComponents/uxTabLayout.js" ></script>
         <script src="js/uxComponents/uxToolBar.js" ></script>
+        <script src="js/uxComponents/uxMenuBottom.js" ></script>
+        <script src="js/uxComponents/uxMenu.js" ></script>
+        <script src="js/uxComponents/uxPanel.js" ></script>
+        <script src="js/uxComponents/uxScrollPanel.js" ></script>
+        <script src="js/uxComponents/uxMap.js" ></script>
+        <script src="js/uxComponents/uxDrawer.js" ></script>
         <script src="js/uxComponents/uxList.js" ></script>
-        <script src="js/uxComponents/model.js" ></script>
         <script src="js/editData/editData.js" ></script>
         <script src="js/editData/metaData.js" ></script>
         <script src="js/editData/editArrayData.js" ></script>
         <script src="js/tools/scrollX.js"></script>
         <script src="js/tools/tool.js"></script>
+        <script src="js/tools/handlingKeyEvents.js"></script>
+        <script src="js/selectList/selectListImage.js"></script>
         <script src="js/tools/formWind.js"></script>
         <script src="js/tools/dialogError.js"></script>
         <script src="js/tools/valid.js" ></script>
@@ -43,13 +64,14 @@
         <script src="js/screenValid.js"></script>
         <script src="js/cookie.js"></script>
         <script src="js/layoutIndex.js" charset="UTF-8"></script>
-        <script src="js/paramComponent.js"></script>
         <script src="js/initial.js"></script>
         <script src="js/editComponentsUX.js"></script>
         <script src="js/setComponent.js"></script>
         <script src="js/moveResize/movePanel.js" ></script>
         <script src="js/moveResize/moveElement.js" ></script>
         <script src="js/screens.js" ></script>
+        
+        <script src="js/uiElements/generalMenu.js" ></script>
         
         <script src="js/navigatorEl.js" ></script>
         
@@ -85,17 +107,19 @@
                 <div id="ux_ui" style="text-align: center;margin-top:9px;color:white;">UI</div>
             </div>
             
-            <div id="user_circle" style="float:right;background-color: #ff1eac;width: 22px;height: 22px;border-radius: 11px;margin-top:6px;margin-right:15px;">
-                <div id="info_user" style="margin-top:5px;text-align:center;color:black;font-size:12px;font-weight:bold;"></div>
+            <img width="35" height="35" onclick="helpDoc()" style="float: right; cursor: pointer;margin-right:10px;" src="img/question_2.png">
+            
+            <div id="user_circle" style="float:right;background-color: #ff1eac;width: 22px;height: 22px;border-radius: 11px;margin-top:6px;margin-right:10px;">
+                <div id="info_user" style="margin-top:4px;text-align:center;color:black;font-size:12px;font-weight:bold;"></div>
             </div>
             
             <div id="type_insert" style="height: 100%;float:right;width:150px;margin-right:10px;display:none">
-                <div style="color: #b1b1b1;font-size: 10px;margin-top: 4px;">Type insert</div>
+                <div style="color: #b5b5b5;font-size: 10px;margin-top: 4px;">Type insert</div>
                 <div id="info_type_insert" style="clear: both;color: white;font-size: 12px;"></div>
             </div>
             
             <div id="active" style="height: 100%;float:right;width:150px;margin-right:10px;display:none">
-                <div style="color: #b1b1b1;font-size: 10px;margin-top: 4px;">Active</div>
+                <div style="color: #b5b5b5;font-size: 10px;margin-top: 4px;">Active</div>
                 <div id="info_active" style="clear: both;color: white;font-size: 12px;"></div>
             </div>
         </div>
@@ -116,32 +140,56 @@
         </div>
         <div id="compon">
             <div id="container_scr" class="viewport" data-control="scroll">
-                <div class="content" style="right: 15px">
+                <div id="screen_container" class="content" style="padding-right: 15px">
                     <div id="list_screens">
 
                     </div>
                 </div>
-                <div id="inf_error" style="width: 10px; height: 10px; position: absolute;right: 7px;top: 0px;background-color:#0f0"></div>
+                <div id="inf_error" style="width: 10px; height: 7px; position: absolute;right: 7px;top: 0px;background-color:#0f0"></div>
                 <div id="box_error" style="width: 10px; position: absolute;right: 7px;top: 15px;bottom: 10px;background-color:#dfdfdf"></div>
             </div>
         </div>
         <div id="haracteristicks">
-            <div id="layout-par">
-                <div id="el_type" style="padding-left: 10px; display: inline-block"></div><br>
-                <div class="el_id" style="padding-left: 5px; margin-top: 10px; display: inline-block">
-                        <div style="width: 20px">id: </div>
-                        <input id="el_id_input" type="text" size="25"/>
+            <div id="layoutParam">
+                <div style="margin-left: 12px;margin-top: 12px;margin-right: 12px;height: 18px">
+                    <div id="el_type" style="float: left;font-size: 14px;color: #110000;font-weight: 600"></div>
+                    <div onclick="checkVisibility(this);" style="float: right;cursor: pointer">
+                        <div style="float: right;">Visibility</div>
+                        <img id="visibility" style="float: right;margin-right: 10px;" width="16" height="16" src="img/check-sel_1.png">
+                    </div>
                 </div>
-                <div id="m_propBody" style="position:absolute;left: 0px;right: 0px;bottom: 10px;top: 50px;margin-top: 10px">
+                <div style="margin-left:12px;margin-top:12px;margin-right: 12px">
+                    <div class="text_style_ui">Id</div>
+                    <input class="input_style_ui" id="el_id_input" type="text" >
+                </div>
+                
+                <div style="margin-left:12px;margin-top:18px;margin-right: 12px;height: 26px">
+                    <div id="tabLayout" class="tab_head" style="background: #E7F7FF;">
+                        <div onclick="setLayoutDiv()" style="margin-top: 5px;text-align: center;color: #2C3336;cursor: pointer">Layouts</div>
+                    </div>
+                    <div id="tabContent" class="tab_head">
+                        <div onclick="setContentDiv()" style="margin-top: 5px;text-align: center;color: #2C3336;cursor: pointer">Content</div>
+                    </div>
+                </div>
+                
+                <div style="position: absolute;left: 12px;top: 130px;right: 12px;bottom: 5px;">
+                    <div id="layoutAttributes" style="position: absolute;left: 0;top: 0;right: 0;bottom: 0;"></div>
+                    <div id="contenttAttributes" style="position: absolute;left: 0;top: 0;right: 0;bottom: 0;"></div>
+                </div>
+
+                <div id="m_propBody" style="position:absolute;left: 0px;right: 0px;bottom: 10px;top: 50px;height: 26px;margin-top: 10px;display: none">
                     <div id='m_bmPEhead'>
                         <div class="m_bmPE" onclick='m_bmStart(this)'>Layout</div>
                         <div class="m_bmPE" onclick='m_bmStart(this)'>Content</div>
                     </div>
                     <div style='height: 5px;background: #c1e1fc'></div>
+
                     <div id="m_bmPEbody" style="position: absolute;left: 0px;top: 27px;right: 0px;bottom: 10px;overflow-y:auto">
 
                     </div>
+
                 </div>
+
             </div>
         </div>
         <div id="content_v" onclick="hideSelectEl(event)">
@@ -165,9 +213,9 @@
             <div style="height: 32px; position: absolute;bottom: 0px;width: 100%">
                 <div id="footer_inf"></div>
                 <div style="float: right; margin-right: 24px;height: 100%">
-                    <img id="scaleMinus" width="24" height="24" onclick="scaleMinus()" style="float: left;margin-top: 2px" src="img/minus.png">
+                    <img id="scaleMinus" width="24" height="24" onclick="scaleMinus()" style="float: left;margin-top: 2px;cursor: pointer" src="img/minus.png">
                     <div id="scaleValue" style="float: left;width: 50px;text-align: center;margin-top: 7px">100%</div>
-                    <img id="scalePlus" width="24" height="24" onclick="scalePlus()" style="float: left;margin-top: 2px" src="img/plus.png">
+                    <img id="scalePlus" width="24" height="24" onclick="scalePlus()" style="float: left;margin-top: 2px;cursor: pointer" src="img/plus.png">
                 </div>
                 <div id="dev" style="height: 100%; float: right; margin-right: 20px"></div>
 
@@ -383,14 +431,14 @@
             </div>
             <div class="windContent" style="position: absolute;left: 0px;right: 0px;top: 20px;bottom: 0px;padding-left: 5px; overflow: auto;"></div>
         </div>
-        
+<!--
         <div id="uploadPanel" style="position: absolute; background: white; width: 100%; height: 100%; background-color: #0000;
              z-index: 110; display: none; align-items: center; justify-content: center">
             <iframe id="uploadFrame" name="frameUpload" src="upload.html" height="250" width="450" style="background: #eee">
                 
             </iframe>
         </div>
-        
+-->
         <div id="windList" >
             <div class='titleWind' onmousedown="moveWind(event)">
                 <div class="titleWindName">Select project</div>
@@ -398,7 +446,7 @@
             </div>
             <div id="listBody" style="padding-left: 5px; height: 400px; overflow: auto;"></div>
         </div>
-        
+<!--
         <div id="windHelp">
             <div class='titleWind' onmousedown="moveWind(event)">
                 <div class="titleWindName">Help</div>
@@ -406,8 +454,10 @@
             </div>
             <div id="helpBody" style="padding-left: 5px; height: 400px; overflow: auto;"></div>
         </div>
+
         <div id='blockAllHelp' onclick="hiddenWindHelp()" style="background-color: #ccc7; top: 0px;left: 0px;right: 0px;bottom: 0px;z-index: 1000;position: absolute;display: none"></div> <!-- перекриває всі інші елементи, щоб вони не сприймали подій від миші    -->
         <div id='n_blockAll' onclick="n_hiddenContMenu()" style="background-color: #ccc4; top: 0px;left: 0px;right: 0px;bottom: 0px;z-index: 1000;position: absolute;display: none"></div> <!-- перекриває всі інші елементи, щоб вони не сприймали подій від миші    -->
+        
         <div id="listProjects" style="position: absolute; top:var(--h_header);left: 0px; right: 0px; bottom: 0px; display:none;background-color:#e5e5e5;z-index:100;">
             <div style="width: 100%;height: 24px;"><img onclick="closeListProj()" width="18" height="18" style="margin-top: 6px; margin-left: 20px;cursor:pointer" src="img/del_red_pres.png"></div>
             <div id="listProjectsScr" class="viewport" style="top:24px"></div>

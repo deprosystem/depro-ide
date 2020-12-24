@@ -20,6 +20,27 @@ function tooltipMessage(target, message) {
     setTimeout(function(){ document.body.removeChild(dv);},2000);
 }
 
+function tooltipHelpOver(target, message) {
+    let maxW = 250;
+    let xy = getCoordsEl(target);
+    let x = xy.left;
+    let y = xy.top;
+    let dv = document.createElement('div');
+    if (y > 30) {
+        y -= 30;
+    } else {
+        y += 20;
+    }
+    let wD = document.documentElement.clientWidth;
+    if ((wD - x) < maxW) {
+        x = wD - maxW - 20;
+    }
+    dv.style.cssText = "position:absolute;max-width:" + maxW + "px;padding:5px;background:#d5f0ff;border:1px solid #1dace9;border-radius:8px;left:" + x + "px;top:" + y + "px;z-index:100";
+    dv.innerHTML = message;
+    document.body.append(dv);
+    setTimeout(function(){ document.body.removeChild(dv);},2000);
+}
+
 function getCoordsEl(elem) { 
     var box = elem.getBoundingClientRect();
     return {
@@ -49,4 +70,10 @@ function getChildrenByClassName(el, name) {
     } else {
         return null;
     }
+}
+
+function newDOMelement(st) {
+    var container = document.createElement('div')
+    container.innerHTML = st;
+    return container.firstChild
 }

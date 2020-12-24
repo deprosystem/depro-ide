@@ -1,4 +1,4 @@
-function formWind(w, h, t, l, tit) {
+function formWind(w, h, t, l, tit, scroll) {
     let ww = document.createElement('div');
     ww.className = "dataWindow";
     ww.style.width = w + 'px';
@@ -11,7 +11,27 @@ function formWind(w, h, t, l, tit) {
     contW.style.cssText = "position:absolute;right:0px;bottom:0px;left:0px;top:56px;";
     ww.appendChild(contW);
     document.body.append(ww);
-    return contW;
+    if (scroll != null && scroll) {
+        let viewport = document.createElement('div');
+        viewport.className = "viewport";
+        let content = document.createElement('div');
+        content.className = "content";
+        viewport.appendChild(content);
+        contW.appendChild(viewport);
+        let scrollVert = new scrollX(viewport, "scroll");
+        scrollVert.init();
+        return content;
+    } else {
+        return contW;
+    }
+}
+
+function resizeScrol(w) {
+    let vp = w.parentElement;
+    let scr = vp.scroll_y;
+    if (scr != null) {
+        scr.resize(vp);
+    }
 }
 
 function formWindCenter(w, h, tit) {

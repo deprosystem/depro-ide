@@ -37,12 +37,7 @@ function setBoxError() {
             if (scr.levelErrors > maxError) {
                 maxError = scr.levelErrors;
             }
-            let marker = newMarker(scr.screenName, scr.levelErrors, i * h_screen);
-/*
-            let marker = document.createElement('div');
-            marker.style.cssText = 'position: absolute; width:100%;height:3px;top:' + (i * h_screen) + 'px;cursor:pointer;background-Color:' + colorsEroor[scr.levelErrors];
-            marker.idScreen = scr.screenId;
-*/
+            let marker = newMarker(scr.screenId, scr.levelErrors, i * h_screen);
             box_error.appendChild(marker);
         }
     }
@@ -53,18 +48,18 @@ function setBoxError() {
     }
 }
 
-function newMarker(name, err, top_mark) {
+function newMarker(id, err, top_mark) {
     let container = document.createElement('div')
-    container.innerHTML = '<div onclick="clickMarker(' + name + ')" style="position: absolute; width:100%;height:4px;top:' + top_mark + 'px;cursor:pointer;background-Color:' + colorsEroor[err] + '"></div>';
+    container.innerHTML = '<div onclick="clickMarker(' + "'" + id + "'" + ')" style="position: absolute; width:100%;height:4px;top:' + top_mark + 'px;cursor:pointer;background-Color:' + colorsEroor[err] + '"></div>';
     return container.firstChild
 }
 
-function clickMarker(name) {
-console.log(name);
-    let ik = list_screens.length;
+function clickMarker(id) {
+    let list = list_screens.children;
+    let ik = list.length;
     for (let i = 0; i < ik; i++) {
-        let scrV = list_screens[i];
-        if (scrV.screenName == name) {
+        let scrV = list[i];
+        if (scrV.idScreen == id) {
             selScreenView(scrV, i * heightScreen);
         }
     }

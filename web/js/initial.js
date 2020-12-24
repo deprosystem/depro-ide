@@ -19,6 +19,8 @@ function initialView(AuthResult) {
     loginPanel.style.display = "none";
     formMenuEl_UX();
     var ins = new insertHtml();
+    ins.get('layoutAttributes', 'layout/layoutAttr.html', setLayoutDiv);
+    var ins = new insertHtml();
     ins.get('m_bmPEbody', 'layout/layoutParam.html', m_bmStart);
     currentProject = ar.project;
     if (currentProject == null) {
@@ -65,6 +67,8 @@ function inFocus() {
         }
     }
 }
+
+
 
 function m_bmStart(el) {
     var chB=m_bmPEbody.children;

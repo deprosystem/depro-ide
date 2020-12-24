@@ -138,7 +138,7 @@ function formSelectForElem(type, onchange, initValue) {
 
 function formSelectTagForType(ll, num, onchange) {
     let ik = ll.length;
-    let st = '<select onchange="' + onchange + '(this)">';
+    let st = '<select class="select_'+ browser + '" onchange="' + onchange + '(this)">';
     for (let i = 0; i < ik; i++) {
         let sel = "";
         if (num == i) {

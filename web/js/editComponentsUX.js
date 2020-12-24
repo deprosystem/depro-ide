@@ -1,11 +1,11 @@
-var listImg;
+//var listImg;
 var imgMenuItem;
 var windMenu;
 var windListData;
 var elementChangeColor;
 
 var typeData = ["Text","Img","Int","Float","Time"];
-
+/*
 function setImgBack() {
     doServer("GET", 'images/list', cbSRC, null, "selectImgBack");
 }
@@ -13,7 +13,9 @@ function setImgBack() {
 function setImgHamburg() {
     doServer("GET", 'images/list', cbSRC, null, "selectImgHamburg");
 }
+*/
 
+/*
 function setMyMarker() {
     doServer("GET", 'images/list', cbSRC, null, "selectMyMarker");
 }
@@ -80,7 +82,8 @@ function createMarker(nn) {
     container.innerHTML = '<img src="' + nn + '" style="top:150px;left:50px;position:absolute" width="30" height="30"></div>'
     return container.firstChild
 }
-
+*/
+/*
 function selectImgBack(i, el) {
     closeDataWindow(el);
     var nn = listImg[i];
@@ -110,7 +113,9 @@ function selectImgHamburg(i, el) {
     imgBl.src = nn;
     currentComponent.imgHamburg = nn;
 }
+*/
 
+/*
 function editMenu_b() {
     el = newDopElMenu();
     editDataWind(metaMenu, currentComponentDescr.model.menuList.list, cbSaveMenuB, el);
@@ -153,6 +158,7 @@ function setSelColorMenu(id, color) {
     elementChangeColor.style.backgroundColor = color;
     windSelectColor.style.display = 'none';
 }
+*/
 
 function editMenu() {
     el = newDopElMenu();
@@ -226,13 +232,15 @@ function del_menu_item(el) {
     
 }
 */
+/*
 function callbackSaveDataTab() {
     if (currentComponent.viewElement != null) {
         let mB = currentComponent.viewElement.getElementsByClassName("tab_layout")[0];
         showTabLayout(currentComponentDescr.model.menuList.list, mB, currentComponent.tabLayout);
     }
 }
-
+*/
+/*
 function showTabLayout(dat, mB, tab) {
     mB.innerHTML = "";
     let ik = dat.length;
@@ -243,11 +251,12 @@ function showTabLayout(dat, mB, tab) {
         mB.append(newItemTabNext(dat[i], tab, widthItem));
     }
 }
-
+*/
+/*
 function newItemTab(item, tabLayout, ww) {
     let container = document.createElement('div')
     let str = '<div class="item_buttons" style="position:relative;width:'+ ww + '%;display:inline-block;height:100%">'
-            +'<div style="margin-top:5px;text-align: center;font-size:' + dp_20 + 'px;color:' + findColorByIndex(tabLayout.textColor) + '">' + item.title + '</div>'
+            +'<div style="margin-top:5px;text-align: center;font-size:' + dp_20 + 'px;color:' + findColorByIndex(tabLayout.textSelect) + '">' + item.title + '</div>'
             +'<div style="height:' + tabLayout.indHeight * MEASURE + 'px;position:absolute;background-color:' + findColorByIndex(tabLayout.indColor) + ';bottom:0px;width:100%"></div>'
         +'</div>';
     container.innerHTML = str;
@@ -262,7 +271,7 @@ function newItemTabNext(item, tab, ww) {
     container.innerHTML = str;
     return container.firstChild;
 }
-
+*/
 function newItemAndr(item, colorId) {
     let container = document.createElement('div')
     let str = '<div class="item_buttons" style="text-align:center;">'
@@ -278,10 +287,12 @@ function clickUpURL(e) {
     currentComponentDescr.model.url = a.value;
 }
 */
+/*
 function clickUpDrawer(e) {
     let a = e.currentTarget;
     currentComponentDescr.view.drawer_fragm = a.value;
 }
+*/
 /*
 function changeUrlParam(v) {
     currentComponentDescr.model.param = v;
@@ -305,7 +316,7 @@ function changeMethod(el) {
     }
 }
 */
-
+/*
 function formTestData(el) {
     let dat = currentComponentDescr.model.data;
     if (dat == null || dat.length == 0) {
@@ -322,7 +333,8 @@ function formTestData(el) {
 function cbSaveTestDat() {
     currentComponentDescr.model.testData = JSON.stringify(currentComponentDescr.model.test);
 }
-
+*/
+/*
 function createViewForListH() {
     let listV = currentComponent.viewElement;
     if (listV != null) {
@@ -420,13 +432,13 @@ function createViewForListV() {
         }
     }
 }
-
+*/
+/*
 function createViewForPanel() {
     let listV = currentComponent.viewElement;
     if (listV != null) {
         let ik = currentComponentDescr.model.data.length;
         if (ik > 0) {
-//            let p;
             let imgHeight = 240;
             n_selectElement = listV;
             setActive(n_selectElement);
@@ -460,7 +472,8 @@ function createViewForPanel() {
         }
     }
 }
-
+*/
+/*
 function createSheetBottomH() {
 
 }
@@ -521,7 +534,8 @@ function createSheetBottomV() {
         viewCompon();
     }
 }
-
+*/
+/*
 function formElement(item, toRightOf, namePrev, topM) {
     let txtView;
     let p;
@@ -586,7 +600,8 @@ function formElement(item, toRightOf, namePrev, topM) {
     }
     viewCompon();
 }
-
+*/
+/*
 function formImgFirst(ww, imgHeight) {
     let item;
     let imgId = -1;
@@ -609,24 +624,6 @@ function formImgFirst(ww, imgHeight) {
         viewCompon();
     }
     return imgId;
-}
-
-function formDivider() {
-    currentElement = createNewEl();
-    p = {typeUxUi: "ui"};
-    p.type = 'RelativeLayout';
-    p.typeFull = {name: 'RelativeLayout', typeBlock: 2};
-    p.gravLayout = {h:4,v:BOTTOM};
-    p.gravity = {h:4,v:4};
-    p.width = -1;
-    p.height = 1;
-    p.background = 6;
-    p.children = [];
-    currentElement.android = p;
-    addNewElement(ACTIVE, currentElement);
-    addNavigatorEl(currentElement);
-    ACTIVE.android.children.push(currentElement.android);
-    return currentElement;
 }
 
 function formImg(item) {
@@ -663,7 +660,7 @@ function formGallery(item) {
     ACTIVE.android.children.push(currentElement.android);
     return currentElement;
 }
-
+*/
 function formSheetBottom(id) {
     currentElement = createNewEl();
     p = {typeUxUi: "ui"};
@@ -684,7 +681,7 @@ function formSheetBottom(id) {
     ACTIVE.android.children.push(currentElement.android);
     return currentElement;
 }
-
+/*
 function formTxt(item) {
     currentElement = createNewEl();
     p = {typeUxUi: "ui"};
@@ -703,7 +700,7 @@ function formTxt(item) {
     ACTIVE.android.children.push(currentElement.android);
     return currentElement;
 }
-
+*
 function createListView() {
     currentElement = createNewEl();
     p = {typeUxUi: "ui"};
@@ -718,7 +715,7 @@ function createListView() {
     currentElement.android = p;
     return currentElement;
 }
-
+*/
 function createSheetPanel() {
     currentElement = createNewEl();
     p = {typeUxUi: "ui"};
@@ -733,12 +730,13 @@ function createSheetPanel() {
     currentElement.android = p;
     return currentElement;
 }
-
+/*
 function createDataTab() {
     el = newDopElTab();
     editDataWind(metaPager, currentComponentDescr.model.menuList.list, callbackSaveDataTab, el);
 }
-
+*/
+/*
 function newDopElTab() {
     let item = currentComponent.tabLayout;
     var container = document.createElement('div')
@@ -762,8 +760,9 @@ function newDopElTab() {
     container.innerHTML = str;
     return container.firstChild
 }
+*/
 // tabLayout:{indColor:3, textColor:3,textSelect:4,indHeight:2}
-
+/*
 function changeIndHTab(el) {
     currentComponent.tabLayout.indHeight = el.value;
 }
@@ -800,7 +799,7 @@ function setIndColorTab(id, color) {
     elementChangeColor.style.backgroundColor = color;
     windSelectColor.style.display = 'none';
 }
-
+*/
 function newItemFromString(str) {
     var container = document.createElement('div')
     container.innerHTML = str;
@@ -815,6 +814,7 @@ function cbSaveDataModel() {
     
 }
 */
+/*
 function createTabLayoutCont() {
     currentElement = createNewEl();
     p = {typeUxUi: "ui"};
@@ -828,16 +828,19 @@ function createTabLayoutCont() {
     currentElement.android = p;
     return currentElement;
 }
-
+*/
+/*
 function changeTab(el) {
     let st = el.options[el.selectedIndex].value;
     currentComponentDescr.view.tabLayout = st;
 }
+*/
 /*
 function navigatorCompon() {
     editDataWind(metaNavigator, currentComponentDescr.navigator);
 }
 */
+/*
 function checkToolBarDrawer(el) {
     currentComponentDescr.view.toolInDrawer = el.checked;
 }
@@ -887,12 +890,13 @@ function createMapZoom() {
     container.innerHTML = '<img class="map_zoom" src="img/zoom.png" style="bottom:10px;right:10px;position:absolute" width="30" height="60"></div>'
     return container.firstChild
 }
-
+*/
 /*
 function checkZoomBut(el) {
     currentComponentDescr.view.zoomButtons = el.checked;
 }
 */
+/*
 function help_compon(type) {
     windHelp.style.display = "block";
     blockAllHelp.style.display = "block";
@@ -905,7 +909,7 @@ function hiddenWindHelp() {
     windHelp.style.display = "none";
     blockAllHelp.style.display = "none";
 }
-
+*/
 function changeTextColorTab(el) {
     elementChangeColor = el;
     openPickerColor(el.style.backgroundColor, setTextColorTab);
@@ -920,7 +924,7 @@ function setTextColorTab(id, color) {
         showTabLayout(currentComponentDescr.model.menuList.list, mB, currentComponent.tabLayout);
     }
 }
-
+/*
 function editFloat(event) {
     let k = event.keyCode;
     let z = event.key;
@@ -949,7 +953,8 @@ function editFloat(event) {
         return false;
     }
 }
-
+*/
+/*
 function changeLongitude(el) {
     currentComponentDescr.param.longitude = el.value;
 }
@@ -961,4 +966,4 @@ function changeLatitude(el) {
 function changeLevelZoom(el) {
     currentComponentDescr.param.levelZoom = el.value;
 }
-
+*/

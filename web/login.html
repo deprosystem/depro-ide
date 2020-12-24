@@ -3,11 +3,13 @@
     <head>
         <meta charset="Windows-1251">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+<!--
         <link href="https://fonts.googleapis.com/css?family=Proxima Nova" rel="stylesheet">
-        
+-->
         <style>
             html,body {margin:0;}
-            body {font-family: 'Proxima Nova', sans-serif;font-size:12px}
+            body {font-family: 'Proxima Nova', sans-serif;font-size:12px;}
             .logreg {font-size:24px;text-align:center;margin-top:30px;margin-bottom:14px;}
             .input_style {border: 1px solid #bbd4ef;margin-left:30px;border-radius:5px;height:28px;padding-left:4px;font-size:14px;width:280px}
             .text_style {font-size:10px;margin-left:30px;margin-top:16px;}
@@ -71,8 +73,12 @@
                     url = "auth/login";
                     data = JSON.stringify({login: login.value, password: password.value});
                 }
-                doServer("POST", url, cbLoginRegistr, data);
+                doServer("POST", url, cbLoginRegistr, data, null, null, cbError);
                 progr.style.display = "block";
+            }
+            
+            function cbError(res) {
+                progr.style.display = "none";
             }
             
             function cbLoginRegistr(res) {
@@ -91,13 +97,13 @@
             <div id="title" class="logreg">Login</div>
             <div class="text_style" id="nameUsT" style="display:none">Name</div>
             <input class="input_style" style="display:none" id="nameUs" type="text" name="name" size="15">
-            
+
             <div class="text_style">Email</div>
             <input class="input_style" id="login" type="text" name="login" size="15" onkeyup="keyUpSend(event)">
-                
+
             <div class="text_style">Password</div>
             <input class="input_style" id="password" type="password" name="password" size="15">
-            
+
             <div class="futer_wind">
                 <div onclick="sendAuth()" class="button_blue">
                     <div style="text-align: center;margin-top:7px;color:#fff">Send</div>
@@ -108,8 +114,10 @@
                 </div>
             </div>
         </form>
+
         <div id="progr" style="position:absolute;left:0;top: 0;right: 0;bottom: 0;display: none;background-color: white">
             <img id="rotor" src="img/progress.png" alt="">
         </div>
+
     </body>
 </html>

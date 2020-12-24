@@ -74,10 +74,10 @@ public class ProjectDB extends BaseDB {
         }
     }
     
-    public void changeProject(ProjectM pc) {
+    public void changeProject(ProjectM pc, String projectId) {
         String strUpd = "UPDATE projects SET ";
         strUpd += "project_name ='" + pc.nameProject +  "', package='" + pc.namePackage +  "', project_comment='" + pc.comment + "', app_name ='" + pc.nameAPP 
-                + "', logo ='" + pc.logo + "', image ='" + pc.image + "' WHERE project_id = " + pc.projectId;
+                + "', logo ='" + pc.logo + "', image ='" + pc.image + "' WHERE project_id = " + projectId;
         try (Connection connection = getDBConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(strUpd);
         } catch (SQLException ex) {

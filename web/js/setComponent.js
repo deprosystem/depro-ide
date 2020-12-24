@@ -217,11 +217,11 @@ function createDivClick2(i, j) {
 //    container.innerHTML = '<div onclick="clickCategory2('+i+','+j+')" oncontextmenu="contextCategory2('+i+','+j+')"> </div>';
     return container.firstChild
 }
-
+/*
 function viewCompon() {
     viewComponElem(currentElement);
 }
-
+*/
 function changeBackground(el) {
     var p = el.android;
     if (p.background != null) {

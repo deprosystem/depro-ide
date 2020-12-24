@@ -1,0 +1,18 @@
+<div class="model_view" style="height:40px;">
+    <div style="float:left;">
+        <div style="color:#2228;font-size: 10px;margin-left:4px">Method</div>
+        <select class="model_method type_screen select_f" onchange="changeMethod(this)" style="width:100px;">
+            <option>GET</option><option>POST</option><option>TEST</option><option>JASON</option><option>ARGUMENT</option>
+        </select>
+    </div>
+    <div class="param_method" style="float:left;margin-left:10px;"></div>
+    <div style="float:left;margin-left:10px;">
+        <div style="float:left;width:1px;height:26px;margin-top:13px;background-color:var(--c_separator)"></div>
+        <img onclick="editDataModel()" width="20" height="20" src="img/edit_meta.png" style="margin-top:16px;float:left;margin-left:10px;cursor:pointer;" onmouseover="tooltipHelpOver(this,'Data Description')">
+        <div style="float:left;margin-left:10px;">
+            <div style="color: #2228;font-size: 10px;float:left;">Create View</div>
+            <img onclick="createSheetBottomH(this)" width="16" height="16" src="img/form_protot_hor.png" style="margin-top:6px;float:left;clear:both;cursor:pointer;">
+            <img onclick="createSheetBottomV(this)" width="16" height="16" src="img/form_protot_vert.png" style="margin-top:4px;float:left;margin-left:10px;cursor:pointer;">
+        </div>
+    </div>
+</div>

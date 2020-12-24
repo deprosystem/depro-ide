@@ -30,12 +30,11 @@ public class ImagesList extends BaseServlet {
     }
     
     private String getListImages(String dataPath, String userDataPath) {
-System.out.println("dataPath="+dataPath+"<< userDataPath="+userDataPath+"<<");
         String res = "[]";
         List<String> results = new ArrayList();
         File[] files = new File(dataPath).listFiles();
         if (files == null) {
-            System.out.println("ImagesList error: No icons");
+            System.out.println("ImagesList error: No icons dataPath=" + dataPath);
         } else {
             for (File file : files) {
                 if (file.isFile()) {

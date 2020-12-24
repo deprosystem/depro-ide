@@ -100,9 +100,9 @@ function moveEl(event) {
 }
 
 function createNewEl() {
-    var container = document.createElement('div')
+    var container = document.createElement('div');
     container.innerHTML = '<div class="element" onclick="clickElement(event, this)" style="position: absolute; outline: 2px solid #aaa; overflow: hidden"></div>'
-    return container.firstChild
+    return container.firstChild;
 }
 
 function mouseUpNewEl(e) {
@@ -138,9 +138,13 @@ function mouseUpNewEl(e) {
                 p.textSize = 14;
                 break;
             case 'ImageView' :
+                uiFunction = eval("new ui" + p.type + "()");
+                typeEl = uiFunction.newElementUI(p);
+/*
                 typeEl = createDivImg();
                 p.src = "";
                 p.scaleType = 0;
+*/
                 break;
             case 'Gallery' :
                 typeEl = createDivImg();

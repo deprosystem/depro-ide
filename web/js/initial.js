@@ -18,9 +18,12 @@ function initialView(AuthResult) {
     };
     loginPanel.style.display = "none";
     formMenuEl_UX();
+/*
     var ins = new insertHtml();
     ins.get('layoutAttributes', 'layout/layoutAttr.html', setLayoutDiv);
-    var ins = new insertHtml();
+*/
+    setLayoutDiv();
+    let ins = new insertHtml();
     ins.get('m_bmPEbody', 'layout/layoutParam.html', m_bmStart);
     currentProject = ar.project;
     if (currentProject == null) {
@@ -33,21 +36,6 @@ function initialView(AuthResult) {
             listMenu_UX[0].children[1].domElement.className = 'subMainMenuNo';
         }
     }
-
-    
-/*
-    if (ar.project != null) {
-        currentProject = ar.project;
-        cbCreateProjectDop();
-    }
-*/
-/*
-    if (projectName == "") {
-        project_name.innerHTML = 'NOT';
-    } else {
-        project_name.innerHTML = projectName;
-    }
-*/
 }
     
 function eventFocusBlur() {
@@ -67,7 +55,6 @@ function inFocus() {
         }
     }
 }
-
 
 
 function m_bmStart(el) {

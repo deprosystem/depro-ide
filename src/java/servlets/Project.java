@@ -36,11 +36,15 @@ public class Project extends BaseServlet {
                     try {
                         pc = gson.fromJson(getStringRequest(request), ProjectM.class);
                         pc.userId = ds.userId;
+                        pc.namePackage = pc.nameProject + ".ide";
                         if (pc.logo == null) {
                             pc.logo = "";
                         }
                         if (pc.comment == null) {
                             pc.comment = "";
+                        }
+                        if (pc.nameAPP == null || pc.nameAPP.length() == 0) {
+                            pc.nameAPP = pc.nameProject;
                         }
                     } catch (JsonSyntaxException | IOException e) {
                         System.out.println(e);
@@ -61,6 +65,7 @@ public class Project extends BaseServlet {
                         pc.projectId = id;
 //                        createBaseRes(request.getServletContext().getRealPath("") + File.separator, pc.resurseInd);
                         createBaseRes(ds.patchOutsideProject, pc.resurseInd);
+                        projectDb.setLastProject(String.valueOf(ds.userId), String.valueOf(id));
                         sendResult(response, gson.toJson(pc));
                     }
                     break;
@@ -338,25 +343,14 @@ public class Project extends BaseServlet {
         item.itemValue = "#888888";
         li.add(item);
         
-        li.add(resurseItem(15, "title_on_primary", "#ffffff"));
+        li.add(resurseItem(15, "black_50", "#00000088"));
+        li.add(resurseItem(16, "black", "#000000"));
+        li.add(resurseItem(17, "black_20", "#00000032"));
         
-        li.add(resurseItem(16, "title_on_accent", "#ffffff"));
-        li.add(resurseItem(17, "black_30", "#00000055"));
-        
-        li.add(resurseItem(100, "black", "#000000"));
-        li.add(resurseItem(101, "white", "#ffffff"));
-        
-        item = new ItemResurces();
-        item.itemId = 102;
-        item.itemName = "test";
-        item.itemValue = "#ff0000";
-        li.add(item);
-        
-        item = new ItemResurces();
-        item.itemId = 103;
-        item.itemName = "test_22";
-        item.itemValue = "#0000ff";
-        li.add(item);
+        li.add(resurseItem(18, "white_50", "#ffffff88"));
+        li.add(resurseItem(19, "white", "#ffffff"));
+        li.add(resurseItem(20, "white_20", "#ffffff32"));
+
         return gson.toJson(li);
         
     }

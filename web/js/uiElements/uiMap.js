@@ -11,6 +11,20 @@ function uiMap() {
             newEl.appendChild(createMarker(myCompon.param.marker));
         }
     }
+
+    this.newElementUI = function(p) {
+        p.componParam = {type:11};
+        p.src = "img/map.png";
+        return createDivImg();
+    }
+    
+    this.setContent = function(p) {
+        contentAttributes.innerHTML = "";
+    }
+    
+    this.viewElementUI = function(p, el) {
+
+    }
 }
 
 

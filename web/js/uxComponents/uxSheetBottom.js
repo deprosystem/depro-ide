@@ -1,5 +1,6 @@
-function uxPanel() {
-    this.param = {name: "Panel", viewBaseId: "panel", onlyOne: false};
+
+function uxSheetBottom() {
+    this.param = {name: "SheetBottom", viewBaseId: "sheet_b", onlyOne: false};
     
     this.getParamComp = function () {
         return this.param;
@@ -15,7 +16,7 @@ function uxPanel() {
     
     this.addComponent = function (componId, viewId) {
         let tt = this.param.name;
-        currentComponent = {type: tt, componId: componId, viewId:viewId, typeUxUi: "ux", componParam:{type:7},
+        currentComponent = {type: tt, componId: componId, viewId: viewId, typeUxUi: "ux", componParam:{type:7}, sheetParam: {noSwipe:false,noBP:false},
                 typeFull: {name: tt, typeBlock: 10}, gravLayout: {h: 3, v: 3}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
             width:-1,height:-1,itemNav:{},viewElement: null,children:[]};
         currentComponentDescr = {type:tt, componId: componId, model:{method:0,data:[]},view:{viewId: viewId},navigator:[]};
@@ -76,4 +77,41 @@ function createViewForPanelV(el) {
         }
     } 
 }
+
+function createSheetBottomForUX(id) {
+console.log("createSheetBottomForUX ID="+id+"<<");
+    currentElement = createNewEl();
+    p = {typeUxUi: "ui"};
+    p.type = "SheetBottom";
+    p.typeFull = {name: 'SheetBottom', typeBlock: 0};
+    p.gravLayout = {h:4,v:4};
+    p.gravity = {h:4,v:4};
+    currentElement.android = p;
+    p.width = -1;
+    p.height = -1;
+    p.topMarg = 0;
+    p.leftMarg = 0;
+    p.background = 17;      // black_30
+    p.hideParam = 59; // 111011
+    p.viewId = id;
+    p.children = [];
+    p.viewElement = currentElement;
+    p.componParam = {type:12};
+    addNewElement(ACTIVE, currentElement);
+    addNavigatorEl(currentElement);
+    ACTIVE.android.children.push(currentElement.android);
+    
+    
+    let pan = document.createElement('div');
+    pan.className = "sheetPanel";
+    pan.android = {typeUxUi: "ui",type:"RelativeLayout",typeFull:{name: 'RelativeLayout', typeBlock: 2},width:-1,height:250,background:19,
+        gravLayout:{v:BOTTOM,h:NONE}, children: [], viewElement:pan};
+    addNewElement(currentElement, pan);
+    addNavigatorEl(pan);
+    p.children.push(pan.android);
+        
+        
+    return currentElement;
+}
+
 

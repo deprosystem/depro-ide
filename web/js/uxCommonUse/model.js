@@ -7,11 +7,14 @@ let uxModel2 = '" onchange="changeMethod(this)" style="width:100px;"><option>GET
         +'<div class="param_method" style="float:left;margin-left:10px;"></div>';
 
 let pmGetPost = '<div style="display:inline-block;"><div style="color:#2228;font-size:10px;margin-left:4px">URL</div>'
-            +'<input class="url input_style" onkeyup="return clickUpURL(event)" onkeydown="return checkNameKeyD(event)" style="color:#000a" type="text" size="20" value=""/>'
+            +'<input class="url input_style" onkeyup="return clickUpURL(event)" style="color:#000a" type="text" size="20" value=""/>'
             +'</div>'
             +'<div style="display:inline-block;margin-left:10px"><div style="color: #2228;font-size: 10px;margin-left:4px">URL Parameters</div>'
             +'<input class="param input_style" onchange="changeUrlParam(this.value)" style="color:#000a" type="text" size="15" value=""/>'
-            +'</div>';
+            +'</div>\n\
+            <div class="progr_mod" style="display:inline-block;margin-left:10px;">\n\
+                <div class="text_style_ui">Progress</div>\n\
+            </div>';
     
 let pmTest = '<img onclick="formTestData(this)" width="18" height="18" style="margin-left:10px;margin-top:17px;cursor:pointer;margin-right:5px;" src="img/pen.png">';
 
@@ -43,7 +46,7 @@ function dataDescr(v, h) {
 
 function setValueModel(componParam) {
     let met = componParam.getElementsByClassName("model_method");
-    let cont = currentComponentView.getElementsByClassName("component_param")[0];
+//    let cont = currentComponentView.getElementsByClassName("component_param")[0];
     let model = currentComponentDescr.model;
     let descrMet = model.method;
     if (met != null) {
@@ -54,13 +57,13 @@ function setValueModel(componParam) {
         }
     }
     if (model.url != null && model.url.length > 0) {
-        let url = cont.getElementsByClassName("url")[0];
+        let url = componParam.getElementsByClassName("url")[0];
         if (url != null) {
             url.value = model.url;
         }
     }
     if (model.param != null && model.param.length > 0) {
-        let param = cont.getElementsByClassName("param")[0];
+        let param = componParam.getElementsByClassName("param")[0];
         if (param != null) {
             param.value = model.param;
         }
@@ -111,6 +114,20 @@ function setValueGetPost() {
             param.value = mod.param;
         }
     }
+    let progr = cont.getElementsByClassName("progr_mod")[0];
+    if (mod.progr == null) {
+        mod.progr = "standard";
+    }
+    let st = formListIdElem(currentChildren);
+    let sel = formSelectForEditData("standard,no" + st, mod.progr);
+    sel.className = "select_" + browser;
+    sel.style.cssText = "width:80px;font-size:12px;color:#110000;";
+    sel.addEventListener("change", function(){changeProgress(sel);}, true);
+    progr.appendChild(sel);
+}
+
+function changeProgress(el) {
+    currentComponentDescr.model.progr = el.options[el.selectedIndex].value;
 }
 
 function clickUpURL(e) {

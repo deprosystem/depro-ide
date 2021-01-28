@@ -7,7 +7,7 @@ import projects.View;
 
 public class Component {
     public String type;
-    public int componentId;
+    public int componId;
     public Model model;
     public View view;
     public Param param;

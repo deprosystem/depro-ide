@@ -8,7 +8,7 @@ var pickerColor;
 
 var changeColor;
 var colorWithoutAlpha;
-var styleAlpha1 = "position: absolute; right: 10px; top: 210px; width: 310px; height: 10px; outline: 1px solid black; background: -moz-linear-gradient(left,";
+var styleAlpha1 = "position: absolute; right: 5px; top: 200px; width: 310px; height: 10px; outline: 1px solid black; background: -moz-linear-gradient(left,";
 var styleAlpha2 = "); background: -webkit-linear-gradient(left,";
 var elementchangeNameColor;
 
@@ -36,6 +36,8 @@ function openPickerColor(colorInit, cb) {
     old_color.style.backgroundColor = pickerColor;
     out_color.style.backgroundColor = pickerColor;
     out_color_text.innerHTML = pickerColor;
+    let rgb = colorStrToRGB(pickerColor);
+    out_color_rgb.innerHTML = rgb.r + ", " + rgb.g + ", " + rgb.b;
     var rectParent = alpha_pos.getBoundingClientRect();
     widthAlphaGrad = rectParent.right - rectParent.left;
     
@@ -43,7 +45,7 @@ function openPickerColor(colorInit, cb) {
     var alphaPosition = widthAlphaGrad;
     alpha255 = parseInt(alphaHEX, 16);
     alphaProc = alpha255 / 255;
-    alphaColor.innerHTML = "hex=" + alphaHEX + ", int" + alpha255 + ", " + (alphaProc * 100).toFixed(1).replace(/\.?0*$/,'') + "%";
+    alphaColor.innerHTML = "hex=" + alphaHEX + ", int=" + alpha255 + ", " + (alphaProc * 100).toFixed(1).replace(/\.?0*$/,'') + "%";
     alphaPosition = parseInt(widthAlphaGrad * alpha255 / 255);
 
     alphaGrad.style.cssText = styleAlpha1 + "#ffffff," + colorWithoutAlpha + styleAlpha2 + "#ffffff," + colorWithoutAlpha + ");";
@@ -79,7 +81,7 @@ function dragAlphaInd(event) {
     alphaProc = new_x / widthAlphaGrad;
     alpha255 = parseInt(alphaProc * 255);
     alphaHEX = strToHex("" + alpha255);
-    alphaColor.innerHTML = "hex=" + alphaHEX + ", int" + alpha255 + ", " + (alphaProc * 100).toFixed(1).replace(/\.?0*$/,'') + "%";
+    alphaColor.innerHTML = "hex=" + alphaHEX + ", int=" + alpha255 + ", " + (alphaProc * 100).toFixed(1).replace(/\.?0*$/,'') + "%";
 
     pickerColor = colorWithoutAlpha + alphaHEX;
     out_color.style.backgroundColor = pickerColor;
@@ -92,7 +94,15 @@ function pickerColorCallBack(colorInit) {
     pickerColor = colorWithoutAlpha + alphaHEX;
     out_color.style.backgroundColor = pickerColor;
     out_color_text.innerHTML = pickerColor;
+    rgbInt(colorInit);
     alphaGrad.style.cssText = styleAlpha1 + "#ffffff," + colorWithoutAlpha + styleAlpha2 + "#ffffff," + colorWithoutAlpha + ");";
+}
+
+function rgbInt(rgb) {
+    let sr1 = rgb.indexOf("(");
+    let sr2 = rgb.indexOf(")");
+    let arColor = rgb.substring(sr1 + 1, sr2).split(",");
+    out_color_rgb.innerHTML = arColor[0] + ", " + arColor[1] + ", " + arColor[2];
 }
 
 function rgb2hex(rgb){
@@ -138,7 +148,7 @@ function setPickerColorResulr() {
         };
         setSignColorChange();
         isSystemChange = false;
-        hidePresetColor.style.display = "none";
+        hideDefaultColor.style.display = "none";
         hideColorList.style.display = "none";
     } else {
         var ind = getIndColor(pickerColor);
@@ -160,7 +170,7 @@ function setPickerColorResulr() {
 function addNewColor(item) {
     var str = '<div class="rowListColor"><div oncontextmenu="changeNameColor(this);return false;" class="nameColor"'
                     +' style="cursor: text;">' + item.itemName + '</div><div id="ListColorId_' + item.itemId 
-                    + '" class="oneColor" onclick="setSystemColor(this)" oncontextmenu="changeSystemColor(this);return false;" style="cursor: pointer;background:' 
+                    + '" class="oneColorDef" onclick="setSystemColor(this)" oncontextmenu="changeSystemColor(this);return false;" style="background:' 
                     + item.itemValue + '"></div></div>';
     var elColor = createNewColor(str);
     listColorView.appendChild(elColor);
@@ -192,16 +202,13 @@ function setSystemColor(el) {
 function changeSystemColor(el) {
     isSystemChange = true;
     changeColor = el;
-    hidePresetColor.style.display = "block";
     hideColorList.style.display = "block";
+    hideDefaultColor.style.display = "block";
+    return false;
 }
 
 function setPickerColor() {
     openPickerColor(bg_color.style.backgroundColor, setBackgroundColor);
-}
-
-function setPickerTextColor() {
-    openPickerColor(text_color.style.backgroundColor, setTextColor);
 }
 
 function setPickerToolTextColor() {
@@ -216,33 +223,12 @@ function setBorderColor() {
     openPickerColor(colorBorder.style.backgroundColor, setBorderNewColor);
 }
 
-function setColorDrawable_1() {
-    openPickerColor(colorDraw_1.style.backgroundColor, setColorDraw_1);
-}
-
-function setColorDrawable_2() {
-    openPickerColor(colorDraw_2.style.backgroundColor, setColorDraw_2);
-}
-
 function setBorderNewColor(id, color) {
     tempDrawable.bordedColor = id;
     colorBorder.style.backgroundColor = color;
     windSelectColor.style.display = 'none';
-    viewCompon();
-}
-
-function setColorDraw_1(id, color) {
-    tempDrawable.color_1 = id;
-    colorDraw_1.style.backgroundColor = color;
-    windSelectColor.style.display = 'none';
-    viewCompon();
-}
-
-function setColorDraw_2(id, color) {
-    tempDrawable.color_2 = id;
-    colorDraw_2.style.backgroundColor = color;
-    windSelectColor.style.display = 'none';
-    viewCompon();
+    funcCallBack();
+//    viewCompon();
 }
 
 var setBackgroundColor = function (id, color) {
@@ -251,14 +237,14 @@ var setBackgroundColor = function (id, color) {
     windSelectColor.style.display = 'none';
     viewCompon();
 }
-
+/*
 var setTextColor = function (id, color) {
     paramCompon.textColor = id;
     text_color.style.backgroundColor = color;
     windSelectColor.style.display = 'none';
     viewCompon();
 }
-
+*/
 var setToolTextColor = function (id, color) {
     paramCompon.textColor = id;
     tool_text_color.style.backgroundColor = color;
@@ -297,13 +283,13 @@ function findColorByName(name) {
 
 function setListColor() {
     isColorChange = false;
-    var strListColor = "";
-    var ik = listColor.length;
+    let strListColor = "";
+    let ik = listColor.length;
     maxIndexColor = 99;
-    for (var i = 0; i < ik; i ++) {
-        var item = listColor[i];
+    for (let i = 0; i < ik; i ++) {
+        let item = listColor[i];
         if (item.itemId < 100) {
-            var ppp = document.getElementById("presetColor_" + item.itemId);
+            let ppp = document.getElementById("presetColor_" + item.itemId);
             if (ppp != null) {
                 ppp.style.backgroundColor = item.itemValue;
             }
@@ -311,43 +297,39 @@ function setListColor() {
             if (maxIndexColor < item.itemId) {
                 maxIndexColor = item.itemId;
             }
-            strListColor += '<div class="rowListColor"><div oncontextmenu="changeNameColor(this);return false;" class="nameColor"'
+            strListColor += '<div class="rowListColor"><div oncontextmenu="changeNameColor(this,' + i + ');return false;" class="nameColor"'
                     +' style="cursor: text;">' + item.itemName + '</div><div id="ListColorId_' + item.itemId 
-                    + '" class="oneColor" onclick="setSystemColor(this)" oncontextmenu="changeSystemColor(this);return false;" style="cursor: pointer;background:' 
+                    + '" class="oneColorDef" onclick="setSystemColor(this)" oncontextmenu="changeSystemColor(this);return false;" style="cursor: pointer;background:' 
                     + item.itemValue + '"></div></div>' ;
         }
     }
     listColorView.innerHTML = strListColor;
 }
 
-function changeNameColor(el) {
-    windEditForm.style.display = "block";
+function changeNameColor(el, i) {
+    event.stopPropagation();
+    let wind = formWind(300, 180, 40, -920, "Change name color")
+    wind.innerHTML = '<div style="float: left; margin-top: 10px;margin-left:10px;"> <div style="float: left; width: 100px;">Old name</div><div style="float: left; margin-left:8px" >' + el.innerHTML + '</div></div>'
+        +'<div style="float: left; margin-top: 10px;margin-left:10px;"> <div style="float: left; width: 100px;margin-top:4px;">New name</div><input class="input_style" style="float: left; margin-left:5px" type="text" size="24"/></div>';
     elementchangeNameColor = el;
-    var str = '<div style="float: left; margin-top: 10px"> <div style="float: left; width: 100px;">Old name</div><div style="float: left; margin-left:5px" >' + el.innerHTML + '</div></div>\n';
-    str += '<div style="float: left; margin-top: 10px"> <div style="float: left; width: 100px;">New name</div><input style="float: left; margin-left:5px" type="text" size="25"/></div>\n';
-    str += '<div class="button" onclick="changeName()">oK</div><div class="button" onclick="closeWindColor()">Cancel</div>';
-
-    var nn = windEditForm.getElementsByClassName("titleWindName")[0];
-    nn.innerHTML = "Change color name";
-    var wind = document.getElementById("windEditBody");
-    wind.innerHTML = str;
+    
+    let footer = createFooter(50);
+    wind.appendChild(footer);
+    let buttonOk = createButtonBlue('Ok', 70);
+    buttonOk.addEventListener("click", function(){changeName(wind, i);}, true);
+    footer.appendChild(buttonOk);
+    let buttonCancel = createButtonWeite('Cancel', 70);
+    buttonCancel.addEventListener("click", function(){closeWindow(wind);}, true);
+    footer.appendChild(buttonCancel);
 }
 
-function changeName() {
+function changeName(el, i) {
     setSignColorChange();
-    var newName = windEditBody.getElementsByTagName("input")[0].value;
+    let par = el.parentElement;
+    let newName = par.getElementsByTagName("input")[0].value;
+    listColor[i].itemName = newName;
     elementchangeNameColor.innerHTML = newName;
-    var id = elementchangeNameColor.nextElementSibling.id;
-    var ind = id.substring(id.indexOf("_") + 1);
-    var ik = listColor.length;
-    for (var i = 0; i < ik; i ++) {
-        var item = listColor[i];
-        if (item.itemId == ind) {
-            item.itemName = newName;
-            break;
-        }
-    }
-    closeWindColor();
+    closeWindow(el);
 }
 
 function closeWindColor() {
@@ -362,7 +344,7 @@ function setSignColorChange () {
 function cancelSelectColor() {
     if (isSystemChange) {
         isSystemChange = false;
-        hidePresetColor.style.display = "none";
+        hideDefaultColor.style.display = "none";
         hideColorList.style.display = "none";
     } else {
         windSelectColor.style.display = 'none';

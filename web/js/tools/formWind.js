@@ -1,11 +1,18 @@
-function formWind(w, h, t, l, tit, scroll) {
+var currentWind;
+var delta_x_wind, delta_y_wind;
+
+function formWind(w, h, t, l, tit, scroll, cbClose) {
     let ww = document.createElement('div');
     ww.className = "dataWindow";
     ww.style.width = w + 'px';
     ww.style.height = h + 'px';
-    ww.style.left = l + 'px';
+    if (l < 0) {
+        ww.style.right = -l + 'px';
+    } else {
+        ww.style.left = l + 'px';
+    }
     ww.style.top = t + 'px';
-    let titleW = createTitle(tit);
+    let titleW = createTitle(tit, cbClose);
     ww.appendChild(titleW);
     let contW = document.createElement('div');
     contW.style.cssText = "position:absolute;right:0px;bottom:0px;left:0px;top:56px;";
@@ -23,6 +30,19 @@ function formWind(w, h, t, l, tit, scroll) {
         return content;
     } else {
         return contW;
+    }
+}
+
+function addFooter(wind, footer) {
+    if (wind.className == "content") {
+        let viewP = wind.parentElement;
+        let ww = viewP.parentElement;
+        ww.appendChild(footer);
+        let h = footer.getBoundingClientRect().height;
+        viewP.style.bottom = h + "px";
+        viewP.scroll_y.resize(viewP);
+    } else {
+        wind.appendChild(footer);
     }
 }
 
@@ -50,11 +70,15 @@ function formWindCenter(w, h, tit) {
     return contW;
 }
 
-function createTitle(tit) {
-    var container = document.createElement('div')
+function createTitle(tit, cbClose) {
+    let cb = "";
+    if (cbClose != null && cbClose != "") {
+        cb = cbClose + '(this);';
+    }
+    let container = document.createElement('div')
     var str = "<div class='titleWind' onmousedown='moveWind(event)'>"
                 +"<div class='titleWindName'>" + tit + "</div>"
-                +"<IMG SRC='img/x_blue.png' class='titleWindClose' onclick='closeDataWindow(event)'>"
+                +"<IMG SRC='img/x_blue.png' class='titleWindClose' onclick='" + cb + "closeDataWindow(event)'>"
             +"</div>";
     container.innerHTML = str;
     return container.firstChild;
@@ -105,5 +129,32 @@ function createFooter(h) {
     let container = document.createElement('div');
     container.style.cssText = "height:" + h + "px;bottom:0px;right:0px;left:0px;position:absolute;border-top:1px solid #C5DCFA;";
     return container;
+}
+
+function moveWind(event) {
+    var x = event.pageX;
+    var y = event.pageY;
+    currentWind = event.currentTarget.parentNode;
+    var x_block = currentWind.offsetLeft;
+    var y_block = currentWind.offsetTop;
+
+    delta_x_wind = x_block - x;
+    delta_y_wind = y_block - y;
+    document.onmousemove = dragWind;
+    document.onmouseup = clearMoveWind;
+}
+
+function dragWind(event) {
+    var x = event.pageX;
+    var y = event.pageY;
+
+    var new_x = delta_x_wind + x;
+    var new_y = delta_y_wind + y;
+    currentWind.style.top = new_y + "px";
+    currentWind.style.left = new_x + "px";
+}
+
+function clearMoveWind(e) {
+    document.onmousemove = null;
 }
 

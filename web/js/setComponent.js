@@ -31,6 +31,12 @@ function formCompon() {
             {name: 'Map', typeBlock: 0},
             {name: 'SheetBottom', typeBlock: 2},
             {name: 'CalendarView', typeBlock: 0});
+    listComponent[4] = {};
+    listComponent[4].name = 'Progress';
+    listComponent[4].children = new Array({name: 'ProgressGroup', typeBlock: 2}, 
+            {name: 'ProgressCircle', typeBlock: 0},
+            {name: 'ProgressLine', typeBlock: 0});
+            
     var ik = listComponent.length;
     category.innerHTML = "";
     for (var i = 0; i < ik; i++) {
@@ -97,12 +103,13 @@ function contextCategory2(i, j){
     setParamCompon();
 }
 */
+/*
 function createDiv() {
     var container = document.createElement('div')
     container.innerHTML = '<div > </div>'
     return container.firstChild
 }
-
+*/
 function createDivText() {
     var container = document.createElement('div')
     container.innerHTML = '<div class="text" style="position: absolute; white-space: pre-wrap; color: #808080;"></div>'
@@ -110,8 +117,8 @@ function createDivText() {
 }
 
 function createDivMenuB() {
-    var container = document.createElement('div')
-    container.innerHTML = '<div class="menu_b" style="display:flex;flex-direction:row;align-items:center;justify-content:space-around;width:100%;height:100%;"></div>'
+    var container = document.createElement('div');
+    container.innerHTML = '<div class="menu_b" style="position: absolute;left:0;top:0;right:0;bottom:0"></div>'
     return container.firstChild
 }
 
@@ -198,7 +205,8 @@ function hideSelectEl(e) {
 
 function appendContour() {
     if (currentElement.getElementsByClassName('contourEl').length == 0) {
-        var contour = contourEl.cloneNode(true);
+        let contour = createContour();
+//        var contour = contourEl.cloneNode(true);
         contour.style.display = 'block';
         currentElement.appendChild(contour);
         currentElement.style.outline = '2px solid #00f';
@@ -217,15 +225,29 @@ function createDivClick2(i, j) {
 //    container.innerHTML = '<div onclick="clickCategory2('+i+','+j+')" oncontextmenu="contextCategory2('+i+','+j+')"> </div>';
     return container.firstChild
 }
-/*
+
 function viewCompon() {
     viewComponElem(currentElement);
 }
-*/
+
 function changeBackground(el) {
     var p = el.android;
     if (p.background != null) {
         el.style.backgroundColor = p.background;
+    }
+}
+
+function showElemChilds(el) {
+    let p = el.android;
+    if (p != null) {
+        viewComponElem(el);
+        let ch = p.children;
+        if (ch != null && ch.length > 0) {
+            let ik = ch.length;
+            for (let i = 0; i <ik; i++) {
+                showElemChilds(ch[i].viewElement);
+            }
+        }
     }
 }
         
@@ -323,75 +345,16 @@ function viewComponElem(el) {
         }
     }
     let img;
-    switch (p.type) {
-        case 'TextView' :
-            var divText = el.getElementsByClassName('text')[0];
-            if (divText == null) {
-                divText = createDivText();
-                el.appendChild(divText);
-            }
-            if (p.textSize != null) {
-                divText.style.fontSize = (p.textSize * MEASURE) + px;
-            }
-            if (p.textColor == null) {
-                divText.style.color = "#808080";
-            } else {
-                divText.style.color = findColorByIndex(p.textColor);
-            }
-            divText.innerHTML = p.text;
-            break;
-        case 'EditText' :
-            var divText = el.getElementsByClassName('text')[0];
-            if (divText == null) {
-                divText = createDivEditText(el);
-                el.appendChild(divText);
-            }
-            if (p.textSize != null) {
-                divText.style.fontSize = (p.textSize * MEASURE) + px;
-            }
-            if (p.textColor == null) {
-                divText.style.color = "#808080";
-            } else {
-                divText.style.color = findColorByIndex(p.textColor);
-            }
-            divText.innerHTML = p.text;
-            break;
-        case 'ToolBar' :
-            let tit = el.getElementsByClassName("title")[0];
-            if (tit != null) {
-                if (currentScreen.title != null && currentScreen.title != "") {
-                    tit.innerHTML = currentScreen.title;
-                }
-                tit.style.color = findColorByIndex(p.textColor);
-            }
-            if (p.textSize != null) {
-                tit.style.fontSize = (p.textSize * MEASURE) + px;
-            }
-            img = el.getElementsByClassName("img_back")[0];
-            if (img != null) {
-                if (p.imgBack != null && p.imgBack != "") {
-                    img.src = p.imgBack;
-                }
-            }
-            break;
-        case 'Indicator' :
-            el.innerHTML = "";
-            if (p.componParam == null) {
-                p.componParam = {diam:7,colorNorm:3,colorSel:4};
-            }
-            let diam = p.componParam.diam * MEASURE;
-            let colS = findColorByIndex(p.componParam.colorSel);
-            let colN = findColorByIndex(p.componParam.colorNorm);
-            el.appendChild(formItemInd(colS, diam));
-            el.appendChild(formItemInd(colN, diam));
-            el.appendChild(formItemInd(colN, diam));
-            break;
+    try {
+        uiFunction = eval("new ui" + p.type + "()");
+        uiFunction.viewElementUI(p, el);
+    } catch(e) {
     }
 
     if (p.parent != null) {
-        var root_w = p.parent.offsetWidth;
-        var root_h = p.parent.offsetHeight;
-
+        let root_w = p.parent.offsetWidth;
+        let root_h = p.parent.offsetHeight;
+        let pParent = p.parent.android;
         if (p.width == MATCH) {
             el.style.width = "";
             el.style.left = "0px";
@@ -475,45 +438,57 @@ function viewComponElem(el) {
 
         if (p.gravLayout != null) {
             el.style.position = 'absolute';
-            switch(p.gravLayout.v) {
-                case NONE:
-                    if (p.height == MATCH) {
-                        break;
-                    }
-                case TOP:
-                    el.style.bottom = '';
-                    el.style.top = '0px';
-                    break
-                case BOTTOM:
-                    el.style.top = '';
-                    el.style.bottom = '0px';
-                    break
-                case CENTER:
-                    var ccc = el.clientHeight;
-                    cc = root_h / 2 - ccc / 2;
-                    el.style.bottom = '';
-                    el.style.top = cc + px;
-                    break
+            if (p.height != MATCH) {
+                switch(p.gravLayout.v) {
+                    case NONE:
+/*
+                        if (p.height == MATCH) {
+                            break;
+                        }
+*/
+                    case TOP:
+                        el.style.bottom = '';
+                        el.style.top = '0px';
+                        break
+                    case BOTTOM:
+                        el.style.top = '';
+                        el.style.bottom = '0px';
+                        break
+                    case CENTER:
+                        var ccc = el.clientHeight;
+                        cc = root_h / 2 - ccc / 2;
+                        el.style.bottom = '';
+                        el.style.top = cc + px;
+                        break
+                }
             }
-            switch(p.gravLayout.h) {
-                case RIGHT:
-                    el.style.left = '';
-                    el.style.right = '0px';
-                    break
-                case NONE:
-                    if (p.width == MATCH) {
-                        break;
-                    }
-                case LEFT:
-                    el.style.right = '';
-                    el.style.left = '0px';
-                    break
-                case CENTER:
-                    var ccc = el.clientWidth;
-                    cc = root_w / 2 - ccc / 2;
-                    el.style.right = '';
-                    el.style.left = cc + px;
-                    break
+            if (p.width != MATCH) {
+                switch(p.gravLayout.h) {
+                    case RIGHT:
+                        el.style.left = '';
+                        if (pParent.rightPad != null && pParent.rightPad != "") {
+                            el.style.right = (parseInt(pParent.rightPad) * MEASURE) + 'px';
+                        } else {
+                            el.style.right = '0px';
+                        }
+                        break
+                    case NONE:
+/*
+                        if (p.width == MATCH) {
+                            break;
+                        }
+*/
+                    case LEFT:
+                        el.style.right = '';
+                        el.style.left = '0px';
+                        break
+                    case CENTER:
+                        var ccc = el.clientWidth;
+                        cc = root_w / 2 - ccc / 2;
+                        el.style.right = '';
+                        el.style.left = cc + px;
+                        break
+                }
             }
         }
     }
@@ -705,28 +680,7 @@ function viewComponElem(el) {
     
     el.style.id = p.id;
 
-    if (p.background != null) {
-        if (p.background > 999) {
-            if (el.style.backgroundColor.length > 0) {
-                el.style.backgroundColor = "";
-            }
-            if (p.background > 1999) {      // Selector
-                
-            } else {        // Drawable
-                if (p.background == 1999) {         // new Drawable
-                    setDrawableEl(el, tempDrawable);
-                } else {
-                    setDrawableEl(el, JSON.parse(findDrawableByIndex(p.background)));
-                }
-            }
-        } else {
-            clearBackgroundDraw(el);
-            el.style.backgroundColor = findColorByIndex(p.background);
-        }
-    } else {
-        clearBackgroundDraw(el);
-        el.style.backgroundColor = "";
-    }
+    setBackgoundEl(el, p);
     let parentW = el.parentElement;
     if (parentW != null && parentW.android != null && parentW.android.height == WRAP) {
         parentW.style.height = maxChildHeight(parentW) + px;
@@ -737,12 +691,38 @@ function viewComponElem(el) {
     }
 }
 
-function formItemInd(color, diam) {
-    var container = document.createElement('div')
-    let rr = diam / 2;
-    container.innerHTML = '<div style="float:left;width:' + diam + 'px;height:' + diam + 'px;border-radius:' + rr + 'px;background:' 
-            + color + ';margin-left:' + rr + 'px;margin-right:' + rr + 'px;"></div>'
-    return container.firstChild
+function setBackgoundEl(el, p) {
+    if (p.background != null) {
+        if ( p.background == 100000) {
+            if (p.src != null && p.src != "") {
+                el.style.backgroundImage = "url('" + p.src + "')";
+            } else {
+                el.style.backgroundImage = "";
+            }
+        } else {
+            if (p.background > 999) {
+                if (el.style.backgroundColor.length > 0) {
+                    el.style.backgroundColor = "";
+                }
+                if (p.background > 1999) {      // Selector
+
+                } else {        // Drawable
+                    if (p.background == 1999) {         // new Drawable
+                        setDrawableEl(el, tempDrawable);
+                    } else {
+                        setDrawableEl(el, JSON.parse(findDrawableByIndex(p.background)));
+                    }
+                }
+            } else {
+                clearBackgroundDraw(el);
+                el.style.backgroundColor = findColorByIndex(p.background);
+            }
+        }
+    } else {
+        clearBackgroundDraw(el);
+        el.style.backgroundImage = "";
+        el.style.backgroundColor = "";
+    }
 }
 
 function maxChildHeight(el) {

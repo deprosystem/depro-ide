@@ -4,18 +4,11 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/js/screens.js</file>
-            <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/js/editComponentsUX.js</file>
-            <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/js/uiElements/uiTabLayout.js</file>
-            <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/src/java/servlets/ExportResult.java</file>
+            <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/js/screenValid.js</file>
             <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/js/uiCommonUse/uiAny.js</file>
             <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/index.html</file>
-            <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/js/uxComponents/uxMenuB.js</file>
-            <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/js/moveResize/moveElement.js</file>
-            <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/js/uiElements/uiMenuBottom.js</file>
-            <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/js/menu/menuProcessing.js</file>
-            <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/js/uiElements/uiImageView.js</file>
-            <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/js/uiElements/uiPager.js</file>
-            <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/js/uxComponents/uxTabLayout.js</file>
+            <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/js/uxComponents/uxList.js</file>
+            <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/js/uxCommonUse/model.js</file>
             <file>file:/C:/Users/jura/Documents/NetBeansProjects/DeProIDE/web/css/index.css</file>
         </group>
     </open-files>

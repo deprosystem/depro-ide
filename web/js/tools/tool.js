@@ -77,3 +77,54 @@ function newDOMelement(st) {
     container.innerHTML = st;
     return container.firstChild
 }
+
+function colorStrToRGB(st) {
+    let res = {};
+    let r1 = charToInt(st.charCodeAt(1));
+    let r2 = charToInt(st.charCodeAt(2));
+    res.r = r1 * 16 + r2;
+    
+    let g1 = charToInt(st.charCodeAt(3));
+    let g2 = charToInt(st.charCodeAt(4));
+    res.g = g1 * 16 + g2;
+    
+    let b1 = charToInt(st.charCodeAt(5));
+    let b2 = charToInt(st.charCodeAt(6));
+    res.b = b1 * 16 + b2;
+    return res;
+}
+
+function charToInt(c) {
+    if (c < 58) {
+        return c - 48;
+    }
+    if (c < 71) {
+        return c - 55;
+    }
+    if (c < 103) {
+        return c - 87;
+    }
+    return 0;
+}
+
+function checkElement(el) {
+    let check = el.src.indexOf("check-sel") == -1;
+    if (check) {
+        el.src = "img/check-sel_1.png";
+    } else {
+        el.src = "img/check-act.png";
+    }
+    return check;
+}
+
+function closeWind(el) {
+    el.parentElement.parentElement.style.display = "none";
+}
+
+function createContour() {
+    var container = document.createElement('div');
+    container.innerHTML = '<div id="contour" class="contourEl" onmousedown="moveElement(event)"><div class="contourRT" onmousedown="resizeContour(event)"></div>\n\
+        <div class="contourLT" onmousedown="resizeContour(event)"></div><div class="contourLB" onmousedown="resizeContour(event)"></div>\n\
+        <div class="contourRB" onmousedown="resizeContour(event)"></div></div>';
+    return container.firstChild;
+}

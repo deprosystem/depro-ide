@@ -1,3 +1,5 @@
+var downMouseElem, overMouseElem;
+var parentDownMouseElem;
 function setNavigatorRoot() {
     navigatorEl.innerHTML = '';
     var item = createItemEl(root);
@@ -111,10 +113,11 @@ function createItemEl(el) {
 
 function createItem() {
     var container = document.createElement('div');
-    container.innerHTML = '<div style="display:block;clear:both;">\n' +
-                    '<div class="plus-minus" onclick="openItem(this)" style="float:left; color:#aaa; width: 15px;">' +
-                    '</div>\n<div class="item-name" onclick="selectElement(this)"></div>\n' +
-                    '<div class="item-compon" style="margin-left: 25px; display: none;">\n</div>\n</div>';
+    container.innerHTML = '<div style="display:block;clear:both;">\n\
+                <div class="plus-minus" onclick="openItem(this)" style="float:left; color:#aaa; width: 15px;"></div>\n\
+                <div class="item-name" onmousedown="downNavigEl(this)" onclick="selectElement(this)" onmouseover="overNavigEl(this)" onmouseout="outNavigEl(this)"></div>\n\
+                <div class="item-compon" style="margin-left: 25px; display: none;"></div>\n\
+            </div>';
     return container.firstChild;
 }
 
@@ -140,4 +143,119 @@ function openItem(el) {
         el.innerHTML = '+';
         item.style.display = 'none';
     }
+}
+
+function downNavigEl(el) {
+    downMouseElem = el;
+    parentDownMouseElem = el.parentElement;
+    overMouseElem = null;
+    document.onmouseup = upNavigEl;
+}
+
+function upNavigEl(e) {
+    if (overMouseElem != null && downMouseElem != null) {
+        overMouseElem.style.backgroundColor = "";
+        overMouseElem.style.borderBottom = "";
+        uiEl = downMouseElem.elementLink;
+        uiElTarg = e.target.elementLink;
+        let targ = e.target.parentElement;
+        if (e.shiftKey) {
+            if (uiElTarg.android != null && uiElTarg.android.typeFull.typeBlock != 0) {
+                let listEl = targ.getElementsByClassName("item-compon")[0];
+                uiElTarg.append(uiEl);
+                uiEl.android.parent = uiElTarg;
+                pMovingShift(uiEl, uiElTarg);
+                listEl.appendChild(downMouseElem.parentElement);
+                let pm = targ.getElementsByClassName("plus-minus")[0];
+                if (pm != null && pm.innerHTML == '&nbsp;') {
+                    pm.innerHTML = "+";
+                    pm.style.cursor = 'pointer';
+                }
+            }
+        } else {
+            pMoving(uiEl, uiElTarg);
+            uiElTarg.after(uiEl);
+            uiEl.android.parent = targ.parentElement;
+            targ.parentElement.after(downMouseElem.parentElement);
+        }
+    }
+    overMouseElem = null;
+    downMouseElem = null;
+}
+
+function pMovingShift(what, whereTo) {
+    ch = currentScreen.layout.children;
+    let whatP = searchElP(ch, what);
+    let whereToP = searchElP(ch, whereTo);
+    if (whatP != null && whereToP != null) {
+        if (whereToP.p.children == null) {
+            whereToP.p.children = [];
+        }
+        whereToP.p.children.push(whatP.p);
+//        whereToP.ch.push(whatP.p);
+        whatP.ch.splice(whatP.i);
+    } else {
+        console.log("pMoving whatP OR whereToP = NULL");
+    }
+}
+
+function pMoving(what, whereTo) {
+    ch = currentScreen.layout.children;
+    let whatP = searchElP(ch, what);
+    let whereToP = searchElP(ch, whereTo);
+    if (whatP != null && whereToP != null) {
+        if (whereToP.p.children == null) {
+            whereToP.p.children = [];
+        }
+        whereToP.ch.splice(whereToP.i, 0, whatP.p);
+        whatP.ch.splice(whatP.i);
+    } else {
+        console.log("pMoving whatP OR whereToP = NULL");
+    }
+}
+
+function searchElP(ch, el) {
+    let ik = ch.length;
+    for (let i = 0; i < ik; i++) {
+        let p = ch[i];
+        if (p.viewElement == el) {
+            return {"ch":ch, "i":i, "p":p};
+        } else {
+            let pCH = p.children;
+            if (pCH != null && pCH.length > 0) {
+                let pp = searchElP(pCH, el);
+                if (pp != null) {
+                    return pp;
+                }
+            }
+        }
+    }
+    return null;
+}
+
+function overNavigEl(el) {
+    if (downMouseElem != null && el != downMouseElem && ( ! isChildNavigEl(el) ) ) {
+        overMouseElem = el;
+        el.style.backgroundColor = "#def";
+        el.style.borderBottom = "1px solid black";
+    }
+}
+
+function outNavigEl(el) {
+    if (downMouseElem != null && el != downMouseElem) {
+        overMouseElem = null;
+        el.style.backgroundColor = "";
+        el.style.borderBottom = "";
+    }
+}
+
+function isChildNavigEl(el) {
+    let el1 = el;
+    while (el1 != navigatorEl) {
+        el1 = el1.parentElement;
+        if (el1 == parentDownMouseElem) {
+            return true;
+        }
+    }
+    return false;
 }

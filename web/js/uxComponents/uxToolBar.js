@@ -23,12 +23,12 @@ function uxToolBar() {
         return this.editParam;
     }
     
-    this.addComponent = function (viewId) {
+    this.addComponent = function (componId, viewId) {
         let tt = this.param.name;
-        currentComponent = {type: tt, componentId: idComponentNum, viewId: viewId, typeUxUi: "ux", componParam:{type:0}, 
+        currentComponent = {type: tt, componId: componId, viewId:viewId, typeUxUi: "ux", componParam:{type:0}, 
                 typeFull: {name: tt, typeBlock: 0}, gravLayout: {h: 3, v: 3}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
-            width:-1,height:56,topMarg:"",leftMarg:"",itemNav:{},textColor:101,textSize:20,background:0, viewElement: null,children:[]};
-        currentComponentDescr = {type: tt,componentId: idComponentNum,model:{},view:{viewId: viewId, title:"", titleParam: ""}};
+            width:-1,height:56,topMarg:"",leftMarg:"",itemNav:{},textColor:19,textSize:20,background:0, viewElement: null,children:[]};
+        currentComponentDescr = {type: tt, componId: componId, model:{},view:{viewId: viewId, title:"", titleParam: ""}};
     }
     
     this.setValue = function(componParam) {
@@ -49,6 +49,12 @@ function uxToolBar() {
     
     this.getHelpLink = function() {
         return "https://docs.google.com/document/d/1iYRvK_JAz67laVPot_pCEUa0sM9Jp3hSJZMMG4qmtxQ/edit#heading=h.6xdkumb6f530";
+    }
+    
+    this.isValid = function(compD) {
+        let err = {text:"",error:0};
+        
+        return err;
     }
 }
 

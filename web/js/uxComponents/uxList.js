@@ -1,5 +1,17 @@
 function uxList() {
     this.param = {name: "List", viewBaseId: "list", onlyOne: false};
+    this.editParam = '<div style="height:1px;background-color:#1dace9;margin-top:5px"></div>\n\
+        <div style="height:42px;">\n\
+            <div class="span_count" style="float: left;">\n\
+                <div class="text_style_ui">Span count</div>\n\
+            </div>\n\
+            <div style="float:left;margin-left:10px;"><div style="color:#2228;font-size: 10px;margin-left:4px">Orientation</div>\n\
+                <select class="orient type_screen select_' + browser + '" onchange="changeOrientList(this)" style="width:88px;font-size:12px;color:#110000;"><option>vertical</option><option>horizontal</option></select>\n\
+            </div>\n\
+            <div class="no_data" style="float: left;margin-left:10px;">\n\
+                <div class="text_style_ui">View if no data</div>\n\
+            </div>\n\
+        </div>';
 
     this.getParamComp = function () {
         return this.param;
@@ -10,15 +22,15 @@ function uxList() {
     }
     
     this.getEditParam = function () {
-        return uxModelView("createViewForListV", "createViewForListH");
+        return uxModelView("createViewForListV", "createViewForListH") + this.editParam;
     }
     
-    this.addComponent = function (viewId) {
+    this.addComponent = function (componId, viewId) {
         let tt = this.param.name;
-        currentComponent = {type: tt, componentId: idComponentNum, viewId: viewId, typeUxUi: "ux", componParam:{type:2},
+        currentComponent = {type: tt, componId: componId, viewId:viewId, typeUxUi: "ux", componParam:{type:2},
                 typeFull: {name: tt, typeBlock: 10}, gravLayout: {h: 3, v: 3}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
             width:-1,height:-1,itemNav:{},viewElement: null,children:[]};
-        currentComponentDescr = {type:tt,componentId: idComponentNum,model:{method:0,data:[]},view:{viewId: viewId},navigator:[]};
+        currentComponentDescr = {type:tt, componId: componId, model:{method:0,data:[],progr:"standard"},view:{viewId: viewId,spanC:1,orient:"vertical"},navigator:[]};
     }
     
     this.setValue = function(componParam) {
@@ -28,10 +40,70 @@ function uxList() {
     this.getHelpLink = function() {
         return "https://docs.google.com/document/d/1iYRvK_JAz67laVPot_pCEUa0sM9Jp3hSJZMMG4qmtxQ/edit#heading=h.wr0jqzoad5ky";
     }
+    
+    this.isValid = function(compD, layout) {
+        let err = {text:"",error:0};
+        let mod = compD.model;
+        if (mod.method < 2) {
+            let pr = mod.progr;
+            if (pr != null && pr.length > 0) {
+                if (pr != "standard" && pr != "no") {
+                    let p = getCompByViewId(layout.children, pr);
+                    if (p == null) {
+                        err.text = "component " + compD.type + " error in progress " + pr;
+                        err.error = 2;
+                    }
+                }
+            }
+        }
+        return err;
+    }
 }
 
 function setValueListPanel(componParam) {
     setValueModel(componParam);
+    setValueView(componParam);
+}
+
+function setValueView(componParam) {
+    let span = componParam.getElementsByClassName("span_count")[0];
+    let view = currentComponentDescr.view;
+    if (view.spanC == null) {
+        view.spanC = 1;
+    }
+    let nn = createNumber(40, 24, 1, 3, "changeSpan");
+//    nn.style.marginTop = "3px";
+    setNumberInputId(nn, "spanCount");
+    span.appendChild(nn);
+    spanCount.value = view.spanC;
+    
+    let orient = componParam.getElementsByClassName("orient")[0];
+    if (view.orient == null) {
+        view.orient = "vertical";
+    }
+    orient.value = view.orient;
+    let no_data = componParam.getElementsByClassName("no_data")[0];
+    if (view.no_data == null) {
+        view.no_data = "";
+    }
+    let st = formListIdElem(currentChildren);
+    let sel = formSelectForEditData(" " + st, view.no_data);
+    sel.className = "select_" + browser;
+    sel.style.cssText = "width:80px;font-size:12px;color:#110000;";
+    sel.addEventListener("change", function(){changeNoData(sel)}, true);
+    no_data.appendChild(sel);
+}
+
+function changeNoData(el) {
+    currentComponentDescr.view.no_data = el.options[el.selectedIndex].value;
+}
+
+function changeSpan(el) {
+    currentComponentDescr.view.spanC = el.value;
+}
+
+function changeOrientList(el) {
+    currentComponentDescr.view.orients = el.options[el.selectedIndex].value;
 }
 
 function createViewForListH() {

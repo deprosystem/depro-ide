@@ -12,6 +12,21 @@ function oneScreenValid(scrD, scrV) {
         newErrors += "No screen name\n";
         newLevelErrors = 2;
     }
+    let arrComp = scrD.components;
+    let ik = arrComp.length;
+    for (let i = 0; i < ik; i++) {
+        let compD = arrComp[i];
+        try {
+            uxFunction = eval("new ux" + compD.type + "();");
+            let errComp = uxFunction.isValid(compD, scrD.layout);
+            if (errComp.text != "") {
+                newErrors += errComp.text + "\n";
+                if (newLevelErrors < errComp.error) {
+                    newLevelErrors = errComp.error;
+                }
+            }
+        } catch(e) { }
+    }
     if (scrD.levelErrors != newLevelErrors) {
         let divErr = currentScreenView.getElementsByClassName("error_screen")[0];
         divErr.style.backgroundColor = colorsEroor[newLevelErrors];

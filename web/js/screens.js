@@ -1,4 +1,4 @@
-var components = ["ToolBar", "MenuBottom", "Menu", "List", "Pager", "TabLayout", "Drawer", "Panel", "ScrollPanel", "Map"];
+var components = ["ToolBar", "MenuBottom", "Menu", "List", "Pager", "TabLayout", "Drawer", "Map", "Panel", "ScrollPanel", "SheetBottom"];
 var list_cont;
 var uxFunction, uiFunction;
 
@@ -6,31 +6,73 @@ var listScreen = [];
 var currentScreenView, currentComponentView;
 var currentComponent, currentComponentDescr;
 var currentChildren = [];
-var idScreenNum, idComponentNum;
+var idScreenNum;
+var idComponentNum;
 var positionScreen = 0;
 
 function plusScreen() {
     hideScreen();
-    currentScreen = {screenName: "SCREEN_" + idScreenNum, screenId: idScreenNum, screenComment: "", animate: 0, castom: "", typeScreen: 0, 
-        title: "", titleParam: "", components: [], textErrors: "", levelErrors: 0};
-    currentScreen.layout = 
-            {type:"RelativeLayout",typeFull:{name:"RelativeLayout",typeBlock:2},parent:null,width:-1,height:-1,gravLayout:{h:4,v:4},gravity:{h:4,v:4},itemNav:{}, 
-                viewId:"root", parent:null, children:[]};
-    var ns = newScreen();
-    currentChildren = currentScreen.layout.children;
-    listScreen.push(currentScreen);
-    ns.idScreen = idScreenNum;
-    if (currentScreenView != null) {
-        currentScreenView.className = "screen";
+    createScreen(true);
+}
+
+function createScreen(plus, nameScr, titleScr, typeScr) {
+    let scrName = "SCREEN_" + idScreenNum;
+    let scrTitle = "";
+    let scrType = 0;
+    if ( ! plus) {
+        scrName = nameScr;
+        scrTitle = titleScr;
+        if (typeScr == null || typeScr == 1) {
+            scrType = 1;
+        }
     }
-    currentScreenView = ns;
-    currentScreenView.className = "screen_sel";
+    let scrParam = {scrN: scrName, scrNum: idScreenNum, scrTit: scrTitle, scrT:scrType};
+    let crScreen = crScreenForList(scrParam);
+    listScreen.push(crScreen);
+    let ns = newScreen(crScreen);
+    ns.idScreen = idScreenNum;
     ns.addEventListener('click', selScreen, true);
     idScreenNum ++;
     list_screens.append(ns);
-    screen_container.scrollTop = screen_container.scrollHeight;
-    setScreenView();
     container_scr.scroll_y.resize(container_scr);
+
+    if (plus) {
+        currentScreen = crScreen;
+        currentChildren = currentScreen.layout.children;
+        if (currentScreenView != null) {
+            currentScreenView.className = "screen";
+        }
+        currentScreenView = ns;
+        currentScreenView.className = "screen_sel";
+        screen_container.scrollTop = screen_container.scrollHeight;
+        setScreenView();
+    } else {
+        ns.className = "screen";
+        let nn = ns.getElementsByClassName("name_screen")[0];
+        nn.value = nameScr;
+        nn = ns.getElementsByClassName("title_screen")[0];
+        nn.value = titleScr;
+        let tt = ns.getElementsByClassName("type_screen")[0];
+        tt.value = "Fragment";
+    }
+}
+
+function crScreenForList(scrP) {
+    let crScreen = {screenName: scrP.scrN, screenId: scrP.scrNum, screenComment: "", animate: 0, castom: "", typeScreen: scrP.scrT, 
+        title: scrP.scrTit, titleParam: "", components: [], textErrors: "", levelErrors: 0};
+    crScreen.layout =  {type:"RelativeLayout",typeFull:{name:"RelativeLayout",typeBlock:2},parent:null,width:-1,height:-1,gravLayout:{h:4,v:4},
+        gravity:{h:4,v:4},itemNav:{},viewId:"root", children:[]};
+    return crScreen;
+}
+
+function noScreen(tt) {
+    let ik = listScreen.length;
+    for (let i = 0; i < ik; i++) {
+        if (tt == listScreen[i].screenName) {
+            return false;
+        }
+    }
+    return true;
 }
 
 function selScreen(event) {
@@ -70,8 +112,8 @@ function setSelectScreen(goto) {
     if (currentScreen != null && id != currentScreen.screenId) {
         var ik = listScreen.length;
         currentScreen = null;
-        for (var i = 0; i < ik; i++) {
-            var ls = listScreen[i];
+        for (let i = 0; i < ik; i++) {
+            let ls = listScreen[i];
             if (id == ls.screenId) {
                 currentScreen = ls;
                 positionScreen = i;
@@ -91,6 +133,7 @@ function setSelectScreen(goto) {
             }
         }
         setScreenView();
+        setScreenComponents();
     }
     if (goto != null) {
         screen_container.scrollTop = goto;
@@ -103,69 +146,79 @@ function setScreenView() {
     setScreenLayout();
 }
 
+function setScreenComponents() {
+    let listC = currentScreenView.getElementsByClassName("list_components");
+    if (listC != null) {
+        let listComp = listC[0];
+        listComp.style.display = "block";
+        listComp.innerHTML = "";
+        let cc = currentScreen.components;
+        let ik = cc.length;
+        if (ik > 0) {
+            let firstView = null;
+            let firstComp = null;
+            let idComponentNumMax = 0;
+            for (let i = 0; i < ik; i++) {
+                currentComponentDescr = cc[i];
+                let componId = currentComponentDescr.componId;
+                if (idComponentNumMax < componId) {
+                    idComponentNumMax = componId;
+                }
+                uxFunction = null;
+                try {
+                    uxFunction = eval("new ux" + currentComponentDescr.type + "();");
+                } catch(e) { }
+                if (uxFunction != null) {
+                    currentComponentView = newComponent();
+                    currentComponentView.addEventListener('click', selComponent, true);
+                    listComp.append(currentComponentView);
+                    currentComponentView.componId = componId;
+                    currentComponent = getComponentById(componId);
+                    if (i == 0) {
+                        currentComponentView.className = "component_sel";
+                        firstView = currentComponentView;
+                        firstComp = currentComponent;
+                    }
+                    if (currentComponent == null) {
+//                        error
+                    } else {
+                        setValueComponent(currentComponentView, currentComponent, currentComponentDescr);
+                    }
+                }
+                if (firstView != null) {
+                    currentComponentView = firstView;
+                    currentComponent = firstComp;
+                    currentComponentDescr = cc[0];
+                }
+                container_scr.scroll_y.resize(container_scr);
+            }
+            idComponentNum = idComponentNumMax + 1;
+        }
+    }
+}
+
 function setListScreen() {
     jk = listScreen.length;
     var maxIdScreenNum = 0;
-    var maxIdComponentNum = 0;
     for (var j = 0; j < jk; j++) {
         currentScreen = listScreen[j];
         idScreenNum = currentScreen.screenId;
         if (maxIdScreenNum < idScreenNum) {
             maxIdScreenNum = idScreenNum;
         }
-        var ns = newScreen(idScreenNum);
-        currentChildren = currentScreen.layout.children;
-
-        ns.idScreen = idScreenNum;
-
-        currentScreenView = ns;
+        currentScreenView = newScreen(currentScreen);
+        currentScreenView.idScreen = idScreenNum;
         currentScreenView.className = "screen";
-        let listC = currentScreenView.getElementsByClassName("list_components");
-        if (listC != null && listC.length > 0) {
-            listC[0].style.display = "none";
-        }
-        ns.addEventListener('click', selScreen, true);
+        currentScreenView.addEventListener('click', selScreen, true);
         setSelected("type_screen", currentScreen.typeScreen);
         setSelected("anim_screen", currentScreen.animate);
-        list_screens.append(ns);
-        let el_1 = currentScreenView.getElementsByClassName("list_components");
-        if (el_1 == undefined) {
-            break;
-        }
-        list_cont = el_1[0];
-        let ik = currentChildren.length;
-        let tk = components.length;
-        for (let i = 0; i < ik; i++) {
-            let comp = currentChildren[i];
-            currentComponentDescr = getComponentDescrById(comp.viewId);
-            let typeComp = comp.type;
-            let iT = -1;
-            for (let t = 0; t < tk; t++) {
-                if (components[t] == typeComp) {
-                    iT = t;
-                    break;
-                }
-            }
-            if (iT > -1) {
-                comp.componentId = maxIdComponentNum;
-                let nc = newComponent(iT);
-                nc.componentId = maxIdComponentNum;
-                nc.addEventListener('click', selComponent, true);
-                nc.className = "component";
-                currentComponent = comp;
-                currentComponentView = nc;
-                uxFunction = eval("new ux" + components[iT] + "();");
-                setValueComponent(nc, comp, currentComponentDescr);
-                list_cont.append(nc);
-                maxIdComponentNum ++;
-            }
-        }
+        list_screens.append(currentScreenView);
     }
     if (listScreen.length == 0) {
         currentScreen = null;
         currentScreenView = null;
         idScreenNum = 0;
-        idComponentNum = 0;
+        root.innerHTML = "";
     } else {
         currentScreen = listScreen[0];
         currentChildren = currentScreen.layout.children;
@@ -178,19 +231,9 @@ function setListScreen() {
                 listC[0].style.display = "block";
             }
         }
-        if (currentScreenView != null) {
-            let el_1 = currentScreenView.getElementsByClassName("list_components");
-            if (el_1 != null) {
-                list_cont = el_1[0];
-                let asdf = list_cont.firstElementChild;
-                if (asdf != null) {
-                    selComponentAll(asdf);
-                }
-            }
-        }
         idScreenNum = maxIdScreenNum + 1;
-        idComponentNum = maxIdComponentNum + 1;
         setScreenView();
+        setScreenComponents();
     }
 }
 
@@ -199,7 +242,7 @@ function getComponentDescrById(id) {
     let ik = compDescr.length;
     for (let i = 0; i < ik; i++) {
         let des = compDescr[i];
-        if (des.view.viewId == id) {
+        if (des.componId == id) {
             return des;
         }
     }
@@ -208,7 +251,6 @@ function getComponentDescrById(id) {
 
 function setValueComponent(nc, compLayout, comp_descr) {
     let cont = nc.getElementsByClassName("component_param")[0];
-//    if (cont == null) return;
     uxFunction.setValue(cont);
 }
 
@@ -220,13 +262,13 @@ function setSelected(cl, val) {
     }
 }
 
-function newScreen() {
+function newScreen(scr) {
     var container = document.createElement('div')
     container.innerHTML = '<div class="screen_sel">'
         +'<div class="error_screen" style="float:left;width:3px;height:40px;"></div>'
         +'<div style="padding-bottom:15px;height:30px;margin-left:10px">'
             +'<div style="float:left;"><div style="color: #2228;font-size: 10px;margin-left:4px">Name</div>'
-            +'<input class="name_screen input_style" onkeyup="return checkNameKey(event)" onkeydown="return checkNameKeyD(event)" style="font-size:12px;color:#110000;font-weight:600" type="text" size="15" value="'+ currentScreen.screenName + '"/>'
+            +'<input class="name_screen input_style" onkeyup="return checkNameKey(event)" onkeydown="return validName(event)" style="font-size:12px;color:#110000;font-weight:600" type="text" size="12" value="'+ scr.screenName + '"/>'
             +'</div>'
     
             +'<div style="float:left;margin-left:10px;"><div style="color:#2228;font-size: 10px;margin-left:4px">Type</div>'
@@ -238,11 +280,11 @@ function newScreen() {
             +'</div>'
 
             +'<div style="float:left;margin-left:10px"><div style="color: #2228;font-size: 10px;margin-left:4px">Title screen</div>'
-            +'<input class="name_screen input_style" onkeyup="return clickUpTitle(event)" value="' + currentScreen.title + '" type="text" size="14"/>'
+            +'<input class="title_screen input_style" onkeyup="return clickUpTitle(event)" value="' + scr.title + '" type="text" size="14"/>'
             +'</div>'
     
             +'<div style="float:left;margin-left:10px"><div style="color: #2228;font-size: 10px;margin-left:4px">Title parameters</div>'
-            +'<input class="name_screen input_style" onchange="changeTitleParam(this.value)" value="' + currentScreen.titleParam + '" type="text" size="14"/>'
+            +'<input class="title_screen_param input_style" onchange="changeTitleParam(this.value)" value="' + scr.titleParam + '" type="text" size="14"/>'
             +'</div>'
     
             +'<div onclick="viewComment(this)" style="float:left;margin-left:10px;cursor:pointer"><div style="color:#2228;font-size:10px;margin-left:4px">Description</div>'
@@ -253,7 +295,7 @@ function newScreen() {
             +'<img onclick="plusCompon(this)" style="float:right;cursor:pointer;margin-top:15px;margin-right:10px" width="16" height="16" src="img/add_blue.png">'
         +'</div>'
 
-        +'<textarea class="comment" style="display:none;margin-left:10px;border:1px solid #C5DCFA;box-sizing: border-box;border-radius: 8px;" onchange="changeComment(this.value)" rows="3" cols="108" maxlength="2000">' + currentScreen.screenComment + '</textarea>'
+        +'<textarea class="comment" style="display:none;margin-left:10px;border:1px solid #C5DCFA;box-sizing: border-box;border-radius: 8px;" onchange="changeComment(this.value)" rows="3" cols="108" maxlength="2000">' + scr.screenComment + '</textarea>'
         +'<div class="list_components" style="margin-top:5px;margin-right:8px;margin-left:10px"></div>'
     +'</div>';
     return container.firstChild;
@@ -261,29 +303,12 @@ function newScreen() {
 
 function viewComment(el) {
     var tt = currentScreenView.getElementsByClassName("comment");
-/*
-    var ss = currentScreenView.getElementsByClassName("shewron");
-    var s = null;
-    if (ss != null) {
-        s = ss[0];
-    }
-*/
     if (tt != null) {
         var t = tt[0];
         if (t.style.display == "none") {
             t.style.display = "block";
-/*
-            if (s != null) {
-                s.src = "img/shewron_up_26.png";
-            }
-*/
         } else {
             t.style.display = "none";
-/*
-            if (s != null) {
-                s.src = "img/shewron_down_26.png";
-            }
-*/
         }
         container_scr.scroll_y.resize(container_scr);
     }
@@ -291,18 +316,6 @@ function viewComment(el) {
 
 function changeComment(v) {
     currentScreen.screenComment = v;
-}
-
-function checkNameKeyD(e) {
-    var k = e.key;
-    var kUp = k.toUpperCase();
-    if ((kUp >= "A" && kUp <= "Z") || kUp == "_" || (kUp >= "0" && kUp <= "9") || 
-            k == 'ArrowLeft' || k == 'ArrowRight' || k == 'Delete' || k == 'Backspace')  {
-        return true;
-    } else {
-        tooltipMessage(e.currentTarget, "Только английские буквы, _ и цифры");
-        return false;
-    }
 }
 
 function checkNameKey(e) {
@@ -376,21 +389,40 @@ function plusCompon(el) {
     }
 }
 
+function plusComponName(name) {
+    var ik = components.length;
+    for (let i = 0; i < ik; i++) {
+        if (components[i] == name) {
+            selComponType(i);
+            break;
+        }
+    }
+}
+
 function selComponType(i) {
-    var nc = newComponent(i);
-    nc.componentId = idComponentNum;
-//    nc.uxFunc = components[i].uxFunc;
-    nc.addEventListener('click', selComponent, true);
-    list_cont.append(nc);
     if (currentComponentView != null) {
         currentComponentView.className = "component";
     }
-    currentComponentView = nc;
-    currentComponentView.className = "component_sel";
-    list_screens.scrollTop = list_screens.scrollHeight;
-    addNewComponent(i);
-    idComponentNum ++;
-    container_scr.scroll_y.resize(container_scr);
+    uxFunction = null;
+    try {
+        uxFunction = eval("new ux" + components[i] + "();");
+    } catch(e) { }
+    if (uxFunction != null) {
+        let viewId = setViewId(uxFunction.param.viewBaseId);
+        currentComponentView = newComponent();
+        currentComponentView.addEventListener('click', selComponent, true);
+        list_cont.append(currentComponentView);
+        currentComponentView.className = "component_sel";
+        list_screens.scrollTop = list_screens.scrollHeight;
+        currentComponentView.componId = idComponentNum;
+        uxFunction.addComponent(idComponentNum, viewId);
+        idComponentNum ++;
+        currentScreen.components.push(currentComponentDescr);
+        currentChildren.push(currentComponent);
+        setValueComponent(currentComponentView, currentComponent, currentComponentDescr);
+        setScreenView();
+        container_scr.scroll_y.resize(container_scr);
+    }
 }
 
 function selComponent(event) {
@@ -406,21 +438,13 @@ function selComponentAll(el) {
     }
     currentComponentView = el;
     currentComponentView.className = "component_sel";
-    var id = currentComponentView.componentId;
-    var ik = currentChildren.length;
-    currentComponent = null;
-    currentComponentDescr = null;
-    uxFunction = null;
-    for (var i = 0; i < ik; i++) {
-        var ls = currentChildren[i];
-        if (id == ls.componentId) {
-            currentComponent = ls;
-            uxFunction = eval("new ux" + currentComponent.type + "();");
-            break;
-        }
-    }
-    if (currentComponent != null) {
-        currentComponentDescr = getComponentDescrById(currentComponent.viewId);
+    let id = currentComponentView.componId;
+    currentComponentDescr = getComponentDescrById(id);
+    currentComponent = getComponentById(id);
+    try {
+        uxFunction = eval("new ux" + currentComponent.type + "();");
+    } catch(e) {
+        uxFunction = null;
     }
 }
 
@@ -447,8 +471,9 @@ function jsonNoViewParent(el) {
 // ??????????????????????????????????? служебный
 
 
-function newComponent(i) {
-    uxFunction = eval("new ux" + components[i] + "();");
+function newComponent() {
+//function newComponent(i) {
+//    uxFunction = eval("new ux" + components[i] + "();");
     let parComp = uxFunction.getParamComp();
     var str = '<div class="component_sel">'
             +'<div class="name_compon" style="float:left">' + parComp.name + '</div>'
@@ -497,36 +522,20 @@ function del_compon(el) {
     
 }
 
-function addNewComponent(i) {
-    let viewId = setViewId(uxFunction.param.viewBaseId);
-    uxFunction.addComponent(viewId);
-    currentScreen.components.push(currentComponentDescr);
-    currentChildren.push(currentComponent);
-    setValueComponent(currentComponentView, currentComponent, currentComponentDescr);
-    setScreenView();
-}
-/*
-function getComponentById(id) {
-    let ik = currentChildren.length;
-    for (let i = 0; i < ik; i++) {
-        let ls = currentChildren[i];
-        if (ls.typeUxUi == "ux") {
-            if (ls.viewId == id) {
-                return ls;
-            }
-        }
-    }
-    return null;
-}
-*/
 function setViewId(id) {
-    let ik = currentChildren.length;
+    let cc = currentScreen.components;
+    let ik = cc.length;
     let count = 0;
     for (let i = 0; i < ik; i++) {
-        let ls = currentChildren[i];
-        if (ls.typeUxUi == "ux") {
-            if (ls.viewId.includes(id)) {
-                count ++;
+        let vi = cc[i].viewId;
+        if (vi != null && vi.includes(id)) {
+            let j = vi.indexOf("_");
+            if (j > -1) {
+                let c = vi.substring(j);
+                c = parseInt(c);
+                if (count < c) {
+                    count = c;
+                }
             }
         }
     }
@@ -536,6 +545,7 @@ function setViewId(id) {
         return id;
     }
 }
+
 
 function undo() {
     

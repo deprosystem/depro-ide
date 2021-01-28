@@ -1,6 +1,6 @@
     var DENSITY = 0;
     var MEASURE = 0;
-    var dp_12, dp_14, dp_16, dp_18, dp_20, dp_24;
+    var dp_4, dp_12, dp_14, dp_16, dp_18, dp_20, dp_24;
     var SCALE = 1;
     var ACTIVE = null, ACTIVE_X, ACTIVE_Y, ACTIVE_W, ACTIVE_H;
     var ACTIVE_CHILD;
@@ -26,7 +26,7 @@
     var marginCompon = 4;
 //    var headerTool;
     var root_g, root;
-    var contourEl;
+//    var contourEl;
     var typeInsert, insertTypeFull;
     var selectViewElement;
     
@@ -59,7 +59,7 @@
         screenW = sizeDeviceArray[1][0];
         screenH = sizeDeviceArray[1][1];
         popUp = document.getElementById('popUp');
-        contourEl = document.getElementsByClassName('contourEl')[0];
+//        contourEl = document.getElementsByClassName('contourEl')[0];
         popUpTitle = document.getElementById('popUpTitle');
         popUpContainer = document.getElementById('popUpContainer');
 //        headerTool = document.getElementById('header-tool');
@@ -88,6 +88,7 @@
     }
     
     function setDp() {
+        dp_4 = 4 * MEASURE;
         dp_12 = 12 * MEASURE;
         dp_14 = 14 * MEASURE;
         dp_16 = 16 * MEASURE;
@@ -130,7 +131,7 @@
         root_g.style.height = screenHpx + px;
         root.style.width = screenWpx + px;
         root.style.height = screenHpx + px;
-        
+        let p;
         if (currentScreen == null) {
             p = {};
             p.type = 'RelativeLayout';
@@ -149,7 +150,9 @@
         } else {
             root.android = currentScreen.layout;
             root.android.parent = root_g;
+            
         }
+        setBackgoundEl(root, root.android);
     }
     
     function setActive(el) {

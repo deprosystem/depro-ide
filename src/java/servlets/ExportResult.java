@@ -1,6 +1,7 @@
 package servlets;
 
 import android.AndroidPar;
+import android.ColorSet;
 import android.Drawable;
 import android.ItemChange;
 import android.TabLayout;
@@ -142,7 +143,7 @@ public class ExportResult extends BaseServlet {
                     String pathProject = basePath + userProjPath;
                     ProcessBuilder builder;
                     Process process;
-System.out.println("pathProject="+pathProject+"<< progr="+progr.get(0)+"<<");
+// System.out.println("pathProject="+pathProject+"<< progr="+progr.get(0)+"<<");
 
                     builder = new ProcessBuilder(progr);
                     builder = builder.directory(new File(pathProject));
@@ -227,6 +228,7 @@ System.out.println("pathProject="+pathProject+"<< progr="+progr.get(0)+"<<");
                             default:
                                 switch (iap.type) {
                                     case 0: // число
+                                    case 2: // boolean
                                         writer.write(tab8 + iap.name + " = " + iap.value + ";\n");
                                         break;
                                     case 1: // строка
@@ -346,14 +348,13 @@ System.out.println("pathProject="+pathProject+"<< progr="+progr.get(0)+"<<");
                             declare.add("            .toolBar(R.id." + cViewId + endComp);
                             break;
                         case Constants.MENU_B:
-                            if (noDrawer(sc.components)) {
+                            if (noDrawer(sc.components) && sc.typeScreen == 0) {
                                 declare.add("            .fragmentsContainer(R.id.container_fragm)\n");
                             }
                             ml = comp.model.menuList;
                             nameMenu = "menu" + firstUpperCase(scName) + firstUpperCase(cViewId);
                             importD.add(Constants.importMenu);
-                            menu.add("    Menu " + nameMenu + " = new Menu(" + findColorResourse(ml.colorNormId, parSave.colors) + ", "
-                                    + findColorResourse(ml.colorSelId, parSave.colors) + ")\n");
+                            menu.add("    Menu " + nameMenu + " = new Menu()\n");
                             mk = ml.list.size();
                             mk1 = mk - 1;
                             noStart = true;
@@ -374,10 +375,18 @@ System.out.println("pathProject="+pathProject+"<< progr="+progr.get(0)+"<<");
                                 } else {
                                     startScr = "";
                                 }
-                                menu.add("        .item(" + dravableFromUrl(mi.icon) + ", "
+                                String stIcon = "0";
+                                if (mi.icon != null && mi.icon.length() > 0) {
+                                    stIcon = dravableFromUrl(mi.icon);
+                                }
+                                menu.add("        .item(" + stIcon + ", "
                                         + formStringId(scName, cViewId, String.valueOf(m), mi.title, listString) + screenM + startScr + endM);
                             }
-                            declare.add("            .menuBottom(model(" + nameMenu + "), view(R.id." + cViewId + ")" + endComp);
+                            String navMenuB = "";
+                            if (comp.navigator != null && comp.navigator.size() > 0) {
+                                navMenuB = navigatorMenuB(comp.navigator, mk);
+                            }
+                            declare.add("            .menuBottom(model(" + nameMenu + "), view(R.id." + cViewId + ")" + navMenuB + endComp);
                             break;
                         case Constants.MENU:
                             ml = comp.model.menuList;
@@ -428,13 +437,13 @@ System.out.println("pathProject="+pathProject+"<< progr="+progr.get(0)+"<<");
                                 zoom = ".levelZoom(" + par.levelZoom + "f)";
                             }
                             String contr = "";
-                            if (comp.view.targetButton || comp.view.zoomButtons) {
+                            if ( (comp.view.targetButton != null && comp.view.targetButton) || (comp.view.zoomButtons != null && comp.view.zoomButtons)) {
                                 String targ = "false";
-                                if (comp.view.targetButton) {
+                                if (comp.view.targetButton != null && comp.view.targetButton) {
                                     targ = "true";
                                 }
                                 String zoo = "false";
-                                if (comp.view.zoomButtons) {
+                                if (comp.view.zoomButtons != null && comp.view.zoomButtons) {
                                     zoo = "true";
                                 }
                                 contr = "\n" + tab16 + ".mapControls(" + targ + "," + zoo + ")";
@@ -489,6 +498,42 @@ System.out.println("pathProject="+pathProject+"<< progr="+progr.get(0)+"<<");
         } catch (IOException ex) {
             System.out.println("ExportResult createDimens error=" + ex);
         }
+    }
+    
+    private String navigatorMenuB(Navigator nav, int ik) {
+        String res = "";
+        int nk = nav.size();
+        for (int i = 0; i < ik; i++) {
+            String vId = String.valueOf(i);
+            String st = "";
+            String sep = "";
+            for (int n = 0; n < nk; n++) {
+                Handler hh = nav.get(n);
+                if (hh.viewId != null && hh.viewId.length() > 0 && hh.viewId.equals(vId)) {
+                    st += sep + formHandler(hh);
+                    sep = ", ";
+                }
+            }
+            if (st.length() == 0) {
+                res += ", null";
+            } else {
+                res += ", navigator(" + st + ")";
+            }
+        }
+        return res;
+    }
+    
+    private String formHandler(Handler hh) {
+        String res = "";
+        switch (hh.handler) {
+            case "hide":
+                res = "hide(R.id." + hh.id + ")";
+                break;
+            case "show":
+                res = "show(R.id." + hh.id + ")";
+                break;
+        }
+        return res;
     }
     
     private boolean noDrawer(ListComponent components) {
@@ -797,7 +842,7 @@ System.out.println("pathProject="+pathProject+"<< progr="+progr.get(0)+"<<");
                         elScreen.children.forEach((es) -> {
                             createEl(es, false, tab, writer, parSave);
                         });
-                        if (first) {
+                        if (parSave.typeScreen == 0 && first) {
                             if (parSave.menuId.length() > 0) {
                                 createFragmentContainer(writer, parSave);
                             }
@@ -824,8 +869,13 @@ System.out.println("pathProject="+pathProject+"<< progr="+progr.get(0)+"<<");
             writer.write(tab8 + "android:id=\"@+id/container_fragm\"\n");
             writer.write(tab8 + "android:layout_width=\"match_parent\"\n");
             writer.write(tab8 + "android:layout_height=\"match_parent\"\n");
-            writer.write(tab8 + "android:layout_above=\"@id/" + parSave.menuId + "\"\n");
-            writer.write(tab8 + "android:layout_below=\"@id/" + parSave.toolId + "\" />\n");
+            if (parSave.menuId != null && parSave.menuId.length() > 0) {
+                writer.write(tab8 + "android:layout_above=\"@id/" + parSave.menuId + "\"\n");
+            }
+            if (parSave.toolId != null && parSave.toolId.length() > 0) {
+                writer.write(tab8 + "android:layout_below=\"@id/" + parSave.toolId + "\"\n");
+            }
+            writer.write(tab4 + "/>\n");
         } catch (IOException ex) {
             Logger.getLogger(ExportResult.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1002,7 +1052,14 @@ System.out.println("pathProject="+pathProject+"<< progr="+progr.get(0)+"<<");
                 if (p.background != null && p.background >= 0) {
                     if (p.background > 999) {
                         if (p.background > 1999) {      // Selector
-
+                            
+                            if (p.background == 100000) {
+                                String stSRC = p.src;
+                                int ii = stSRC.lastIndexOf(".");
+                                int jj = stSRC.lastIndexOf("/");
+                                stSRC = stSRC.substring(jj + 1, ii);
+                                writer.write(tab + "android:background=\"@drawable/"+ stSRC + "\"");
+                            }
                         } else {        // Drawable
                             writer.write(tab + "android:background=\"@drawable/"+findDrawableByIndex(p.background, parSave.drawable) + "\"");
                         }
@@ -1034,10 +1091,14 @@ System.out.println("pathProject="+pathProject+"<< progr="+progr.get(0)+"<<");
                     }
                     switch(p.gravLayout.v) {
                         case Constants.TOP:
-                            writer.write(tab + "android:layout_alignParentTop=\"true\"");
+                            if (p.below == null || p.below.length() == 0) {
+                                writer.write(tab + "android:layout_alignParentTop=\"true\"");
+                            }
                             break;
                         case Constants.BOTTOM:
-                            writer.write(tab + "android:layout_alignParentBottom=\"true\"");
+                            if (p.above == null || p.above.length() == 0) {
+                                writer.write(tab + "android:layout_alignParentBottom=\"true\"");
+                            }
                             break;
                         case Constants.CENTER:
                             writer.write(tab + "android:layout_centerVertical=\"true\"");
@@ -1050,48 +1111,49 @@ System.out.println("pathProject="+pathProject+"<< progr="+progr.get(0)+"<<");
                     }
                 }
             }
-
-            if (p.gravity.h == Constants.CENTER && p.gravity.v == Constants.CENTER) {
-                writer.write(tab + "android:gravity=\"center\"");
-            } else {
-                String gV = "";
-                String gH = "";
-                String grav = "";
-                switch(p.gravity.h) {
-                    case Constants.LEFT:
-                        gH = "left";
-                        break;
-                    case Constants.RIGHT:
-                        gH = "right";
-                        break;
-                    case Constants.CENTER:
-                        gH = "center_horizontal";
-                        break;
-                }
-                switch(p.gravity.v) {
-                    case Constants.TOP:
-                        gV = "top";
-                        break;
-                    case Constants.BOTTOM:
-                        gV = "bottom";
-                        break;
-                    case Constants.CENTER:
-                        gV = "center_vertical";
-                        break;
-                }
-                if (gV.length() > 0) {
-                    if (gH.length() > 0) {
-                        grav = gV + "|" + gH;
-                    } else {
-                        grav = gV;
-                    }
+            if (p.gravity != null) {
+                if (p.gravity.h == Constants.CENTER && p.gravity.v == Constants.CENTER) {
+                    writer.write(tab + "android:gravity=\"center\"");
                 } else {
-                    if (gH.length() > 0) {
-                        grav = gH;
+                    String gV = "";
+                    String gH = "";
+                    String grav = "";
+                    switch(p.gravity.h) {
+                        case Constants.LEFT:
+                            gH = "left";
+                            break;
+                        case Constants.RIGHT:
+                            gH = "right";
+                            break;
+                        case Constants.CENTER:
+                            gH = "center_horizontal";
+                            break;
                     }
-                }
-                if (grav.length() > 0) {
-                    writer.write(tab + "android:gravity=\"" + grav + "\"");
+                    switch(p.gravity.v) {
+                        case Constants.TOP:
+                            gV = "top";
+                            break;
+                        case Constants.BOTTOM:
+                            gV = "bottom";
+                            break;
+                        case Constants.CENTER:
+                            gV = "center_vertical";
+                            break;
+                    }
+                    if (gV.length() > 0) {
+                        if (gH.length() > 0) {
+                            grav = gV + "|" + gH;
+                        } else {
+                            grav = gV;
+                        }
+                    } else {
+                        if (gH.length() > 0) {
+                            grav = gH;
+                        }
+                    }
+                    if (grav.length() > 0) {
+                        writer.write(tab + "android:gravity=\"" + grav + "\"");
+                    }
                 }
             }
             
@@ -1237,10 +1299,40 @@ System.out.println("pathProject="+pathProject+"<< progr="+progr.get(0)+"<<");
                     writer.write(tab + "class=\"com.google.android.gms.maps.SupportMapFragment\"");
                     break;
                 case Constants.SHEET:
+                    if (p.children != null && p.children.size() > 0) {
+                        AndroidPar ap = p.children.get(0);
+                        if (ap != null && ap.height == Constants.MATCH) {
+                            writer.write(tab + "app:viewMatch=\"true\"");
+                        }
+                    }
+                    if (p.sheetParam != null) {
+                        if (p.sheetParam.noSwipe) {
+                            writer.write(tab + "app:noSwipeHide=\"true\"");
+                        }
+                        if (p.sheetParam.noBP) {
+                            writer.write(tab + "app:noBackPressedHide=\"true\"");
+                        }
+                    }
                     writer.write(tab + "app:viewId=\"@layout/view_" + parSave.currentScreen.toLowerCase() + "_" + p.viewId + "\"");
                     break;
                 case Constants.MENU_B:
-                    
+                    ColorSet cs = p.colorSet;
+                    if (cs.textColor != 3) {
+                        writer.write(tab + "app:normColor=\"" + findColorByIndex(cs.textColor, parSave.colors) + "\"");
+                    }
+                    writer.write(tab + "app:selectColor=\"" + findColorByIndex(cs.textSelect, parSave.colors) + "\"");
+                    if ( ! cs.toAnimate) {
+                        writer.write(tab + "app:toAnimate=\"false\"");
+                    }
+                    if ( ! cs.changeColor) {
+                        writer.write(tab + "app:noSelImgChangeColor=\"true\"");
+                    }
+                    if (cs.location != null && ( ! cs.location.equals("top"))) {
+                        writer.write(tab + "app:imageLocale=\"" + cs.location + "\"");
+                    }
+                    if (cs.background != null && cs.background.length() > 0) {
+                        writer.write(tab + "app:selectBackground=\"@drawable/shape_" + cs.background + "\"");
+                    }
                     break;
             }
             if (p.componParam != null) {
@@ -1514,11 +1606,47 @@ System.out.println("pathProject="+pathProject+"<< progr="+progr.get(0)+"<<");
                             + " android:color=\"" + findColorByIndex(drawable.bordedColor, colors) + "\"/>");
                 }
             }
-            if (drawable.corners.lt > 0 && drawable.corners.lt == drawable.corners.tr 
-                    && drawable.corners.tr == drawable.corners.rb && drawable.corners.rb == drawable.corners.bl) {
-                writer.write(b4 + "<corners android:radius=\"" + dimens(drawable.corners.bl) + "\"/>");
-            } else {
-                
+            boolean corn = false;
+            int lt = 0;
+            if (drawable.corners.lt != null && drawable.corners.lt.length() > 0) {
+                lt = Integer.valueOf(drawable.corners.lt);
+                if (lt > 0) corn = true;
+            }
+            int tr = 0;
+            if (drawable.corners.tr != null && drawable.corners.tr.length() > 0) {
+                tr = Integer.valueOf(drawable.corners.tr);
+                if (tr > 0) corn = true;
+            }
+            int rb = 0;
+            if (drawable.corners.rb != null && drawable.corners.rb.length() > 0) {
+                rb = Integer.valueOf(drawable.corners.rb);
+                if (rb > 0) corn = true;
+            }
+            int bl = 0;
+            if (drawable.corners.bl != null && drawable.corners.bl.length() > 0) {
+                bl = Integer.valueOf(drawable.corners.bl);
+                if (bl > 0) corn = true;
+            }
+            if (corn) {
+                if (lt == tr && tr == rb && rb == bl) {
+                    writer.write(b4 + "<corners android:radius=\"" + dimens(drawable.corners.bl) + "\"/>");
+                } else {
+                    writer.write(b4 + "<corners");
+                    String b8 = b4 + "    ";
+                    if (lt > 0) {
+                        writer.write(b8 + "android:topLeftRadius=\"" + dimens(drawable.corners.lt) + "\"");
+                    }
+                    if (tr > 0) {
+                        writer.write(b8 + "android:topRightRadius=\"" + dimens(drawable.corners.tr) + "\"");
+                    }
+                    if (rb > 0) {
+                        writer.write(b8 + "android:bottomRightRadius=\"" + dimens(drawable.corners.rb) + "\"");
+                    }
+                    if (bl > 0) {
+                        writer.write(b8 + "android:bottomLeftRadius=\"" + dimens(drawable.corners.bl) + "\"");
+                    }
+                    writer.write(b8 + ">\n    </corners>");
+                }
             }
             writer.write("\n</shape>");
             writer.flush();

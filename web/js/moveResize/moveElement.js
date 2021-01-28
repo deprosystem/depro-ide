@@ -5,6 +5,7 @@ var status;
 var statusNEW = 0, statusOLD = 1;
 
 function moveElement(event) {
+console.log("moveElement moveElement moveElement");
     x = event.pageX;
     y = event.pageY;
     var rectParent = currentElement.android.parent.getBoundingClientRect();
@@ -13,7 +14,6 @@ function moveElement(event) {
     parentWpx = parseInt(rectParent.right - rectParent.left);
     parentHpx = parseInt(rectParent.bottom - rectParent.top);
     var rect = currentElement.getBoundingClientRect();
-
     var x_block = rect.left - parentX;
     var y_block = rect.top - parentY;
     delta_x = x_block - x;
@@ -21,6 +21,7 @@ function moveElement(event) {
     currentElement.style.top = "";
     currentElement.style.marginTop = y_block + px;
     currentElement.style.left = "";
+    currentElement.style.width = rect.width + px;
     currentElement.style.right = "";
     currentElement.style.marginLeft = x_block + px;
     document.onmousemove = moveEl;
@@ -61,6 +62,7 @@ function mouseUpEl(e) {
         p.width = parseInt(w / MEASURE);
         p.height = parseInt(h / MEASURE);
         YY = parseInt(currentElement.style.marginTop);
+//console.log("currentElement.style.marginLeft="+currentElement.style.marginLeft+"<<<");
         XX = parseInt(currentElement.style.marginLeft);
         p.topMarg = parseInt(YY / MEASURE);
         p.leftMarg = parseInt(XX / MEASURE);
@@ -125,59 +127,28 @@ function mouseUpNewEl(e) {
         XX = parseInt(currentElement.style.marginLeft);
         p.topMarg = parseInt(YY / MEASURE);
         p.leftMarg = parseInt(XX / MEASURE);
+        
+        if (status == statusNEW) {
+            addNewElement(ACTIVE, currentElement);
+            addNavigatorEl(currentElement);
+            if (ACTIVE.android.children == null) {
+                ACTIVE.android.children = [];
+            }
+            ACTIVE.android.children.push(currentElement.android);
+
+        }
+        
         var typeEl = null;
-        switch (p.type) {
-            case 'TextView' :
-                typeEl = createDivText();
-                p.text = "";
-                p.textSize = 14;
-                break;
-            case 'EditText' :
-                typeEl = createDivEditText(currentElement);
-                p.text = "";
-                p.textSize = 14;
-                break;
-            case 'ImageView' :
-                uiFunction = eval("new ui" + p.type + "()");
-                typeEl = uiFunction.newElementUI(p);
-/*
-                typeEl = createDivImg();
-                p.src = "";
-                p.scaleType = 0;
-*/
-                break;
-            case 'Gallery' :
-                typeEl = createDivImg();
-                p.componParam = {type:8};
-                p.src = "img/picture.png";
-                break;
-            case 'Map' :
-                typeEl = createDivImg();
-                p.componParam = {type:11};
-                p.src = "img/map.png";
-                break;
-            case 'SheetBottom' :
-                p.componParam = {type:12};
-                break;
-            case 'Indicator' :
-                p.width = WRAP;
-                p.height = WRAP;
-//                p.viewId = "indicator";
-                p.componParam = {diam:7,colorNorm:3,colorSel:4,type:10};
-                break;
+        try {
+            uiFunction = eval("new ui" + p.type + "()");
+            typeEl = uiFunction.newElementUI(p);
+        } catch(e) {
         }
         if (typeEl != null) {
             currentElement.appendChild(typeEl);
         }
         setParamCompon();
-        viewCompon();
-
-        if (status == statusNEW) {
-            addNewElement(ACTIVE, currentElement);
-            addNavigatorEl(currentElement);
-            ACTIVE.android.children.push(currentElement.android);
-
-        }
+        showElemChilds(currentElement);
     } else {
         ACTIVE.removeChild(currentElement);
         currentElement = null;
@@ -189,6 +160,10 @@ function resizeContour(e) {
     var classN = e.target.className;
     if (e.target === ACTIVE) {
         classN = 'active'
+    } else {
+        if (e.currentTarget === ACTIVE) {
+            classN = 'active'
+        }
     }
     status = statusOLD;
     if (classN === 'active' || (classN.indexOf('contour') > -1)) {
@@ -219,6 +194,7 @@ function resizeContour(e) {
                 currentElement.style.width = '0px';
                 currentElement.style.height = '0px';
                 appendContour();
+                document.onmouseup = mouseUpNewEl;
                 break;
             case 'contourRB':
                 angleResizeX = currentElement.offsetLeft;
@@ -238,7 +214,11 @@ function resizeContour(e) {
                 break;
         }
         document.onmousemove = resizeNewAngle;
-        document.onmouseup = mouseUpNewEl;
+        if (classN == 'active') {
+            document.onmouseup = mouseUpNewEl;
+        } else {
+            document.onmouseup = mouseUpEl;
+        }
         e.stopPropagation();
     }
 }

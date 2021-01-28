@@ -19,6 +19,10 @@ listMenu_UX[2] = {nameM : 'Edit'};
 listMenu_UX[2].children = new Array(
         {nameI : 'Copy', func : all, dependProject : true, dependScreen : true},
         {nameI : 'Undo', func : all, dependProject : true, dependScreen : true});
+listMenu_UX[3] = {nameM : 'Exit'};
+listMenu_UX[3].children = new Array(
+        {nameI : 'Change user', func : changeUser},
+        {nameI : 'Close', func : closeIDE});
         
 function formMenuEl_UX() {
     var ik = listMenu_UX.length;

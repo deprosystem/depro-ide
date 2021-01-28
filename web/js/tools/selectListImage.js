@@ -50,5 +50,4 @@ function setSelectImage(e, i, par) {
     let el = e.target;
     closeWindow(el);
     par.func(i, par.param);
-//    param.src = i;
 }

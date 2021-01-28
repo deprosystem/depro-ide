@@ -4,5 +4,8 @@ var docNavigator = '<div onclick="navigatorCompon()" style="float:left;cursor:po
     +'</div>';
 
 function navigatorCompon() {
+    if (currentComponentDescr.navigator == null) {
+        currentComponentDescr.navigator = [];
+    }
     editDataWind(metaNavigator, currentComponentDescr.navigator);
 }

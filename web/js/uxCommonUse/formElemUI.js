@@ -62,11 +62,11 @@ function formElement(item, toRightOf, namePrev, topM) {
     }
     viewCompon();
 }
-
+/*
 function viewCompon() {
     viewComponElem(currentElement);
 }
-
+*/
 function formDivider() {
     currentElement = createNewEl();
     p = {typeUxUi: "ui"};

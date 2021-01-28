@@ -74,7 +74,7 @@ function formAppParam() {
 function createProject() {
     shutScreen.style.display = "none";
     listEdit = [{name : "nameProject", label : "Project name", type : TYPE_String, valid: validName},
-    {name : "namePackage", label : "Package name", type : TYPE_String, valid: validEmpty, value: "com.example.ide"},
+//    {name : "namePackage", label : "Package name", type : TYPE_String, valid: validEmpty, value: "com.example.ide"},
     {name : "nameAPP", label : "APP name", type : TYPE_String, valid: validEmpty},
     {name : "comment", label : "Description", type : TYPE_StringAr}];
     setCreateData(1);       // 1 - create, 0 - chang
@@ -82,7 +82,7 @@ function createProject() {
 
 function changeProject() {
     listEdit = [{name : "nameProject", label : "nameProject", type : TYPE_String, valid: validEmpty, value: currentProject.nameProject},
-        {name : "namePackage", label : "Package name", type : TYPE_String, valid: validEmpty, value: currentProject.namePackage},
+//        {name : "namePackage", label : "Package name", type : TYPE_String, valid: validEmpty, value: currentProject.namePackage},
         {name : "nameAPP", label : "nameAPP", type : TYPE_String, valid: validEmpty, value: currentProject.nameAPP},
         {name : "comment", label : "Description", type : TYPE_StringAr, value: currentProject.comment},
         {name : "logo", label : "Logo", type : TYPE_Image, value: currentProject.logo}];
@@ -234,12 +234,20 @@ function cbCreateProjectDop() {
     setMaxIndexDrawable();
     setLayout();
     list_screens.innerHTML = "";
+
+    if (listScreen.length == 0) {
+        let scrParam = {scrN: "Main", scrNum: 0, scrTit:"", scrT:0};
+        let crScreen = crScreenForList(scrParam);
+        listScreen.push(crScreen);
+//        createScreen(false, "Main", "", 0);
+    }
+
     setListScreen();
 }
 
 function clearRoot() {
-    var contour = root.getElementsByClassName('contourEl')[0];
-    var cont_1 = contour.cloneNode(true);
+//    var cont_1 = contour.cloneNode(true);
+    let cont_1 = createContour();
     root.innerHTML = "";
     root.android = currentScreen.layout;
     root.appendChild(cont_1);
@@ -267,129 +275,22 @@ function modelClick(el) {
     selectNavigatorEl(el);
 }
 
-function setScreenElements(el, children) {
+function setScreenElements(el, children, tab) {
     if (children == null) return;
-    var ik = children.length;
+    let ik = children.length;
     let myCompon;
-    for (var i = 0; i < ik; i++) {
-        var newNode = children[i];
-        var newEl = createNewEl();
-        var typeEl;
+    for (let i = 0; i < ik; i++) {
+        let newNode = children[i];
+        let newEl = createNewEl();
+        let typeEl;
         newEl.android = newNode;
         newNode.viewElement = newEl;
         addNewElement(el, newEl);
-        var p = newEl.android;
-        let below, above;
-        switch (p.type) {
-            case 'TextView' :
-                typeEl = createDivText();
-                newEl.appendChild(typeEl);
-                break;
-            case 'EditText' :
-                typeEl = createDivEditText(newEl);
-                newEl.appendChild(typeEl);
-                break;
-            case 'ImageView' :
-                uiFunction = eval("new ui" + p.type + "()");
-                uiFunction.setElementUI(p, newEl, el);
-/*
-                typeEl = createDivImg();
-                newEl.appendChild(typeEl);
-*/
-                break;
-            case 'ToolBar' :
-                uiFunction = eval("new ui" + p.type + "()");
-                uiFunction.setElementUI(p, newEl, el);
-/*
-                typeEl = createForToolBar();
-                newEl.appendChild(typeEl);
-                let tit = typeEl.getElementsByClassName("title")[0];
-                if (tit != null) {
-                    if (currentScreen.title != null && currentScreen.title != "") {
-                        tit.innerHTML = currentScreen.title;
-                    }
-                    tit.style.color = findColorByIndex(p.textColor);
-                    tit.style.fontSize = (p.textSize * MEASURE) + px;
-                }
-                let img = typeEl.getElementsByClassName("img_back")[0];
-                if (img != null) {
-                    if (newNode.imgBack != null && newNode.imgBack != "") {
-                        img.src = newNode.imgBack;
-                    }
-                }
-*/
-                break;
-            case 'MenuBottom' :
-                uiFunction = eval("new ui" + p.type + "()");
-                uiFunction.setElementUI(p, newEl, el);
-/*
-                typeEl = createDivMenuB();
-                newEl.appendChild(typeEl);
-                myCompon = myComponent(p.viewId);
-                if (myCompon != null) {
-                    let menuList = myCompon.model.menuList;
-//                        getMenuList(p.viewId);
-                    if (menuList != null) {
-                        showMenuB(menuList, typeEl);
-                    }
-                }
-*/
-                break;
-            case 'List' :
-                uiFunction = eval("new ui" + p.type + "()");
-                uiFunction.setElementUI(p, newEl, el);
-//                formBelow(p, el, "ToolBar");
-//                formAbove(p, el, "MenuBottom");
-                break;
-            case 'Menu' :
-                myCompon = myComponent(p.viewId);
-                showMenu(newEl, myCompon.model.menuList);
-                break;
-            case 'Panel' :
-                formBelow(p, el, "ToolBar");
-                formAbove(p, el, "MenuBottom");
-                break;
-            case 'Map' :
-                uiFunction = eval("new ui" + p.type + "()");
-                uiFunction.setElementUI(p, newEl, el);
-/*
-                formBelow(p, el, "ToolBar");
-                formAbove(p, el, "MenuBottom");
-                typeEl = createDivImg();
-                newEl.appendChild(typeEl);
-                p.src = "img/map.png";
-                myCompon = myComponent(p.viewId);
-                if (myCompon.param.marker != null) {
-                    newEl.appendChild(createMarker(myCompon.param.marker));
-                }
-*/
-                break;
-            case 'Pager' :
-                uiFunction = eval("new ui" + p.type + "()");
-                uiFunction.setElementUI(p, newEl, el);
-/*
-                formBelow(p, el, "ToolBar,TabLayout");
-                formAbove(p, el, "MenuBottom");
-*/
-                break;
-            case 'TabLayout' :
-                uiFunction = eval("new ui" + p.type + "()");
-                uiFunction.setElementUI(p, newEl, el);
-/*
-                typeEl = createDivTab();
-                newEl.appendChild(typeEl);
-//                viewComponElem(newEl);
-                myCompon = myComponent(p.viewId);
-                if (myCompon != null) {
-                    let dat = myCompon.model.menuList.list;
-                    if (dat != null) {
-                        showTabLayout(dat, typeEl, p.tabLayout);
-                    }
-                }
-                formBelow(p, el, "ToolBar");
-*/
-                break;
-        }
+        let p = newEl.android;
+        try {
+            uiFunction = eval("new ui" + p.type + "()");
+            uiFunction.setElementUI(p, newEl, el);
+        } catch(e) { }
         viewComponElem(newEl);
         addNavigatorEl(newEl);
         if (p.typeUxUi == "ux") {
@@ -445,22 +346,7 @@ function formBelow(pp, el, st) { // Пошук в el елементів тип �
         pp.below = maxViewId;
     }
 }
-/*
-function myComponent(id) {
-    let ik = currentScreen.components.length;
-    if (ik > 0) {
-        for (let i = 0; i < ik; i++) {
-            let it = currentScreen.components[i];
-            if (it.view.viewId == id) {
-                return it;
-            }
-        }
-        return null;
-    } else {
-        return null;
-    }
-}
-*/
+
 function getComponent(id) {
     let ik = currentScreen.components.length;
     if (ik > 0) {
@@ -475,12 +361,7 @@ function getComponent(id) {
         return null;
     }
 }
-/*
-function openMenuScreen() {
-    listMenu_UX[1].children[2].domElement.className = 'subMainMenuNo';
-    listMenu_UX[1].children[3].domElement.className = 'subMainMenu';
-}
-*/
+
 function openMenu() {
     listMenu_UX[0].children[2].domElement.className = 'subMainMenu';
     listMenu_UX[0].children[3].domElement.className = 'subMainMenu';
@@ -521,7 +402,7 @@ function setListProject(list) {
 
 function oneProject(p) {
     let container = document.createElement('div')
-    let ds = "23.01.1234";
+    let ds = "";
     if (p.dateCreate !=0) {
         let dd = new Date(p.dateCreate);
         ds = dd.getDay() + "." + dd.getMonth() + "." + dd.getYear();
@@ -531,7 +412,7 @@ function oneProject(p) {
         let jsonUsers = JSON.parse(p.listUsers);
         let ik = jsonUsers.length;
         if (ik > 0) {
-            stUsers = '<div style="position:absolute;right:0px;bottom:42px">';
+            stUsers = '<div style="position:absolute;right:0px;bottom:42px;">';
             for (let i = 0; i < ik; i++) {
                 let us = jsonUsers[i];
                 stUsers += '<div style="float:right;background-color:' + us.color + ';width: 22px;height: 22px;border-radius: 11px;margin-right:16px;">'
@@ -547,17 +428,10 @@ function oneProject(p) {
     }
 
     let imgProject = '<img class="imgProject" width=360 height=160 style="position:absolute;left:0px;top:0px;object-fit:contain;border-radius:4px 4px 0px 0px;' + urlImgProject + '>';
-/*
-    let imgClick = '<div onclick="sendImageProject(' + p.projectId 
-            + ",'imageProject',this" + ')" style="width:60px;height:60px;position:absolute;left:150px;top:50px;cursor:pointer;border-radius:50%;'
-            +'background:radial-gradient(circle closest-side,#dddd, #0000);">'
-            +'<img width="20" height="20" style="position:absolute;left:20px;top:20px;" src="img/download.png">'
-        +'</div>';
-*/
-    let st = '<div class="projectView">'
+    let st = '<div class="projectView" style="cursor:pointer;" onclick="selectProject(' + p.projectId + ')">'
             +imgProject
-            +'<img onclick="projectMenu(this,' + p.projectId + ')" width="20" height="30" style="position:absolute;right:14px;top:14px;cursor:pointer" src="img/more-vertical.png">'
-            +'<div onclick="selectProject(' + p.projectId + ')" style="position:absolute;width:100%;height:78px;cursor:pointer;bottom:0px;border-radius:0px 0px 4px 4px;border-top:1px solid #1dace9"></div>'
+            +'<img onclick="projectMenu(event,' + p.projectId + ')" width="20" height="30" style="position:absolute;right:14px;top:14px;cursor:pointer" src="img/more-vertical.png">'
+            +'<div style="position:absolute;width:100%;height:78px;bottom:0px;border-radius:0px 0px 4px 4px;border-top:1px solid #1dace9"></div>'
             +'<div class="projectName">' + p.nameProject + '</div>'
             +'<div class="projectDate">' + ds + '</div>'
             + stUsers
@@ -614,7 +488,8 @@ function cbImageProject(res, par) {
     }
 }
 
-function projectMenu(el, id) {
+function projectMenu(e, id) {
+    let el = e.target;
     if (el.popup == null) {
         let paramForClick = {elem:el,idProj:id};
         el.popup = popupMenu(el, 80, "Edit,Image,Delete", clickMenu, paramForClick);
@@ -622,6 +497,7 @@ function projectMenu(el, id) {
         el.popup.parentNode.removeChild(el.popup);
         el.popup = null;
     }
+    e.stopPropagation();
 }
 
 function clickMenu(i, el, id) {
@@ -668,12 +544,6 @@ function deleteProject() {
 
 function uploadImage() {
     sendImageProject(currentProject.projectId, "", null, "Set of icons for the project", "application/zip")
-/*
-    uploadPanel.style.display = "flex";
-    if (uploadFrame.src != "upload.html") {
-        uploadFrame.src = "upload.html";
-    }
-*/
 }
 
 function keyupHand(e) {
@@ -754,25 +624,31 @@ function validDeclare() {
         for (let i = 0; i < ik; i++) {
             let scr = listScreen[i];
             let sk = scr.components.length;
+            let noNav = true;
             for (let s = 0; s < sk; s++) {
                 let comp = scr.components[s];
                 switch (comp.type) {
-                    case "Menu":
                     case "MenuBottom":
+                        if (comp.navigator != null && comp.navigator.length > 0) {
+                            noNav = false;
+                        }
+                    case "Menu":
                     case "TabLayout":
                         let men = comp.model.menuList.list;
                         let mk = men.length;
                         if (mk == 0) {
                             strError += "Экран " + scr.screenName + " компонент типа " + comp.type + " не имеет описания меню<br>";
                         } else {
-                            for (let m = 0; m < mk; m++) {
-                                let scrItem = men[m].screen;
-                                if (scrItem == null || scrItem.length == 0) {
-                                    strError += "Экран " + scr.screenName + " компонент типа " + comp.type + " пункт меню " + m + " не имеет ссылки на экран<br>";
-                                } else {
-                                    scrN = scrItem.toUpperCase();
-                                    if (isScreenDeclare(scrN) == -1) {
-                                        strError += "Экран " + scr.screenName + " компонент типа " + comp.type + " пункт меню " + m + " ссылается на неописанный экран " + scrN + "<br>";
+                            if (noNav) {
+                                for (let m = 0; m < mk; m++) {
+                                    let scrItem = men[m].screen;
+                                    if (scrItem == null || scrItem.length == 0) {
+                                        strError += "Экран " + scr.screenName + " компонент типа " + comp.type + " пункт меню " + m + " не имеет ссылки на экран<br>";
+                                    } else {
+                                        scrN = scrItem.toUpperCase();
+                                        if (isScreenDeclare(scrN) == -1) {
+                                            strError += "Экран " + scr.screenName + " компонент типа " + comp.type + " пункт меню " + m + " ссылается на неописанный экран " + scrN + "<br>";
+                                        }
                                     }
                                 }
                             }
@@ -811,10 +687,23 @@ function validDeclare() {
     } else {
         let noUrl = true;
         let noKey = true;
+        let noStartScr = true;
+        let isParameterStartScr = false;
         for (let i = 0; i < ik; i++) {
             let item = listValueAppParam[i];
             let vv = item.value;
             switch (item.name) {
+                case "ScreenStart":
+                    isParameterStartScr = true;
+                    let sk = listScreen.length;
+                    let vvUP = vv.toUpperCase();
+                    for (let s = 0; s < sk; s++) {
+                        if (vvUP == listScreen[s].screenName.toUpperCase()) {
+                            noStartScr = false;
+                            break;
+                        }
+                    }
+                    break;
                 case "baseUrl":
                     noUrl = false;
                     if (vv != null || vv.length > 0) {
@@ -843,9 +732,26 @@ function validDeclare() {
                 strError += "not filled geoApiKey for maps<br>";
             }
         }
+        if (noStartScr) {
+            if (isParameterStartScr) {
+                strError += "No start screen description<br>";
+            } else {
+                let sk = listScreen.length;
+                let vvUP = "MAIN";
+                for (let s = 0; s < sk; s++) {
+                    if (vvUP == listScreen[s].screenName.toUpperCase()) {
+                        noStartScr = false;
+                        break;
+                    }
+                }
+                if (noStartScr) {
+                    strError += "No start screen description<br>";
+                }
+            }
+        }
     }
     if (strError != "") {
-        var wind = commonWindow(450, 350, 35, 270, "Error in project");
+        var wind = formWind(450, 350, 35, 270, "Error in project");
         wind.innerHTML = strError;
         return false;
     } else {
@@ -889,9 +795,6 @@ function cbGenerateProject(res, wind) {
     if (save != null) {
         save.firstElementChild.innerHTML = '<a href="' + res + '" download style="text-decoration: none;color:#fff">Save</a>';
     }
-    
-//    var wind = commonWindow(250, 350, 35, 270, "Download project");
-//    wind.innerHTML = res;
 }
 
 function setAppParameters() {
@@ -929,38 +832,39 @@ function cbAppParameters(res) {
 }
 
 function windAppParameters() {
-    windMenu = commonWindow(550, 400, 35, 270, "Set application parameters");
-    let tit = '<div style="float:left;clear: both;width: 100%;white-space: pre;background-color:#ddd">        Parameter name                              Default value          Value</div>';
-    windMenu.innerHTML = tit;
-    windMenu.style.overflow = "hidden";
-    let container = containerList();
-    windMenu.append(container);
+    let wind = formWind(610, 550, 40, 270, "Set application parameters", true);
+    let footer = createFooter(50);
+    addFooter(wind, footer);
+    let tit = '<div style="float:left;clear: both;margin-left:5px;border-bottom:1px solid #1dace9;height:18px;margin-top:3px">'
+        +'<div style="float:left;width:220px;">Parameter name</div>'
+        +'<div style="float:left;width:170px;margin-left:5px;"">Default value</div>'
+        +'<div style="float:left;width:190px;margin-left:5px;"">Value</div>'
+        +'</div>';
+    wind.innerHTML = tit;
     let ik = listAppParam.length;
     for (i = 0; i < ik; i++) {
         let item = listAppParam[i];
-        container.append(newAppParam(item, i));
+        wind.append(newAppParam(item, i));
     }
-    windMenu.append(createContr());
+    wind.append(endItemAppList());
+    let viewP = wind.parentElement;
+    viewP.scroll_y.resize(viewP)
+    let buttonSend = createButtonBlue('Save', 70);
+    buttonSend.addEventListener("click", function(){saveAppParameters();closeWindow(wind);}, true);
+    footer.appendChild(buttonSend);
+    let buttonCancel = createButtonWeite('Cancel', 70);
+    buttonCancel.addEventListener("click", function(event){closeWindow(wind);}, true);
+    footer.appendChild(buttonCancel);
 }
 
-function createContr() {
-    let container = document.createElement('div')
-    let str = '<div style="position:absolute;left:3px;right:0px;bottom:0px;height:25px;overflow-y:scroll">'
-        +'<div onclick="saveAppParameters()" class="button_1">Save</div></div';
-    container.innerHTML = str;
-    return container.firstChild;
+function endItemAppList() {
+    let res = document.createElement('div');
+    res.style.cssText = "float:left;clear: both;width:100%;height:14px";
+    return res;
 }
 
 function saveAppParameters() {
     listValueAppParam = formAppParam();
-    closeCommonWindow();
-}
-
-function containerList() {
-    let container = document.createElement('div')
-    let str = '<div style="position:absolute;left:3px;right:0px;bottom:27px;top:25px;overflow-y:auto;"></div';
-    container.innerHTML = str;
-    return container.firstChild;
 }
 
 function newAppParam(item, i) {
@@ -970,9 +874,9 @@ function newAppParam(item, i) {
         def = item.value_def;
     }
     let str = '<div class="app_param_item">'
-            +'<div style="float:left;width:230px;">' + item.name + '</div>' 
-            +'<div style="float:left;width:120px;margin-left:5px;">' + def + '</div>'
-            +'<input style="float:left;margin-left:5px;" type="text" onkeyup="return changeValueParam(event,' + i + ')" onkeyup="return clickUpValueParam(event,' + i + ')" size="20" value=' + item.value + '>'
+            +'<div style="float:left;width:220px;margin-top:7px;">' + item.name + '</div>' 
+            +'<div style="float:left;width:160px;margin-left:7px;margin-top:5px;">' + def + '</div>'
+            +'<input class="input_style" style="float:left;width:190px;margin-left:5px;" type="text" onkeyup="return changeValueParam(event,' + i + ')" onkeyup="return clickUpValueParam(event,' + i + ')" size="20" value=' + item.value + '>'
             +'</div>';
     container.innerHTML = str;
     return container.firstChild;
@@ -1002,15 +906,6 @@ function cbSaveAndEditUI(res) {
     window.open("editorUI.html?projectId=" + currentProject.projectId + "&screenId=" + currentScreen.screenId);
 }
 
-function exportRes() {
-    doServer("GET", 'export/android?projectId=' + currentProject.projectId, cbExport);
-}
-
-cbExport = function(res) {
-    var wind = commonWindow(250, 350, 35, 270, "Export project");
-    wind.innerHTML = res;
-};
-
 function saveAll() {
     var par = {};
     par.projectId = currentProject.projectId;
@@ -1032,4 +927,13 @@ function saveAll() {
 function closeListProj() {
     listProjectsScr.innerHTML = "";
     listProjects.style.display = "none";
+}
+
+function changeUser() {
+    loginPanel.style.display = "flex";
+    loginFrame.src="login.html";
+}
+
+function closeIDE() {
+    window.close();
 }

@@ -8,7 +8,7 @@ function uiImageView() {
             +'</div>'
             +'<div style="float:left;margin-left:10px">'
                 +'<div style="font-size:10px;color:#2228">Name</div>'
-                +'<div class="imgName" style="border:2px solid #bdf;border-radius:4px;margin-top:4px;padding:2px 5px 2px 5px;"></div>'
+                +'<div class="imgName" style="width:120px;overflow:hidden;border:2px solid #bdf;border-radius:4px;height:20px;background:white;padding:2px 5px 2px 5px;"></div>'
             +'</div>'
             +'<div style="float:left;margin-left:10px">'
                 +'<div style="font-size:10px;color:#2228">ScaleType</div>'
@@ -22,7 +22,10 @@ function uiImageView() {
         +'</div>';
 
     this.setElementUI = function(p, newEl, parent) {
-        newEl.appendChild(createDivImg());
+        let im = newEl.getElementsByClassName("image");
+        if (im == null || im.length == 0) {
+            newEl.appendChild(createDivImg());
+        }
     }
     
     this.newElementUI = function(p) {
@@ -32,7 +35,7 @@ function uiImageView() {
     }
     
     this.setContent = function(p) {
-        contenttAttributes.innerHTML = uiParamView + browser + uiParamView_2;
+        contentAttributes.innerHTML = uiParamView + browser + uiParamView_2;
         setImgAttr(p);
         if (p.formResourse != null) {
             check_form_img.checked = p.formResourse;
@@ -53,12 +56,12 @@ function cbImgViewSRC(i) {
 
 function setImgAttr(p) {
     let ssrc = p.src;
-    let img = contenttAttributes.getElementsByClassName("imageV");
+    let img = contentAttributes.getElementsByClassName("imageV");
     if (img != null) {
         img = img[0];
         img.src = p.src;
     }
-    let imgName = contenttAttributes.getElementsByClassName("imgName")[0];
+    let imgName = contentAttributes.getElementsByClassName("imgName")[0];
     if (ssrc != undefined) {
         let ii = ssrc.lastIndexOf("/");
         let nam = ssrc.substring(ii + 1);
@@ -67,11 +70,5 @@ function setImgAttr(p) {
 }
 
 function checkFormResourseImg(el) {
-    let check = el.src.indexOf("check-sel") == -1;
-    currentElement.android.formResourse = check;
-    if (check) {
-        el.src = "img/check-sel_1.png";
-    } else {
-        el.src = "img/check-act.png";
-    }
+    currentElement.android.formResourse = checkElement(el);
 }

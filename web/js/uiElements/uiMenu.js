@@ -1,13 +1,16 @@
-function uiPager() {
+function uiMenu() {
+
     this.setElementUI = function(p, newEl, parent) {
-        formBelow(p, parent, "ToolBar,TabLayout");
-        formAbove(p, parent, "MenuBottom");
+        let myCompon = myComponent(p.viewId);
+        showMenu(newEl, myCompon.model.menuList);
     }
     
     this.newElementUI = function(p) {
+        return null;
     }
     
     this.setContent = function(p) {
+
     }
     
     this.viewElementUI = function(p, el) {

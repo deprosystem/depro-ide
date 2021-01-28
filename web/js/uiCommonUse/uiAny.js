@@ -16,14 +16,43 @@ function myComponent(id) {      //      currentComponentDescr
 }
 
 function getComponentById(id) {     //      currentComponent
-    let ik = currentChildren.length;
+    return getCompById(currentChildren, id);
+}
+
+function getCompById(ch, id) {         //      currentComponent
+    let ik = ch.length;
     for (let i = 0; i < ik; i++) {
-        let ls = currentChildren[i];
-        if (ls.typeUxUi == "ux") {
-            if (ls.viewId == id) {
-                return ls;
+        let chi = ch[i];
+        if (chi.componId == id) {
+            return chi;
+        } else {
+            if (chi.children != null && chi.children.length > 0) {
+                let res = getCompById(chi.children, id);
+                if (res != null) {
+                    return res;
+                }
             }
         }
     }
     return null;
 }
+
+function getCompByViewId(ch, id) {
+    let ik = ch.length;
+    for (let i = 0; i < ik; i++) {
+        let chi = ch[i];
+        if (chi.viewId == id) {
+            return chi;
+        } else {
+            if (chi.children != null && chi.children.length > 0) {
+                let res = getCompByViewId(chi.children, id);
+                if (res != null) {
+                    return res;
+                }
+            }
+        }
+    }
+    return null;
+}
+
+

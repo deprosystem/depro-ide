@@ -37,12 +37,12 @@ ul {width: 180px; list-style: none; margin: 0; padding: 0;}
 li ul {position: absolute; display: none; margin-left: 149px; padding-left: 5px; margin-top: -1.5em;}
 li:hover ul {display: block;}
 
-.mainMenu {display: block; padding: 5px; color: #000; background-color: #f3f3f3; border-bottom: 1px solid #ccc;;}
+.mainMenu {display: block; padding: 5px; color: #000; background-color: #eee; border-bottom: 1px solid #ccc;;}
 .mainMenu:hover {background-color: #def;cursor: pointer;}
 
-.subMainMenuNo {display: block; padding: 5px; color: #888; background-color: #f3f3f3; border-bottom: 1px solid #ccc;;}
+.subMainMenuNo {display: block; padding: 5px; color: #888; background-color: #eee; border-bottom: 1px solid #ccc;;}
 .subMainMenuNo:hover {background-color: #eee;}
-.subMainMenu {display: block; padding: 5px; color: #000; background-color: #f3f3f3; border-bottom: 1px solid #ccc;;}
+.subMainMenu {display: block; padding: 5px; color: #000; background-color: #eee; border-bottom: 1px solid #ccc;;}
 .subMainMenu:hover {background-color: #def;cursor: pointer;}
 
 #listCompon {position: absolute; left: 3px; right: 3px; height: 300px;}
@@ -78,21 +78,23 @@ li:hover ul {display: block;}
 .contourLB {width: 5px; height: 5px; background-color: #00f; position: absolute; left: 0px; bottom: 0px; cursor: ne-resize}
 .contourLT {width: 5px; height: 5px; background-color: #00f; position: absolute; left: 0px; top: 0px; cursor: nw-resize}
 .contourRT {width: 5px; height: 5px; background-color: #00f; position: absolute; right: 0px; top: 0px; cursor: ne-resize}
-
+/*
 #windImg {z-index: 101; position: absolute; width: 250px; background: #eeeeee; border: 2px threedhighlight outset; display: none}
+*/
 .titleWind {height: 56px;background:#f3f8ff;cursor:move;border-radius: 5px 5px 0px 0px;}
 .titleWindName {float: left; padding-left: 16px;font-size:18px;margin-top:16px;font-family:Proxima Nova;font-style:normal;font-weight: bold;}
 .titleWindClose {float: right; margin-top: 20px; margin-right: 20px;cursor: pointer;}
 .baseWind {z-index: 101; position: absolute; width: 200px; border: 2px threedhighlight outset; display: none}
-
+/*
 #commonWindow {z-index: 100; position: absolute; background: #eeeeee; border: 2px threedhighlight outset; top:35px; display: none}
-
-.dataWindow {z-index: 100; position: absolute;background:#ffffff; border: 1px solid #1dace9;top:35px;box-shadow: 0px 30px 100px rgba(0, 0, 0, 0.1);border-radius: 5px;}
-
 #drawableWindow {z-index: 100; position: absolute; background: #eeeeee; border: 2px threedhighlight outset; top:35px; display: none;  
                  width: 350px; height: 350px; right: 150px;}
-#windSelectColor {z-index: 101; position: absolute; width: 587px; height: 445px; background: #f1f1f1; outline: 2px threedhighlight outset;
-               left: 250px; top:35px; display: none}
+*/
+.dataWindow {z-index: 1; position: absolute;background:#ffffff; border: 1px solid #1dace9;top:35px;box-shadow: 0px 30px 100px rgba(0, 0, 0, 0.1);border-radius: 5px;}
+
+#windSelectColor {position: absolute; width: 500px; height: 450px; background: #fff; border: 1px solid #1dace9;box-shadow: 0px 30px 100px rgba(0, 0, 0, 0.1);
+                  border-radius: 5px; right: 400px; top:40px; display: none;z-index: 5}
+#windColorBody {position: absolute; top: 68px; left: 12px; bottom: 0; right: 12px}
 .screen {margin-top: 15px;margin-right:5px;padding-top: 5px;padding-bottom: 5px;background-color:white;
         border: 1px solid #def;box-shadow:3px 3px 10px #abca;border-radius:4px;}
 .screen_sel {margin-top: 15px;margin-right:5px;padding-top: 5px;padding-bottom: 5px; background-color:var(--c_screen);
@@ -115,10 +117,9 @@ li:hover ul {display: block;}
 .help:hover {background-color: #aaf}
 .delete_obj_flex {margin-left:auto;width: 20px; cursor: pointer; padding-left: 5px;}
 .delete_obj_flex:hover {background-color: #e88}
-#windColorBody {padding: 2px; position: absolute; top: 22px; left: 2px; height: 417px; width: 580px;}
+/*
 #windList {z-index: 102; position: absolute; width: 350px; background: #f1f1f1; outline: 2px threedhighlight outset; padding: 5px;
                left: 250px; top:35px; display: none}
-/*
 #windHelp {z-index: 1001; position: absolute; width: 600px; background: #f1f1f1; outline: 2px threedhighlight outset; padding: 5px;
                left: 200px; top:35px; display: none}
 */
@@ -139,17 +140,18 @@ li:hover ul {display: block;}
 .el_width div {padding-left: 5px; padding-right: 5px; float: left;}
 .el_height div {padding-left: 5px; padding-right: 5px; float: left;}
 .el_id div {padding-left: 5px; padding-right: 5px; float: left;}
-.el_marg_pad {cursor: pointer; float: left; padding-left: 3px; padding-right: 3px;}
+.el_marg_pad {cursor: pointer; float: left; margin-top:5px; padding-left: 3px; padding-right: 3px;color:#2C3336}
 .el_marg_pad:hover {background-color: #def}
-.marg_pad {width: 60px; float: left; text-align: right}
+.marg_pad {width: 10px; float: left;margin-top: 5px; text-align: right}
 .cross {cursor: pointer; width: 18px; height: 18px}
 .cross:hover {background-color: #def}
 .grav {cursor: pointer; width: 18px; height: 18px;}
+.itemPopup:hover {background-color: #def}
 
 .drawableBackground {position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px}
 .img_style {cursor: pointer;}
 .menu_item {float:left;clear: both; margin-top: 3px;display:flex;flex-direction:row;align-items:center;width:100%;}
-.app_param_item {float:left;clear: both;margin-top: 2px;}
+.app_param_item {float:left;clear: both;margin-top: 2px;margin-left: 5px;}
 .inp_menu {margin-left:3px}
 .button {float: left; margin-left: 25px; margin-top: 30px; cursor: pointer; border: 2px threedhighlight outset; 
         padding-left: 15px; padding-right: 15px; padding-bottom: 5px; padding-top: 5px; background-color: #ddd}
@@ -186,11 +188,14 @@ li:hover ul {display: block;}
 .text_style_ui {font-size:10px;color:#8199A5}
 .input_style_ui {border: 1px solid #bbd4ef;border-radius:5px;height:30px;padding-left:4px;color: #110000;width: 100%;
                 -webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;}
+.input_style_ui_24 {border: 1px solid #bbd4ef;border-radius:5px;height:24px;padding-left:4px;color: #110000;width: 100%;
+                -webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;}
 .tab_head {width: 50%;border: 1px solid #E0E0E0;border-radius: 0px 4px 4px 0px;height: 100%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: 
               border-box;float: left}
 .match_wrap {margin-top: 3px;padding-left: 3px;padding-right: 3px;color:#344;cursor: pointer}
 .itemList {height:30px;margin-left:16px;margin-right:16px;border-bottom: 1px solid #1dace9}
-/*
-.itemList:hover {background-color: #def}
-*/
+
 .itemListTxt:hover {background-color: #def}
+.inputBlock {margin-top: 5px;float: left;clear: both}
+.font_sel {float:left;font-size:24px;width:30px;margin-top:3px;color:#777;cursor: pointer;text-align: center}
+.font_sel:hover {background-color: #def}

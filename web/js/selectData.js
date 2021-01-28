@@ -1,6 +1,3 @@
-
-
-
 function createSelectTagFromString(list, num, on) {
     ll = list.split(",");
     return createSelectTag(ll, num, on);
@@ -74,7 +71,9 @@ function formListViewId(el, name) {     //  Для below, abowe, ToRightOf, ToLe
                 vv = "";
             }
             let sel = createSelectValue(arrViewId, vv, name);
-            sel.style.width = "100px";
+            sel.style.cssText = "width:100px;font-size:12px;color:#110000;";
+            sel.className = 'select_' + browser;
+//            sel.style.width = "100px";
             el.appendChild(sel);
         }
     }
@@ -165,6 +164,28 @@ function formSelectForEditData(stOption, valueSel) {
     st += '</select>';
     container.innerHTML = st;
     return container.firstChild;
+}
+
+function formSelectViewId(valueSel) {
+    let st = formListIdElem(currentChildren);
+    return formSelectForEditData(" " + st, valueSel);
+}
+
+function formListIdElem(childEl) {
+    let st = "";
+    let ik = childEl.length;
+    for (let i = 0; i <ik; i++) {
+        let item = childEl[i];
+        let vi = item.viewId;
+        if (vi != null && vi != "") {
+            st += "," + vi;
+        }
+        let ch = item.children;
+        if (ch != null && ch.length > 0) {
+            st += formListIdElem(ch);
+        }
+    }
+    return st;
 }
 
 function formSelectStrValue(stOption, valueSel) {

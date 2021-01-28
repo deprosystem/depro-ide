@@ -3,7 +3,7 @@ function uxDrawer() {
     
     this.editParam = '<div style="margin-top: 2px;height:42px">'
             +'<div style="float:left;"><div style="color: #2228;font-size: 10px;margin-left:4px">Fragment</div>'
-            +'<input class="drawer_fragm input_style" onkeyup="return clickUpDrawer(event)" onkeydown="return checkNameField(event)" style="font-size:12px;color:#110000;font-weight:600" type="text" size="15"/>'
+            +'<input class="drawer_fragm input_style" onkeyup="return clickUpDrawer(event)" onkeydown="return validName(event)" style="font-size:12px;color:#110000;font-weight:600" type="text" size="15"/>'
             +'</div>'
             +'<div onclick="checkDrawer(this, 1);" style="float: left;margin-left: 10px;cursor: pointer;margin-top:18px">'
                 +'<div style="float: left;">Tool bar under drawer:</div>'
@@ -27,12 +27,12 @@ function uxDrawer() {
         return this.editParam;
     }
     
-    this.addComponent = function (viewId) {
+    this.addComponent = function (componId, viewId) {
         let tt = this.param.name;
-        currentComponent = {type: tt, componentId: idComponentNum, viewId: viewId, typeUxUi: "ux", componParam:{type:6},
+        currentComponent = {type: tt, componId: componId, viewId:viewId, typeUxUi: "ux", componParam:{type:6},
                 typeFull: {name: tt, typeBlock: 10}, gravLayout: {h: 3, v: 3}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
             width:-1,height:-1,itemNav:{},viewElement: null,children:[]};
-        currentComponentDescr = {type:tt,componentId: idComponentNum,model:{},view:{viewId: viewId}};
+        currentComponentDescr = {type:tt, componId: componId, model:{},view:{viewId: viewId}};
     }
     
     this.setValue = function(componParam) {
@@ -54,6 +54,12 @@ function uxDrawer() {
     
     this.getHelpLink = function() {
         return "https://docs.google.com/document/d/1iYRvK_JAz67laVPot_pCEUa0sM9Jp3hSJZMMG4qmtxQ/edit#heading=h.qmbjlbu72dsk";
+    }
+    
+    this.isValid = function(compD) {
+        let err = {text:"",error:0};
+        
+        return err;
     }
 }
 

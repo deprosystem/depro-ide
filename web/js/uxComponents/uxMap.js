@@ -45,12 +45,12 @@ function uxMap() {
         return uxModelView("createSheetBottomV", "createSheetBottomH") + this.editParam;
     };
     
-    this.addComponent = function (viewId) {
+    this.addComponent = function (componId, viewId) {
         let tt = this.param.name;
-        currentComponent = {type: tt, componentId: idComponentNum, viewId: viewId, typeUxUi: "ux", componParam:{type:11},
+        currentComponent = {type: tt, componId: componId, viewId:viewId, typeUxUi: "ux", componParam:{type:11},
                 typeFull: {name: tt, typeBlock:0}, gravLayout: {h: 3, v: 3}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
             width:-1,height:-1,itemNav:{},viewElement: null,children:[]};
-        currentComponentDescr = {type: tt,componentId: idComponentNum,model:{method:0,data:[]},view:{viewId: viewId},navigator:[],param:{}};
+        currentComponentDescr = {type: tt, componId: componId, model:{method:0,data:[]},view:{viewId: viewId},navigator:[],param:{}};
     };
     
     this.setValue = function(componParam) {
@@ -109,6 +109,12 @@ function uxMap() {
     this.getHelpLink = function() {
         return "https://docs.google.com/document/d/1iYRvK_JAz67laVPot_pCEUa0sM9Jp3hSJZMMG4qmtxQ/edit#heading=h.bmszjtnwmyrj";
     };
+    
+    this.isValid = function(compD) {
+        let err = {text:"",error:0};
+        
+        return err;
+    }
 }
 
 function selectImgMapMarker(e) {
@@ -165,13 +171,24 @@ function createSheetBottomV(el) {
             let vv = child[i];
             if (vv.viewId == vId) {
                 sheet = vv.viewElement;
+                currentElement = sheet;
                 break;
             }
         }
         if (sheet == null) {
             setActive(root);
-            sheet = formSheetBottom(vId);
-        } 
+            sheet = createSheetBottomForUX(vId);
+        }
+        viewCompon();
+        let sheetPan = currentElement.getElementsByClassName("sheetPanel")[0];
+        sheetPan.innerHTML = "";
+        sheetPan.android.children.length = 0;
+        cleanNavigatorEl(sheetPan);  
+        let imgHeight = 220;
+        let namePrev = "";
+        setActive(sheetPan);
+        viewCompon();
+/*
         n_selectElement = sheet;
         setActive(n_selectElement);
         currentElement = sheet;
@@ -187,7 +204,7 @@ function createSheetBottomV(el) {
         ACTIVE.android.children.push(sheetPan.android);
         setActive(sheetPan);
         viewCompon();
-
+*/
 
         let imgId = formImgFirst(MATCH, imgHeight);
         if (imgId > -1) {

@@ -26,8 +26,8 @@ var picker = {
             */
         Block.init(b);// привязка событий к блоку и кругу для управления
 
-        picker.out_color = document.getElementById("out_color");
-        picker.out_color_text = document.getElementById("out_color_text");
+//        picker.out_color = document.getElementById("out_color");
+//        picker.out_color_text = document.getElementById("out_color_text");
 
     }
 };

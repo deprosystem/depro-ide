@@ -239,6 +239,9 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
                     td.appendChild(setSelect(met, item));
                 }
                 break;
+            case ID_SELECT:
+                td.appendChild(setSelectId(met, item));
+                break;
             case TYPE_IMG:
                 let divImg = document.createElement('div');
                 divImg.style.backgroundImage = "url(img/chess_2.png)";
@@ -309,8 +312,6 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
     
     function selecktImgArrayData(e) {
         selectListImage(e, setImgEditData, e.currentTarget);
-//        imgSetValue = e.currentTarget;
-//        doServer("GET", 'images/list', callBackSRC);
     }
     
     function setImgEditData(i, par) {
@@ -329,6 +330,22 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
             }
         }
         let selSel = formSelectForEditData(met.select, vv);
+        selSel.style.width = met.len + "px";
+        selSel.style.border = "none";
+        selSel.style.backgroundColor = "#0000";
+        return selSel;
+    }
+    
+    function setSelectId(met, item) {
+        let vv;
+        if (item != null) {
+            let nameV = met.name;
+            vv = item[nameV];
+            if (vv == null) {
+                vv = "";
+            }
+        }
+        let selSel = formSelectViewId(vv);
         selSel.style.width = met.len + "px";
         selSel.style.border = "none";
         selSel.style.backgroundColor = "#0000";
@@ -545,7 +562,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
                         }
                         break;
                     case "SELECT":
-                        item[edMeta[1].name] = elem.options[elem.selectedIndex].value;
+                        item[edMeta[i1].name] = elem.options[elem.selectedIndex].value;
                         break;
                     case "DIV":
                         let elImg = elem.getElementsByTagName("img");

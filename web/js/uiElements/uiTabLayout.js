@@ -38,7 +38,7 @@ function uiTabLayout() {
     }
     
     this.setContent = function(p) {
-        contenttAttributes.innerHTML = uiParamView;
+        contentAttributes.innerHTML = uiParamView;
         setTabAttr(p);
     }
 }
@@ -48,13 +48,13 @@ function setTabAttr(p) {
     uiCurrentComponent = compon;
     if (compon != null) {
         let item = compon.tabLayout;
-        let colorTxt = contenttAttributes.getElementsByClassName("text_norm")[0];
+        let colorTxt = contentAttributes.getElementsByClassName("text_norm")[0];
         colorTxt.style.backgroundColor = findColorByIndex(item.textColor);
-        colorTxt = contenttAttributes.getElementsByClassName("text_sel")[0];
+        colorTxt = contentAttributes.getElementsByClassName("text_sel")[0];
         colorTxt.style.backgroundColor = findColorByIndex(item.textSelect);
-        colorTxt = contenttAttributes.getElementsByClassName("text_ind")[0];
+        colorTxt = contentAttributes.getElementsByClassName("text_ind")[0];
         colorTxt.style.backgroundColor = findColorByIndex(item.indColor);
-        let indH = contenttAttributes.getElementsByClassName("ind_h")[0];
+        let indH = contentAttributes.getElementsByClassName("ind_h")[0];
         indH.value = item.indHeight;
     }
 }

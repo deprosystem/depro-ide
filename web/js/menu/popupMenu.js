@@ -25,6 +25,7 @@ function popupMenu(target, w, menu, listener, param) {
         let arrMes = menu.split(",");
         for (let i = 0; i < arrMes.length; i++) {
             let item = document.createElement("div");
+            item.className = "itemPopup";
             if (i == 0) {
                 item.style.cssText = "height:40px;border-top:1px solid #" + "fff";
             } else {

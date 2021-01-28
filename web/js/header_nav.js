@@ -1,5 +1,5 @@
 function editUX_UI() {
-    if (ux_ui.innerHTML == "UI") {
+    if (ux_ui.innerHTML == "U I") {
         isUX = false;
         ux_ui.innerHTML = "UX";
         compon_ui.style.display = "block";
@@ -12,7 +12,7 @@ function editUX_UI() {
         document.documentElement.style.setProperty('--left_compon', '18%');
     } else {
         isUX = true;
-        ux_ui.innerHTML = "UI";
+        ux_ui.innerHTML = "U I";
         type_insert.style.display = "none";
         active.style.display = "none";
         plus_screen.style.display = "block";
@@ -21,6 +21,7 @@ function editUX_UI() {
         document.documentElement.style.setProperty('--w_ux_r', '0px');
         document.documentElement.style.setProperty('--left_compon', '0px');
         setTimeout(endAnimUX, 400);
+        scrLayoutAttr.scroll_y.resize(scrLayoutAttr);
     }
 }
 

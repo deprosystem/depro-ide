@@ -25,12 +25,16 @@ function uxList() {
         return uxModelView("createViewForListV", "createViewForListH") + this.editParam;
     }
     
+    this.getCreateListener = function () {
+        return {vert:"createViewForListV", horiz:"createViewForListH"};
+    }
+    
     this.addComponent = function (componId, viewId) {
         let tt = this.param.name;
         currentComponent = {type: tt, componId: componId, viewId:viewId, typeUxUi: "ux", componParam:{type:2},
                 typeFull: {name: tt, typeBlock: 10}, gravLayout: {h: 3, v: 3}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
             width:-1,height:-1,itemNav:{},viewElement: null,children:[]};
-        currentComponentDescr = {type:tt, componId: componId, model:{method:0,data:[],progr:"standard"},view:{viewId: viewId,spanC:1,orient:"vertical"},navigator:[]};
+        currentComponentDescr = {type:tt, componId: componId, model:{method:0,data:[],progr:"standard"},view:{viewId: viewId,spanC:1,orient:"vertical",no_data:""},navigator:[]};
     }
     
     this.setValue = function(componParam) {
@@ -50,10 +54,18 @@ function uxList() {
                 if (pr != "standard" && pr != "no") {
                     let p = getCompByViewId(layout.children, pr);
                     if (p == null) {
-                        err.text = "component " + compD.type + " error in progress " + pr;
+                        err.text += "component " + compD.type + " error in progress " + pr;
                         err.error = 2;
                     }
                 }
+            }
+        }
+        let no_d = compD.view.no_data;
+        if (no_d != null && no_d.length > 0) {
+            let p = getCompByViewId(layout.children, no_d);
+            if (p == null) {
+                err.text += "component " + compD.type + " error view no data " + pr;
+                err.error = 2;
             }
         }
         return err;
@@ -72,7 +84,6 @@ function setValueView(componParam) {
         view.spanC = 1;
     }
     let nn = createNumber(40, 24, 1, 3, "changeSpan");
-//    nn.style.marginTop = "3px";
     setNumberInputId(nn, "spanCount");
     span.appendChild(nn);
     spanCount.value = view.spanC;
@@ -88,6 +99,7 @@ function setValueView(componParam) {
     }
     let st = formListIdElem(currentChildren);
     let sel = formSelectForEditData(" " + st, view.no_data);
+    currentComponentDescr.view.no_data = sel.options[sel.selectedIndex].value;
     sel.className = "select_" + browser;
     sel.style.cssText = "width:80px;font-size:12px;color:#110000;";
     sel.addEventListener("change", function(){changeNoData(sel)}, true);

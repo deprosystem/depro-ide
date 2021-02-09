@@ -1,6 +1,7 @@
 package entity;
 
 import android.AndroidPar;
+import projects.Navigator;
 
 public class Screen {
     public String screenName, screenComment, title, titleParam;
@@ -8,4 +9,5 @@ public class Screen {
     public int animate, typeScreen;
     public ListComponent components;
     public AndroidPar layout;
+    public Navigator navigator;
 }

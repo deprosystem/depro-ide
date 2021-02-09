@@ -9,13 +9,13 @@ public class Constants {
     public static final int TOP = 0, CENTER = 1, BOTTOM = 2, ABSOLUTE = 3, NONE = 4;
     public static final int LEFT = 0, RIGHT = 2;
     public static int[] ANGLES = {0, 90, 45, 0, 315};
-    public final static int GET = 0, POST = 1, TEST = 2;
+    public final static int GET = 0, POST = 1, TEST = 2, PARAMETERS = 5;
     
     public static String PROJECTS_DATA = "projectdataIDE/", 
             USERS_DATA = "usersdataIDE/";
     public static final String TOOL = "ToolBar", PANEL = "Panel", SCROLLPANEL = "ScrollView",
             LIST = "List", PAGER = "Pager", TAB = "TabLayout", DRAWER = "Drawer", SCROLL = "ScrollPanel",
-            MENU_B = "MenuBottom", MENU = "Menu", GALLERY = "Gallery", INDICATOR = "Indicator", 
+            MENU_B = "MenuBottom", MENU = "Menu", GALLERY = "Gallery", INDICATOR = "Indicator", IMAGEVIEW = "ImageView",
             MAP = "Map", SHEET = "SheetBottom";
 /*
     public static String toolCompon = "com.dpcsa.compon.custom_components.ComponToolBar",
@@ -26,6 +26,7 @@ public class Constants {
     public static String importParamMap = "import com.dpcsa.compon.param.ParamMap;\n";
     public static String[] animate = {"No", "LR", "RL", "BT", "TB"};
     public static String[] scaleType = {"centerCrop", "center"};
+    public static String roundedType = "com.makeramen.roundedimageview.RoundedImageView";
     public static String[] componType = {
         "com.dpcsa.compon.custom_components.ComponToolBar", // 0
         "com.dpcsa.compon.custom_components.ComponMenuB", // 1

@@ -3,12 +3,15 @@
     <head>
         <meta charset="utf-8">
         <title>IDE DePro</title>
+        <link rel="icon" href="img/logo_blue.png">
+<!--
         <link rel="icon" href="data:;base64,=">
-
-        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+-->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
         <link rel="stylesheet" href="css/index.css" type="text/css">
         <link rel="stylesheet" href="css/hamburger.css" type="text/css">
         <link rel="stylesheet" href="css/pickerColor.css" type="text/css">
+        
         <script src="js/ajax/ajax.js" ></script>
         <script src="js/header_nav.js"></script>
         <script src="js/helpLinks.js"></script>
@@ -72,6 +75,7 @@
         <script src="js/moveResize/movePanel.js" ></script>
         <script src="js/moveResize/moveElement.js" ></script>
         <script src="js/screens.js" ></script>
+        <script src="js/drawable.js"></script>
         
         <script src="js/navigatorEl.js" ></script>
         
@@ -79,7 +83,7 @@
         <script src="js/pickerColor/my_picker.js"></script>
         <script src="js/pickerColor/Lib.js" ></script>
         
-        <script src="js/drawable.js"></script>
+        <script src="js/backEnd/showPanel.js" ></script>
     </head>
     <body>
 
@@ -90,7 +94,7 @@
                 <div id="hamburger3" class="hamburger3" ></div> 
             </div>
 
-            <div id="project_name_bl" style="background-color:var(--c_blue);float: left;width:100px;height: 100%;display:none">
+            <div id="project_name_bl" onclick="logP();" style="background-color:var(--c_blue);float: left;width:100px;height: 100%;display:none">
                 <div id="project_name" style="color:white;text-align:center;margin-top: 9px"></div>
             </div>
             <div id="plus_screen" onclick="plusScreen()" style="height: 100%; float: left; margin-left: 10px; cursor: pointer;display: none;">
@@ -102,14 +106,18 @@
                 <img width="15" height="14" onclick="undo()" style="float: left; margin-top: 9px;cursor: pointer;" src="img/corner-no_act-left.png">
                 <img width="15" height="14" onclick="restore()" style="float: left; margin-top: 9px;cursor: pointer;margin-left: 5px;" src="img/corner-no_act-right.png">
             </div>
+                        
+            <div onclick="showData()" id="show_data" style="height: 100%;float: right; cursor: pointer;padding-left: 10px;padding-right: 10px">
+                <div id="show_data_inf" style="text-align: center;margin-top:11px;color: white;font-size: 12px;">Data</div>
+            </div>
             
             <div onclick="editUX_UI()" id="ux_ui_w" style="display: none">
                 <div id="ux_ui" style="text-align: center;margin-top:9px;color:white;font-size: 16px;font-weight: bold">U I</div>
             </div>
+           
+            <img width="35" height="35" onclick="helpDoc()" style="float: right; cursor: pointer;" src="img/question_2.png">
             
-            <img width="35" height="35" onclick="helpDoc()" style="float: right; cursor: pointer;margin-right:10px;" src="img/question_2.png">
-            
-            <div id="user_circle" style="float:right;background-color: #ff1eac;width: 22px;height: 22px;border-radius: 11px;margin-top:6px;margin-right:10px;">
+            <div id="user_circle" onclick="infUser()" style="float:right;background-color: #ff1eac;width: 22px;height: 22px;border-radius: 11px;margin-top:6px;margin-right:10px;">
                 <div id="info_user" style="margin-top:4px;text-align:center;color:black;font-size:12px;font-weight:bold;"></div>
             </div>
             
@@ -335,7 +343,7 @@
                                     <div id="hideMarg" style="width: 100%;height: 100%;background-color: #fffa;position: absolute;display: none"></div>
                                 </div>
 
-                                <div style="position: relative;float: left;clear: both;margin-top: 10px">
+                                <div style="position: relative;float: left;margin-left: 10px;">
                                     <div class="text_style_ui">Padding</div>
                                     <div id="padding_block" style="float: left;clear: both;color:#333">
                                         <div style="float: left;clear: both;margin-top: 2px;">
@@ -431,6 +439,10 @@
 
             </div>
 
+        </div>
+        
+        <div id="backEnd">
+            
         </div>
         
         <div id="popUp" style="position: absolute; background-color: #eee; border: 2px solid #777; z-index: 1001; display: none">

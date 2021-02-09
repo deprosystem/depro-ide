@@ -6,7 +6,7 @@ function uiMap() {
         let typeEl = createDivImg();
         newEl.appendChild(typeEl);
         p.src = "img/map.png";
-        myCompon = myComponent(p.viewId);
+        myCompon = myComponentDescr(p.componId);
         if (myCompon.param.marker != null) {
             newEl.appendChild(createMarker(myCompon.param.marker));
         }

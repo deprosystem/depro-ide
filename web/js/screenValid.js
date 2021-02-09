@@ -27,6 +27,7 @@ function oneScreenValid(scrD, scrV) {
             }
         } catch(e) { }
     }
+//console.log("oneScreenValid scrD.levelErrors="+scrD.levelErrors+" newLevelErrors="+newLevelErrors);
     if (scrD.levelErrors != newLevelErrors) {
         let divErr = currentScreenView.getElementsByClassName("error_screen")[0];
         divErr.style.backgroundColor = colorsEroor[newLevelErrors];

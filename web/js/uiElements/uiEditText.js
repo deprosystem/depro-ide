@@ -7,7 +7,7 @@ function uiEditText() {
                 onKeyUp="inputEditTextValue(event, this)" rows="3" cols="27"></textarea>'
             +'<div style="float:left;clear:both;margin-top:8px;">'
                 +'<div style="font-size:10px;color:#2228">Show text in APP</div>'
-                +'<img id="check_form_img" onclick="checkFormResourseText(this);" style="cursor:pointer;margin-top:5px;margin-left:14px" width="16" height="16" src="img/check-act.png">'
+                +'<img class="check_form_res" onclick="checkFormResourseText(this);" style="cursor:pointer;margin-top:5px;margin-left:14px" width="16" height="16" src="img/check-act.png">'
             +'</div>'
             +'<div style="float:left;clear:both;margin-top:8px;width:100%">'
                 +'<div class="text_style_ui">Hint</div>'
@@ -46,6 +46,14 @@ function uiEditText() {
             txHint.value = p.hint;
         } else {
             txHint.value = "";
+        }
+        if (p.formResourse != null) {
+            let cfr = contentAttributes.getElementsByClassName("check_form_res")[0];
+            if (p.formResourse) {
+                cfr.src = "img/check-sel_1.png";
+            } else {
+                cfr.src = "img/check-act.png";
+            }
         }
         let txtAr = contentAttributes.getElementsByTagName("textarea")[0];
         if (p.text != null) {

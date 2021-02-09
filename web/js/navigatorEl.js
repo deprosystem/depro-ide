@@ -12,7 +12,7 @@ function addNavigatorEl(el) {
     var navParent = parent.android.itemNav;
     var pm = navParent.getElementsByClassName('plus-minus')[0];
     if (pm.innerHTML == '&nbsp;') {
-        pm.innerHTML = '-';
+        pm.innerHTML = '\u2BC6';
         pm.style.cursor = 'pointer';
     }
     var ic = navParent.getElementsByClassName('item-compon')[0];
@@ -71,7 +71,8 @@ function setNavigator(el, cont) {
                 item_name.oncontextmenu = n_contMenuStart;
                 var cc = setNavigator(childI, item.getElementsByClassName('item-compon')[0]);
                 if (cc > 0) {
-                    pm.innerHTML = '+';
+                    pm.innerHTML = '\u2BC8';
+//                    pm.innerHTML = '+';
                     pm.style.cursor = 'pointer';
                 } else {
                     pm.innerHTML = '&nbsp;';
@@ -108,15 +109,16 @@ function createItemEl(el) {
     item_name.oncontextmenu = n_contMenuStart;
     pm.innerHTML = '&nbsp;';
     p.itemNav = item;
+//console.log("createItemEl TTT="+p.type+"<< II="+p.viewId+"<< p.itemNav="+p.itemNav.getElementsByClassName('item-name')[0].innerHTML+"<< ====="+(p.viewElement == el));
     return item;
 }
 
 function createItem() {
     var container = document.createElement('div');
     container.innerHTML = '<div style="display:block;clear:both;">\n\
-                <div class="plus-minus" onclick="openItem(this)" style="float:left; color:#aaa; width: 15px;"></div>\n\
+                <div class="plus-minus" onclick="openItem(this)" style="float:left; color:#aaa; font-size:13px; width: 12px;margin-top:-2px;"></div>\n\
                 <div class="item-name" onmousedown="downNavigEl(this)" onclick="selectElement(this)" onmouseover="overNavigEl(this)" onmouseout="outNavigEl(this)"></div>\n\
-                <div class="item-compon" style="margin-left: 25px; display: none;"></div>\n\
+                <div class="item-compon" style="margin-left: 7px; display: none;"></div>\n\
             </div>';
     return container.firstChild;
 }
@@ -137,10 +139,12 @@ function openItem(el) {
     var par = el.parentNode;
     var item = par.getElementsByClassName("item-compon")[0];
     if (item.style.display == 'none') {
-        el.innerHTML = '-';
+//        el.innerHTML = '-';
+        el.innerHTML = '\u2BC6';
         item.style.display = 'block';
     } else {
-        el.innerHTML = '+';
+//        el.innerHTML = '+';
+        el.innerHTML = '\u2BC8';
         item.style.display = 'none';
     }
 }
@@ -184,16 +188,28 @@ function upNavigEl(e) {
 }
 
 function pMovingShift(what, whereTo) {
+/*
+    let pW = what.android;
+    let pT = whereTo.android;
+    if (pT.children == null) {
+        pT.children = [];
+    }
+    pT.children.push(pW);
+    let pParent = what.android.parent.android;
+*/
+    
+    
     ch = currentScreen.layout.children;
     let whatP = searchElP(ch, what);
     let whereToP = searchElP(ch, whereTo);
+console.log("pMovingShift whatP="+whatP+" what="+what+"<< whereToP="+whereToP+" whereTo="+whereTo+"<<");
     if (whatP != null && whereToP != null) {
         if (whereToP.p.children == null) {
             whereToP.p.children = [];
         }
         whereToP.p.children.push(whatP.p);
 //        whereToP.ch.push(whatP.p);
-        whatP.ch.splice(whatP.i);
+        whatP.ch.splice(whatP.i, 1);
     } else {
         console.log("pMoving whatP OR whereToP = NULL");
     }

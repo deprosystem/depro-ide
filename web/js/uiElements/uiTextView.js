@@ -7,7 +7,7 @@ function uiTextView() {
                 onKeyUp="inputTextValue(event, this)" rows="3" cols="27"></textarea>'
             +'<div style="float:left;clear:both;margin-top:12px;">'
                 +'<div style="font-size:10px;color:#2228">Show text in APP</div>'
-                +'<img id="check_form_img" onclick="checkFormResourseText(this);" style="cursor:pointer;margin-top:5px;margin-left:14px" width="16" height="16" src="img/check-act.png">'
+                +'<img class="check_form_res" onclick="checkFormResourseText(this);" style="cursor:pointer;margin-top:5px;margin-left:14px" width="16" height="16" src="img/check-act.png">'
             +'</div>'
             +'<div style="margin-top: 5px;float: left;clear:both">'
                 +'<div class="text_style_ui">Color</div>'
@@ -40,6 +40,14 @@ function uiTextView() {
         let txtAr = contentAttributes.getElementsByTagName("textarea")[0];
         if (p.text != null) {
             txtAr.value = p.text;
+        }
+        if (p.formResourse != null) {
+            let cfr = contentAttributes.getElementsByClassName("check_form_res")[0];
+            if (p.formResourse) {
+                cfr.src = "img/check-sel_1.png";
+            } else {
+                cfr.src = "img/check-act.png";
+            }
         }
         let sizeBl = selectBlock("Size", "8,10,12,14,16,18,20,24,28,32", "setSizeTV", 6, 56);
         setValueSelectBlock(sizeBl, p.textSize);

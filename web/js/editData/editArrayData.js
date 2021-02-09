@@ -242,6 +242,9 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
             case ID_SELECT:
                 td.appendChild(setSelectId(met, item));
                 break;
+            case ID_SELECT_HANDL:
+                td.appendChild(setSelectIdHandl(met, item));
+                break;
             case TYPE_IMG:
                 let divImg = document.createElement('div');
                 divImg.style.backgroundImage = "url(img/chess_2.png)";
@@ -346,6 +349,22 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
             }
         }
         let selSel = formSelectViewId(vv);
+        selSel.style.width = met.len + "px";
+        selSel.style.border = "none";
+        selSel.style.backgroundColor = "#0000";
+        return selSel;
+    }
+    
+    function setSelectIdHandl(met, item) {
+        let vv;
+        if (item != null) {
+            let nameV = met.name;
+            vv = item[nameV];
+            if (vv == null) {
+                vv = "";
+            }
+        }
+        let selSel = formSelectViewIdHandl(vv);
         selSel.style.width = met.len + "px";
         selSel.style.border = "none";
         selSel.style.backgroundColor = "#0000";
@@ -580,7 +599,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
         }
         closeWindEditData();
         if (edObrSave != null) {
-            edObrSave();
+            edObrSave(edData);
         }
     }
     

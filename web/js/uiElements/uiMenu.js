@@ -1,7 +1,7 @@
 function uiMenu() {
 
     this.setElementUI = function(p, newEl, parent) {
-        let myCompon = myComponent(p.viewId);
+        let myCompon = myComponentDescr(p.componId);
         showMenu(newEl, myCompon.model.menuList);
     }
     

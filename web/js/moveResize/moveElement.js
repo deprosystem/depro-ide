@@ -3,9 +3,13 @@ var delta_x, delta_y;
 var parentX, parentY, parentWpx, parentHpx;
 var status;
 var statusNEW = 0, statusOLD = 1;
+var formNewElem = false;
+var elementTop, elementLeft;
+var elClick = null;
+const deltaOfset = 3;
 
 function moveElement(event) {
-console.log("moveElement moveElement moveElement");
+//console.log("moveElement moveElement moveElement ****");
     x = event.pageX;
     y = event.pageY;
     var rectParent = currentElement.android.parent.getBoundingClientRect();
@@ -14,6 +18,8 @@ console.log("moveElement moveElement moveElement");
     parentWpx = parseInt(rectParent.right - rectParent.left);
     parentHpx = parseInt(rectParent.bottom - rectParent.top);
     var rect = currentElement.getBoundingClientRect();
+    elementTop = rect.top;
+    elementLeft = rect.left;
     var x_block = rect.left - parentX;
     var y_block = rect.top - parentY;
     delta_x = x_block - x;
@@ -25,15 +31,83 @@ console.log("moveElement moveElement moveElement");
     currentElement.style.right = "";
     currentElement.style.marginLeft = x_block + px;
     document.onmousemove = moveEl;
-    document.onmouseup = mouseUpEl;
+    document.onmouseup = moveUp;
+//    document.onmouseup = mouseUpEl;
     event.stopPropagation();
 }
 
-function mouseUpEl(e) {
+function moveEl(event) {
+//console.log("moveEl moveEl moveEl +++");
+    var x = event.pageX;
+    var y = event.pageY;
+    var new_x = delta_x + x;
+    var new_y = delta_y + y;
+    if (new_x < 0) {
+        new_x = 0;
+    }
+    if (new_y < 0) {
+        new_y = 0;
+    }
+    if (new_x <= parentWpx && new_y <= parentHpx) {
+        currentElement.style.marginTop = new_y + px;
+        currentElement.style.marginLeft = new_x + px;
+        footer_inf.innerHTML = 'Y='+(new_y/ MEASURE).toFixed(1)+"dp X="+(new_x/ MEASURE).toFixed(1)+'dp';
+    }
+}
+
+function moveUp(e) {
+//console.log("moveUp moveUp moveUp moveUp");
     footer_inf.innerHTML = "";
-    if (document.onmousemove == null) {
+    document.onmousemove = null;
+    let rect = currentElement.getBoundingClientRect();
+    let dX = elementLeft - rect.left;
+    let dY = elementTop - rect.top;
+    if (dX < 0) {
+        dX = - dX;
+    }
+    if (dY < 0) {
+        dY = - dY;
+    }
+    if (dX < deltaOfset && dY < deltaOfset) {
+        clickEl();
+        if (dX != 0 || dY != 0) {
+            setParamCompon();
+            viewCompon();
+        }
         return;
     }
+    elementTop = rect.top;
+    elementLeft = rect.left;
+    
+    let p = currentElement.android;
+    var XX, YY;
+    p.gravLayout.h = ABSOLUTE;
+    p.gravLayout.v = ABSOLUTE;
+    YY = parseInt(currentElement.style.marginTop);
+    XX = parseInt(currentElement.style.marginLeft);
+    p.topMarg = parseInt(YY / MEASURE);
+    p.leftMarg = parseInt(XX / MEASURE);
+    if (p.above != undefined) {
+        p.above = undefined;
+    }
+    if (p.below != undefined) {
+        p.below = undefined;
+    }
+    if (p.toRightOf != undefined) {
+        p.toRightOf = undefined;
+    }
+    if (p.toLeftOf != undefined) {
+        p.toLeftOf = undefined;
+    }
+    setParamCompon();
+    viewCompon();
+    currentElement.style.right = "";
+}
+
+function mouseUpEl(e) {
+//console.log("mouseUpEl mouseUpEl mouseUpEl");
+    formNewElem = false;
+    footer_inf.innerHTML = "";
     var e = e || window.event;
     document.onmousemove = null;
     var p = currentElement.android;
@@ -55,14 +129,13 @@ function mouseUpEl(e) {
             h = parseInt(ACTIVE.style.height);
         }
     }
-    if (w > 0 || h > 0) {
+    if (w > 1 || h > 1) {
         var XX, YY;
         p.gravLayout.h = ABSOLUTE;
         p.gravLayout.v = ABSOLUTE;
         p.width = parseInt(w / MEASURE);
         p.height = parseInt(h / MEASURE);
         YY = parseInt(currentElement.style.marginTop);
-//console.log("currentElement.style.marginLeft="+currentElement.style.marginLeft+"<<<");
         XX = parseInt(currentElement.style.marginLeft);
         p.topMarg = parseInt(YY / MEASURE);
         p.leftMarg = parseInt(XX / MEASURE);
@@ -72,9 +145,15 @@ function mouseUpEl(e) {
         if (p.type == "RecyclerView") {
             setActive(currentElement);
         }
+    }
+    elClick = null;
+}
+
+function clickEl() {
+    if (currentElement.getElementsByClassName('contourEl')[0] != null) {
+        hideContourEl();
     } else {
-        ACTIVE.removeChild(currentElement);
-        currentElement = null;
+        setPickElement();
     }
 }
 
@@ -83,38 +162,24 @@ function addNewElement(target, el) {
     target.appendChild(el);
 }
 
-function moveEl(event) {
-    var x = event.pageX;
-    var y = event.pageY;
-    var new_x = delta_x + x;
-    var new_y = delta_y + y;
-    if (new_x < 0) {
-        new_x = 0;
-    }
-    if (new_y < 0) {
-        new_y = 0;
-    }
-    if (new_x <= parentWpx && new_y <= parentHpx) {
-        currentElement.style.marginTop = new_y + px;
-        currentElement.style.marginLeft = new_x + px;
-        footer_inf.innerHTML = 'Y='+(new_y/ MEASURE).toFixed(1)+"dp X="+(new_x/ MEASURE).toFixed(1)+'dp';
-    }
-}
-
 function createNewEl() {
     var container = document.createElement('div');
-    container.innerHTML = '<div class="element" onclick="clickElement(event, this)" style="position: absolute; outline: 2px solid #aaa; overflow: hidden"></div>'
+    onmousedown
+    container.innerHTML = '<div class="element" onmousedown="resizeContour(event)" style="position: absolute; outline: 2px solid #aaa; overflow: hidden"></div>'
+//    container.innerHTML = '<div class="element" onclick="clickElement(event, this)" style="position: absolute; outline: 2px solid #aaa; overflow: hidden"></div>'
     return container.firstChild;
 }
 
 function mouseUpNewEl(e) {
+    formNewElem = false;
+//    e.stopPropagation();
     document.onmousemove = null;
     document.onmouseup = null;
     var e = e || window.event;
     var w = parseInt(currentElement.style.width);
     var h = parseInt(currentElement.style.height);
     var p;
-    if (w > 0 || h > 0) {
+    if (w > 1 || h > 1) {
         var XX, YY;
         p = currentElement.android;
         p.gravLayout.h = ABSOLUTE;
@@ -129,13 +194,13 @@ function mouseUpNewEl(e) {
         p.leftMarg = parseInt(XX / MEASURE);
         
         if (status == statusNEW) {
-            addNewElement(ACTIVE, currentElement);
+//            addNewElement(ACTIVE, currentElement);
             addNavigatorEl(currentElement);
             if (ACTIVE.android.children == null) {
                 ACTIVE.android.children = [];
             }
             ACTIVE.android.children.push(currentElement.android);
-
+            p.viewElement = currentElement;
         }
         
         var typeEl = null;
@@ -153,11 +218,23 @@ function mouseUpNewEl(e) {
         ACTIVE.removeChild(currentElement);
         currentElement = null;
         layoutParam.style.display = 'none';
+//        clickElement(e, ACTIVE);
+
+        if (elClick != null) {
+            clickElement(e, elClick);
+            elClick = null;
+        }
     }
 }
 
 function resizeContour(e) {
     var classN = e.target.className;
+    let el = e.currentTarget;
+    if (el.android != null) {
+        if (elClick == null) {
+            elClick = el;
+        }
+    }
     if (e.target === ACTIVE) {
         classN = 'active'
     } else {
@@ -165,10 +242,12 @@ function resizeContour(e) {
             classN = 'active'
         }
     }
+//console.log("resizeContour classN="+classN+"<<");
     status = statusOLD;
     if (classN === 'active' || (classN.indexOf('contour') > -1)) {
         switch(classN) {
             case 'active':
+//                e.stopPropagation();
                 status = statusNEW;
                 var x = e.pageX;
                 var y = e.pageY;
@@ -181,12 +260,11 @@ function resizeContour(e) {
                 p.gravity = {};
                 currentElement.android = p;
                 addNewElement(ACTIVE, currentElement);
-                var rectParent = p.parent.getBoundingClientRect();
-                parentX = parseInt(rectParent.left);
-                parentY = parseInt(rectParent.top);
+                let rectParent = p.parent.getBoundingClientRect();
+                parentX = parseInt(rectParent.left) + window.pageXOffset;
+                parentY = parseInt(rectParent.top) + window.pageYOffset;
                 parentWpx = parseInt(rectParent.right - rectParent.left);
                 parentHpx = parseInt(rectParent.bottom - rectParent.top);
-
                 angleResizeX = parseInt((x - parentX) / MEASURE) * MEASURE;
                 angleResizeY = parseInt((y - parentY) / MEASURE) * MEASURE;
                 currentElement.style.marginTop = angleResizeY +'px';
@@ -194,36 +272,41 @@ function resizeContour(e) {
                 currentElement.style.width = '0px';
                 currentElement.style.height = '0px';
                 appendContour();
-                document.onmouseup = mouseUpNewEl;
+//                document.onmouseup = mouseUpNewEl;
                 break;
             case 'contourRB':
+//                e.stopPropagation();
                 angleResizeX = currentElement.offsetLeft;
                 angleResizeY = currentElement.offsetTop;
                 break;
             case 'contourRT':
+//                e.stopPropagation();
                 angleResizeX = currentElement.offsetLeft;
                 angleResizeY = currentElement.offsetTop + currentElement.clientHeight;
                 break;
             case 'contourLT':
+//                e.stopPropagation();
                 angleResizeX = currentElement.offsetLeft + currentElement.clientWidth;
                 angleResizeY = currentElement.offsetTop + currentElement.clientHeight;
                 break;
             case 'contourLB':
+//                e.stopPropagation();
                 angleResizeX = currentElement.offsetLeft + currentElement.clientWidth;
                 angleResizeY = currentElement.offsetTop;
                 break;
         }
+        e.stopPropagation();
         document.onmousemove = resizeNewAngle;
         if (classN == 'active') {
             document.onmouseup = mouseUpNewEl;
         } else {
             document.onmouseup = mouseUpEl;
         }
-        e.stopPropagation();
-    }
+    } 
 }
 
 function resizeNewAngle(e) {
+    formNewElem = true;
     var e = e || window.event;
     var x = e.pageX;
     var y = e.pageY;

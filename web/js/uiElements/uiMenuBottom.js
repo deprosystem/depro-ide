@@ -47,7 +47,7 @@ function uiMenuBottom() {
     this.setElementUI = function(p, newEl, parent) {
         let typeEl = createDivMenuB();
         newEl.appendChild(typeEl);
-        let myCompon = myComponent(p.viewId);
+        let myCompon = myComponentDescr(p.componId);
         if (myCompon != null) {
             let menuList = myCompon.model.menuList.list;
             if (menuList != null) {
@@ -58,7 +58,7 @@ function uiMenuBottom() {
     }
     
     this.viewElementUI = function(p, newEl) {
-        let myCompon = myComponent(p.viewId);
+        let myCompon = myComponentDescr(p.componId);
         let typeEl = newEl.getElementsByClassName("menu_b")[0];
         if (myCompon != null) {
             let menuList = myCompon.model.menuList.list;
@@ -105,7 +105,7 @@ function setMenuBAttr(p) {
 }
 
 function showMenuBNoParam() {
-    let myCompon = myComponent(currentElement.android.viewId);
+    let myCompon = myComponentDescr(currentElement.android.componId);
     let dat = myCompon.model.menuList.list;
     let typeEl = currentElement.getElementsByClassName("menu_b")[0];
     let colorSet = currentElement.android.colorSet;

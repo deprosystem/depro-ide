@@ -2,6 +2,7 @@ package servlets;
 
 import android.AndroidPar;
 import android.ColorSet;
+import android.Corners;
 import android.Drawable;
 import android.ItemChange;
 import android.TabLayout;
@@ -65,8 +66,6 @@ public class ExportResult extends BaseServlet {
         long projectId;
         String SAVE_DIR = "";
         String zipFileName;
-//        String downloadExport_1 = "<h3>Data for export prepared.</h3>\n<div class=\"butt\" onclick=\"closeCommonWindow(event)\"><a href=\"";
-//        String downloadExport_2 = "\" download onclick=\"closeCommonWindow(event)\" style=\"text-decoration: none;\">Download</a></div>\n<div class=\"butt\" onclick=\"closeCommonWindow(event)\">Cancel</div>";
         String idPr = request.getParameterValues("projectId")[0];
         projectId = Long.valueOf(idPr);
         projectM = projectDb.getProjectById(idPr);
@@ -311,6 +310,9 @@ public class ExportResult extends BaseServlet {
                     titPar = ", \"" + sc.titleParam.toLowerCase() + "\"";
                 }
                 declare.add("        " + type + "(" + scName.toUpperCase() + ", R.layout." + type + "_" + scName + tit + titPar + endScr);
+                if (sc.navigator != null && sc.navigator.size() > 0) {
+                    declare.add(formNavigator(sc.navigator, tab16, tab12 + ".") + "\n");
+                }
                 int jk1 = jk - 1;
                 MenuList ml;
                 String nameMenu;
@@ -325,13 +327,13 @@ public class ExportResult extends BaseServlet {
                     }
                     switch (comp.type) {
                         case Constants.LIST:
-                            declare.add(tab12 + ".component(TC.RECYCLER, " + formModel(comp)
-                                    + "\n" + tab16 + formView(comp, scName) + formNavigator(comp) + endComp);
+                            declare.add(tab12 + ".list(" + formModel(comp)
+                                    + "\n" + tab16 + formView(comp, scName) + formNavigator(comp.navigator, tab20, ",\n" + tab16) + endComp);
                             break;
                         case Constants.SCROLL:
                         case Constants.PANEL:
                             declare.add(tab12 + ".component(TC.PANEL, " + formModel(comp)
-                                    + "\n" + tab16 + "view(R.id." + comp.view.viewId + ")" + formNavigator(comp) + endComp);
+                                    + "\n" + tab16 + "view(R.id." + comp.view.viewId + ")" + formNavigator(comp.navigator, tab20, ",\n" + tab16) + endComp);
                             break;
                         case Constants.PAGER:
                             Component compTab = getComponentById(sc.components, comp.view.tabLayout);
@@ -500,42 +502,6 @@ public class ExportResult extends BaseServlet {
         }
     }
     
-    private String navigatorMenuB(Navigator nav, int ik) {
-        String res = "";
-        int nk = nav.size();
-        for (int i = 0; i < ik; i++) {
-            String vId = String.valueOf(i);
-            String st = "";
-            String sep = "";
-            for (int n = 0; n < nk; n++) {
-                Handler hh = nav.get(n);
-                if (hh.viewId != null && hh.viewId.length() > 0 && hh.viewId.equals(vId)) {
-                    st += sep + formHandler(hh);
-                    sep = ", ";
-                }
-            }
-            if (st.length() == 0) {
-                res += ", null";
-            } else {
-                res += ", navigator(" + st + ")";
-            }
-        }
-        return res;
-    }
-    
-    private String formHandler(Handler hh) {
-        String res = "";
-        switch (hh.handler) {
-            case "hide":
-                res = "hide(R.id." + hh.id + ")";
-                break;
-            case "show":
-                res = "show(R.id." + hh.id + ")";
-                break;
-        }
-        return res;
-    }
-    
     private boolean noDrawer(ListComponent components) {
         for (Component comp : components) {
             if (comp.type.equals(Constants.DRAWER)) {
@@ -572,6 +538,13 @@ public class ExportResult extends BaseServlet {
                     res += ", " + formUrlParam(comp);
                 }
                 res += "),";
+                break;
+            case Constants.PARAMETERS:
+                String stPar = "";
+                if (m.param != null && m.param.length() > 0) {
+                    stPar += ", " + formUrlParam(comp);
+                }
+                res += "PARAMETERS" + stPar + "),";
                 break;
         }
         return res;
@@ -611,25 +584,14 @@ public class ExportResult extends BaseServlet {
         return inDoubleQuotes(comp.model.param);
     }
     
-    private String formNavigator(Component comp) {
-        int ik = comp.navigator.size();
+    private String formNavigator(Navigator navigator, String tab, String beg) {
+        int ik = navigator.size();
         if (ik > 0) {
-            String res = ",\n" + tab16 + "navigator(";
+            String res = beg + "navigator(";
             String sep = "";
-            String st;
             for (int i = 0; i < ik; i++) {
-                Handler nv = comp.navigator.get(i);
-                switch (nv.handler) {
-                    case "start":
-                        if (nv.viewId != null && nv.viewId.length() > 0) {
-                            st = "R.id." + nv.viewId;
-                        } else {
-                            st = "";
-                        }
-                        res += sep + "start(" + nv.param + ")";
-                        break;
-                }
-                sep = ",\n";
+                res += sep + formHandler(navigator.get(i));
+                sep = ",\n" + tab;
             }
             res += ")";
             return res;
@@ -638,8 +600,60 @@ public class ExportResult extends BaseServlet {
         }
     }
     
+    private String formHandler(Handler hh) {
+        String res = "";
+        String stId;
+        if (hh.viewId != null && hh.viewId.length() > 0 && ! hh.viewId.equals("0")) {
+            stId = "R.id." + hh.viewId;
+        } else {
+            stId = "";
+        }
+        switch (hh.handler) {
+            case "start":
+                res = "start(" + stId + hh.param + ")";
+                break;
+            case "back":
+                res = "back(" + stId + ")";
+                break;
+            case "hide":
+                res = "hide(R.id." + hh.id + ")";
+                break;
+            case "show":
+                res = "show(R.id." + hh.id + ")";
+                break;
+        }
+        return res;
+    }
+    
+    private String navigatorMenuB(Navigator nav, int ik) {
+        String res = "";
+        int nk = nav.size();
+        for (int i = 0; i < ik; i++) {
+            String vId = String.valueOf(i);
+            String st = "";
+            String sep = "";
+            for (int n = 0; n < nk; n++) {
+                Handler hh = nav.get(n);
+                if (hh.viewId != null && hh.viewId.length() > 0 && hh.viewId.equals(vId)) {
+                    st += sep + formHandler(hh);
+                    sep = ",";
+                }
+            }
+            if (st.length() == 0) {
+                res += ", null";
+            } else {
+                res += ",\n" + tab20 + "navigator(" + st + ")";
+            }
+        }
+        return res;
+    }
+    
     private String formView(Component comp, String name) {
-        return "view(R.id." + comp.view.viewId + ", R.layout.item_" + name + "_" + comp.view.viewId + "_0)";
+        String span = "";
+        if (comp.view.spanC > 1) {
+            span = ".spanCount(" + comp.view.spanC + ")";
+        }
+        return "view(R.id." + comp.view.viewId + ", R.layout.item_" + name + "_" + comp.view.viewId + "_0)" + span;
     }
     
     private String formViewPager(Component comp, String name, ParamSave parSave) {
@@ -757,7 +771,8 @@ public class ExportResult extends BaseServlet {
                 parSave.scrollId = "";
                 parSave.pathLayoutItem = path + "/item_" + screen.screenName.toLowerCase() + "_";
                 parSave.path = path;
-                try (FileWriter writer = new FileWriter(path + "/" + type_screen + screen.screenName.toLowerCase() + ".xml", false)) {
+//                try (FileWriter writer = new FileWriter(path + "/" + type_screen + screen.screenName.toLowerCase() + ".xml", false)) {
+                    try ( BufferedWriter writer = new BufferedWriter(new OutputStreamWriter( new FileOutputStream(path + "/" + type_screen + screen.screenName.toLowerCase() + ".xml"), "UTF8"))) {
                     writer.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
                     createEl(screen.layout, true, "\n", writer, parSave);
                     writer.flush();
@@ -770,7 +785,7 @@ public class ExportResult extends BaseServlet {
         }
     }
     
-    private void createEl(AndroidPar elScreen, boolean first, String tab0, FileWriter writer, ParamSave parSave) {
+    private void createEl(AndroidPar elScreen, boolean first, String tab0, BufferedWriter writer, ParamSave parSave) {
         String typeEl = createOneElement(elScreen, first, tab0, writer, parSave);
         String tab = tab0 + "    ";
         try {
@@ -779,15 +794,23 @@ public class ExportResult extends BaseServlet {
                 case Constants.LIST :
                     writer.write(tab0 + "/>");
                     ik = elScreen.children.size();
-                    for (int i = 0; i < ik; i++) {
-                        createItemLayout(elScreen.children.get(i), parSave.pathLayoutItem + elScreen.viewId + "_" + i + ".xml", parSave);
+                    if (ik == 0) {
+                        createItemLayoutBlank(parSave.pathLayoutItem + elScreen.viewId + "_0.xml", parSave);
+                    } else {
+                        for (int i = 0; i < ik; i++) {
+                            createItemLayout(elScreen.children.get(i), parSave.pathLayoutItem + elScreen.viewId + "_" + i + ".xml", parSave);
+                        }
                     }
                     break;
                 case Constants.SHEET :
                     writer.write(tab0 + "/>");
                     ik = elScreen.children.size();
-                    for (int i = 0; i < ik; i++) {
-                        createItemLayout(elScreen.children.get(i), parSave.path + "/view_" + parSave.currentScreen.toLowerCase() + "_" + elScreen.viewId + ".xml", parSave);
+                    if (ik == 0) {
+                        createItemLayoutBlank(parSave.path + "/view_" + parSave.currentScreen.toLowerCase() + "_" + elScreen.viewId + ".xml", parSave);
+                    } else {
+                        for (int i = 0; i < ik; i++) {
+                            createItemLayout(elScreen.children.get(i), parSave.path + "/view_" + parSave.currentScreen.toLowerCase() + "_" + elScreen.viewId + ".xml", parSave);
+                        }
                     }
                     break;
                 default :
@@ -862,7 +885,7 @@ public class ExportResult extends BaseServlet {
         }
     }
     
-    private void createFragmentContainer(FileWriter writer, ParamSave parSave) {
+    private void createFragmentContainer(BufferedWriter writer, ParamSave parSave) {
         if (parSave.noFragmContainer) return;
         try {
             writer.write("\n" + tab4 + "<FrameLayout\n");
@@ -881,7 +904,7 @@ public class ExportResult extends BaseServlet {
         }
     }
     
-    private void CreateRelativeForScroll(FileWriter writer, ParamSave parSave) {
+    private void CreateRelativeForScroll(BufferedWriter writer, ParamSave parSave) {
         try {
             writer.write("\n" + tab4 + "<RelativeLayout\n");
             writer.write(tab8 + "android:id=\"@+id/" + parSave.scrollId + "\"\n");
@@ -892,20 +915,32 @@ public class ExportResult extends BaseServlet {
             Logger.getLogger(ExportResult.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private void createItemLayout(AndroidPar p, String path, ParamSave parSave) {
-        try {
-            try (FileWriter writer = new FileWriter(path, false)) {
-                writer.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
-                createEl(p, true, "\n", writer, parSave);
-                writer.flush();
-            }
+        try ( BufferedWriter writer = new BufferedWriter(new OutputStreamWriter( new FileOutputStream(path), "UTF8"))) {    
+            writer.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+            createEl(p, true, "\n", writer, parSave);
+            writer.flush();
         } catch(IOException ex){
             System.out.println("ExportResult createLayoutItem error=" + ex);
         } 
     }
     
-    private void createDrawer(AndroidPar elScreen, AndroidPar tool, AndroidPar men, String tab0, FileWriter writer, ParamSave parSave) {
+    private void createItemLayoutBlank(String path, ParamSave parSave) {
+        try ( BufferedWriter writer = new BufferedWriter(new OutputStreamWriter( new FileOutputStream(path), "UTF8"))) {    
+                writer.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+                writer.write("\n<RelativeLayout");
+                writer.write("\n    xmlns:android=\"http://schemas.android.com/apk/res/android\"");
+                writer.write("\n    android:layout_width=\"match_parent\"");
+                writer.write("\n    android:layout_height=\"100dp\">");
+                writer.write("\n</RelativeLayout>");
+                writer.flush();
+        } catch(IOException ex){
+            System.out.println("ExportResult createItemLayoutBlank error=" + ex);
+        } 
+    }
+    
+    private void createDrawer(AndroidPar elScreen, AndroidPar tool, AndroidPar men, String tab0, BufferedWriter writer, ParamSave parSave) {
         String tab1 = tab0 + "    ", tab2 = tab1 + "    ", tab3 = tab2 + "    ";
         try {
             writer.write(tab0 + "<" + Constants.componType[6]);
@@ -953,7 +988,7 @@ public class ExportResult extends BaseServlet {
         }
     }
     
-    private void createDrawer(AndroidPar p, String tab0, FileWriter writer, ParamSave parSave) {
+    private void createDrawer(AndroidPar p, String tab0, BufferedWriter writer, ParamSave parSave) {
         String tab1 = tab0 + "    ", tab2 = tab1 + "    ", tab3 = tab2 + "    ";
         try {
             writer.write(tab0 + "<" + Constants.componType[6]);
@@ -989,7 +1024,7 @@ public class ExportResult extends BaseServlet {
         }
     }
     
-    private String createOneElement(AndroidPar p, boolean first, String tab0, FileWriter writer, ParamSave parSave) {
+    private String createOneElement(AndroidPar p, boolean first, String tab0, BufferedWriter writer, ParamSave parSave) {
         String typeEl = p.type;
         if ((parSave.noToolMenu && (typeEl.equals(Constants.TOOL) || typeEl.equals(Constants.MENU_B)) || 
                 (parSave.noDrawer && typeEl.equals(Constants.DRAWER)))) {
@@ -1005,6 +1040,11 @@ public class ExportResult extends BaseServlet {
                 break;
             case Constants.MENU_B:
                 parSave.menuId = p.viewId;
+                break;
+            case Constants.IMAGEVIEW:
+                if (p.corners != null) {
+                    typeEl = Constants.roundedType;
+                }
                 break;
         }
         try {
@@ -1205,13 +1245,19 @@ public class ExportResult extends BaseServlet {
                 writer.write(tab + "android:paddingBottom=\"" + dimens(p.bottomPad) + "\"");
             }
             if (p.text != null && p.text.length() > 0) {
+                if (p.formResourse != null && p.formResourse) {
+                        writer.write(tab + "android:text=\"" + p.text + "\"");
+                }
+            }
+/*
+            if (p.text != null && p.text.length() > 0) {
                 if (p.formResourse != null && p.formResourse
                     && p.viewId != null && p.viewId.length() > 0) {
                         formStringId(p.viewId, p.text, parSave.listString);
                         writer.write(tab + "android:text=\"@string/" + p.viewId + "\"");
                 }
             }
-
+*/
             if (p.textSize != null) {
                 switch (p.type) {
                     case Constants.TOOL:
@@ -1258,6 +1304,42 @@ public class ExportResult extends BaseServlet {
                     }
                     if (p.imgHamburg != null && p.imgHamburg.length() > 0) {
                         writer.write(tab + "app:imgHamburger=\"@drawable/" + nameFromUrl(p.imgHamburg) + "\"");
+                    }
+                    break;
+                case Constants.IMAGEVIEW:
+                    Corners pc = p.corners;
+                    if (pc != null) {
+                        int lt = 0, tr = 0, rb = 0, bl = 0;
+                        if (pc.lt.length() > 0) {
+                            lt = Integer.valueOf(pc.lt);
+                        }
+                        if (pc.tr.length() > 0) {
+                            tr = Integer.valueOf(pc.tr);
+                        }
+                        if (pc.rb.length() > 0) {
+                            rb = Integer.valueOf(pc.rb);
+                        }
+                        if (pc.bl.length() > 0) {
+                            bl = Integer.valueOf(pc.bl);
+                        }
+                        if (lt == tr && lt == rb && lt == bl) {
+                            if (lt > 0) {
+                                writer.write(tab + "app:riv_corner_radius=\"" + lt + "dp\"");
+                            }
+                        } else {
+                            if (lt > 0) {
+                                writer.write(tab + "app:riv_corner_radius_top_left=\"" + lt + "dp\"");
+                            }
+                            if (tr > 0) {
+                                writer.write(tab + "app:riv_corner_radius_top_right=\"" + tr + "dp\"");
+                            }
+                            if (rb > 0) {
+                                writer.write(tab + "app:riv_corner_radius_bottom_right=\"" + rb + "dp\"");
+                            }
+                            if (bl > 0) {
+                                writer.write(tab + "app:riv_corner_radius_bottom_left=\"" + bl + "dp\"");
+                            }
+                        }
                     }
                     break;
                 case Constants.TAB:

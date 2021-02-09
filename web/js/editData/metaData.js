@@ -1,4 +1,4 @@
-var TYPE_TEXT = 0, TYPE_INT = 1, TYPE_FLOAT = 3, TYPE_BOOLEAN = 4, TYPE_SELECT = 5, TYPE_IMG = 6, ID_SELECT = 7;
+var TYPE_TEXT = 0, TYPE_INT = 1, TYPE_FLOAT = 3, TYPE_BOOLEAN = 4, TYPE_SELECT = 5, TYPE_IMG = 6, ID_SELECT = 7, ID_SELECT_HANDL = 8;
 
 var metaPager = {titleForm:"Данные для TabLayout", description:
     [{name: "title", title:"Text tab",len:15},
@@ -6,7 +6,8 @@ var metaPager = {titleForm:"Данные для TabLayout", description:
     }
 
 var metaNavigator = {titleForm:"Navigator", description:
-    [{name: "viewId", title:"Элемент",len:12,valid:{latin:true}},
+//    [{name: "viewId", title:"Элемент",len:12,valid:{latin:true}},
+    [{name: "viewId", title:"Элемент",len:100,type:ID_SELECT_HANDL},
     {name: "handler", title:"Обработчик",len:100,type:TYPE_SELECT,select:"start,back,hide,show"},
     {name: "param", title:"Парам",len:15,valid:{latin:true}},
     {name: "id", title:"id",len:100,type:ID_SELECT}]

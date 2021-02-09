@@ -22,6 +22,7 @@ public class AndroidPar {
     public TabLayout tabLayout;
 // Параметры для конкретных элементов
 //    public Boolean formStringRes;
+    public Corners corners;
     public ColorSet colorSet;
     public Boolean formResourse, visibility;
     public Integer scaleType;

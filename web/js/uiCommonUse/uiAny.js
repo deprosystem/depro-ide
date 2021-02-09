@@ -1,11 +1,11 @@
 var uiCurrentComponent;
 
-function myComponent(id) {      //      currentComponentDescr
+function myComponentDescr(id) {      //      currentComponentDescr
     let ik = currentScreen.components.length;
     if (ik > 0) {
         for (let i = 0; i < ik; i++) {
             let it = currentScreen.components[i];
-            if (it.view.viewId == id) {
+            if (it.componId == id) {
                 return it;
             }
         }
@@ -19,7 +19,7 @@ function getComponentById(id) {     //      currentComponent
     return getCompById(currentChildren, id);
 }
 
-function getCompById(ch, id) {         //      currentComponent
+function getCompById(ch, id) {
     let ik = ch.length;
     for (let i = 0; i < ik; i++) {
         let chi = ch[i];
@@ -55,4 +55,21 @@ function getCompByViewId(ch, id) {
     return null;
 }
 
+function getCompByType(ch, id) {
+    let ik = ch.length;
+    for (let i = 0; i < ik; i++) {
+        let chi = ch[i];
+        if (chi.type == id) {
+            return chi;
+        } else {
+            if (chi.children != null && chi.children.length > 0) {
+                let res = getCompByViewId(chi.children, id);
+                if (res != null) {
+                    return res;
+                }
+            }
+        }
+    }
+    return null;
+}
 

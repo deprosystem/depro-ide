@@ -7,9 +7,9 @@ function editUX_UI() {
         active.style.display = "block";
         plus_screen.style.display = "none";
         corners.style.display = "none";
-        document.documentElement.style.setProperty('--w_ux_p', '18%');
-        document.documentElement.style.setProperty('--w_ux_r', '22%');
-        document.documentElement.style.setProperty('--left_compon', '18%');
+        document.documentElement.style.setProperty('--w_ux_p', '21%');
+        document.documentElement.style.setProperty('--w_ux_r', '24%');
+        document.documentElement.style.setProperty('--left_compon', '21%');
     } else {
         isUX = true;
         ux_ui.innerHTML = "U I";

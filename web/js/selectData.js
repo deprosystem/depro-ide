@@ -1,3 +1,4 @@
+var uxElem = "List,Drawer,Map,Menu,MenuBottom,Pager,Panel,ScrollPanel,SheetBottom,TabLayout,ToolBar";
 function createSelectTagFromString(list, num, on) {
     ll = list.split(",");
     return createSelectTag(ll, num, on);
@@ -73,7 +74,6 @@ function formListViewId(el, name) {     //  Для below, abowe, ToRightOf, ToLe
             let sel = createSelectValue(arrViewId, vv, name);
             sel.style.cssText = "width:100px;font-size:12px;color:#110000;";
             sel.className = 'select_' + browser;
-//            sel.style.width = "100px";
             el.appendChild(sel);
         }
     }
@@ -183,6 +183,28 @@ function formListIdElem(childEl) {
         let ch = item.children;
         if (ch != null && ch.length > 0) {
             st += formListIdElem(ch);
+        }
+    }
+    return st;
+}
+
+function formSelectViewIdHandl(valueSel) {
+    let st = formListIdElemHandl(currentChildren);
+    return formSelectForEditData("0" + st, valueSel);
+}
+
+function formListIdElemHandl(childEl) {
+    let st = "";
+    let ik = childEl.length;
+    for (let i = 0; i <ik; i++) {
+        let item = childEl[i];
+        let vi = item.viewId;
+        if (vi != null && vi != "" && uxElem.indexOf(item.type) == -1) {
+            st += "," + vi;
+        }
+        let ch = item.children;
+        if (ch != null && ch.length > 0) {
+            st += formListIdElemHandl(ch);
         }
     }
     return st;

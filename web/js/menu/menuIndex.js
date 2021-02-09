@@ -19,8 +19,13 @@ listMenu_UX[2] = {nameM : 'Edit'};
 listMenu_UX[2].children = new Array(
         {nameI : 'Copy', func : all, dependProject : true, dependScreen : true},
         {nameI : 'Undo', func : all, dependProject : true, dependScreen : true});
-listMenu_UX[3] = {nameM : 'Exit'};
+listMenu_UX[3] = {nameM : 'Tutorial'};
 listMenu_UX[3].children = new Array(
+        {nameI : 'All', func : helpAll},
+        {nameI : 'UX', func : helpUX},
+        {nameI : 'UI', func : helpUI});
+listMenu_UX[4] = {nameM : 'Exit'};
+listMenu_UX[4].children = new Array(
         {nameI : 'Change user', func : changeUser},
         {nameI : 'Close', func : closeIDE});
         
@@ -129,8 +134,9 @@ function scaleMinus() {
         SCALE = currentScale / 100;
         MEASURE = DENSITY * SCALE;
         setDp();
-        setRoot();
-        changeRoot()
+        setScreenView();
+//        setRoot();
+//        changeRoot()
         content_src.scroll_y.resize(content_src);
     }
 }
@@ -142,8 +148,9 @@ function scalePlus() {
         SCALE = currentScale / 100;
         MEASURE = DENSITY * SCALE;
         setDp();
-        setRoot();
-        changeRoot()
+        setScreenView();
+//        setRoot();
+//        changeRoot()
         content_src.scroll_y.resize(content_src);
     }
 }

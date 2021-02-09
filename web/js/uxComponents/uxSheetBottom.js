@@ -14,6 +14,10 @@ function uxSheetBottom() {
         return uxModelView("createViewForPanelV", "");
     }
     
+    this.getCreateListener = function () {
+        return {vert:"createViewForPanelV", horiz:""};
+    }
+    
     this.addComponent = function (componId, viewId) {
         let tt = this.param.name;
         currentComponent = {type: tt, componId: componId, viewId: viewId, typeUxUi: "ux", componParam:{type:7}, sheetParam: {noSwipe:false,noBP:false},

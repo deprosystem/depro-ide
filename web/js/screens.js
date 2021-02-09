@@ -59,7 +59,7 @@ function createScreen(plus, nameScr, titleScr, typeScr) {
 
 function crScreenForList(scrP) {
     let crScreen = {screenName: scrP.scrN, screenId: scrP.scrNum, screenComment: "", animate: 0, castom: "", typeScreen: scrP.scrT, 
-        title: scrP.scrTit, titleParam: "", components: [], textErrors: "", levelErrors: 0};
+        title: scrP.scrTit, titleParam: "", components: [], textErrors: "", levelErrors: 0, navigator:[]};
     crScreen.layout =  {type:"RelativeLayout",typeFull:{name:"RelativeLayout",typeBlock:2},parent:null,width:-1,height:-1,gravLayout:{h:4,v:4},
         gravity:{h:4,v:4},itemNav:{},viewId:"root", children:[]};
     return crScreen;
@@ -265,7 +265,7 @@ function setSelected(cl, val) {
 function newScreen(scr) {
     var container = document.createElement('div')
     container.innerHTML = '<div class="screen_sel">'
-        +'<div class="error_screen" style="float:left;width:3px;height:40px;"></div>'
+        +'<div class="error_screen" style="float:left;width:3px;height:40px;" onmouseover="errorScrOver(this)"></div>'
         +'<div style="padding-bottom:15px;height:30px;margin-left:10px">'
             +'<div style="float:left;"><div style="color: #2228;font-size: 10px;margin-left:4px">Name</div>'
             +'<input class="name_screen input_style" onkeyup="return checkNameKey(event)" onkeydown="return validName(event)" style="font-size:12px;color:#110000;font-weight:600" type="text" size="12" value="'+ scr.screenName + '"/>'
@@ -287,7 +287,11 @@ function newScreen(scr) {
             +'<input class="title_screen_param input_style" onchange="changeTitleParam(this.value)" value="' + scr.titleParam + '" type="text" size="14"/>'
             +'</div>'
     
-            +'<div onclick="viewComment(this)" style="float:left;margin-left:10px;cursor:pointer"><div style="color:#2228;font-size:10px;margin-left:4px">Description</div>'
+            +'<div onclick="navigatorScreen()" style="float:left;margin-left:5px;cursor:pointer"><div style="color:#2228;font-size:10px;">Navigator</div>'
+            +'<img width="20" height="20" style="margin-top:3px;margin-left:5px" src="img/navigator.png">'
+            +'</div>'
+    
+            +'<div onclick="viewComment()" style="float:left;margin-left:10px;cursor:pointer"><div style="color:#2228;font-size:10px;">Description</div>'
             +'<img width="20" height="20" style="margin-top:3px;" src="img/roll.png">'
             +'</div>'
 
@@ -301,7 +305,15 @@ function newScreen(scr) {
     return container.firstChild;
 }
 
-function viewComment(el) {
+function navigatorScreen() {
+    if (currentScreen.navigator == null) {
+        currentScreen.navigator = [];
+    }
+    editDataWind(metaNavigator, currentScreen.navigator, saveNavigator);
+    
+}
+
+function viewComment() {
     var tt = currentScreenView.getElementsByClassName("comment");
     if (tt != null) {
         var t = tt[0];
@@ -546,7 +558,26 @@ function setViewId(id) {
     }
 }
 
+function errorScrOver(el) {
+    let id = el.parentElement.idScreen;
+    let scr = getScreenById(id);
+    if (scr != null && scr.levelErrors > 0) {
+        tooltipMessage(el, scr.textErrors);
+    }
+}
 
+function getScreenById(id) {
+    let ik = listScreen.length;
+    let res = null;
+    for (let i = 0; i < ik; i++) {
+        let ls = listScreen[i];
+        if (id == ls.screenId) {
+            res = ls;
+            break;
+        }
+    }
+    return res;
+}
 function undo() {
     
 }

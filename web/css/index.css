@@ -1,26 +1,26 @@
 
 :root {--h_header: 35px; 
-       --w_left: 300px; --w_right: 250px; --w_ux: 450px;
+       --w_left: 300px; --w_right: 250px; --h_backEnd: 0;
+//       --w_ux: 450px;
        --left_compon:0px; --w_ux_p: 60%; --w_ux_r: 0px; 
        --c_line: #2c3336;--c_blue:#1dace9;--c_yelow:#ffc700;--c_content:#FfFBEF; --c_screen:#DAF0FA;--c_screen_hover:#d5f0ff;
        --c_compon:#f7f7f7;--c_component:#fff;--c_input:#cbe4ef;--c_separator:#7ac;--c_scroll:#1DACE9;--c_yelow_lite:#FAF1CF;
        --font_root: 'Roboto', sans-serif;
 }
+BODY {font-family: 'Proxima Nova', sans-serif;font-size:12px}
 html,body {margin: 0; width: 100%; height: 100%;}
-body {font-family: 'Proxima Nova', sans-serif;font-size:12px}
 
 select {-webkit-appearance: none; -moz-appearance: none; appearance:none;text-indent:1px;text-overflow: '';background: url("chevron_down.png") no-repeat right center #fff;}
 select::-ms-expand {display: none;}
-/*
-#footer {background-color: #eee0; left: 0; position: absolute; bottom: 0; width: 100%; height: var(--h_footer); border-top: 1px solid #aaa}
-#footer-tool {width: 300px; height: 100%; float: right; right: 0px; border-left: 2px solid #aaa;}
-*/
+
 #footer_inf {width: 300px; height: 100%; float: left;}
 #header{background-color: #117; height: var(--h_header); position: absolute; width: 100%;}
 
 #compon{position: absolute; background-color:var(--c_compon); left: var(--left_compon); width: 60%; top: var(--h_header); bottom: 0px;transition: left 400ms;}
-#compon_ui {position: absolute; background-color: #eee; left: 0px; width: 18%; top: var(--h_header); bottom: 0px;display:none}
-#haracteristicks{position: absolute;overflow-y: hidden; background-color: #eee; right: 0px; width: 22%; top: var(--h_header); bottom: 0px;}
+#compon_ui {position: absolute; background-color: #eee; left: 0px; width: 21%; top: var(--h_header); bottom: 0px;display:none}
+#haracteristicks{position: absolute;overflow-y: hidden; background-color: #eee; right: 0px; width: 24%; top: var(--h_header); bottom: 0px;}
+#backEnd {position: absolute; left: 0; right: 0; top: var(--h_header); height: var(--h_backEnd);
+           background-color:var(--c_content);transition: height 400ms }
 #content_v{position: absolute; left: var(--w_ux_p); right: var(--w_ux_r); top: var(--h_header); bottom: 0px;
            background-color:var(--c_content);transition: left 400ms, right 400ms;}
 #ux_ui_w{height: 100%;float: right; cursor: pointer; width:var(--h_header); background-color:var(--c_blue);}

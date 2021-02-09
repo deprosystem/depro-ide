@@ -23,7 +23,7 @@ function uiTabLayout() {
     this.setElementUI = function(p, newEl, parent) {
         let typeEl = createDivTab();
         newEl.appendChild(typeEl);
-        let myCompon = myComponent(p.viewId);
+        let myCompon = myComponentDescr(p.componId);
         if (myCompon != null) {
             let dat = myCompon.model.menuList.list;
             if (dat != null) {
@@ -60,7 +60,7 @@ function setTabAttr(p) {
 }
 
 function showTabLayoutNoParam() {
-    let myCompon = myComponent(currentElement.android.viewId);
+    let myCompon = myComponentDescr(currentElement.android.componId);
     let dat = myCompon.model.menuList.list;
     let typeEl = currentElement.getElementsByClassName("tab_layout")[0];
     let tabLayout = currentElement.android.tabLayout;

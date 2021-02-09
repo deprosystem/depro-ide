@@ -72,44 +72,7 @@ function clickCategory2(i, j){
     selTypeEl = type_view.children[j];
     selTypeEl.className = 'type_item_sel';
 }
-/*
-function contextCategory2(i, j){
-    var type = listComponent[i].children[j];
-    var el;
-    switch(type) {
-        case 'LinearLayout':
-            el = createEl('div');
-            setTypeInsert(type);
-            break;
-    }
-    p = {};
-    p.type = type;
-    p.id = '';
-    p.width = MATCH;
-    p.height = WRAP;
-    p.gravLayout = {};
-    p.gravLayout.h = NONE;
-    p.gravLayout.v = NONE;
-    p.gravity = {};
-    p.gravity.h = NONE;
-    p.gravity.v = NONE;
-    p.top = '0px';
-    p.left = '0px';
-    el.android = p;
-    addNewElement(ACTIVE, el);
-    currentElement = el;
-    setPickElement(el);
-    viewCompon();
-    setParamCompon();
-}
-*/
-/*
-function createDiv() {
-    var container = document.createElement('div')
-    container.innerHTML = '<div > </div>'
-    return container.firstChild
-}
-*/
+
 function createDivText() {
     var container = document.createElement('div')
     container.innerHTML = '<div class="text" style="position: absolute; white-space: pre-wrap; color: #808080;"></div>'
@@ -127,13 +90,7 @@ function createDivTab() {
     container.innerHTML = '<div class="tab_layout" style="display:flex;flex-direction:row;align-items:center;justify-content:space-around;width:100%;height:100%;"></div>'
     return container.firstChild;
 }
-/*
-function createDivList() {
-    var container = document.createElement('div')
-    container.innerHTML = '<div class="list" style="width:100%;height:100%;"></div>'
-    return container.firstChild
-}
-*/
+
 function createForToolBar() {
     var container = document.createElement('div')
     container.innerHTML = '<div style="display:flex;flex-direction:row;align-items:center;position:absolute;width:100%;height:100%;">'
@@ -161,14 +118,9 @@ function createDivImg() {
     return container.firstChild
 }
 
-function createEl(tag) {
-    var container = document.createElement('div')
-    container.innerHTML = '<' + tag + ' onclick="clickElement(event, this)"> </' + tag + '>'
-    return container.firstChild
-}
-
 function clickElement(event, el) {
-    event.stopPropagation();
+//    event.stopPropagation();
+    if (formNewElem) return;
     if (el != ACTIVE) {
         hideContourEl();
         currentElement = el;
@@ -184,7 +136,7 @@ function setPickElement(el) {
 
 function hideContourEl() {
     if (currentElement != null) {
-        var el = currentElement.getElementsByClassName('contourEl')[0];
+        let el = currentElement.getElementsByClassName('contourEl')[0];
         if (el != undefined) {
             currentElement.removeChild(el);
             currentElement.style.outline = '';
@@ -423,7 +375,7 @@ function viewComponElem(el) {
                     elDivImg = createDivImg();
                     el.appendChild(elDivImg);
                 }
-                elDivImg.innerHTML = '<IMG SRC="'+ p.src +'" style="width:100%;height:100%">';
+                elDivImg.innerHTML = '<IMG SRC="'+ p.src +'" style="width:100%;height:100%;pointer-events: none;">';
                 elImg = elDivImg.firstChild;
                 if (p.width != WRAP) {
                     var ww = parseInt(el.style.width);                    
@@ -441,11 +393,6 @@ function viewComponElem(el) {
             if (p.height != MATCH) {
                 switch(p.gravLayout.v) {
                     case NONE:
-/*
-                        if (p.height == MATCH) {
-                            break;
-                        }
-*/
                     case TOP:
                         el.style.bottom = '';
                         el.style.top = '0px';
@@ -473,11 +420,6 @@ function viewComponElem(el) {
                         }
                         break
                     case NONE:
-/*
-                        if (p.width == MATCH) {
-                            break;
-                        }
-*/
                     case LEFT:
                         el.style.right = '';
                         el.style.left = '0px';
@@ -671,6 +613,15 @@ function viewComponElem(el) {
                     contentEl.style.right = '';
                     contentEl.style.left = cc + 'px';
                     break;
+            }
+            break;
+        case "ImageView":
+            let pc = p.corners;
+            if (pc != null) {
+                contentEl = el.getElementsByTagName("img")[0];
+                let stR = (parseInt(pc.lt) * MEASURE) + "px " + (parseInt(pc.tr) * MEASURE) + "px " + (parseInt(pc.rb) * MEASURE) + "px " 
+                        + (parseInt(pc.bl) * MEASURE) + "px";
+                contentEl.style.borderRadius = stR;
             }
             break;
         default:

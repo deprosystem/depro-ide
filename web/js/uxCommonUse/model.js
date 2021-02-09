@@ -2,17 +2,18 @@ let uxModel1 = '<div class="model_view" style="height:40px;">'
         +'<div style="float:left;"><div style="color:#2228;font-size: 10px;margin-left:4px">Method</div>'
         +'<select class="model_method type_screen select_';
 
-let uxModel2 = '" onchange="changeMethod(this)" style="width:100px;"><option>GET</option><option>POST</option><option>TEST</option><option>JASON</option><option>ARGUMENT</option></select>'
+let uxModel2 = '" onchange="changeMethod(this)" style="width:120px;"><option>GET</option><option>POST</option><option>TEST</option>'
+            +'<option>JASON</option><option>ARGUMENTS</option><option>PARAMETERS</option></select>'
         +'</div>'
         +'<div class="param_method" style="float:left;margin-left:10px;"></div>';
 
-let pmGetPost = '<div style="display:inline-block;"><div style="color:#2228;font-size:10px;margin-left:4px">URL</div>'
+let pmUrl = '<div style="display:inline-block;"><div style="color:#2228;font-size:10px;margin-left:4px">URL</div>'
             +'<input class="url input_style" onkeyup="return clickUpURL(event)" style="color:#000a" type="text" size="20" value=""/>'
-            +'</div>'
-            +'<div style="display:inline-block;margin-left:10px"><div style="color: #2228;font-size: 10px;margin-left:4px">URL Parameters</div>'
+            +'</div>';
+let pmParamUrl = '<div style="display:inline-block;margin-left:10px"><div style="color: #2228;font-size: 10px;margin-left:4px">URL Parameters</div>'
             +'<input class="param input_style" onchange="changeUrlParam(this.value)" style="color:#000a" type="text" size="15" value=""/>'
-            +'</div>\n\
-            <div class="progr_mod" style="display:inline-block;margin-left:10px;">\n\
+            +'</div>';
+let pmProgr = '<div class="progr_mod" style="display:inline-block;margin-left:10px;">\n\
                 <div class="text_style_ui">Progress</div>\n\
             </div>';
     
@@ -20,7 +21,7 @@ let pmTest = '<img onclick="formTestData(this)" width="18" height="18" style="ma
 
 function uxModelView(listenerV, listenerH) {
     des = dataDescr(listenerV, listenerH);
-    return uxModel1 + browser + uxModel2 + des + '</div>';
+    return uxModel1 + browser + uxModel2 + des + '</div><div class="severalDataTypes" style="height:40px;margin-top:5px;display:none;"></div>';
 }
 
 function dataDescr(v, h) {
@@ -40,6 +41,35 @@ function dataDescr(v, h) {
             +'<div style="color: #2228;font-size: 10px;float:left;">Create View</div>'
             +hh
             +vv
+        +'</div>'
+        +'<div style="float:left;margin-left:10px">'
+            +'<div style="font-size:10px;color:#2228;">Add data type</div>'
+            +'<img onclick="addDataType();" style="margin-top:6px;margin-left:10px;float:left;clear:both;cursor:pointer;" width="16" height="16" src="img/add_blue.png">'
+        +'</div>'
+    +'</div>';
+}
+
+function dataDescrAdd(v, h) {
+    let vv = "", hh = "";
+    let styleVV = "clear:both;";
+    if (h != null && h.length > 0) {
+        hh = '<img onclick="' + h + '(this)" width="16" height="16" src="img/form_protot_hor.png" style="margin-top:6px;float:left;clear:both;cursor:pointer;">';
+        styleVV = "";
+    }
+    if (v != null && v.length > 0) {
+        vv = '<img onclick="' + v + '(this)" width="16" height="16" src="img/form_protot_vert.png" style="' + styleVV + 'margin-top:4px;float:left;margin-left:10px;cursor:pointer;">';
+    }
+    return '<div style="float:left;margin-left:10px;">'
+        +'<div style="float:left;width:1px;height:26px;margin-top:13px;background-color:var(--c_separator)"></div>'
+        +'<img onclick="editDataModel()" width="20" height="20" src="img/edit_meta.png" style="margin-top:16px;float:left;margin-left:10px;cursor:pointer;" onmouseover="tooltipHelpOver(this,' + "'Data Description'" + ')">'
+        +'<div style="float:left;margin-left:10px;">'
+            +'<div style="color: #2228;font-size: 10px;float:left;">Create View</div>'
+            +hh
+            +vv
+        +'</div>'
+        +'<div style="float:left;margin-left:10px">'
+            +'<div style="font-size:10px;color:#2228;">Delete</div>'
+            +'<img onclick="delDataType();" style="margin-top:6px;margin-left:10px;float:left;clear:both;cursor:pointer;" width="16" height="16" src="img/close-o.png">'
         +'</div>'
     +'</div>';
 }
@@ -79,11 +109,15 @@ function changeMethod(el) {
         switch (el.options[el.selectedIndex].value) {
             case "POST":
             case "GET":
-                pm.innerHTML = pmGetPost;
+//                pm.innerHTML = pmGetPost;
+                pm.innerHTML = pmUrl + pmParamUrl + pmProgr;
                 setValueGetPost();
                 break;
             case "TEST":
                 pm.innerHTML = pmTest;
+                break;
+            case "PARAMETERS":
+                pm.innerHTML = pmParamUrl;
                 break;
             default:
                 pm.innerHTML = "";
@@ -120,6 +154,7 @@ function setValueGetPost() {
     }
     let st = formListIdElem(currentChildren);
     let sel = formSelectForEditData("standard,no" + st, mod.progr);
+    currentComponentDescr.model.progr = sel.options[sel.selectedIndex].value;
     sel.className = "select_" + browser;
     sel.style.cssText = "width:80px;font-size:12px;color:#110000;";
     sel.addEventListener("change", function(){changeProgress(sel);}, true);
@@ -154,4 +189,23 @@ function formTestData(el) {
 
 function cbSaveTestDat() {
     currentComponentDescr.model.testData = JSON.stringify(currentComponentDescr.model.test);
+}
+
+function addDataType() {
+    let listeners = null;
+    try {
+        uxFunction = eval("new ux" + currentComponent.type + "();");
+        listeners = uxFunction.getCreateListener();
+    } catch(e) { }
+    if (listeners != null) {
+        let dataT = currentComponentView.getElementsByClassName("severalDataTypes")[0];
+        let mod = currentComponentDescr.model;
+        dataT.style.display = "block";
+        let el = newDOMelement(dataDescrAdd(listeners.vert, listeners.horiz));
+        if (dataT.children.length == 0) {
+            el.style.clear = "both";
+            el.style.marginLeft = "";
+        }
+        dataT.append(el);
+    }
 }

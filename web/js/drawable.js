@@ -29,6 +29,7 @@ function editDrawable(fCB, p) {
                 <div onclick="setCorners(this)" class="el_marg_pad">16</div> \n\
                 <div onclick="setCorners(this)" class="el_marg_pad">20</div> \n\
                 <div onclick="setCorners(this)" class="el_marg_pad">24</div>\n\
+                <div onclick="setCorners(this)" class="el_marg_pad">h/2</div>\n\
                 </div>';
     let rectInp = '<div style="width:158px;height:80px;position:relative;margin-top:10px;float: left;clear:both">\n\
         <div style="border:2px solid #1DACEf;position:absolute;left:20px;top:12px;right:20px;bottom:12px;"></div></div>';
@@ -195,10 +196,20 @@ function setCorners(el) {
     el.style.backgroundColor = fonSel;
     let vv = el.innerHTML;
     let value;
-    if (vv == "") {
-        value = 0;
+    if (vv == 'h/2') {
+        let p = currentElement.android;
+        let h = p.height;
+        if (h > 0) {
+            value = h/2;
+        } else {
+            value = 0;
+        }
     } else {
-        value = parseInt(vv);
+        if (vv == "") {
+            value = 0;
+        } else {
+            value = parseInt(vv);
+        }
     }
     radiusCorners.value = value;
     radiusLT.value = value;

@@ -18,7 +18,7 @@ function uxScrollPanel() {
         currentComponent = {type: tt, componId: componId, viewId:viewId, typeUxUi: "ux", componParam:{type:9},
                 typeFull: {name: tt, typeBlock: 10}, gravLayout: {h: 3, v: 3}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
             width:-1,height:-1,itemNav:{},viewElement: null,children:[]};
-        currentComponentDescr = {type:tt, componId: componId, model:{method:0,data:[]},view:{viewId: viewId},navigator:[]};
+        currentComponentDescr = {type:tt, componId: componId, model:{method:0,data:[[]]},view:{viewId: viewId},navigator:[]};
     }
     
     this.setValue = function(componParam) {

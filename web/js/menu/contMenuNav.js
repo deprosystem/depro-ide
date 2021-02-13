@@ -19,15 +19,6 @@ function n_contMenuStart(e){
         n_contextActive.style.color = '#999';
         n_contextActive.onclick = '';
     }
-/*
-    if (target.elementLink.android.canHide) {
-        can_hide.style.color = '#000';
-        can_hide.onclick = n_clHideShow;
-    } else {
-        can_hide.style.color = '#999';
-        can_hide.onclick = '';
-    }
-*/
     n_contextMenu.style.visibility="visible";
     document.getElementById('n_blockAll').style.display = 'block';
     return false;

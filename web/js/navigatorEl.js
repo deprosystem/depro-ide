@@ -139,11 +139,9 @@ function openItem(el) {
     var par = el.parentNode;
     var item = par.getElementsByClassName("item-compon")[0];
     if (item.style.display == 'none') {
-//        el.innerHTML = '-';
         el.innerHTML = '\u2BC6';
         item.style.display = 'block';
     } else {
-//        el.innerHTML = '+';
         el.innerHTML = '\u2BC8';
         item.style.display = 'none';
     }
@@ -188,21 +186,9 @@ function upNavigEl(e) {
 }
 
 function pMovingShift(what, whereTo) {
-/*
-    let pW = what.android;
-    let pT = whereTo.android;
-    if (pT.children == null) {
-        pT.children = [];
-    }
-    pT.children.push(pW);
-    let pParent = what.android.parent.android;
-*/
-    
-    
     ch = currentScreen.layout.children;
     let whatP = searchElP(ch, what);
     let whereToP = searchElP(ch, whereTo);
-console.log("pMovingShift whatP="+whatP+" what="+what+"<< whereToP="+whereToP+" whereTo="+whereTo+"<<");
     if (whatP != null && whereToP != null) {
         if (whereToP.p.children == null) {
             whereToP.p.children = [];

@@ -119,7 +119,6 @@ function createDivImg() {
 }
 
 function clickElement(event, el) {
-//    event.stopPropagation();
     if (formNewElem) return;
     if (el != ACTIVE) {
         hideContourEl();
@@ -158,7 +157,6 @@ function hideSelectEl(e) {
 function appendContour() {
     if (currentElement.getElementsByClassName('contourEl').length == 0) {
         let contour = createContour();
-//        var contour = contourEl.cloneNode(true);
         contour.style.display = 'block';
         currentElement.appendChild(contour);
         currentElement.style.outline = '2px solid #00f';

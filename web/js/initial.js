@@ -18,10 +18,6 @@ function initialView(AuthResult) {
     };
     loginPanel.style.display = "none";
     formMenuEl_UX();
-/*
-    var ins = new insertHtml();
-    ins.get('layoutAttributes', 'layout/layoutAttr.html', setLayoutDiv);
-*/
     setLayoutDiv();
     let ins = new insertHtml();
     ins.get('m_bmPEbody', 'layout/layoutParam.html', m_bmStart);

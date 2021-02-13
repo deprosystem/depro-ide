@@ -23,7 +23,7 @@ function uxSheetBottom() {
         currentComponent = {type: tt, componId: componId, viewId: viewId, typeUxUi: "ux", componParam:{type:7}, sheetParam: {noSwipe:false,noBP:false},
                 typeFull: {name: tt, typeBlock: 10}, gravLayout: {h: 3, v: 3}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
             width:-1,height:-1,itemNav:{},viewElement: null,children:[]};
-        currentComponentDescr = {type:tt, componId: componId, model:{method:0,data:[]},view:{viewId: viewId},navigator:[]};
+        currentComponentDescr = {type:tt, componId: componId, model:{method:0,data:[[]]},view:{viewId: viewId},navigator:[]};
     }
     
     this.setValue = function(componParam) {
@@ -44,7 +44,7 @@ function uxSheetBottom() {
 function createViewForPanelV(el) {
     let listV = currentComponent.viewElement;
     if (listV != null) {
-        let ik = currentComponentDescr.model.data.length;
+        let ik = currentComponentDescr.model.data[0].length;
         if (ik > 0) {
             let imgHeight = 240;
             n_selectElement = listV;
@@ -53,14 +53,14 @@ function createViewForPanelV(el) {
             n_selectElement.innerHTML = "";
             cleanNavigatorEl(n_selectElement);
             ACTIVE.android.children.length = 0;
-            let imgId = formImgFirst(MATCH, imgHeight);
+            let imgId = formImgFirst(MATCH, imgHeight, currentComponentDescr.model.data[0]);
             if (imgId > -1) {
-                namePrev = currentComponentDescr.model.data[imgId].name;
+                namePrev = currentComponentDescr.model.data[0][imgId].name;
             }
             let topM = 10;
             let estimatedHeight = imgHeight + 12;
             for (let i = 0; i < ik; i++) {
-                let item = currentComponentDescr.model.data[i];
+                let item = currentComponentDescr.model.data[0][i];
                 if (item.notShow) continue;
                 if (imgId != i) {
                     formElement(item, "", namePrev, topM);

@@ -60,13 +60,8 @@ function formElement(item, toRightOf, namePrev, topM) {
     if (toRightOf != "") {
         p.toRightOf = toRightOf;
     }
-    viewCompon();
 }
-/*
-function viewCompon() {
-    viewComponElem(currentElement);
-}
-*/
+
 function formDivider() {
     currentElement = createNewEl();
     p = {typeUxUi: "ui"};
@@ -85,12 +80,12 @@ function formDivider() {
     return currentElement;
 }
 
-function formImgFirst(ww, imgHeight) {
+function formImgFirst(ww, imgHeight, data) {
     let item;
     let imgId = -1;
-    let ik = currentComponentDescr.model.data.length;
+    let ik = data.length;
     for (let i = 0; i < ik; i++) {
-        item = currentComponentDescr.model.data[i];
+        item = data[i];
         if (item.type == "Img") {
             imgId = i;
             break;
@@ -100,11 +95,11 @@ function formImgFirst(ww, imgHeight) {
         let imgView = formImg(item);
         p = imgView.android;
         p.viewId = item.name;
+        p.viewElement = imgView;
         p.width = ww;
         namePrev = item.name;
         p.height = imgHeight;
         p.src = "img/picture.png";
-        viewCompon();
     }
     return imgId;
 }

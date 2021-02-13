@@ -9,7 +9,6 @@ var elClick = null;
 const deltaOfset = 3;
 
 function moveElement(event) {
-//console.log("moveElement moveElement moveElement ****");
     x = event.pageX;
     y = event.pageY;
     var rectParent = currentElement.android.parent.getBoundingClientRect();
@@ -37,7 +36,6 @@ function moveElement(event) {
 }
 
 function moveEl(event) {
-//console.log("moveEl moveEl moveEl +++");
     var x = event.pageX;
     var y = event.pageY;
     var new_x = delta_x + x;
@@ -56,7 +54,6 @@ function moveEl(event) {
 }
 
 function moveUp(e) {
-//console.log("moveUp moveUp moveUp moveUp");
     footer_inf.innerHTML = "";
     document.onmousemove = null;
     let rect = currentElement.getBoundingClientRect();
@@ -166,7 +163,6 @@ function createNewEl() {
     var container = document.createElement('div');
     onmousedown
     container.innerHTML = '<div class="element" onmousedown="resizeContour(event)" style="position: absolute; outline: 2px solid #aaa; overflow: hidden"></div>'
-//    container.innerHTML = '<div class="element" onclick="clickElement(event, this)" style="position: absolute; outline: 2px solid #aaa; overflow: hidden"></div>'
     return container.firstChild;
 }
 
@@ -242,12 +238,10 @@ function resizeContour(e) {
             classN = 'active'
         }
     }
-//console.log("resizeContour classN="+classN+"<<");
     status = statusOLD;
     if (classN === 'active' || (classN.indexOf('contour') > -1)) {
         switch(classN) {
             case 'active':
-//                e.stopPropagation();
                 status = statusNEW;
                 var x = e.pageX;
                 var y = e.pageY;
@@ -272,25 +266,20 @@ function resizeContour(e) {
                 currentElement.style.width = '0px';
                 currentElement.style.height = '0px';
                 appendContour();
-//                document.onmouseup = mouseUpNewEl;
                 break;
             case 'contourRB':
-//                e.stopPropagation();
                 angleResizeX = currentElement.offsetLeft;
                 angleResizeY = currentElement.offsetTop;
                 break;
             case 'contourRT':
-//                e.stopPropagation();
                 angleResizeX = currentElement.offsetLeft;
                 angleResizeY = currentElement.offsetTop + currentElement.clientHeight;
                 break;
             case 'contourLT':
-//                e.stopPropagation();
                 angleResizeX = currentElement.offsetLeft + currentElement.clientWidth;
                 angleResizeY = currentElement.offsetTop + currentElement.clientHeight;
                 break;
             case 'contourLB':
-//                e.stopPropagation();
                 angleResizeX = currentElement.offsetLeft + currentElement.clientWidth;
                 angleResizeY = currentElement.offsetTop;
                 break;

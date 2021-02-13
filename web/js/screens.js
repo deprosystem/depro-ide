@@ -484,8 +484,6 @@ function jsonNoViewParent(el) {
 
 
 function newComponent() {
-//function newComponent(i) {
-//    uxFunction = eval("new ux" + components[i] + "();");
     let parComp = uxFunction.getParamComp();
     var str = '<div class="component_sel">'
             +'<div class="name_compon" style="float:left">' + parComp.name + '</div>'

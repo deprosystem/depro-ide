@@ -1,6 +1,7 @@
 package projects;
 
-public class Data {
-    public String name, format;
-//    public Integer length;
+import java.util.ArrayList;
+
+public class Data extends ArrayList<DataItemType>{
+
 }

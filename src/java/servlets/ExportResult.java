@@ -43,6 +43,7 @@ import java.util.zip.ZipOutputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import projects.DataList;
 import projects.Handler;
 import projects.ItemAppParam;
 import projects.ItemResurces;
@@ -653,7 +654,29 @@ public class ExportResult extends BaseServlet {
         if (comp.view.spanC > 1) {
             span = ".spanCount(" + comp.view.spanC + ")";
         }
-        return "view(R.id." + comp.view.viewId + ", R.layout.item_" + name + "_" + comp.view.viewId + "_0)" + span;
+        String sel = "";
+        if (comp.model.selected != null && comp.model.selected.length() > 0) {
+            sel = ".selected(\"" + comp.model.selected + "\")";
+        }
+        
+        String ft = "";
+        if (comp.model.fieldType != null && comp.model.fieldType.length() > 0) {
+            ft = ", \"" + comp.model.fieldType + "\"";
+        }
+        DataList data = comp.model.data;
+        int ik = data.size();
+        String stItems = "";
+        if (ik > 1) {
+            String sep = ", new int[]{";
+            for (int i = 0; i < ik; i++) {
+                stItems += sep + "R.layout.item_" + name + "_" + comp.view.viewId + "_" + i;
+                sep = ",\n" + tab20;
+            }
+            stItems += "}";
+        } else {
+            stItems = ", R.layout.item_" + name + "_" + comp.view.viewId + "_0";
+        }
+        return "view(R.id." + comp.view.viewId + ft + stItems + ")" + span + sel;
     }
     
     private String formViewPager(Component comp, String name, ParamSave parSave) {
@@ -772,7 +795,7 @@ public class ExportResult extends BaseServlet {
                 parSave.pathLayoutItem = path + "/item_" + screen.screenName.toLowerCase() + "_";
                 parSave.path = path;
 //                try (FileWriter writer = new FileWriter(path + "/" + type_screen + screen.screenName.toLowerCase() + ".xml", false)) {
-                    try ( BufferedWriter writer = new BufferedWriter(new OutputStreamWriter( new FileOutputStream(path + "/" + type_screen + screen.screenName.toLowerCase() + ".xml"), "UTF8"))) {
+                try ( BufferedWriter writer = new BufferedWriter(new OutputStreamWriter( new FileOutputStream(path + "/" + type_screen + screen.screenName.toLowerCase() + ".xml"), "UTF8"))) {
                     writer.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
                     createEl(screen.layout, true, "\n", writer, parSave);
                     writer.flush();
@@ -1197,22 +1220,23 @@ public class ExportResult extends BaseServlet {
                 }
             }
             
-            if (p.toLeftOf != null && p.toLeftOf.length() > 0) {
-                writer.write(tab + "android:layout_toLeftOf=\"@id/" + p.toLeftOf + "\"");
+            if ( ! first) {
+                if (p.toLeftOf != null && p.toLeftOf.length() > 0) {
+                    writer.write(tab + "android:layout_toLeftOf=\"@id/" + p.toLeftOf + "\"");
+                }
+
+                if (p.toRightOf != null && p.toRightOf.length() > 0) {
+                    writer.write(tab + "android:layout_toRightOf=\"@id/" + p.toRightOf + "\"");
+                }
+
+                if (p.below != null && p.below.length() > 0) {
+                    writer.write(tab + "android:layout_below=\"@id/" + p.below + "\"");
+                }
+
+                if (p.above != null && p.above.length() > 0) {
+                    writer.write(tab + "android:layout_above=\"@id/" + p.above + "\"");
+                }
             }
-            
-            if (p.toRightOf != null && p.toRightOf.length() > 0) {
-                writer.write(tab + "android:layout_toRightOf=\"@id/" + p.toRightOf + "\"");
-            }
-            
-            if (p.below != null && p.below.length() > 0) {
-                writer.write(tab + "android:layout_below=\"@id/" + p.below + "\"");
-            }
-            
-            if (p.above != null && p.above.length() > 0) {
-                writer.write(tab + "android:layout_above=\"@id/" + p.above + "\"");
-            }
-            
             if (p.margin != null && p.margin.length() > 0 && ! p.margin.equals("0")) {
                 writer.write(tab + "android:layout_margin=\"" + dimens(p.margin) + "\"");
             }

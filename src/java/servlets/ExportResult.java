@@ -616,6 +616,9 @@ public class ExportResult extends BaseServlet {
             case "back":
                 res = "back(" + stId + ")";
                 break;
+            case "backOk":
+                res = "back(" + stId + ")";
+                break;
             case "hide":
                 res = "hide(R.id." + hh.id + ")";
                 break;

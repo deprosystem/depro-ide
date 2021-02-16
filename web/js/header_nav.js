@@ -3,10 +3,12 @@ function editUX_UI() {
         isUX = false;
         ux_ui.innerHTML = "UX";
         compon_ui.style.display = "block";
-        type_insert.style.display = "block";
-        active.style.display = "block";
+//        type_insert.style.display = "block";
+//        active.style.display = "block";
         plus_screen.style.display = "none";
         corners.style.display = "none";
+        document.documentElement.style.setProperty('--r_data', 450 + "px");
+        setTimeout(showTypeInsActive, 400);
         document.documentElement.style.setProperty('--w_ux_p', '21%');
         document.documentElement.style.setProperty('--w_ux_r', '24%');
         document.documentElement.style.setProperty('--left_compon', '21%');
@@ -17,12 +19,18 @@ function editUX_UI() {
         active.style.display = "none";
         plus_screen.style.display = "block";
         corners.style.display = "block";
+        document.documentElement.style.setProperty('--r_data', 150 + "px");
         document.documentElement.style.setProperty('--w_ux_p', '60%');
         document.documentElement.style.setProperty('--w_ux_r', '0px');
         document.documentElement.style.setProperty('--left_compon', '0px');
         setTimeout(endAnimUX, 400);
         scrLayoutAttr.scroll_y.resize(scrLayoutAttr);
     }
+}
+
+function showTypeInsActive() {
+    type_insert.style.display = "block";
+    active.style.display = "block";
 }
 
 function endAnimUX() {

@@ -34,6 +34,10 @@ function editDataWind(meta, data, obrSave, dopEl) {
     let windMenu = formWind(400, 300, 40, 550, meta.titleForm);
     let editDat = new EditData(meta.description, data, windMenu, obrSave, dopEl);
     windMenu.parentElement.style.width = (editDat.getWidthW() + 10) + "px";
+    if (dopEl != null) {
+        windMenu.parentElement.style.height = (dopEl.clientHeight + 300) + "px";
+console.log("dopEl.clientHeight="+dopEl.clientHeight);
+    }
 }
 
 function formMetaDataModel(dat) {

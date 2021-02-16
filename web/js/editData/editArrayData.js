@@ -43,7 +43,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
             hDopEl = dopEl.clientHeight;
         }
         tabHeader = document.createElement('div');
-        tabHeader.style.cssText = "white-space:nowrap;height:" + hTitle + "px;color:#110000;font-size:12px;";
+        tabHeader.style.cssText = "white-space:nowrap;height:" + hTitle + "px;color:#110000;font-size:12px;clear:both";
         let dv = document.createElement('div');
         dv.innerHTML = "&nbsp;";
         dv.style.cssText = "display:inline-block;height:100%;";

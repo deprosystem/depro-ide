@@ -613,18 +613,23 @@ public class ExportResult extends BaseServlet {
             case "start":
                 res = "start(" + stId + hh.param + ")";
                 break;
+/*
             case "back":
                 res = "back(" + stId + ")";
                 break;
             case "backOk":
-                res = "back(" + stId + ")";
+                res = "backOk(" + stId + ")";
                 break;
+*/
             case "hide":
                 res = "hide(R.id." + hh.id + ")";
                 break;
             case "show":
                 res = "show(R.id." + hh.id + ")";
                 break;
+            default:
+                res = hh.handler + "(R.id." + stId + ")";
+                
         }
         return res;
     }

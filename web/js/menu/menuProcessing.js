@@ -522,6 +522,7 @@ function selectProject(id) {
 
 function cbGetProject(res) {
     cbCreateProject(res, 2);
+    doServer("GET", 'tables/list', cbGetTablesNoActiv);
 }
 
 function setSignChanges() {

@@ -31,6 +31,8 @@ function initialView(AuthResult) {
             shutScreen.innerHTML = '<div style="font-size:34px;margin-top:50px;margin-left:50px;">You have no projects</div>';
             listMenu_UX[0].children[1].domElement.className = 'subMainMenuNo';
         }
+    } else {
+        doServer("GET", 'tables/list', formListTables);
     }
 }
     

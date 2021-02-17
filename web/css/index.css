@@ -20,7 +20,7 @@ select::-ms-expand {display: none;}
 #compon{position: absolute; background-color:var(--c_compon); left: var(--left_compon); width: 60%; top: var(--h_header); bottom: 0px;transition: left 400ms;}
 #compon_ui {position: absolute; background-color: #eee; left: 0px; width: 21%; top: var(--h_header); bottom: 0px;display:none}
 #haracteristicks{position: absolute;overflow-y: hidden; background-color: #eee; right: 0px; width: 24%; top: var(--h_header); bottom: 0px;}
-#backEnd {position: absolute; left: 0; right: 0; top: var(--h_header); height: var(--h_backEnd);
+#backEnd {position: absolute; left: 0; right: 0; top: var(--h_header); height: var(--h_backEnd); overflow-y:hidden;
            background-color:var(--c_content);transition: height 400ms }
 #content_v{position: absolute; left: var(--w_ux_p); right: var(--w_ux_r); top: var(--h_header); bottom: 0px;
            background-color:var(--c_content);transition: left 400ms, right 400ms;}

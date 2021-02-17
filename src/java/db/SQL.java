@@ -13,4 +13,6 @@ public class SQL {
     public static String getScreenListForExport = "SELECT screen_name, screen_id, screen_comment, layout FROM screens WHERE project_id=";
     public static String getScreenById = "SELECT * FROM screens WHERE screen_id=";
     
+    public static String getListTab = "SELECT * FROM tables_descr WHERE id_project=";
+    
 }

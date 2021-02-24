@@ -17,6 +17,8 @@ public class AndroidPar {
     public String padding, leftPad, topPad, rightPad, bottomPad;
     public String toLeftOf, toRightOf, below, above;
     public String text, src;
+    public String elevCardShadow;
+    public int radiusCard, colorCardShadow;
     public Integer textSize, textColor;
     public ComponParam componParam;
     public TabLayout tabLayout;

@@ -59,7 +59,8 @@ public class Project extends BaseServlet {
                         pc.drawable = formDrawable();
                         pc.appParam = formAppParam();
                         pc.screens = formScreens();
-                        pc.resurseInd = createRandomStr(20);
+                        pc.resurseInd = createRandomStr(10);
+//System.out.println("pc.resurseInd="+pc.resurseInd+"<< LL="+pc.resurseInd.length());
                         pc.dateCreate = new Date().getTime();
                         id = projectDb.createProjectId(pc);
                         pc.projectId = id;
@@ -130,9 +131,18 @@ public class Project extends BaseServlet {
     }
     
     private void createBaseRes(String basePath, String resurseInd) {
-        String projectPath = basePath + "/" + Constants.PROJECTS_DATA + resurseInd + "/res";
+        String projectPath = basePath + Constants.PROJECTS_DATA + resurseInd + "/res";
+//System.out.println("projectPath="+projectPath+"<<");
+//System.out.println("basePath="+basePath+ Constants.NAME_IDE + "/mipmap/res"+"<<");
         formDir(projectPath);
-        copyDir(basePath + "/mipmap/res", projectPath);
+        String mipmapPath;
+        if (isSerwer) {
+            mipmapPath = basePath + Constants.NAME_IDE + "/mipmap/res";
+        } else {
+            mipmapPath = basePath + "mipmap/res";
+        }
+//System.out.println("mipmapPath="+mipmapPath+"<<");
+        copyDir(mipmapPath, projectPath);
         
     }
     

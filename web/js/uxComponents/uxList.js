@@ -11,11 +11,9 @@ function uxList() {
             <div class="no_data" style="float: left;margin-left:10px;">\n\
                 <div class="text_style_ui">View if no data</div>\n\
             </div>';
-    
-    this.selVar = '<div style="float:left;"><div style="color: #2228;font-size: 10px;margin-left:4px">Field with type</div>'
-            +'<select onchange="changeModelSElected(this)" class="select_';
-    this.selVar2 = '" onfocus="formListVarSel(this)" ></select>'
-        +'</div>';
+        let selVar = '<div style="float:left;"><div style="color: #2228;font-size: 10px;margin-left:4px">Selected</div>'
+            +'<select onchange="changeModelFieldSElect(this)" class="select_';
+        let selVar2 = '" onfocus="formListVarSel(this)" ></select></div>';
 
     this.getParamComp = function () {
         return this.param;
@@ -26,11 +24,20 @@ function uxList() {
     }
     
     this.getEditParam = function () {
-        return uxModelView("createViewForListV", "createViewForListH", true) + this.editParam + this.selVar + browser + this.selVar2 + '</div>';
+        return uxModelView("createViewForListV", "createViewForListH", true) + this.editParam + selVar + browser + selVar2 + '</div>';
     }
     
     this.getCreateListener = function () {
         return {vert:"createViewForListV", horiz:"createViewForListH"};
+    }
+    
+    this.showField = function(v) {
+        let fwt = currentComponentView.getElementsByClassName("field_with_type")[0];
+        if (v) {
+            fwt.style.display = "block";
+        } else {
+            fwt.style.display = "none";
+        }
     }
     
     this.addComponent = function (componId, viewId) {
@@ -117,6 +124,9 @@ function changeNoData(el) {
 
 function changeSpan(el) {
     currentComponentDescr.view.spanC = el.value;
+    currentComponent.spanC = el.value;
+    showElemChilds(currentComponent.viewElement);
+    
 }
 
 function changeOrientList(el) {
@@ -129,7 +139,8 @@ function createViewForListH(el, ind) {
     if (ind != null) {
         num = 0;
     } else {
-        num = getNumDataTYpe(p) + 1;
+        num = getNumDataTYpe(p);
+//        num = getNumDataTYpe(p) + 1;
     }
     let data = currentComponentDescr.model.data[num];
     if (data.length == 0) {
@@ -187,7 +198,8 @@ function createViewForListV(el, ind) {
     if (ind != null) {
         num = 0;
     } else {
-        num = getNumDataTYpe(p) + 1;
+        num = getNumDataTYpe(p);
+//        num = getNumDataTYpe(p) + 1;
     }
     let data = currentComponentDescr.model.data[num];
     if (data.length == 0) {
@@ -253,10 +265,6 @@ function createListView() {
     return currentElement;
 }
 
-function changeModelSElected(el) {
-    currentComponentDescr.model.selected = el.options[el.selectedIndex].value;
-}
-
 function formListVarSel(el) {
     let data = currentComponentDescr.model.data[0];
     let ik = data.length;
@@ -279,4 +287,8 @@ function formListVarSel(el) {
             el.options.add (opt);
         }
     }
+}
+
+function changeModelFieldSElect(el) {
+    currentComponentDescr.model.selected = el.options[el.selectedIndex].value;
 }

@@ -33,9 +33,7 @@ public class ProjectDB extends BaseDB {
                   System.out.println("createProjektId Creating failed, no ID obtained.");
               }
             }
-        } catch (SQLException ex) {
-            System.out.println("createProjektId error="+ex);
-        } catch (ClassNotFoundException ex) {
+        } catch (SQLException | ClassNotFoundException ex) {
             System.out.println("createProjektId error="+ex);
         }
         return res;

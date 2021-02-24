@@ -299,6 +299,9 @@ function setScreenElements(el, children, tab) {
         modelClick(newEl);
         setScreenElements(newEl, newNode.children);
     }
+    if (el.android != null && el.android.height == WRAP) {
+        el.style.height = maxChildHeight(el) + px;
+    }
 }
 
 function formAbove(pp, el, st) { // Пошук в el елементів тип яких вказано в st через кому. Результат тип самого високого (по top) елемента

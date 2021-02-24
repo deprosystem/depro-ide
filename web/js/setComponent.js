@@ -18,9 +18,11 @@ function formCompon() {
             {name: 'EditText', typeBlock: 0});
     listComponent[2] = {};
     listComponent[2].name = 'Containers';
-    listComponent[2].children = new Array({name: 'RecyclerView', typeBlock: 10},
+    listComponent[2].children = new Array({name: 'CardView', typeBlock: 10},
+            {name: 'RecyclerView', typeBlock: 10},
             {name: 'ScrollView', typeBlock: 10},
-            {name: 'HorizontalScrollView', typeBlock: 11}, {name: 'ViewPager', isBlock: false}, 
+            {name: 'HorizontalScrollView', typeBlock: 11}, 
+            {name: 'ViewPager', isBlock: false}, 
             {name: 'Spinner', typeBlock: 10});
     listComponent[3] = {};
     listComponent[3].name = 'Widgets';
@@ -172,7 +174,6 @@ function createDivClick(num) {
 function createDivClick2(i, j) {
     var container = document.createElement('div')
     container.innerHTML = '<div onclick="clickCategory2('+i+','+j+')"> </div>';
-//    container.innerHTML = '<div onclick="clickCategory2('+i+','+j+')" oncontextmenu="contextCategory2('+i+','+j+')"> </div>';
     return container.firstChild
 }
 
@@ -196,6 +197,12 @@ function showElemChilds(el) {
             let ik = ch.length;
             for (let i = 0; i <ik; i++) {
                 showElemChilds(ch[i].viewElement);
+            }
+            if (p.width == WRAP) {
+                el.style.width = maxChildWidth(el) + px;
+            }
+            if (p.height == WRAP) {
+                el.style.height = maxChildHeight(el) + px;
             }
         }
     }
@@ -300,7 +307,21 @@ function viewComponElem(el) {
         uiFunction.viewElementUI(p, el);
     } catch(e) {
     }
-
+    let pp;
+    let margR;
+    if (p.parent != null) {
+        pp = p.parent.android;
+        if (pp.type == "List") {
+            let span = pp.spanC;
+            let mm = -1;
+            if (span != null) {
+                mm = parseInt(span);
+            }
+            if (mm > 1) {
+                margR = screenWpx - screenWpx / mm;
+            }
+        }
+    }
     if (p.parent != null) {
         let root_w = p.parent.offsetWidth;
         let root_h = p.parent.offsetHeight;
@@ -308,13 +329,23 @@ function viewComponElem(el) {
         if (p.width == MATCH) {
             el.style.width = "";
             el.style.left = "0px";
-            el.style.right = "0px";
+            if (margR != null) {
+                el.style.right = margR + px;
+            } else {
+                el.style.right = "0";
+            }
         } else if (p.width == WRAP) {
+            let contentEl;
+            let rectParent;
+            let wWpx;
+            el.style.width = "";
+            el.style.left = "0px";
+            el.style.right = "0px";
             switch(p.type) {
                 case "EditText" :
-                    var contentEl = el.getElementsByClassName("text")[0];
-                    var rectParent = contentEl.getBoundingClientRect();
-                    var wWpx = parseInt(rectParent.right - rectParent.left);
+                    contentEl = el.getElementsByClassName("text")[0];
+                    rectParent = contentEl.getBoundingClientRect();
+                    wWpx = parseInt(rectParent.right - rectParent.left);
                     if (wWpx == 0) {
                         wWpx = 10;
                     } 
@@ -322,21 +353,31 @@ function viewComponElem(el) {
                     el.style.width = wWpx + px;
                     break;
                 case "TextView" :
-                    if (p.type == "TextView") {
-                    var contentEl = el.getElementsByClassName("text")[0];
-                    var rectParent = contentEl.getBoundingClientRect();
-                    var wWpx = parseInt(rectParent.right - rectParent.left);
+                    contentEl = el.getElementsByClassName("text")[0];
+                    rectParent = contentEl.getBoundingClientRect();
+                    wWpx = parseInt(rectParent.right - rectParent.left) + 1;
+                    el.style.right = "";
                     el.style.width = wWpx + px;
+                    if (pLL > 0) {
+                        contentEl.style.marginLeft = pLL + px;
                     } else {
-                        el.style.width = '';
+                        contentEl.style.marginLeft = "";
+                    }
+                    if (pTT > 0) {
+                        contentEl.style.marginTop = pTT + px;
+                    } else {
+                        contentEl.style.marginTop = "";
                     }
                     break;
-                default:
-                    el.style.width = '';
+                case "RelativeLayout" :
+                    el.style.width = maxChildWidth(el) + px;
                     break;
+                default:
+                    el.style.width = maxChildWidth(el) + px;
+//                    el.style.width = '';
             }
         } else {
-            el.style.width = (p.width * MEASURE) + px;
+            el.style.width = (p.width * MEASURE - pLL - pRR) + px;
         }
         if (typeof(p.height) == "string") {
             var hhh = findDimenByName(p.height);
@@ -359,10 +400,11 @@ function viewComponElem(el) {
                         el.style.height = maxChildHeight(el) + px;
                         break;
                     default:
-                        el.style.height = '';
+                        el.style.height = maxChildHeight(el) + px;
+//                        el.style.height = '';
                 }
             } else {
-                el.style.height = (p.height * MEASURE) + px;
+                el.style.height = (p.height * MEASURE - pTT - pBB) + px;
             }
         }
         
@@ -622,6 +664,19 @@ function viewComponElem(el) {
                 contentEl.style.borderRadius = stR;
             }
             break;
+        case "CardView":
+            let radC = p.radiusCard;
+            if (radC != null) {
+                el.style.borderRadius = (parseInt(radC) * MEASURE) + px;
+            }
+
+            let elev = p.elevCardShadow;
+            if (elev != null && elev > 0) {
+                el.style.boxShadow = "0px 0px 5px " + elev + "px #eee";
+            } else {
+                el.style.boxShadow = "";
+            }
+            break;
         default:
 
             break;
@@ -634,10 +689,43 @@ function viewComponElem(el) {
     if (parentW != null && parentW.android != null && parentW.android.height == WRAP) {
         parentW.style.height = maxChildHeight(parentW) + px;
     }
+    if (parentW != null && parentW.android != null && parentW.android.width == WRAP) {
+        parentW.style.width = maxChildWidth(parentW) + px;
+    }
     if (p.visibility != null && ! p.visibility) {
         el.oldDisplay = el.style.display;
         el.style.display = "none";
+    } 
+    else {
+        if (p.viewId != null && p.viewId != "" && parentW != null && parentW.android != null) {
+            let parCh = parentW.android.children;
+            if (parCh != null && parCh.length > 0) {
+                let idEl = p.viewId;
+                let ik = parCh.length;
+                for (let i = 0; i < ik; i++) {
+                    let pCh = parCh[i];
+                    if (pCh == p) {
+                        break;
+                    }
+                    if (pCh.above == idEl || pCh.below == idEl || pCh.toRightOf == idEl || pCh.toLeftOf == idEl) {
+                        viewComponElem(pCh.viewElement);
+                    }
+                }
+            }
+        }
+
+        if (parentW != null && parentW.android != null) {
+            
+            if (p.width == WRAP && parentW.android.width == WRAP) {
+                viewComponElem(parentW);
+            }
+            if (p.height == WRAP && parentW.android.height == WRAP) {
+                viewComponElem(parentW);
+            }
+        }
+
     }
+
 }
 
 function setBackgoundEl(el, p) {
@@ -674,13 +762,13 @@ function setBackgoundEl(el, p) {
     }
 }
 
-function maxChildHeight(el) {
+function maxChildWidth(el) {
     let child = el.children;
     ik = child.length;
     let elem;
-    let maxB = 0;
-    let minB = 1000000;
-    let elT, elB, elPad, elTt;
+    let maxR = 0;
+    let minR = 1000000;
+    let elL, elR, elPad, elTt;
 
     for (let i = 0; i < ik; i++) {
         elem = child[i];
@@ -689,6 +777,58 @@ function maxChildHeight(el) {
         }
         rectEl = elem.getBoundingClientRect();
         
+        elL = elem.style.marginLeft;
+
+        elTt = 0;
+        if (elL != null && elL != "") {
+            elTt = parseInt(elL);
+        }
+        let tt = rectEl.left - elTt;
+        if (tt < minR) {
+            minR = tt;
+        }
+
+        elR = elem.style.marginRight;
+        elPad = 0;
+        if (elR != null && elR != "") {
+            elPad = parseInt(elR);
+        }
+        let bb = rectEl.right + elPad;
+        if (bb > maxR) {
+            maxR = bb;
+        }
+    }
+    
+    elL = el.style.paddingLeft;
+    elTt = 0;
+    if (elL != null && elL != "") {
+        elTt = parseInt(elL);
+    }
+    
+    elR = el.style.paddingRight;
+    elPad = 0;
+    if (elR != null && elR != "") {
+        elPad = parseInt(elR);
+    }
+//    return maxR - minR + (elPad + elTt) * MEASURE;
+    return maxR - minR;
+}
+
+function maxChildHeight(el) {
+    let child = el.children;
+    ik = child.length;
+    let elem;
+    let maxB = 0;
+    let minB = 1000000;
+    let elT, elB, elPad, elTt;
+//console.log("maxChildHeight maxChildHeight ++++++  IK="+ik+" VIEW_ID="+el.android.viewId+"<<");
+    for (let i = 0; i < ik; i++) {
+        elem = child[i];
+        if (elem.android == null) {
+            continue;
+        }
+        rectEl = elem.getBoundingClientRect();
+//console.log("IDID="+elem.android.viewId+"<< HHH="+elem.android.width+" TTT="+rectEl.top+" BBB="+rectEl.bottom);
         elT = elem.style.marginTop;
 
         elTt = 0;
@@ -722,7 +862,9 @@ function maxChildHeight(el) {
     if (elB != null && elB != "") {
         elPad = parseInt(elB);
     }
-    return maxB - minB + elPad + elTt;
+//console.log("maxChildHeight maxChildHeight ------------");
+//console.log("----el.android.viewId="+el.android.viewId+"<<  HHHH="+(maxB - minB));
+    return maxB - minB;
 }
 
 function standartHeightEditText(ts) {

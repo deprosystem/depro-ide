@@ -204,7 +204,7 @@ function changeUrlParam(v) {
 }
 
 function formTestData(el) {
-    let dat = currentComponentDescr.model.data;
+    let dat = currentComponentDescr.model.data[0];
     if (dat == null || dat.length == 0) {
         tooltipMessage(el, "Нужно описать данные");
     } else {
@@ -232,15 +232,20 @@ function addDataType(addData) {
     } catch(e) { }
     if (listeners != null) {
         let dataT = currentComponentView.getElementsByClassName("severalDataTypes")[0];
-//        let mod = currentComponentDescr.model;
         dataT.style.display = "block";
+/*
+        try {
+            uxFunction = eval("new ux" + currentComponent.type + "();");
+            uxFunction.showField(true);
+        } catch(e) { }
+*/
         let el = newDOMelement(dataDescrAdd(listeners.vert, listeners.horiz));
         let ik = dataT.children.length;
         if (ik == 0) {
             let sepVar = newDOMelement(selVar + browser + selVar2);
             dataT.append(sepVar);
         }
-        if (ik < 4) {
+        if (ik < 5) {
             dataT.append(el);
             if (addData == null) {
                 currentComponentDescr.model.data.push([]);
@@ -313,7 +318,7 @@ function delDataType(el) {
     }
     bl.remove();
     let dataT = currentComponentView.getElementsByClassName("severalDataTypes")[0];
-    if (dataT.children.length == 0) {
+    if (dataT.children.length == 1) {
         dataT.style.display = "none";
     }
 }

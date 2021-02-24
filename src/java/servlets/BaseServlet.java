@@ -92,13 +92,22 @@ System.out.println("query="+ds.query);
     
     public String getPatchOutsideProject(HttpServletRequest request) {
         String st = request.getServletContext().getRealPath("");
+//System.out.println("getPatchOutsideProject="+st+"<<");
         if (st.indexOf(File.separator) != 0) {
             isSerwer = false;
             return st + File.separator;
         } else {
             isSerwer = true;
-            int i = st.indexOf(Constants.NAME_IDE);
+            int i = st.lastIndexOf(File.separator) + 1;
             return st.substring(0, i);
+            
+/*
+            int i = st.indexOf(Constants.NAME_IDE);
+System.out.println("11111PatchOutsideProject="+st.substring(0, i)+"<<");
+int j = st.lastIndexOf(File.separator) + 1;
+System.out.println("222222 PatchOutsideProject="+st.substring(0, j)+"<<");
+            return st.substring(0, i);
+*/
         }
     }
     

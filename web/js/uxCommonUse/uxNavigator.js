@@ -7,7 +7,11 @@ function navigatorCompon() {
     if (currentComponentDescr.navigator == null) {
         currentComponentDescr.navigator = [];
     }
-    editDataWind(metaNavigator, currentComponentDescr.navigator, saveNavigator);
+    if (currentComponentDescr.type == "MenuBottom") {
+        editDataWind(metaNavigatorMenuB, currentComponentDescr.navigator, saveNavigator);
+    } else {
+        editDataWind(metaNavigator, currentComponentDescr.navigator, saveNavigator);
+    }
 }
 
 function saveNavigator(dat) {

@@ -2,7 +2,9 @@ package servlets;
 
 public class Constants {
 //    public final static boolean isLocale = false;
-    public static String NAME_IDE = "depro-ide";
+//    public static String NAME_IDE = "depro-ide";
+    public static String NAME_IDE = "DeProIDE";
+    
     public static String BaseURL;
     public static int MATCH = -1, WRAP = -2;
     public static int[] standartDimens = {2, 4, 8, 12, 14, 16, 18, 20, 24, 28, 32, 40, 56};
@@ -14,7 +16,7 @@ public class Constants {
     public static String PROJECTS_DATA = "projectdataIDE/", 
             USERS_DATA = "usersdataIDE/";
     public static final String TOOL = "ToolBar", PANEL = "Panel", SCROLLPANEL = "ScrollView",
-            LIST = "List", PAGER = "Pager", TAB = "TabLayout", DRAWER = "Drawer", SCROLL = "ScrollPanel",
+            LIST = "List", PAGER = "Pager", TAB = "TabLayout", DRAWER = "Drawer", SCROLL = "ScrollPanel", CARD_VIEW = "CardView",
             MENU_B = "MenuBottom", MENU = "Menu", GALLERY = "Gallery", INDICATOR = "Indicator", IMAGEVIEW = "ImageView",
             MAP = "Map", SHEET = "SheetBottom";
 /*
@@ -27,6 +29,7 @@ public class Constants {
     public static String[] animate = {"No", "LR", "RL", "BT", "TB"};
     public static String[] scaleType = {"centerCrop", "center"};
     public static String roundedType = "com.makeramen.roundedimageview.RoundedImageView";
+    public static String cardViewType = "androidx.cardview.widget.CardView";
     public static String[] componType = {
         "com.dpcsa.compon.custom_components.ComponToolBar", // 0
         "com.dpcsa.compon.custom_components.ComponMenuB", // 1
@@ -40,7 +43,8 @@ public class Constants {
         "ScrollView",                                       // 9
         "com.dpcsa.compon.custom_components.PagerIndicator",       // 10
         "com.dpcsa.compon.custom_components.ComponMapView",          // 11
-        "com.dpcsa.compon.custom_components.SheetBottom"            // 12
+        "com.dpcsa.compon.custom_components.SheetBottom",            // 12
+        "androidx.cardview.widget.CardView"                         // 13
     };
 
 }

@@ -48,7 +48,6 @@ public class TableDB extends BaseDB {
                 pm.name_tab = res.getString("name_tab");
                 pm.descr = res.getString("descr");
                 pm.fields = res.getString("fields");
-System.out.println("getListTables pm.fields="+pm.fields+"<<");
                 lp.add(pm);
             }
         } catch (SQLException ex) {

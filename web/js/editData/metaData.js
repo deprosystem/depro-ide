@@ -1,4 +1,5 @@
 var TYPE_TEXT = 0, TYPE_INT = 1, TYPE_FLOAT = 3, TYPE_BOOLEAN = 4, TYPE_SELECT = 5, TYPE_IMG = 6, ID_SELECT = 7, ID_SELECT_HANDL = 8;
+var handlers = "start,back,backOk,actual,setValueParam,hide,show"
 
 var metaPager = {titleForm:"Данные для TabLayout", description:
     [{name: "title", title:"Text tab",len:15},
@@ -6,11 +7,19 @@ var metaPager = {titleForm:"Данные для TabLayout", description:
     }
 
 var metaNavigator = {titleForm:"Navigator", description:
-//    [{name: "viewId", title:"Элемент",len:12,valid:{latin:true}},
     [{name: "viewId", title:"Элемент",len:100,type:ID_SELECT_HANDL},
-    {name: "handler", title:"Обработчик",len:100,type:TYPE_SELECT,select:"start,back,backOk,setValueParam,hide,show"},
+    {name: "handler", title:"Обработчик",len:100,type:TYPE_SELECT,select:handlers},
     {name: "param", title:"Парам",len:15,valid:{latin:true}},
-    {name: "id", title:"id",len:100,type:ID_SELECT}]
+    {name: "id", title:"id",len:100,type:ID_SELECT},
+    {name: "after", title:"After",type:TYPE_BOOLEAN,marg:20}]
+    }
+    
+var metaNavigatorMenuB = {titleForm:"Navigator", description:
+    [{name: "viewId", title:"Элемент",len:4,type:TYPE_INT},
+    {name: "handler", title:"Обработчик",len:100,type:TYPE_SELECT,select:handlers},
+    {name: "param", title:"Парам",len:15,valid:{latin:true}},
+    {name: "id", title:"id",len:100,type:ID_SELECT},
+    {name: "after", title:"After",type:TYPE_BOOLEAN,marg:20}]
     }
     
 var metaMenu = {titleForm:"Menu", description:

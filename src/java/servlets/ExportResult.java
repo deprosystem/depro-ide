@@ -591,8 +591,10 @@ public class ExportResult extends BaseServlet {
             String res = beg + "navigator(";
             String sep = "";
             for (int i = 0; i < ik; i++) {
-                res += sep + formHandler(navigator.get(i));
-                sep = ",\n" + tab;
+                if ( ! navigator.get(i).after) {
+                    res += sep + formHandler(navigator, i);
+                    sep = ",\n" + tab;
+                }
             }
             res += ")";
             return res;
@@ -601,35 +603,64 @@ public class ExportResult extends BaseServlet {
         }
     }
     
-    private String formHandler(Handler hh) {
+    private String formHandler(Navigator navigator, int i) {
+        Handler hh = navigator.get(i);
         String res = "";
         String stId;
+        String parId;
+        String sep = "";
+        int ik = navigator.size();
         if (hh.viewId != null && hh.viewId.length() > 0 && ! hh.viewId.equals("0")) {
             stId = "R.id." + hh.viewId;
         } else {
             stId = "";
         }
+        if (hh.id != null && hh.id.length() > 0) {
+            parId = "R.id." + hh.id;
+        } else {
+            parId = "";
+        }
         switch (hh.handler) {
             case "start":
-                res = "start(" + stId + hh.param + ")";
+                if (stId.length() > 0) {
+                    sep = ",";
+                } else {
+                    sep = "";
+                }
+                int i_1 = i + 1;
+                String stAfter = "";
+                if (i_1 < ik) {
+                    if (navigator.get(i_1).after) {
+                        stAfter = ", after(";
+                        String sepAft = "";
+                        for (int j = i_1; j < ik; j++) {
+                            Handler hAfter = navigator.get(j);
+                            if (hAfter.after) {
+                                stAfter += sepAft + formHandler(navigator, j);
+                                sepAft = ",\n" + tab20;
+                            } else {
+                                break;
+                            }
+                        }
+                        stAfter += ")";
+                    }
+                }
+                res = "start(" + stId + sep + hh.param.toUpperCase() + stAfter + ")";
                 break;
-/*
-            case "back":
-                res = "back(" + stId + ")";
-                break;
-            case "backOk":
-                res = "backOk(" + stId + ")";
-                break;
-*/
+
             case "hide":
                 res = "hide(R.id." + hh.id + ")";
                 break;
             case "show":
                 res = "show(R.id." + hh.id + ")";
                 break;
+
             default:
-                res = hh.handler + "(R.id." + stId + ")";
-                
+                String com = "";
+                if (stId.length() > 0 && parId.length() > 0) {
+                    com = ", ";
+                }
+                res = hh.handler + "(" + stId + com + parId + ")";
         }
         return res;
     }
@@ -644,7 +675,7 @@ public class ExportResult extends BaseServlet {
             for (int n = 0; n < nk; n++) {
                 Handler hh = nav.get(n);
                 if (hh.viewId != null && hh.viewId.length() > 0 && hh.viewId.equals(vId)) {
-                    st += sep + formHandler(hh);
+                    st += sep + formHandler(nav, n);
                     sep = ",";
                 }
             }
@@ -1028,7 +1059,7 @@ public class ExportResult extends BaseServlet {
             if (p.below != null && p.below.length() > 0) {
                 writer.write(tab1 + "android:layout_below=\"@id/" + p.below + "\"");
             }
-            
+
             if (p.above != null && p.above.length() > 0) {
                 writer.write(tab1 + "android:layout_above=\"@id/" + p.above + "\"");
             }
@@ -1071,6 +1102,9 @@ public class ExportResult extends BaseServlet {
                 break;
             case Constants.MENU_B:
                 parSave.menuId = p.viewId;
+                break;
+            case Constants.CARD_VIEW:
+                typeEl = Constants.cardViewType;
                 break;
             case Constants.IMAGEVIEW:
                 if (p.corners != null) {
@@ -1240,7 +1274,6 @@ public class ExportResult extends BaseServlet {
                 if (p.below != null && p.below.length() > 0) {
                     writer.write(tab + "android:layout_below=\"@id/" + p.below + "\"");
                 }
-
                 if (p.above != null && p.above.length() > 0) {
                     writer.write(tab + "android:layout_above=\"@id/" + p.above + "\"");
                 }
@@ -1446,6 +1479,19 @@ public class ExportResult extends BaseServlet {
                     }
                     if (cs.background != null && cs.background.length() > 0) {
                         writer.write(tab + "app:selectBackground=\"@drawable/shape_" + cs.background + "\"");
+                    }
+                    break;
+                case Constants.CARD_VIEW:
+                    if (p.radiusCard > 0) {
+                        writer.write(tab + "app:cardCornerRadius=\"" + p.radiusCard + "dp\"");
+                    }
+/*
+                    if (p.colorCardShadow > -1) {
+                        writer.write(tab + "app:cardBackgroundColor=\"" + findColorByIndex(p.colorCardShadow, parSave.colors) + "\"");
+                    }
+*/
+                    if (p.elevCardShadow != null && p.elevCardShadow.length() > 0) {
+                        writer.write(tab + "app:cardElevation=\"" + Integer.valueOf(p.elevCardShadow) + "dp\"");
                     }
                     break;
             }

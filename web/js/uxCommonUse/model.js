@@ -3,7 +3,7 @@ let uxModel1 = '<div class="model_view" style="height:40px;">'
         +'<select class="model_method type_screen select_';
 
 let uxModel2 = '" onchange="changeMethod(this)" style="width:120px;"><option>GET</option><option>POST</option><option>TEST</option>'
-            +'<option>JASON</option><option>ARGUMENTS</option><option>PARAMETERS</option></select>'
+            +'<option>JASON</option><option>ARGUMENTS</option><option>PARAMETERS</option><option>NULL</option></select>'
         +'</div>'
         +'<div class="param_method" style="float:left;margin-left:10px;"></div>';
 
@@ -117,7 +117,6 @@ function changeMethod(el) {
         switch (el.options[el.selectedIndex].value) {
             case "POST":
             case "GET":
-//                pm.innerHTML = pmGetPost;
                 pm.innerHTML = pmUrl + pmParamUrl + pmProgr;
                 setValueGetPost();
                 break;

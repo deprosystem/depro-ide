@@ -1,8 +1,37 @@
+var windTooltip;
+
 // біля елемента target показується повідомлення message на 2 секунди в рамці
 function tooltipMessage(target, message) {
-    let maxW = 250;
+    let dv = tooltipMessageNoTime(target, message);
+    setTimeout(function(){ document.body.removeChild(dv);},3000);
+}
+
+function tooltipMessageOver(target, message) {
+    let maxW = 350;
     let xy = getCoordsEl(target);
-    let x = xy.left;
+    let x = xy.left + 5;
+    let y = xy.top;
+    let dv = document.createElement('div');
+    if (y > 30) {
+        y -= 30;
+    } else {
+        y += 20;
+    }
+    let wD = document.documentElement.clientWidth;
+    if ((wD - x) < maxW) {
+        x = wD - maxW - 20;
+    }
+    dv.style.cssText = "position:absolute;max-width:" + maxW + "px;padding:5px;background:var(--c_content);border:1px solid #ffc700;border-radius:8px;left:" + x + "px;top:" + y + "px;z-index:100";
+    dv.innerHTML = message;
+    document.body.append(dv);
+    windTooltip = dv;
+    return dv;
+}
+
+function tooltipErrorScreen(target, message) {
+    let maxW = 450;
+    let xy = getCoordsEl(target);
+    let x = xy.left + 5;
     let y = xy.top;
     let dv = document.createElement('div');
     if (y > 30) {
@@ -15,9 +44,17 @@ function tooltipMessage(target, message) {
         x = wD - maxW - 20;
     }
     dv.style.cssText = "position:absolute;max-width:" + maxW + "px;padding:5px;background:var(--c_yelow_lite);border:1px solid #ffc700;border-radius:8px;left:" + x + "px;top:" + y + "px;z-index:100";
-    dv.innerHTML = message;
+    dv.innerHTML = "<pre>" + message + "</pre>";
     document.body.append(dv);
-    setTimeout(function(){ document.body.removeChild(dv);},2000);
+    windTooltip = dv;
+    return dv;
+}
+
+function tooltipMessageOut(el) {
+    if (windTooltip != null) {
+        document.body.removeChild(windTooltip);
+    }
+    windTooltip = null;
 }
 
 function tooltipHelpOver(target, message) {

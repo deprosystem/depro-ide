@@ -71,6 +71,9 @@ function formListViewId(el, name) {     //  Для below, abowe, ToRightOf, ToLe
             if (vv == null) {
                 vv = "";
             }
+            if (vv = "") {
+                vv = " ";
+            }
             let sel = createSelectValue(arrViewId, vv, name);
             sel.style.cssText = "width:100px;font-size:12px;color:#110000;";
             sel.className = 'select_' + browser;
@@ -183,6 +186,23 @@ function formListIdElem(childEl) {
         let ch = item.children;
         if (ch != null && ch.length > 0) {
             st += formListIdElem(ch);
+        }
+    }
+    return st;
+}
+
+function formListIdElemIsType(childEl, type) {
+    let st = "";
+    let ik = childEl.length;
+    for (let i = 0; i <ik; i++) {
+        let item = childEl[i];
+        let vi = item.viewId;
+        if (vi != null && vi != "" && item.type == type) {
+            st += "," + vi;
+        }
+        let ch = item.children;
+        if (ch != null && ch.length > 0) {
+            st += formListIdElemIsType(ch, type);
         }
     }
     return st;

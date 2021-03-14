@@ -30,6 +30,7 @@ function formCompon() {
             {name: 'VideoView', typeBlock: 0},
             {name: 'Gallery', typeBlock: 0},
             {name: 'Indicator', typeBlock: 0},
+            {name: 'Ellipsis', typeBlock: 0},
             {name: 'Map', typeBlock: 0},
             {name: 'SheetBottom', typeBlock: 2},
             {name: 'CalendarView', typeBlock: 0});
@@ -210,7 +211,7 @@ function showElemChilds(el) {
         
 function viewComponElem(el) {
     setLayoutChange();
-    var p = el.android;
+    let p = el.android;
     let rectParentEl = p.parent.getBoundingClientRect();
     let parentX = parseInt(rectParentEl.left);
     let parentY = parseInt(rectParentEl.top);
@@ -695,20 +696,18 @@ function viewComponElem(el) {
     if (p.visibility != null && ! p.visibility) {
         el.oldDisplay = el.style.display;
         el.style.display = "none";
-    } 
-    else {
-        if (p.viewId != null && p.viewId != "" && parentW != null && parentW.android != null) {
+    } else {
+        let idEl = p.viewId;
+        if (idEl != null && idEl != "" && parentW != null && parentW.android != null) {
             let parCh = parentW.android.children;
             if (parCh != null && parCh.length > 0) {
-                let idEl = p.viewId;
                 let ik = parCh.length;
                 for (let i = 0; i < ik; i++) {
                     let pCh = parCh[i];
-                    if (pCh == p) {
-                        break;
-                    }
-                    if (pCh.above == idEl || pCh.below == idEl || pCh.toRightOf == idEl || pCh.toLeftOf == idEl) {
-                        viewComponElem(pCh.viewElement);
+                    if (pCh.viewId != idEl && pCh.viewElement != null) {
+                        if (pCh.above == idEl || pCh.below == idEl || pCh.toRightOf == idEl || pCh.toLeftOf == idEl) {
+                            viewComponElem(pCh.viewElement);
+                        }
                     }
                 }
             }
@@ -821,14 +820,12 @@ function maxChildHeight(el) {
     let maxB = 0;
     let minB = 1000000;
     let elT, elB, elPad, elTt;
-//console.log("maxChildHeight maxChildHeight ++++++  IK="+ik+" VIEW_ID="+el.android.viewId+"<<");
     for (let i = 0; i < ik; i++) {
         elem = child[i];
         if (elem.android == null) {
             continue;
         }
         rectEl = elem.getBoundingClientRect();
-//console.log("IDID="+elem.android.viewId+"<< HHH="+elem.android.width+" TTT="+rectEl.top+" BBB="+rectEl.bottom);
         elT = elem.style.marginTop;
 
         elTt = 0;
@@ -862,8 +859,6 @@ function maxChildHeight(el) {
     if (elB != null && elB != "") {
         elPad = parseInt(elB);
     }
-//console.log("maxChildHeight maxChildHeight ------------");
-//console.log("----el.android.viewId="+el.android.viewId+"<<  HHHH="+(maxB - minB));
     return maxB - minB;
 }
 

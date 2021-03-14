@@ -20,8 +20,9 @@ function initialView(AuthResult) {
     formMenuEl_UX();
     setLayoutDiv();
     let ins = new insertHtml();
-    ins.get('m_bmPEbody', 'layout/layoutParam.html', m_bmStart);
+//    ins.get('m_bmPEbody', 'layout/layoutParam.html', m_bmStart);
     currentProject = ar.project;
+    ins.get('m_bmPEbody', 'layout/layoutParam.html', m_bmStart); // запускает cbCreateProjectDop
     if (currentProject == null) {
         if (ar.listProject != null && ar.listProject.length > 0) {
             listMenu_UX[0].children[1].domElement.className = 'subMainMenu';

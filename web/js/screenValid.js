@@ -1,15 +1,17 @@
-var colorsEroor = ["#0000","#fd0","#f00"];
+var colorsEroor = ["#0000","#ffc700","#f00"];
 var heightScreen = 70;
 
 function screenValid() {
     
 }
 
-function oneScreenValid(scrD, scrV) {
+//function oneScreenValid(scrD, scrV) {
+function oneScreenValid(scrD, ii) {
     let newErrors = "";
     let newLevelErrors = 0;
-    if (scrD.screenName == "") {
-        newErrors += "No screen name\n";
+    if (scrD.screenName == "") { 
+//        newErrors += '<span class="colorErrorL2">No screen name\n</span>';
+        newErrors += txtError(2, "", "Screen number " + ii + " has no title");
         newLevelErrors = 2;
     }
     let arrComp = scrD.components;
@@ -20,21 +22,32 @@ function oneScreenValid(scrD, scrV) {
             uxFunction = eval("new ux" + compD.type + "();");
             let errComp = uxFunction.isValid(compD, scrD.layout);
             if (errComp.text != "") {
-                newErrors += errComp.text + "\n";
+                newErrors += errComp.text;
                 if (newLevelErrors < errComp.error) {
                     newLevelErrors = errComp.error;
                 }
             }
         } catch(e) { }
     }
-//console.log("oneScreenValid scrD.levelErrors="+scrD.levelErrors+" newLevelErrors="+newLevelErrors);
+    
+    let noRes = checkValidityLinks(scrD.layout.children, "&ensp;");
+    if (noRes != "") {
+        newErrors += txtError(1, "", noRes);
+        if (newLevelErrors < 1) {
+            newLevelErrors = 1;
+        }
+    }
     if (scrD.levelErrors != newLevelErrors) {
         let divErr = currentScreenView.getElementsByClassName("error_screen")[0];
         divErr.style.backgroundColor = colorsEroor[newLevelErrors];
         scrD.levelErrors = newLevelErrors;
-        scrD.textErrors = newErrors;
         setBoxError();
     }
+    scrD.textErrors = newErrors;
+}
+
+function txtError(levEr, tab, st) {
+    return '<span class="colorErrorL' + levEr + '">' + tab + st + '</span><br>';
 }
 
 function setBoxError() {

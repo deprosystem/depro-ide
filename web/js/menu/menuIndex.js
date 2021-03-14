@@ -1,7 +1,7 @@
 var listMenu_UX = [];
 var stringExportRes;
 
-listMenu_UX[0] = {nameM : 'Project', dependProject : true};
+listMenu_UX[0] = {nameM : 'Projects', dependProject : true};
 listMenu_UX[0].children = new Array(
         {nameI : 'Create', func : createProject}, 
         {nameI : 'Open project', func : openProject},
@@ -9,23 +9,27 @@ listMenu_UX[0].children = new Array(
         {nameI : 'Save project', func : saveProject, dependProject : true},
         {nameI : 'Close project', func : closeProject, dependProject : true},
         {nameI : 'Delete project', func : deleteProject, dependProject : true});
-listMenu_UX[1] = {nameM : 'Android'};
+listMenu_UX[1] = {nameM : 'Screens '};
 listMenu_UX[1].children = new Array(
+        {nameI : 'Clone', func : screenClone, dependProject : true},
+        {nameI : 'Delete', func : screenDelete, dependProject : true});
+listMenu_UX[2] = {nameM : 'Android'};
+listMenu_UX[2].children = new Array(
         {nameI : 'Set application parameters', func : setAppParameters, dependProject : true},
         {nameI : 'Upload image', func : uploadImage, dependProject : true},
         {nameI : 'Generate APK file', func : generateAPK, dependProject : true},
         {nameI : 'Generate android project', func : generateProject, dependProject : true});
-listMenu_UX[2] = {nameM : 'Edit'};
-listMenu_UX[2].children = new Array(
+listMenu_UX[3] = {nameM : 'Edit'};
+listMenu_UX[3].children = new Array(
         {nameI : 'Copy', func : all, dependProject : true, dependScreen : true},
         {nameI : 'Undo', func : all, dependProject : true, dependScreen : true});
-listMenu_UX[3] = {nameM : 'Tutorial'};
-listMenu_UX[3].children = new Array(
+listMenu_UX[4] = {nameM : 'Tutorial'};
+listMenu_UX[4].children = new Array(
         {nameI : 'All', func : helpAll},
         {nameI : 'UX', func : helpUX},
         {nameI : 'UI', func : helpUI});
-listMenu_UX[4] = {nameM : 'Exit'};
-listMenu_UX[4].children = new Array(
+listMenu_UX[5] = {nameM : 'Exit'};
+listMenu_UX[5].children = new Array(
         {nameI : 'Change user', func : changeUser},
         {nameI : 'Close', func : closeIDE});
         

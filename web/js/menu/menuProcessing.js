@@ -239,14 +239,12 @@ function cbCreateProjectDop() {
         let scrParam = {scrN: "Main", scrNum: 0, scrTit:"", scrT:0};
         let crScreen = crScreenForList(scrParam);
         listScreen.push(crScreen);
-//        createScreen(false, "Main", "", 0);
     }
 
     setListScreen();
 }
 
 function clearRoot() {
-//    var cont_1 = contour.cloneNode(true);
     let cont_1 = createContour();
     root.innerHTML = "";
     root.android = currentScreen.layout;
@@ -264,15 +262,20 @@ function setScreenLayout() {
     setActive(root);
     setNavigatorRoot();
     setScreenElements(rr, listSaveElements.children);
-    hideContourEl();
+    layoutParam.style.display = "none";
+    if (selectViewElement != null) {
+        selectViewElement.style.backgroundColor = '#fff';
+    }
+//    hideContourEl();
 }
 
 function modelClick(el) {
-    hideContourEl();
-    currentElement = el;
-    setParamCompon();
-    setPickElement(el);
+//    hideContourEl();
+//    currentElement = el;
+//    setParamCompon();
+//    setPickElement(el);
     selectNavigatorEl(el);
+    el.style.outline = "";
 }
 
 function setScreenElements(el, children, tab) {
@@ -293,6 +296,9 @@ function setScreenElements(el, children, tab) {
         } catch(e) { }
         viewComponElem(newEl);
         addNavigatorEl(newEl);
+        
+        navigator_scr.scroll_y.resize(navigator_scr);
+        
         if (p.typeUxUi == "ux") {
             
         }
@@ -372,8 +378,10 @@ function openMenu() {
     listMenu_UX[0].children[5].domElement.className = 'subMainMenu';
     listMenu_UX[1].children[0].domElement.className = 'subMainMenu';
     listMenu_UX[1].children[1].domElement.className = 'subMainMenu';
-    listMenu_UX[1].children[2].domElement.className = 'subMainMenu';
-    listMenu_UX[1].children[3].domElement.className = 'subMainMenu';
+    listMenu_UX[2].children[0].domElement.className = 'subMainMenu';
+    listMenu_UX[2].children[1].domElement.className = 'subMainMenu';
+    listMenu_UX[2].children[2].domElement.className = 'subMainMenu';
+    listMenu_UX[2].children[3].domElement.className = 'subMainMenu';
 }
 
 function cbSaveProject(res) {
@@ -609,7 +617,7 @@ function generateProject(apk) {
         doServer("GET", url + "?projectId=" + currentProject.projectId, cbGenerateProject, null, windMenu, windMenu);
     }
 }
-
+/*
 function validDeclare() {
     let strError = "";
     let ik = listScreen.length;
@@ -663,6 +671,18 @@ function validDeclare() {
                         if (isScreenDeclare(scrN) == -1) {
                             strError += "Экран " + scr.screenName + " компонент типа " + comp.type + " ссылается на неописанный экран " + scrN + "<br>";
                         }
+                        break;
+                    default:
+                        try {
+                            uxFunction = eval("new ux" + comp.type + "();");
+                            let errComp = uxFunction.isValid(comp, scr.layout);
+                            if (errComp.text != "") {
+                                strError += errComp.text + "\n";
+                                if (newLevelErrors < errComp.error) {
+                                    newLevelErrors = errComp.error;
+                                }
+                            }
+                        } catch(e) { }
                         break;
                 }
                 if (comp.navigator != null && comp.navigator.length > 0) {
@@ -756,6 +776,129 @@ function validDeclare() {
     }
     if (strError != "") {
         var wind = formWind(450, 350, 35, 270, "Error in project");
+        wind.innerHTML = strError;
+        return false;
+    } else {
+        return true;
+    }
+}
+*/
+
+function validDeclare() {
+    let strError = "";
+    let ik = listScreen.length;
+    let newLevelErrors = 0;
+    listNameScreen.length = 0;
+    if (ik == 0) {
+        strError += "Нет описаных экранов<br>";
+    } else {
+        for (let i = 0; i < ik; i++) {
+            let ls = listScreen[i];
+            oneScreenValid(ls, i);
+            if (ls.levelErrors > 0) {
+                if (ls.textErrors != "") {
+                    strError += "Screen " + ls.screenName + "<br>";
+                }
+                strError += ls.textErrors;
+                if (newLevelErrors < ls.levelErrors) {
+                    newLevelErrors = ls.levelErrors;
+                }
+            }
+        }
+    }
+    ik = listValueAppParam.length;
+    if (ik == 0) {
+        strError += "baseUrl is not filled<br>";
+        if (newLevelErrors < 2) {
+            newLevelErrors = 2;
+        }
+        if (isMap()) {
+            strError += "not filled geoApiKey for maps<br>";
+            if (newLevelErrors < 2) {
+                newLevelErrors = 2;
+            }
+        }
+    } else {
+        let noUrl = true;
+        let noKey = true;
+        let noStartScr = true;
+        let isParameterStartScr = false;
+        for (let i = 0; i < ik; i++) {
+            let item = listValueAppParam[i];
+            let vv = item.value;
+            switch (item.name) {
+                case "ScreenStart":
+                    isParameterStartScr = true;
+                    let sk = listScreen.length;
+                    let vvUP = vv.toUpperCase();
+                    for (let s = 0; s < sk; s++) {
+                        if (vvUP == listScreen[s].screenName.toUpperCase()) {
+                            noStartScr = false;
+                            break;
+                        }
+                    }
+                    break;
+                case "baseUrl":
+                    noUrl = false;
+                    if (vv != null || vv.length > 0) {
+                        if ( ! isUrlValid(vv)) {
+                            strError += "baseUrl is error";
+                        }
+                    } else {
+                        strError += "baseUrl is not filled";
+                    }
+                    break;
+                case "geoApiKey":
+                    noKey = false;
+                    if (vv == null || vv == "") {
+                        if (isMap()) {
+                            strError += "not filled geoApiKeu for maps";
+                        }
+                    }
+                    break;
+            }
+        }
+        if (noUrl) {
+            strError += "baseUrl is not filled<br>";
+            if (newLevelErrors < 2) {
+                newLevelErrors = 2;
+            }
+        }
+        if (noKey) {
+            if (isMap()) {
+                strError += "not filled geoApiKey for maps<br>";
+                if (newLevelErrors < 2) {
+                    newLevelErrors = 2;
+                }
+            }
+        }
+        if (noStartScr) {
+            if (isParameterStartScr) {
+                strError += "No start screen description<br>";
+                if (newLevelErrors < 2) {
+                    newLevelErrors = 2;
+                }
+            } else {
+                let sk = listScreen.length;
+                let vvUP = "MAIN";
+                for (let s = 0; s < sk; s++) {
+                    if (vvUP == listScreen[s].screenName.toUpperCase()) {
+                        noStartScr = false;
+                        break;
+                    }
+                }
+                if (noStartScr) {
+                    strError += "No start screen description<br>";
+                    if (newLevelErrors < 2) {
+                        newLevelErrors = 2;
+                    }
+                }
+            }
+        }
+    }
+    if (strError != "") {
+        var wind = formWind(450, 350, 35, 270, "Error in project");
+        wind.style.paddingLeft = "4px";
         wind.innerHTML = strError;
         return false;
     } else {
@@ -966,11 +1109,6 @@ function consolLogElem(el, tab) {
 
 function logP() {
     logAndr(currentChildren, "");
-/*
-console.log("***************************");
-console.log("***************************");
-console.log("PP="+jsonNoViewParent(currentChildren));
-*/
 }
 
 function logAndr(ch, tab) {

@@ -83,7 +83,6 @@ function createViewForPanelV(el) {
 }
 
 function createSheetBottomForUX(id) {
-console.log("createSheetBottomForUX ID="+id+"<<");
     currentElement = createNewEl();
     p = {typeUxUi: "ui"};
     p.type = "SheetBottom";
@@ -104,7 +103,6 @@ console.log("createSheetBottomForUX ID="+id+"<<");
     addNewElement(ACTIVE, currentElement);
     addNavigatorEl(currentElement);
     ACTIVE.android.children.push(currentElement.android);
-    
     
     let pan = document.createElement('div');
     pan.className = "sheetPanel";

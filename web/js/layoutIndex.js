@@ -59,13 +59,9 @@
         screenW = sizeDeviceArray[1][0];
         screenH = sizeDeviceArray[1][1];
         popUp = document.getElementById('popUp');
-//        contourEl = document.getElementsByClassName('contourEl')[0];
         popUpTitle = document.getElementById('popUpTitle');
         popUpContainer = document.getElementById('popUpContainer');
-//        headerTool = document.getElementById('header-tool');
-//        navigatorEl = document.getElementById('navigatorEl');
         scaleValue = document.getElementById('scaleValue');
-//        layoutParam = document.getElementById('layout-par');
         textValue = document.getElementById('text_text_value');
         setTypeInsert('RelativeLayout');
         insertTypeFull = {name: 'RelativeLayout', typeBlock: 2};

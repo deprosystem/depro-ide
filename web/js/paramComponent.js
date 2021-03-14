@@ -1,7 +1,6 @@
 var MATCH = -1, WRAP = -2;
 var paramCompon;
 var selectGravityL;
-var marginBlock, paddingBlock;
 var listImg;
 var fonSel = "#deeaff";
 var fonNo = "#0000";
@@ -9,8 +8,6 @@ var fonNo = "#0000";
 function setParamCompon() {
     layoutParam.style.display = 'block';
     paramCompon = currentElement.android;
-    marginBlock = document.getElementById('margin_block');
-    paddingBlock = document.getElementById('padding_block');
     el_type.innerHTML = paramCompon.type;
     
     setVisibility(paramCompon.visibility == null || paramCompon.visibility);
@@ -77,11 +74,8 @@ function setParamCompon() {
     formListViewId(toRightOfParam, 'ToRightOf');
     formListViewId(toLeftOfParam, 'ToLeftOf');
 
-//    el_w_match = document.getElementById('el_w_match');
     el_w_match.onclick = click_el_w_match;
-//    el_w_wrap = document.getElementById('el_w_wrap');
     el_w_wrap.onclick = click_el_w_wrap;
-//    el_w_input = document.getElementById('el_w_input');
     el_w_input.onkeydown = keydown_el_w_input;
     el_w_input.value = '';
     el_w_match.style.backgroundColor = '#fff';
@@ -94,11 +88,8 @@ function setParamCompon() {
         el_w_input.value = paramCompon.width;
     }
     
-//    el_h_match = document.getElementById('el_h_match');
     el_h_match.onclick = click_el_h_match;
-//    el_h_wrap = document.getElementById('el_h_wrap');
     el_h_wrap.onclick = click_el_h_wrap;
-//    el_h_input = document.getElementById('el_h_input');
     el_h_input.onkeydown = keydown_el_h_input;
     el_h_input.value = '';
     el_h_match.style.backgroundColor = '#fff';
@@ -111,19 +102,51 @@ function setParamCompon() {
         el_h_input.value = paramCompon.height;
     }
     
-    var marg = document.getElementById('margin_block');
+    let margPadParam = "8,10,12,14,16,18,20,24,28,32,40";
     if (root == currentElement) {
-        marg.style.display = 'none';
+        margParam.style.display = 'none';
     } else {
-        marg.style.display = 'block';
-        clearMargPadParam(marg);
-        setMargPadParam(marg, valueMarg);
+        margParam.style.display = 'block';
+        margParam.innerHTML = "";
+        let  setMargH = "setMarginHoriz";
+        margParam.appendChild(newDOMelement('<div class="text_style_ui">Margin</div>'));
+        let selMarg = selectBlockHoriz(" :", 10, margPadParam, setMargH, 0, 300);
+        setValueSelectBlock(selMarg, paramCompon.margin);
+        margParam.appendChild(selMarg);
+        selMarg = selectBlockHoriz("L:", 10, margPadParam, setMargH, 0, 300);
+        setValueSelectBlock(selMarg, paramCompon.leftMarg);
+        margParam.appendChild(selMarg);
+        selMarg = selectBlockHoriz("T:", 10, margPadParam, setMargH, 0, 300);
+        setValueSelectBlock(selMarg, paramCompon.topMarg);
+        margParam.appendChild(selMarg);
+        selMarg = selectBlockHoriz("R:", 10, margPadParam, setMargH, 0, 300);
+        setValueSelectBlock(selMarg, paramCompon.rightMarg);
+        margParam.appendChild(selMarg);
+        selMarg = selectBlockHoriz("B:", 10, margPadParam, setMargH, 0, 300);
+        setValueSelectBlock(selMarg, paramCompon.bottomMarg);
+        margParam.appendChild(selMarg);
+        margParam.appendChild(newDOMelement('<div id="hideMarg" style="width: 100%;height: 100%;background-color: #fffa;position: absolute;display: none"></div>'));
     }
 
-    var pad = document.getElementById('padding_block');
-    clearMargPadParam(pad);
-    setMargPadParam(pad, valuePad);
-    
+    padParam.innerHTML = "";
+    padParam.appendChild(newDOMelement('<div class="text_style_ui">Padding</div>'));
+    let selPad = selectBlockHoriz(" :", 10, margPadParam, "setPadHoriz", 0, 300);
+    setValueSelectBlock(selPad, paramCompon.padding);
+    padParam.appendChild(selPad);
+    selPad = selectBlockHoriz("L:", 10, margPadParam, "setPadHoriz", 0, 300);
+    setValueSelectBlock(selPad, paramCompon.leftPad);
+    padParam.appendChild(selPad);
+    selPad = selectBlockHoriz("T:", 10, margPadParam, "setPadHoriz", 0, 300);
+    setValueSelectBlock(selPad, paramCompon.topPad);
+    padParam.appendChild(selPad);
+    selPad = selectBlockHoriz("R:", 10, margPadParam, "setPadHoriz", 0, 300);
+    setValueSelectBlock(selPad, paramCompon.rightPad);
+    padParam.appendChild(selPad);
+    selPad = selectBlockHoriz("B:", 10, margPadParam, "setPadHoriz", 0, 300);
+    setValueSelectBlock(selPad, paramCompon.bottomPad);
+    padParam.appendChild(selPad);
+    padParam.appendChild(newDOMelement('<div id="hidePad" style="width: 100%;height: 100%;background-color: #fffa;position: absolute;display: none"></div>'));
+
     if (paramCompon.background == null) {
         bg_color.style.backgroundColor = '#ffffff';
     } else {
@@ -172,106 +195,6 @@ function setContent() {
     } catch(e) { 
         contentAttributes.innerHTML = "";
     }
-}
-
-function setMargPadParam(elMP, func) {
-    var children = elMP.children;
-    var ik = children.length;
-    var el;
-    for (var i = 0; i < ik; i++) {
-        el = children[i];
-        var value = func(el.firstElementChild.innerHTML);
-        if (value != undefined) {
-            var childEl = el.firstElementChild.nextElementSibling;
-            var last = el.lastElementChild.previousElementSibling;
-            var isVal = false;
-            while (childEl != last) {
-                if (childEl.innerHTML == value) {
-                    childEl.style.backgroundColor = fonSel;
-                    isVal = true;
-                    break;
-                }
-                childEl = childEl.nextElementSibling;
-            }
-            if ( ! isVal) {
-                last.value = value;
-            }
-        }
-    }
-}
-
-function valuePad(type) {
-    var value;
-    switch (type) {
-        case 'L:':
-            value = paramCompon.leftPad;
-            break;
-        case 'T:':
-            value = paramCompon.topPad;
-            break;
-        case 'R:':
-            value = paramCompon.rightPad;
-            break;
-        case 'B:':
-            value = paramCompon.bottomPad;
-            break;
-        case 'padding:':
-            value = paramCompon.padding;
-            break;
-    }
-    return value;
-}
-
-function valueMarg(type) {
-    var value;
-    switch (type) {
-        case 'L:':
-            value = paramCompon.leftMarg;
-            break;
-        case 'T:':
-            value = paramCompon.topMarg;
-            break;
-        case 'R:':
-            value = paramCompon.rightMarg;
-            break;
-        case 'B:':
-            value = paramCompon.bottomMarg;
-            break;
-        case 'margin:':
-            value = paramCompon.margin;
-            break;
-    }
-    return value;
-}
-
-function clearMargPadParam(elMP) {
-    var children = elMP.children;
-    var ik = children.length;
-    var el;
-    for (var i = 0; i < ik; i++) {
-        el = children[i];
-        var childEl = el.firstElementChild.nextElementSibling;
-        var last = el.lastElementChild.previousElementSibling;
-        while (childEl != last) {
-            childEl.style.backgroundColor = '';
-            childEl = childEl.nextElementSibling;
-        }
-        last.value = '';
-    }
-}
-
-function setSelectValue(el, value) {
-    var childEl = el.firstElementChild.nextElementSibling;
-    var last = el.lastElementChild;
-    while (childEl != last) {
-        if (childEl.innerHTML == value) {
-            childEl.style.backgroundColor = fonSel;
-        } else {
-            childEl.style.backgroundColor = '';
-        }
-        childEl = childEl.nextElementSibling;
-    }
-    last.value = value;
 }
 
 function keydown_el_id(e) {
@@ -417,82 +340,78 @@ function closepopUp() {
     popUp.style.display = 'none';
 }
 
-function setMargin(el) {
-    var p = currentElement.android;
-    var type = el.parentNode.firstElementChild.innerHTML;
-    margPadClear(el);
-    el.style.backgroundColor = fonSel;
-    var value = el.innerHTML;
+function setMarginHoriz(el) {
+    let p = currentElement.android;
+    let value;
+    let par;
+    if (el.tagName == "INPUT") {
+        value = el.value;
+        par = el.parentElement.parentElement.parentElement;
+    } else {
+        if (el.tagName == "DIV") {
+            value = el.innerHTML;
+        } else {
+            value = "";
+        }
+        par = el.parentElement.parentElement;
+    }
+    let type = par.firstElementChild.innerHTML;
+
     switch (type) {
         case 'L:':
-            if (p.leftMarg == value) {
-                p.leftMarg = '';
-                el.style.backgroundColor = '';
-            } else {
-                p.leftMarg = value;
-            }
+            p.leftMarg = value;
             break;
         case 'T:':
-            if (p.topMarg == value) {
-                p.topMarg = '';
-                el.style.backgroundColor = '';
-            } else {
-                p.topMarg = value;
-            }
+            p.topMarg = value;
             break;
         case 'R:':
-            if (p.rightMarg == value) {
-                p.rightMarg = '';
-                el.style.backgroundColor = '';
-            } else {
-                p.rightMarg = value;
-            }
+            p.rightMarg = value;
             break;
         case 'B:':
-            if (p.bottomMarg == value) {
-                p.bottomMarg = '';
-                el.style.backgroundColor = '';
-            } else {
-                p.bottomMarg = value;
-            }
+            p.bottomMarg = value;
             break;
         case ' :':
-            if (p.margin == value) {
-                p.margin = '';
-                el.style.backgroundColor = '';
-            } else {
-                p.margin = value;
-            }
+            p.margin = value;
             break;
     }
     viewCompon();
 }
 
-function inputMarg(e, el) {
-    if (e.keyCode == 13) {
-        var value = el.value;
-        margPadClear(el);
-        el.value = value;
-        var type = el.parentNode.firstElementChild.innerHTML;
-        switch (type) {
-            case 'L:':
-                paramCompon.leftMarg = value;
-                break;
-            case 'T:':
-                paramCompon.topMarg = value;
-                break;
-            case 'R:':
-                paramCompon.rightMarg = value;
-                break;
-            case 'B:':
-                paramCompon.bottomMarg = value;
-                break;
-            case ' :':
-                paramCompon.margin = value;
-                break;
+function setPadHoriz(el) {
+    let p = currentElement.android;
+    let value;
+    let par;
+    if (el.tagName == "INPUT") {
+        value = el.value;
+        par = el.parentElement.parentElement.parentElement;
+    } else {
+        if (el.tagName == "DIV") {
+            value = el.innerHTML;
+        } else {
+            value = "";
         }
-        viewCompon();
+        par = el.parentElement.parentElement;
     }
+    let type = par.firstElementChild.innerHTML;
+
+    switch (type) {
+        case 'L:':
+            p.leftPad = value;
+            break;
+        case 'T:':
+            p.topPad = value;
+            break;
+        case 'R:':
+            p.rightPad = value;
+            break;
+        case 'B:':
+            p.bottomPad = value;
+            break;
+        case ' :':
+            p.padding = value;
+            break;
+    }
+    viewCompon();
 }
 
 function backgroundClear(el) {
@@ -503,140 +422,6 @@ function backgroundClear(el) {
     bg_color.style.backgroundColor = "";
     bg_img.src = "";
     viewCompon();
-}
-
-function margClear(el) {
-    margPadClear(el);
-    var type = el.parentNode.firstElementChild.innerHTML;
-    switch (type) {
-        case 'L:':
-            paramCompon.leftMarg = '';
-            break;
-        case 'T:':
-            paramCompon.topMarg = '';
-            break;
-        case 'R:':
-            paramCompon.rightMarg = '';
-            break;
-        case 'B:':
-            paramCompon.bottomMarg = '';
-            break;
-        case ' :':
-            paramCompon.margin = '';
-            break;
-    }
-    viewCompon();
-}
-
-function padClear(el) {
-    margPadClear(el);
-    var type = el.parentNode.firstElementChild.innerHTML;
-    switch (type) {
-        case 'L:':
-            paramCompon.leftPad = '';
-            break;
-        case 'T:':
-            paramCompon.topPad = '';
-            break;
-        case 'R:':
-            paramCompon.rightPad = '';
-            break;
-        case 'B:':
-            paramCompon.bottomPad = '';
-            break;
-        case ' :':
-            paramCompon.padding = '';
-            break;
-    }
-    viewCompon();
-}
-
-function margPadClear(el) {
-    let par = el.parentElement;
-    let ch = par.getElementsByTagName('div');
-    let ik = ch.length;
-    for (let i = 1; i < ik; i++) {
-        ch[i].style.backgroundColor = '';
-    }
-    par.getElementsByTagName('input')[0].value = "";
-}
-
-function setPadding(el) {
-    var p = currentElement.android;
-    var type = el.parentNode.firstElementChild.innerHTML;
-    margPadClear(el);
-    el.style.backgroundColor = fonSel;
-    var value = el.innerHTML;
-    switch (type) {
-        case 'L:':
-            if (p.leftPad == value) {
-                p.leftPad = '';
-                el.style.backgroundColor = '';
-            } else {
-                p.leftPad = value;
-            }
-            break;
-        case 'T:':
-            if (p.topPad == value) {
-                p.topPad = '';
-                el.style.backgroundColor = '';
-            } else {
-                p.topPad = value;
-            }
-            break;
-        case 'R:':
-            if (p.rightPad == value) {
-                p.rightPad = '';
-                el.style.backgroundColor = '';
-            } else {
-                p.rightPad = value;
-            }
-            break;
-        case 'B:':
-            if (p.bottomPad == value) {
-                p.bottomPad = '';
-                el.style.backgroundColor = '';
-            } else {
-                p.bottomPad = value;
-            }
-            break;
-        case ' :':
-            if (p.padding == value) {
-                p.padding = '';
-                el.style.backgroundColor = '';
-            } else {
-                p.padding = value;
-            }
-            break;
-    }
-    viewCompon();
-}
-
-function inputPad(e, el) {
-    if (e.keyCode == 13) {
-        var value = el.value;
-        margPadClear(el);
-        el.value = value;
-        var type = el.parentNode.firstElementChild.innerHTML;
-        switch (type) {
-            case 'L:':
-                paramCompon.leftPad = value;
-                break;
-            case 'T:':
-                paramCompon.topPad = value;
-                break;
-            case 'R:':
-                paramCompon.rightPad = value;
-                break;
-            case 'B:':
-                paramCompon.bottomPad = value;
-                break;
-            case ' :':
-                paramCompon.padding = value;
-                break;
-        }
-        viewCompon();
-    }
 }
 
 function setToolTextSize(el) {

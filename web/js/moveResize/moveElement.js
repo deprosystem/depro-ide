@@ -102,7 +102,6 @@ function moveUp(e) {
 }
 
 function mouseUpEl(e) {
-//console.log("mouseUpEl mouseUpEl mouseUpEl");
     formNewElem = false;
     footer_inf.innerHTML = "";
     var e = e || window.event;
@@ -214,7 +213,6 @@ function mouseUpNewEl(e) {
         ACTIVE.removeChild(currentElement);
         currentElement = null;
         layoutParam.style.display = 'none';
-//        clickElement(e, ACTIVE);
 
         if (elClick != null) {
             clickElement(e, elClick);

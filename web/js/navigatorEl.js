@@ -109,7 +109,6 @@ function createItemEl(el) {
     item_name.oncontextmenu = n_contMenuStart;
     pm.innerHTML = '&nbsp;';
     p.itemNav = item;
-//console.log("createItemEl TTT="+p.type+"<< II="+p.viewId+"<< p.itemNav="+p.itemNav.getElementsByClassName('item-name')[0].innerHTML+"<< ====="+(p.viewElement == el));
     return item;
 }
 
@@ -178,7 +177,7 @@ function upNavigEl(e) {
             pMoving(uiEl, uiElTarg);
             uiElTarg.after(uiEl);
             uiEl.android.parent = targ.parentElement;
-            targ.parentElement.after(downMouseElem.parentElement);
+            targ.after(downMouseElem.parentElement);
         }
     }
     overMouseElem = null;
@@ -194,7 +193,6 @@ function pMovingShift(what, whereTo) {
             whereToP.p.children = [];
         }
         whereToP.p.children.push(whatP.p);
-//        whereToP.ch.push(whatP.p);
         whatP.ch.splice(whatP.i, 1);
     } else {
         console.log("pMoving whatP OR whereToP = NULL");

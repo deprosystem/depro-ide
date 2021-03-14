@@ -25,6 +25,9 @@ function uiTextView() {
 
 
     this.setElementUI = function(p, newEl, parent) {
+        if (p.componParam == null) {
+            p.componParam = {typeValidTV:"no"};
+        }
         newEl.appendChild(createDivText());
     }
     
@@ -32,6 +35,7 @@ function uiTextView() {
         p.text = "";
         p.textSize = 14;
         p.letterSpac = '0.0';
+        p.componParam = {typeValidTV:"no"};
         return createDivText();
     }
     
@@ -49,12 +53,36 @@ function uiTextView() {
                 cfr.src = "img/check-act.png";
             }
         }
-        let sizeBl = selectBlock("Size", "8,10,12,14,16,18,20,24,28,32", "setSizeTV", 6, 56);
+        let sizeBl = selectBlock("Size", "8,10,12,14,16,18,20,24,28,32,40", "setSizeTV", 6, 56);
         setValueSelectBlock(sizeBl, p.textSize);
         uiParamTextView.appendChild(sizeBl);
         let spacBl = selectBlock("letterSpacing", "-0.05,-0.02,0.0,0.02,0.05,0.07,0.1", "setLetterTV", -0.05, 0.5, 0.01);
         setValueSelectBlock(spacBl, p.letterSpac);
         uiParamTextView.appendChild(spacBl);
+        let lineSpacBl = selectBlock("lineSpacing", "0,1,2,3,4,6,8,10", "setLineSpacTV", 0, 14);
+        setValueSelectBlock(lineSpacBl, p.lineSpac);
+        uiParamTextView.appendChild(lineSpacBl);
+        
+        let typeValid = dropDownList("Validation type", "no,filled,email", 65, "changeValidTypeTV", p.componParam.typeValidTV);
+        typeValid.style.clear = "both";
+        typeValid.style.marginLeft = "";
+        uiParamTextView.appendChild(typeValid);
+
+        let errorV = document.createElement('div');
+        errorV.className = "errorV";
+        errorV.style.cssText = "float:left;height:40px;";
+
+        if (p.componParam.typeValidTV != "no") {
+            errorV.style.display = "block";
+        } else {
+            errorV.style.display = "none";
+        }
+        let sss = selectListID("error ID", 80, currentChildren, p.componParam.errorId, changeErrorIdTV, "TextView");
+        errorV.appendChild(sss);
+
+        errorV.appendChild(editTextParam("Error message text ", 140, p.componParam.errorTxt, "changeErrotTxtTV"));
+        uiParamTextView.appendChild(errorV);
+
         setTextViewAttr(p);
     }
     
@@ -76,6 +104,11 @@ function uiTextView() {
             divText.style.letterSpacing = p.letterSpac + "em";
         } else {
             divText.style.letterSpacing = "";
+        }
+        if (p.lineSpac != null || p.lineSpac != "0.0") {
+            divText.style.lineHeight = (p.lineSpac * MEASURE) + "px";
+        } else {
+            divText.style.lineHeight = "";
         }
         if (p.text != null) {
             divText.innerHTML = p.text;
@@ -114,6 +147,15 @@ function setSizeTV(vv) {
         res = vv.value;
     }
     currentElement.android.textSize = res;
+    viewCompon();
+}
+
+function setLineSpacTV(vv) {
+    let res = vv;
+    if (vv.tagName == "INPUT") {
+        res = vv.value;
+    }
+    currentElement.android.lineSpac = res;
     viewCompon();
 }
 
@@ -163,5 +205,24 @@ function textWeight(el) {
         el.style.backgroundColor = fonSel;
     }
     viewCompon();
+}
+
+function changeValidTypeTV(el) {
+    currentElement.android.componParam.typeValidTV = el.options[el.selectedIndex].value;
+    let ee = contentAttributes.getElementsByClassName("errorV")[0];
+    if (currentElement.android.componParam.typeValidTV == "no") {
+        ee.style.display = "none";
+    } else {
+        ee.style.display = "block";
+    }
+}
+
+function changeErrorIdTV(el) {
+    currentElement.android.componParam.errorId = el.options[el.selectedIndex].value;
+    
+}
+
+function changeErrotTxtTV(el) {
+    currentElement.android.componParam.errorTxt = el.value;
 }
 

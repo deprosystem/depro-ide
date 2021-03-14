@@ -5,4 +5,5 @@ public class View {
     public Boolean toolInDrawer, menubInDrawer;
     public Boolean zoomButtons, targetButton;
     public int spanC;
+    public String selectedType, selectedField, selectedValue, amountSelected;
 }

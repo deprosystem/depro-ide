@@ -1,5 +1,6 @@
 (function() {
 	'use strict';
+// container и все его родители не должен иметь display:none
 	function ScrollBox(container, nameEvent) {
 		this.nameEvent = nameEvent;
 		this.viewport = container;
@@ -9,7 +10,7 @@
 		this.viewportHeight = this.viewport.offsetHeight;
 		this.contentHeight = this.content.scrollHeight;
 		this.max = this.viewport.clientHeight - this.contentHeight;
-		this.ratio = this.viewportHeight / this.contentHeight;
+                this.ratio = this.viewportHeight / this.contentHeight;
 		this.scrollerHeightMin = 25;
 		this.step = 20;
 		this.pressed = false;

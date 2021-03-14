@@ -2,6 +2,7 @@ package servlets;
 
 import android.AndroidPar;
 import android.ColorSet;
+import android.ComponParam;
 import android.Corners;
 import android.Drawable;
 import android.ItemChange;
@@ -333,6 +334,10 @@ public class ExportResult extends BaseServlet {
                             break;
                         case Constants.SCROLL:
                         case Constants.PANEL:
+                            declare.add(tab12 + ".component(TC.PANEL_ENTER, " + formModel(comp)
+                                    + "\n" + tab16 + "view(R.id." + comp.view.viewId + ")" + formNavigator(comp.navigator, tab20, ",\n" + tab16) + endComp);
+                            break;
+                        case Constants.FORM:
                             declare.add(tab12 + ".component(TC.PANEL, " + formModel(comp)
                                     + "\n" + tab16 + "view(R.id." + comp.view.viewId + ")" + formNavigator(comp.navigator, tab20, ",\n" + tab16) + endComp);
                             break;
@@ -547,6 +552,8 @@ public class ExportResult extends BaseServlet {
                 }
                 res += "PARAMETERS" + stPar + "),";
                 break;
+            case Constants.NULL:
+                res = "null,";
         }
         return res;
     }
@@ -694,10 +701,27 @@ public class ExportResult extends BaseServlet {
             span = ".spanCount(" + comp.view.spanC + ")";
         }
         String sel = "";
-        if (comp.model.selected != null && comp.model.selected.length() > 0) {
-            sel = ".selected(\"" + comp.model.selected + "\")";
+        if (comp.view.selectedType != null) {
+            switch (comp.view.selectedType) {
+                case "Param":
+                    String vv = comp.view.selectedField;
+                    if (comp.view.selectedValue != null && comp.view.selectedValue.length() > 0) {
+                        vv = comp.view.selectedField + "=" + comp.view.selectedValue;
+                    }
+                    sel = ".selected(\"" + vv + "\", TVS.PARAM)";
+                    break;
+                case "Value":
+                    sel = ".selected(\"" + comp.view.selectedField + "\", \"" + comp.view.selectedValue +"\")";
+                    break;
+                case "Locale":
+                    sel = ".selected(\"" + comp.view.selectedField + "\")";
+                    break;
+                case "Multiple":
+                    sel = ".selected(\"" + comp.view.amountSelected + "\")";
+                    break;
+            }
         }
-        
+
         String ft = "";
         if (comp.model.fieldType != null && comp.model.fieldType.length() > 0) {
             ft = ", \"" + comp.model.fieldType + "\"";
@@ -1314,15 +1338,7 @@ public class ExportResult extends BaseServlet {
                         writer.write(tab + "android:text=\"" + p.text + "\"");
                 }
             }
-/*
-            if (p.text != null && p.text.length() > 0) {
-                if (p.formResourse != null && p.formResourse
-                    && p.viewId != null && p.viewId.length() > 0) {
-                        formStringId(p.viewId, p.text, parSave.listString);
-                        writer.write(tab + "android:text=\"@string/" + p.viewId + "\"");
-                }
-            }
-*/
+
             if (p.textSize != null) {
                 switch (p.type) {
                     case Constants.TOOL:
@@ -1347,8 +1363,6 @@ public class ExportResult extends BaseServlet {
             if (p.src != null && p.src.length() > 0) {
                 if (p.formResourse != null && p.formResourse) {
                     writer.write(tab + "android:src=\"@drawable/" + dravableFromName(p.src) + "\"");
-//                    int ii = p.src.lastIndexOf("\\");
-//                    writer.write(tab + "android:src=\"@drawable/" + p.src.substring(ii + 1, p.src.indexOf(".")) + "\"");
                 }
             }
             if (p.scaleType != null) {
@@ -1442,6 +1456,22 @@ public class ExportResult extends BaseServlet {
                         }
                     }
                     break;
+                case Constants.ELLIPSIS:
+                    if (p.componParam != null) {
+                         if (p.componParam.orient != null && p.componParam.orient.equals("vertical")) {
+                            writer.write(tab + "android:orientation=\"vertical\"");
+                        }
+                        if (p.componParam.diam != null) {
+                            writer.write(tab + "app:diametrDot=\"" + p.componParam.diam + "dp\"");
+                        }
+                        if (p.componParam.colorNorm != null) {
+                            writer.write(tab + "app:colorDot=\"" + findColorByIndex(p.componParam.colorNorm, parSave.colors) + "\"");
+                        }
+                        if (p.componParam.amountDots != null) {
+                            writer.write(tab + "app:amountDots=\"" + p.componParam.amountDots + "\"");
+                        }
+                    }
+                    break;
                 case Constants.MAP:
                     writer.write(tab + "class=\"com.google.android.gms.maps.SupportMapFragment\"");
                     break;
@@ -1485,15 +1515,11 @@ public class ExportResult extends BaseServlet {
                     if (p.radiusCard > 0) {
                         writer.write(tab + "app:cardCornerRadius=\"" + p.radiusCard + "dp\"");
                     }
-/*
-                    if (p.colorCardShadow > -1) {
-                        writer.write(tab + "app:cardBackgroundColor=\"" + findColorByIndex(p.colorCardShadow, parSave.colors) + "\"");
-                    }
-*/
                     if (p.elevCardShadow != null && p.elevCardShadow.length() > 0) {
                         writer.write(tab + "app:cardElevation=\"" + Integer.valueOf(p.elevCardShadow) + "dp\"");
                     }
                     break;
+
             }
             if (p.componParam != null) {
                 if (p.componParam.formatTime != null) {

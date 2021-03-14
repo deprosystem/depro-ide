@@ -1,4 +1,4 @@
-var components = ["ToolBar", "MenuBottom", "Menu", "List", "Pager", "TabLayout", "Drawer", "Map", "Panel", "ScrollPanel", "SheetBottom"];
+var components = ["ToolBar", "MenuBottom", "Menu", "List", "Pager", "TabLayout", "Drawer", "Map", "Panel", "Form", "ScrollPanel", "SheetBottom"];
 var list_cont;
 var uxFunction, uiFunction;
 
@@ -57,6 +57,19 @@ function createScreen(plus, nameScr, titleScr, typeScr) {
     }
 }
 
+function screenClone() {
+    let crScreen = JSON.parse(jsonNoViewParent(currentScreen));
+    crScreen.screenName = "SCREEN_" + idScreenNum;
+    crScreen.screenId = idScreenNum;
+    listScreen.push(crScreen);
+    let ns = newScreen(crScreen);
+    ns.idScreen = idScreenNum;
+    ns.addEventListener('click', selScreen, true);
+    idScreenNum ++;
+    ns.className = "screen";
+    list_screens.append(ns);
+}
+
 function crScreenForList(scrP) {
     let crScreen = {screenName: scrP.scrN, screenId: scrP.scrNum, screenComment: "", animate: 0, castom: "", typeScreen: scrP.scrT, 
         title: scrP.scrTit, titleParam: "", components: [], textErrors: "", levelErrors: 0, navigator:[]};
@@ -109,6 +122,7 @@ function hideScreen() {
 function setSelectScreen(goto) {
     currentScreenView.className = "screen_sel";
     var id = currentScreenView.idScreen;
+/*
     if (currentScreen != null && id != currentScreen.screenId) {
         var ik = listScreen.length;
         currentScreen = null;
@@ -121,8 +135,20 @@ function setSelectScreen(goto) {
             }
         }
     }
+*/
+    var ik = listScreen.length;
+    currentScreen = null;
+    for (let i = 0; i < ik; i++) {
+        let ls = listScreen[i];
+        if (id == ls.screenId) {
+            currentScreen = ls;
+            positionScreen = i;
+            break;
+        }
+    }
     if (currentScreen != null) {
         currentChildren = currentScreen.layout.children;
+        clearViewEl(currentChildren);
         let listC = currentScreenView.getElementsByClassName("list_components");
         if (listC != null && listC.length > 0) {
             let listComp = listC[0];
@@ -137,6 +163,19 @@ function setSelectScreen(goto) {
     }
     if (goto != null) {
         screen_container.scrollTop = goto;
+    }
+}
+
+function clearViewEl(ch) {
+    let ik = ch.length;
+    if (ik > 0) {
+        for (let i = 0; i < ik; i++) {
+            let chi = ch[i];
+            chi.viewElement = null;
+            if (chi.children != null && chi.children.length > 0) {
+                clearViewEl(chi.children);
+            }
+        }
     }
 }
 
@@ -198,8 +237,9 @@ function setScreenComponents() {
 }
 
 function setListScreen() {
-    jk = listScreen.length;
-    var maxIdScreenNum = 0;
+    let jk = listScreen.length;
+    let maxIdScreenNum = 0;
+    let isError = 0;
     for (var j = 0; j < jk; j++) {
         currentScreen = listScreen[j];
         idScreenNum = currentScreen.screenId;
@@ -207,6 +247,9 @@ function setListScreen() {
             maxIdScreenNum = idScreenNum;
         }
         currentScreenView = newScreen(currentScreen);
+        if (currentScreen.levelErrors > isError) {
+            isError = currentScreen.levelErrors;
+        }
         currentScreenView.idScreen = idScreenNum;
         currentScreenView.className = "screen";
         currentScreenView.addEventListener('click', selScreen, true);
@@ -234,6 +277,9 @@ function setListScreen() {
         idScreenNum = maxIdScreenNum + 1;
         setScreenView();
         setScreenComponents();
+        if (isError > 0) {
+            setBoxError();
+        }
     }
 }
 
@@ -264,8 +310,12 @@ function setSelected(cl, val) {
 
 function newScreen(scr) {
     var container = document.createElement('div')
+    let err = "";
+    if (scr.levelErrors != null && scr.levelErrors > 0) {
+        err = "background-color:" + colorsEroor[scr.levelErrors] + ";";
+    }
     container.innerHTML = '<div class="screen_sel">'
-        +'<div class="error_screen" style="float:left;width:3px;height:40px;" onmouseover="errorScrOver(this)"></div>'
+        +'<div class="error_screen" style="float:left;width:5px;height:40px;cursor:pointer;' + err + '" onmouseover="errorScrOver(this)" onmouseout="tooltipMessageOut(this)"></div>'
         +'<div style="padding-bottom:15px;height:30px;margin-left:10px">'
             +'<div style="float:left;"><div style="color: #2228;font-size: 10px;margin-left:4px">Name</div>'
             +'<input class="name_screen input_style" onkeyup="return checkNameKey(event)" onkeydown="return validName(event)" style="font-size:12px;color:#110000;font-weight:600" type="text" size="12" value="'+ scr.screenName + '"/>'
@@ -295,7 +345,7 @@ function newScreen(scr) {
             +'<img width="20" height="20" style="margin-top:3px;" src="img/roll.png">'
             +'</div>'
 
-            +'<img onclick="del_screen(this)" style="float:right;cursor:pointer;margin-top:14.5px;margin-right:10px" width="18" height="18" src="img/close-o.png">'
+//            +'<img onclick="del_screen(this)" style="float:right;cursor:pointer;margin-top:14.5px;margin-right:10px" width="18" height="18" src="img/close-o.png">'
             +'<img onclick="plusCompon(this)" style="float:right;cursor:pointer;margin-top:15px;margin-right:10px" width="16" height="16" src="img/add_blue.png">'
         +'</div>'
 
@@ -528,6 +578,36 @@ function del_screen(el) {
     container_scr.scroll_y.resize(container_scr);
 }
 
+function screenDelete() {
+    let parent = currentScreenView;
+    let ik = listScreen.length;
+    let iEl = -1;
+    let nameEl = currentScreen.screenName;
+    for (let i = 0; i < ik; i++) {
+        if (nameEl == listScreen[i].screenName) {
+            iEl = i;
+            break;
+        }
+    }
+    listScreen.splice(iEl, 1);
+    
+    let next = parent.nextElementSibling;
+    if (next != null) {
+        currentScreenView = next;
+        setSelectScreen();
+    } else {
+        let prev = parent.previousElementSibling;
+        if (prev != null) {
+            currentScreenView = prev;
+            setSelectScreen();
+        } else {
+            clearRoot();
+        }
+    }
+    parent.parentNode.removeChild(parent);
+    container_scr.scroll_y.resize(container_scr);
+}
+
 function del_compon(el) {
     
 }
@@ -560,7 +640,7 @@ function errorScrOver(el) {
     let id = el.parentElement.idScreen;
     let scr = getScreenById(id);
     if (scr != null && scr.levelErrors > 0) {
-        tooltipMessage(el, scr.textErrors);
+        tooltipErrorScreen(el, scr.textErrors);
     }
 }
 

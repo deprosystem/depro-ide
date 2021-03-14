@@ -1,7 +1,7 @@
 function uxList() {
     this.param = {name: "List", viewBaseId: "list", onlyOne: false};
     this.editParam = '<div style="height:1px;background-color:#1dace9;margin-top:5px"></div>\n\
-        <div style="height:42px;">\n\
+        <div class="comp_view_param" style="height:42px;">\n\
             <div class="span_count" style="float: left;">\n\
                 <div class="text_style_ui">Span count</div>\n\
             </div>\n\
@@ -11,20 +11,35 @@ function uxList() {
             <div class="no_data" style="float: left;margin-left:10px;">\n\
                 <div class="text_style_ui">View if no data</div>\n\
             </div>';
-        let selVar = '<div style="float:left;"><div style="color: #2228;font-size: 10px;margin-left:4px">Selected</div>'
-            +'<select onchange="changeModelFieldSElect(this)" class="select_';
-        let selVar2 = '" onfocus="formListVarSel(this)" ></select></div>';
+        let selVar = '<div class="sel_field" style="float:left;margin-left:10px;display:none"><div style="color: #2228;font-size: 10px;margin-left:4px">Field</div>'
+            +'<select class="selection_field select_';
+        let selVar2 = '" style="width:140px;" onfocus="formListVarSel(this)" onchange="changeSelectionField(this)"></select></div>';
+        let selType = '<div class="sel_type" style="float:left;margin-left:10px"><div style="color:#2228;font-size: 10px;margin-left:4px">Selection type</div>'
+        +'<select class="selection_type select_';
+        let selType2 = '" onchange="changeSelectionType(this)" style="width:80px;"><option>None</option><option>Single</option><option>Multiple</option>'
+            +'<option>Param</option><option>Value</option><option>Locale</option></select></div>';
+        let selValue = '<div class="selection_value" style="float:left;margin-left:10px;display:none"><div style="color: #2228;font-size: 10px;margin-left:4px">Value</div>'
+            +'<input class="sel_value input_style" onchange="changeSelValue(this.value)" type="text" size="14"/>'
+            +'</div>';
+    let optionsIcon = '<div onclick="optionsIconClick(this)" style="float:left;cursor:pointer;margin-left:20px;">'
+            +'<div style="float:left;color:#2228;font-size:10px">Options</div>'
+            +'<img style="float:left;margin-left:5px;" width="14" height="14" src="img/options.png">'
+        +'</div>';
+    let cascadingPar = "";
+    let options = '<div class="container_options" style="height:42px;margin-top:5px;padding-top:5px;display:none;border-top:1px solid #1dace9"></div>'
+    
 
     this.getParamComp = function () {
         return this.param;
     }
     
     this.getSpecialView = function () {
-        return docNavigator;
+        return docNavigator + optionsIcon;
     }
     
     this.getEditParam = function () {
-        return uxModelView("createViewForListV", "createViewForListH", true) + this.editParam + selVar + browser + selVar2 + '</div>';
+        return uxModelView("createViewForListV", "createViewForListH", true) + this.editParam 
+                + selType + browser + selType2 + selVar + browser + selVar2 + selValue + '</div>' + options;
     }
     
     this.getCreateListener = function () {
@@ -46,7 +61,7 @@ function uxList() {
         currentComponent = {type: tt, componId: componId, viewId:viewId, typeUxUi: "ux", componParam:{type:2},
                 typeFull: {name: tt, typeBlock: 10}, gravLayout: {h: 3, v: 3}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
             width:-1,height:-1,itemNav:{},viewElement: null,children:[typeView]};
-        currentComponentDescr = {type:tt, componId: componId, model:{method:0,data:[[]],progr:"standard"},view:{viewId: viewId,spanC:1,orient:"vertical",no_data:""},navigator:[]};
+        currentComponentDescr = {type:tt, componId: componId, model:{method:0,data:[[]],progr:"standard"},view:{viewId: viewId,spanC:1,orient:"vertical",no_data:""},options:{},navigator:[]};
     }
     
     this.setValue = function(componParam) {
@@ -58,6 +73,7 @@ function uxList() {
     }
     
     this.isValid = function(compD, layout) {
+        let tab = "&ensp;";
         let err = {text:"",error:0};
         let mod = compD.model;
         if (mod.method < 2) {
@@ -66,7 +82,7 @@ function uxList() {
                 if (pr != "standard" && pr != "no") {
                     let p = getCompByViewId(layout.children, pr);
                     if (p == null) {
-                        err.text += "component " + compD.type + " error in progress " + pr;
+                        err.text += txtError(2, tab, "component " + compD.viewId + " error in progress " + pr);
                         err.error = 2;
                     }
                 }
@@ -76,7 +92,31 @@ function uxList() {
         if (no_d != null && no_d.length > 0) {
             let p = getCompByViewId(layout.children, no_d);
             if (p == null) {
-                err.text += "component " + compD.type + " error view no data " + pr;
+                err.text += txtError(2, tab, "component " + compD.viewId + " error view no data " + pr);
+                err.error = 2;
+            }
+        }
+        if (compD.view.selectedType != null) {
+            switch (compD.view.selectedType) {
+                case "Value":
+                    if (compD.view.selectedField == null || compD.view.selectedValue == null) {
+                        err.text += txtError(2, tab, "component " + compD.viewId + " error: there is no property Field or Value for the selected = Param.");
+                        err.error = 2;
+                    }
+                    break; 
+                case "Param":
+                    if (compD.view.selectedField == null) {
+                        err.text += txtError(2, tab, "component " + compD.viewId + " error: there is no property Field for the selected = Param.");
+                        err.error = 2;
+                    }
+                    break; 
+                    }
+        }
+
+        if (compD.options != null && compD.options.isCascade != null && compD.options.isCascade) {
+            if (compD.options.nextId == null || compD.options.enterId == null || compD.options.nameGlob == null || compD.options.listVar == null ||
+                    compD.options.nextId == "" || compD.options.enterId == "" || compD.options.nameGlob == "" || compD.options.listVar == "") {
+                err.text += txtError(2, tab, "component " + compD.type + " error: Options are incomplete.");
                 err.error = 2;
             }
         }
@@ -90,8 +130,35 @@ function setValueListPanel(componParam) {
 }
 
 function setValueView(componParam) {
-    let span = componParam.getElementsByClassName("span_count")[0];
     let view = currentComponentDescr.view;
+    let aa = editNumberParam("Amount", 40, 28, 1, 500, "amountSelected");
+    aa.className = "sel_amount";
+    aa.style.marginLeft = "10px";
+    aa.style.display = "none";
+    if (view.amountSelected != null) {
+        setNumberParamValue(aa, view.amountSelected);
+    }
+    let cp = componParam.getElementsByClassName("comp_view_param")[0];
+    cp.appendChild(aa);
+    
+    if (view.selectedType != null) {
+        let sel_t = componParam.getElementsByClassName("selection_type")[0];
+        sel_t.value = view.selectedType;
+        changeSelType(view.selectedType);
+    }
+    
+    if (view.selectedField != null) {
+        let sel_f = componParam.getElementsByClassName("selection_field")[0];
+        sel_f.value = view.selectedField;
+    }
+    
+    if (view.selectedValue != null) {
+        let sel_v = componParam.getElementsByClassName("sel_value")[0];
+        sel_v.value = view.selectedValue;
+    }
+    
+    let span = componParam.getElementsByClassName("span_count")[0];
+    
     if (view.spanC == null) {
         view.spanC = 1;
     }
@@ -116,6 +183,35 @@ function setValueView(componParam) {
     sel.style.cssText = "width:80px;font-size:12px;color:#110000;";
     sel.addEventListener("change", function(){changeNoData(sel)}, true);
     no_data.appendChild(sel);
+    
+    let changOpt = '<div style="float:left;">'
+                +'<div style="font-size:10px;color:#2228">Cascading param</div>'
+                +'<img class="check_cascade" onclick="checkCascadeParam(this);" style="cursor:pointer;margin-top:5px;margin-left:14px" width="16" height="16" src="img/check-act.png">'
+            +'</div>'
+    let opt = componParam.getElementsByClassName("container_options")[0];
+    opt.appendChild(newDOMelement(changOpt));
+    let allParamCascade = newDOMelement('<div class="allParamCascade" style="height:100%;float:left;display:none"></div>')
+    opt.appendChild(allParamCascade);
+    
+    if (currentComponentDescr.options == null) {
+        currentComponentDescr.options = {};
+    }
+    if (currentComponentDescr.options.isCascade == null) {
+        currentComponentDescr.options.isCascade = false;
+    }
+    
+    let selNext = selectListID("next Id", 100, currentComponent.children, currentComponentDescr.options.nextId, setNextId)
+    allParamCascade.appendChild(selNext);
+    let selEnter = selectListID("enter Id", 100, currentComponent.children, currentComponentDescr.options.enterId, setEnterId)
+    allParamCascade.appendChild(selEnter);
+    
+    let nameGlob = editTextParam("Global variable name", 100, currentComponentDescr.options.nameGlob, "changeNameGlobVar");
+    allParamCascade.appendChild(nameGlob);
+    let listVar = editTextParam("Variable list ", 200, currentComponentDescr.options.listVar, "changeListGlobVar");
+    allParamCascade.appendChild(listVar);
+    
+    let mm = opt.getElementsByClassName("check_cascade")[0];
+    showCascadeParam(currentComponentDescr.options.isCascade, mm, allParamCascade);
 }
 
 function changeNoData(el) {
@@ -273,22 +369,110 @@ function formListVarSel(el) {
         let opt = document.createElement ('option');
         opt.value = opt.text =  '';
         el.options.add (opt);
-        let mSel = currentComponentDescr.model.selected;
-        if (mSel == null) {
-            mSel = "";
-        }
         for (let i = 0; i < ik; i++) {
             opt = document.createElement ('option');
             let selN = data[i].name;
             opt.value = opt.text = selN;
+/*
             if (selN == mSel) {
                 opt.selected = selN;
             }
+*/
             el.options.add (opt);
+        }
+        let mSel = currentComponentDescr.view.selectedField;
+        if (mSel != null) {
+            el.value = mSel;
         }
     }
 }
 
-function changeModelFieldSElect(el) {
-    currentComponentDescr.model.selected = el.options[el.selectedIndex].value;
+function changeSelectionType(el) {
+    let type = el.options[el.selectedIndex].value;
+    currentComponentDescr.view.selectedType = type;
+    changeSelType(type);
+}
+
+function changeSelectionField(el) {
+    currentComponentDescr.view.selectedField = el.options[el.selectedIndex].value;
+}
+
+function changeSelType(type) {
+    let mm = currentComponentView.getElementsByClassName("sel_field")[0];
+    let aa = currentComponentView.getElementsByClassName("sel_amount")[0];
+    let sv = currentComponentView.getElementsByClassName("selection_value")[0];
+    
+    switch (type) {
+        case "Multiple":
+            mm.style.display = "none";
+            sv.style.display = "none";
+            aa.style.display = "block";
+            break;
+        case "Value":
+        case "Param":
+            mm.style.display = "block";
+            sv.style.display = "block";
+            aa.style.display = "none";
+            break;    
+        default:
+            mm.style.display = "none";
+            sv.style.display = "none";
+            aa.style.display = "none";
+            break;
+    }
+}
+
+function changeSelValue(v) {
+    currentComponentDescr.view.selectedValue = v;
+}
+
+function amountSelected(el) {
+    currentComponentDescr.view.amountSelected = el.value;
+}
+
+function optionsIconClick() {
+    let mm = currentComponentView.getElementsByClassName("container_options")[0];
+    if (mm.style.display == "none") {
+        mm.style.display = "block";
+    } else {
+        mm.style.display = "none";
+    }
+    container_scr.scroll_y.resize(container_scr);
+}
+
+function checkCascadeParam(el) {
+    let mm = currentComponentView.getElementsByClassName("check_cascade")[0];
+    if (currentComponentDescr.options == null) {
+        currentComponentDescr.options = {};
+    }
+    let check = mm.src.indexOf("check-sel") == -1;
+    currentComponentDescr.options.isCascade = check;
+    let pc = currentComponentView.getElementsByClassName("allParamCascade")[0];
+    showCascadeParam(check, mm, pc);
+}
+
+function showCascadeParam(check, mm, pc) {
+    if (check) {
+        mm.src = "img/check-sel_1.png";
+        pc.style.display = "block";
+    } else {
+        mm.src = "img/check-act.png";
+        pc.style.display = "none";
+    }
+}
+
+function setNextId(el) {
+    currentComponentDescr.options.nextId = el.options[el.selectedIndex].value;
+}
+
+function setEnterId(el) {
+    currentComponentDescr.options.enterId = el.options[el.selectedIndex].value;
+}
+
+function changeNameGlobVar(el) {
+    currentComponentDescr.options.nameGlob = el.value;
+}
+
+function changeListGlobVar(el) {
+    currentComponentDescr.options.listVar = el.value;
 }

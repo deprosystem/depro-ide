@@ -1,5 +1,7 @@
 var TYPE_TEXT = 0, TYPE_INT = 1, TYPE_FLOAT = 3, TYPE_BOOLEAN = 4, TYPE_SELECT = 5, TYPE_IMG = 6, ID_SELECT = 7, ID_SELECT_HANDL = 8;
-var handlers = "start,back,backOk,actual,setValueParam,hide,show"
+
+var handlers = "start,back,backOk,actual,assignValue,setValueParam,setVar,restoreVar,hide,show,addRecord,delRecord"
+var typeSource = "PARAM,SIZE,LOCALE,SYSTEM_TIME,GROUPP_PARAM,GLOBAL_VAR";
 
 var metaPager = {titleForm:"Данные для TabLayout", description:
     [{name: "title", title:"Text tab",len:15},
@@ -10,8 +12,16 @@ var metaNavigator = {titleForm:"Navigator", description:
     [{name: "viewId", title:"Элемент",len:100,type:ID_SELECT_HANDL},
     {name: "handler", title:"Обработчик",len:100,type:TYPE_SELECT,select:handlers},
     {name: "param", title:"Парам",len:15,valid:{latin:true}},
+    {name: "param_1", title:"Additions",len:17,valid:{latin:true}},
     {name: "id", title:"id",len:100,type:ID_SELECT},
     {name: "after", title:"After",type:TYPE_BOOLEAN,marg:20}]
+    }
+    
+var metaInitData = {titleForm:"Navigator", description:
+    [{name: "typeSource", title:"Data source",len:80,type:TYPE_SELECT,select:typeSource},
+    {name: "viewId", title:"Элемент",len:100,type:ID_SELECT},
+    {name: "param", title:"Парам",len:15},
+    {name: "idComp", title:"Component id",len:100,type:ID_SELECT}]
     }
     
 var metaNavigatorMenuB = {titleForm:"Navigator", description:
@@ -36,6 +46,7 @@ var metaModel = {titleForm:"Data formation", description:
     {name: "type", title:"Type",len:70,type:TYPE_SELECT,select:"Text,Img,Int,Float,Time,Gallery,Boolean"},
     {name: "length", title:"Length",len:5,type:TYPE_INT},
     {name: "format", title:"Format",len:12},
+    {name: "visibility", title:"Visibility",len:12},
     {name: "notShow", title:"not show",type:TYPE_BOOLEAN,marg:25}]
     }
     

@@ -1,4 +1,4 @@
-var uiCurrentComponent;
+//    var uiCurrentComponent;
 
 function myComponentDescr(id) {      //      currentComponentDescr
     let ik = currentScreen.components.length;
@@ -37,6 +37,10 @@ function getCompById(ch, id) {
     return null;
 }
 
+function tryFindByViewId(vId) {
+    return getCompByViewId(currentChildren, vId);
+}
+
 function getCompByViewId(ch, id) {
     let ik = ch.length;
     for (let i = 0; i < ik; i++) {
@@ -66,7 +70,6 @@ function checkValidityLinks(ch, tab) {
         } else {
             vId += ":";
         }
-console.log("VID="+vId+"<<");
         if (chi.below != null && chi.below != "") {
             if ( ! isValidLink(ch, chi.below)) {
                 chi.below = "";

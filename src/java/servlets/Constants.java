@@ -11,14 +11,15 @@ public class Constants {
     public static final int TOP = 0, CENTER = 1, BOTTOM = 2, ABSOLUTE = 3, NONE = 4;
     public static final int LEFT = 0, RIGHT = 2;
     public static int[] ANGLES = {0, 90, 45, 0, 315};
-    public final static int GET = 0, POST = 1, TEST = 2, PARAMETERS = 5, NULL = 6;
+    public final static int GET = 0, POST = 1, TEST = 2, PARAMETERS = 5, NULL = 7, GLOBAL = 6;
     
     public static String PROJECTS_DATA = "projectdataIDE/", 
             USERS_DATA = "usersdataIDE/";
     public static final String TOOL = "ToolBar", PANEL = "Panel", SCROLLPANEL = "ScrollView", FORM = "Form", ELLIPSIS = "Ellipsis",
             LIST = "List", PAGER = "Pager", TAB = "TabLayout", DRAWER = "Drawer", SCROLL = "ScrollPanel", CARD_VIEW = "CardView",
             MENU_B = "MenuBottom", MENU = "Menu", GALLERY = "Gallery", INDICATOR = "Indicator", IMAGEVIEW = "ImageView",
-            MAP = "Map", SHEET = "SheetBottom";
+            PLUS_MINUS = "PlusMinus", RATINGS = "Ratings",
+            MAP = "Map", SHEET = "SheetBottom", TEXTVIEW = "TextView", CALENDAR = "Calendar", SEEKBAR = "SeekBar", TAGS = "Tags";
 /*
     public static String toolCompon = "com.dpcsa.compon.custom_components.ComponToolBar",
             listCompon = "androidx.recyclerview.widget.RecyclerView",
@@ -30,12 +31,15 @@ public class Constants {
     public static String[] scaleType = {"centerCrop", "center"};
     public static String roundedType = "com.makeramen.roundedimageview.RoundedImageView";
     public static String cardViewType = "androidx.cardview.widget.CardView";
+    public static String TextValid = "com.dpcsa.compon.custom_components.ComponTextValid";
+    public static String TextCompon = "com.dpcsa.compon.custom_components.ComponTextView";
+    public static String TextGrammar = "com.dpcsa.compon.custom_components.TextViewNumberGrammar";
     public static String[] componType = {
         "com.dpcsa.compon.custom_components.ComponToolBar", // 0
         "com.dpcsa.compon.custom_components.ComponMenuB", // 1
         "androidx.recyclerview.widget.RecyclerView", // 2
         "com.dpcsa.compon.custom_components.ComponTextView", // 3
-        "androidx.viewpager.widget.ViewPager",  // 4
+        "com.dpcsa.compon.custom_components.ComponViewPager",  // 4
         "com.google.android.material.tabs.TabLayout",   // 5
         "androidx.drawerlayout.widget.DrawerLayout",   // 6
         "RelativeLayout",                               // 7
@@ -45,7 +49,12 @@ public class Constants {
         "com.dpcsa.compon.custom_components.ComponMapView",          // 11
         "com.dpcsa.compon.custom_components.SheetBottom",            // 12
         "androidx.cardview.widget.CardView",                         // 13
-        "com.dpcsa.compon.custom_components.Ellipsis"               // 14
+        "com.dpcsa.compon.custom_components.Ellipsis",               // 14
+        "com.dpcsa.compon.custom_components.CalendarVertical",        // 15
+        "com.dpcsa.compon.custom_components.SeekBarRange",            // 16
+        "com.dpcsa.compon.custom_components.TagsView",            // 17
+        "com.dpcsa.compon.custom_components.PlusMinus",            // 18
+        "com.dpcsa.compon.custom_components.Ratings"            // 19
     };
 
 }

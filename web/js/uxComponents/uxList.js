@@ -61,7 +61,8 @@ function uxList() {
         currentComponent = {type: tt, componId: componId, viewId:viewId, typeUxUi: "ux", componParam:{type:2},
                 typeFull: {name: tt, typeBlock: 10}, gravLayout: {h: 3, v: 3}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
             width:-1,height:-1,itemNav:{},viewElement: null,children:[typeView]};
-        currentComponentDescr = {type:tt, componId: componId, model:{method:0,data:[[]],progr:"standard"},view:{viewId: viewId,spanC:1,orient:"vertical",no_data:""},options:{},navigator:[]};
+        currentComponentDescr = {type:tt, componId: componId, model:{method:0,data:[[]],progr:"standard"},view:{viewId: viewId,spanC:1,orient:"vertical",no_data:""},
+            options:{isCascade:false,nextId:"",enterId:"",nameGlob:"",listVar:"",first:false},navigator:[]};
     }
     
     this.setValue = function(componParam) {
@@ -75,38 +76,31 @@ function uxList() {
     this.isValid = function(compD, layout) {
         let tab = "&ensp;";
         let err = {text:"",error:0};
-        let mod = compD.model;
-        if (mod.method < 2) {
-            let pr = mod.progr;
-            if (pr != null && pr.length > 0) {
-                if (pr != "standard" && pr != "no") {
-                    let p = getCompByViewId(layout.children, pr);
-                    if (p == null) {
-                        err.text += txtError(2, tab, "component " + compD.viewId + " error in progress " + pr);
-                        err.error = 2;
-                    }
-                }
-            }
+//        let mod = compD.model;
+        let errMod = isValidModel(compD.model, tab);
+        if (errMod.error > err.error) {
+            err.error = errMod.error;
+            err.text += errMod.text;
         }
         let no_d = compD.view.no_data;
         if (no_d != null && no_d.length > 0) {
             let p = getCompByViewId(layout.children, no_d);
             if (p == null) {
-                err.text += txtError(2, tab, "component " + compD.viewId + " error view no data " + pr);
+                err.text += txtError(2, tab, "component " + compD.view.viewId + " error view no data " + pr);
                 err.error = 2;
             }
         }
         if (compD.view.selectedType != null) {
             switch (compD.view.selectedType) {
                 case "Value":
-                    if (compD.view.selectedField == null || compD.view.selectedValue == null) {
-                        err.text += txtError(2, tab, "component " + compD.viewId + " error: there is no property Field or Value for the selected = Param.");
+                    if (compD.view.selectedField == null || compD.view.view.selectedValue == null) {
+                        err.text += txtError(2, tab, "component " + compD.view.viewId + " error: there is no property Field or Value for the selected = Param.");
                         err.error = 2;
                     }
                     break; 
                 case "Param":
                     if (compD.view.selectedField == null) {
-                        err.text += txtError(2, tab, "component " + compD.viewId + " error: there is no property Field for the selected = Param.");
+                        err.text += txtError(2, tab, "component " + compD.view.viewId + " error: there is no property Field for the selected = Param.");
                         err.error = 2;
                     }
                     break; 
@@ -114,8 +108,8 @@ function uxList() {
         }
 
         if (compD.options != null && compD.options.isCascade != null && compD.options.isCascade) {
-            if (compD.options.nextId == null || compD.options.enterId == null || compD.options.nameGlob == null || compD.options.listVar == null ||
-                    compD.options.nextId == "" || compD.options.enterId == "" || compD.options.nameGlob == "" || compD.options.listVar == "") {
+            if (compD.options.enterId == null || compD.options.nameGlob == null || compD.options.listVar == null ||
+                    compD.options.enterId == "" || compD.options.nameGlob == "" || compD.options.listVar == "") {
                 err.text += txtError(2, tab, "component " + compD.type + " error: Options are incomplete.");
                 err.error = 2;
             }
@@ -188,18 +182,19 @@ function setValueView(componParam) {
                 +'<div style="font-size:10px;color:#2228">Cascading param</div>'
                 +'<img class="check_cascade" onclick="checkCascadeParam(this);" style="cursor:pointer;margin-top:5px;margin-left:14px" width="16" height="16" src="img/check-act.png">'
             +'</div>'
+    let changFirst = '<div style="float:left;">'
+                +'<div style="font-size:10px;color:#2228">First</div>'
+                +'<img class="check_cascade_f" onclick="checkCascadeFirst(this);" style="cursor:pointer;margin-top:5px;margin-left:14px" width="16" height="16" src="img/check-act.png">'
+            +'</div>'
     let opt = componParam.getElementsByClassName("container_options")[0];
     opt.appendChild(newDOMelement(changOpt));
     let allParamCascade = newDOMelement('<div class="allParamCascade" style="height:100%;float:left;display:none"></div>')
     opt.appendChild(allParamCascade);
     
     if (currentComponentDescr.options == null) {
-        currentComponentDescr.options = {};
+        currentComponentDescr.options = {isCascade:false,nextId:"",enterId:"",nameGlob:"",listVar:"",first:false};
     }
-    if (currentComponentDescr.options.isCascade == null) {
-        currentComponentDescr.options.isCascade = false;
-    }
-    
+
     let selNext = selectListID("next Id", 100, currentComponent.children, currentComponentDescr.options.nextId, setNextId)
     allParamCascade.appendChild(selNext);
     let selEnter = selectListID("enter Id", 100, currentComponent.children, currentComponentDescr.options.enterId, setEnterId)
@@ -209,9 +204,19 @@ function setValueView(componParam) {
     allParamCascade.appendChild(nameGlob);
     let listVar = editTextParam("Variable list ", 200, currentComponentDescr.options.listVar, "changeListGlobVar");
     allParamCascade.appendChild(listVar);
-    
+    let ff = newDOMelement(changFirst);
+    let chFF = ff.getElementsByClassName("check_cascade_f")[0];
+    if (currentComponentDescr.options.first) {
+        chFF.src = "img/check-sel_1.png";
+    } else {
+        chFF.src = "img/check-act.png";
+    }
+    allParamCascade.appendChild(ff);
     let mm = opt.getElementsByClassName("check_cascade")[0];
     showCascadeParam(currentComponentDescr.options.isCascade, mm, allParamCascade);
+    
+    let visib = editTextParam("Visibility manager", 150, view.visibility, "changeVisibilityList");
+    cp.appendChild(visib);
 }
 
 function changeNoData(el) {
@@ -443,12 +448,26 @@ function optionsIconClick() {
 function checkCascadeParam(el) {
     let mm = currentComponentView.getElementsByClassName("check_cascade")[0];
     if (currentComponentDescr.options == null) {
-        currentComponentDescr.options = {};
+        currentComponentDescr.options = {isCascade:false,nextId:"",enterId:"",nameGlob:"",listVar:"",first:false};
     }
     let check = mm.src.indexOf("check-sel") == -1;
     currentComponentDescr.options.isCascade = check;
     let pc = currentComponentView.getElementsByClassName("allParamCascade")[0];
     showCascadeParam(check, mm, pc);
+}
+
+function checkCascadeFirst(el) {
+    let mm = currentComponentView.getElementsByClassName("check_cascade_f")[0];
+    if (currentComponentDescr.options == null) {
+        currentComponentDescr.options = {isCascade:false,nextId:"",enterId:"",nameGlob:"",listVar:"",first:false};
+    }
+    let check = mm.src.indexOf("check-sel") == -1;
+    currentComponentDescr.options.first = check;
+    if (check) {
+        mm.src = "img/check-sel_1.png";
+    } else {
+        mm.src = "img/check-act.png";
+    }
 }
 
 function showCascadeParam(check, mm, pc) {
@@ -475,4 +494,8 @@ function changeNameGlobVar(el) {
 
 function changeListGlobVar(el) {
     currentComponentDescr.options.listVar = el.value;
+}
+
+function changeVisibilityList(el) {
+    currentComponentDescr.view.visibility = el.value;
 }

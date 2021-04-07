@@ -27,9 +27,17 @@ function openProject() {
     doServer("POST", "project/list", cbListProject);
 }
 
+function fromTemplates() {
+    
+}
+
 function saveProject() {
     var st = formJsonProject();
     doServer("POST", "project/save", cbSaveProject, st);
+}
+
+function inTemplates() {
+    
 }
 
 function formJsonProject() {
@@ -533,7 +541,11 @@ function selectProject(id) {
 
 function cbGetProject(res) {
     cbCreateProject(res, 2);
-    doServer("GET", 'tables/list', cbGetTablesNoActiv);
+//    doServer("GET", 'tables/list', cbGetTablesNoActiv);
+}
+
+function cbGetTablesNoActiv(res) {
+    
 }
 
 function setSignChanges() {
@@ -597,198 +609,39 @@ function generateProject(apk) {
     if (validDeclare()) {
         let title;
         let url;
+        let mes;
         if (apk != null && apk) {
             title = "Create APK";
             url = "export/apk";
+            mes = "APK file generated";
         } else {
             title = "Create project";
             url = "export/android";
+            mes = "Project generated";
         }
         let windMenu = formWind(250, 300, 40, 250, title);
         let fileCreate = document.createElement("div");
         fileCreate.style.cssText = "text-align:center; margin-top:20px;";
-        fileCreate.innerHTML = "APK file generated";
+        fileCreate.innerHTML = mes;
         windMenu.appendChild(fileCreate);
         let buttSave = createButtonBlue("Save", 80);
-        buttSave.addEventListener("click", function(){closeWindow(buttSave);}, true);
+        buttSave.addEventListener("click", function(){closeWindTimeout(buttSave);}, true);
         buttSave.style.marginTop = "25px";
         buttSave.className = "save-apk";
         windMenu.appendChild(buttSave);
         doServer("GET", url + "?projectId=" + currentProject.projectId, cbGenerateProject, null, windMenu, windMenu);
     }
 }
-/*
-function validDeclare() {
-    let strError = "";
-    let ik = listScreen.length;
-    listNameScreen.length = 0;
-    if (ik == 0) {
-        strError += "Нет описаных экранов<br>";
-    } else {
-        for (let i = 0; i < ik; i++) {
-            let nn = listScreen[i].screenName;
-            if (nn == "") {
-                strError += "Экран с номером " + i + " не имеет названия<br>";
-            } else {
-                listNameScreen.push(nn.toUpperCase())
-            }
-        }
-        for (let i = 0; i < ik; i++) {
-            let scr = listScreen[i];
-            let sk = scr.components.length;
-            let noNav = true;
-            for (let s = 0; s < sk; s++) {
-                let comp = scr.components[s];
-                switch (comp.type) {
-                    case "MenuBottom":
-                        if (comp.navigator != null && comp.navigator.length > 0) {
-                            noNav = false;
-                        }
-                    case "Menu":
-                    case "TabLayout":
-                        let men = comp.model.menuList.list;
-                        let mk = men.length;
-                        if (mk == 0) {
-                            strError += "Экран " + scr.screenName + " компонент типа " + comp.type + " не имеет описания меню<br>";
-                        } else {
-                            if (noNav) {
-                                for (let m = 0; m < mk; m++) {
-                                    let scrItem = men[m].screen;
-                                    if (scrItem == null || scrItem.length == 0) {
-                                        strError += "Экран " + scr.screenName + " компонент типа " + comp.type + " пункт меню " + m + " не имеет ссылки на экран<br>";
-                                    } else {
-                                        scrN = scrItem.toUpperCase();
-                                        if (isScreenDeclare(scrN) == -1) {
-                                            strError += "Экран " + scr.screenName + " компонент типа " + comp.type + " пункт меню " + m + " ссылается на неописанный экран " + scrN + "<br>";
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        break;
-                    case "Drawer":
-                        scrN = comp.view.drawer_fragm.toUpperCase();
-                        if (isScreenDeclare(scrN) == -1) {
-                            strError += "Экран " + scr.screenName + " компонент типа " + comp.type + " ссылается на неописанный экран " + scrN + "<br>";
-                        }
-                        break;
-                    default:
-                        try {
-                            uxFunction = eval("new ux" + comp.type + "();");
-                            let errComp = uxFunction.isValid(comp, scr.layout);
-                            if (errComp.text != "") {
-                                strError += errComp.text + "\n";
-                                if (newLevelErrors < errComp.error) {
-                                    newLevelErrors = errComp.error;
-                                }
-                            }
-                        } catch(e) { }
-                        break;
-                }
-                if (comp.navigator != null && comp.navigator.length > 0) {
-                    let nk = comp.navigator.length;
-                    for (n = 0; n < nk; n++) {
-                        let nav = comp.navigator[n];
-                        switch (nav.handler) {
-                            case "start":
-                                scrN = nav.param.toUpperCase();
-                                if (isScreenDeclare(scrN) == -1) {
-                                    strError += "Экран " + scr.screenName + " компонент типа " + comp.type + " в навигаторе ссылается на неописанный экран " + scrN + "<br>";
-                                }
-                                break;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    ik = listValueAppParam.length;
-    if (ik == 0) {
-        strError += "baseUrl is not filled<br>";
-        if (isMap()) {
-            strError += "not filled geoApiKey for maps<br>";
-        }
-    } else {
-        let noUrl = true;
-        let noKey = true;
-        let noStartScr = true;
-        let isParameterStartScr = false;
-        for (let i = 0; i < ik; i++) {
-            let item = listValueAppParam[i];
-            let vv = item.value;
-            switch (item.name) {
-                case "ScreenStart":
-                    isParameterStartScr = true;
-                    let sk = listScreen.length;
-                    let vvUP = vv.toUpperCase();
-                    for (let s = 0; s < sk; s++) {
-                        if (vvUP == listScreen[s].screenName.toUpperCase()) {
-                            noStartScr = false;
-                            break;
-                        }
-                    }
-                    break;
-                case "baseUrl":
-                    noUrl = false;
-                    if (vv != null || vv.length > 0) {
-                        if ( ! isUrlValid(vv)) {
-                            strError += "baseUrl is error";
-                        }
-                    } else {
-                        strError += "baseUrl is not filled";
-                    }
-                    break;
-                case "geoApiKey":
-                    noKey = false;
-                    if (vv == null || vv == "") {
-                        if (isMap()) {
-                            strError += "not filled geoApiKeu for maps";
-                        }
-                    }
-                    break;
-            }
-        }
-        if (noUrl) {
-            strError += "baseUrl is not filled<br>";
-        }
-        if (noKey) {
-            if (isMap()) {
-                strError += "not filled geoApiKey for maps<br>";
-            }
-        }
-        if (noStartScr) {
-            if (isParameterStartScr) {
-                strError += "No start screen description<br>";
-            } else {
-                let sk = listScreen.length;
-                let vvUP = "MAIN";
-                for (let s = 0; s < sk; s++) {
-                    if (vvUP == listScreen[s].screenName.toUpperCase()) {
-                        noStartScr = false;
-                        break;
-                    }
-                }
-                if (noStartScr) {
-                    strError += "No start screen description<br>";
-                }
-            }
-        }
-    }
-    if (strError != "") {
-        var wind = formWind(450, 350, 35, 270, "Error in project");
-        wind.innerHTML = strError;
-        return false;
-    } else {
-        return true;
-    }
+
+function closeWindTimeout(buttSave) {
+    setTimeout(closeWind(buttSave), 400);
 }
-*/
 
 function validDeclare() {
     let strError = "";
     let ik = listScreen.length;
     let newLevelErrors = 0;
-    listNameScreen.length = 0;
+//    listNameScreen.length = 0;
     if (ik == 0) {
         strError += "Нет описаных экранов<br>";
     } else {
@@ -809,14 +662,10 @@ function validDeclare() {
     ik = listValueAppParam.length;
     if (ik == 0) {
         strError += "baseUrl is not filled<br>";
-        if (newLevelErrors < 2) {
-            newLevelErrors = 2;
-        }
+        newLevelErrors = 2;
         if (isMap()) {
             strError += "not filled geoApiKey for maps<br>";
-            if (newLevelErrors < 2) {
-                newLevelErrors = 2;
-            }
+            newLevelErrors = 2;
         }
     } else {
         let noUrl = true;
@@ -860,24 +709,18 @@ function validDeclare() {
         }
         if (noUrl) {
             strError += "baseUrl is not filled<br>";
-            if (newLevelErrors < 2) {
-                newLevelErrors = 2;
-            }
+            newLevelErrors = 2;
         }
         if (noKey) {
             if (isMap()) {
                 strError += "not filled geoApiKey for maps<br>";
-                if (newLevelErrors < 2) {
-                    newLevelErrors = 2;
-                }
+                newLevelErrors = 2;
             }
         }
         if (noStartScr) {
             if (isParameterStartScr) {
                 strError += "No start screen description<br>";
-                if (newLevelErrors < 2) {
-                    newLevelErrors = 2;
-                }
+                newLevelErrors = 2;
             } else {
                 let sk = listScreen.length;
                 let vvUP = "MAIN";
@@ -889,15 +732,15 @@ function validDeclare() {
                 }
                 if (noStartScr) {
                     strError += "No start screen description<br>";
-                    if (newLevelErrors < 2) {
-                        newLevelErrors = 2;
-                    }
+                    newLevelErrors = 2;
                 }
             }
         }
     }
     if (strError != "") {
-        var wind = formWind(450, 350, 35, 270, "Error in project");
+        let divErr = currentScreenView.getElementsByClassName("error_screen")[0];
+        divErr.style.backgroundColor = colorsEroor[newLevelErrors];
+        var wind = formWind(500, 400, 35, 270, "Error in project");
         wind.style.paddingLeft = "4px";
         wind.innerHTML = strError;
         return false;
@@ -926,15 +769,13 @@ function isMap() {
 }
 
 function isScreenDeclare(name) {
-    let res = -1;
-    let ik = listNameScreen.length;
+    let ik = listScreen.length;
     for (let i = 0; i < ik; i++) {
-        if (name == listNameScreen[i]) {
-            res = listScreen[i].typeScreen;
-            break;
+        if (name == listScreen[i].screenName.toUpperCase()) {
+            return i;
         }
     }
-    return res;
+    return -1;
 }
 
 function cbGenerateProject(res, wind) {

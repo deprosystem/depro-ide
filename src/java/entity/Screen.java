@@ -1,6 +1,7 @@
 package entity;
 
 import android.AndroidPar;
+import projects.InitData;
 import projects.Navigator;
 
 public class Screen {
@@ -10,4 +11,5 @@ public class Screen {
     public ListComponent components;
     public AndroidPar layout;
     public Navigator navigator;
+    public InitData initData;
 }

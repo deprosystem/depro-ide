@@ -267,36 +267,36 @@ public class Project extends BaseServlet {
         item = new ItemResurces();
         item.itemId = 0;
         item.itemName = "primary";
-        item.itemValue = "#51aeffff";
+        item.itemValue = "#51aeff";
         li.add(item);
 
         item = new ItemResurces();
         item.itemId = 1;
         item.itemName = "primaryDark";
-        item.itemValue = "#007eedff";
+        item.itemValue = "#007eed";
         li.add(item);
         item = new ItemResurces();
         item.itemId = 2;
         item.itemName = "primaryLight";
-        item.itemValue = "#a3d4ffff";
+        item.itemValue = "#a3d4ff";
         li.add(item);
         
         item = new ItemResurces();
         item.itemId = 3;
         item.itemName = "accent";
-        item.itemValue = "#ffe854ff";
+        item.itemValue = "#ffe854";
         li.add(item);
 
         item = new ItemResurces();
         item.itemId = 4;
         item.itemName = "accentDark";
-        item.itemValue = "#f2d100ff";
+        item.itemValue = "#f2d100";
         li.add(item);
         
         item = new ItemResurces();
         item.itemId = 5;
         item.itemName = "accentLight";
-        item.itemValue = "#fff199ff";
+        item.itemValue = "#fff199";
         li.add(item);
         
         item = new ItemResurces();

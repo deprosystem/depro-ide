@@ -7,7 +7,7 @@ function tooltipMessage(target, message) {
 }
 
 function tooltipMessageOver(target, message) {
-    let maxW = 350;
+    let maxW = 400;
     let xy = getCoordsEl(target);
     let x = xy.left + 5;
     let y = xy.top;
@@ -29,7 +29,7 @@ function tooltipMessageOver(target, message) {
 }
 
 function tooltipErrorScreen(target, message) {
-    let maxW = 450;
+    let maxW = 550;
     let xy = getCoordsEl(target);
     let x = xy.left + 5;
     let y = xy.top;
@@ -164,4 +164,8 @@ function createContour() {
         <div class="contourLT" onmousedown="resizeContour(event)"></div><div class="contourLB" onmousedown="resizeContour(event)"></div>\n\
         <div class="contourRB" onmousedown="resizeContour(event)"></div></div>';
     return container.firstChild;
+}
+
+function daysInMonth(m, y) {//m is 0-based, feb = 1
+   return 31 - (m ^ 1? m % 7 & 1:  y & 3? 3: y % 25? 2: y & 15? 3: 2);
 }

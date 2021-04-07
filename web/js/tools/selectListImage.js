@@ -51,3 +51,47 @@ function setSelectImage(e, i, par) {
     closeWindow(el);
     par.func(i, par.param);
 }
+
+function selectListImageEl(el, cb) {
+    let par = {"el":el,"func":cb};
+    if (listImage == null) {
+        doServer("GET", 'images/list', cbGetListImgEl, null, par);
+    } else {
+        selectImageEl(par)
+    }
+}
+
+function cbGetListImgEl(res, par) {
+    if (res == "") return;
+    listImage = JSON.parse(res);
+    selectImageEl(par);
+}
+
+function selectImageEl(par) {
+    let windMenu = formWind(250, 450, 40, 350, "Select image");
+    let viewport = document.createElement('div');
+    viewport.className = "viewport";
+    let content = document.createElement('div');
+    content.className = "content";
+    viewport.appendChild(content);
+    windMenu.appendChild(viewport);
+    var str = '';
+    for (let i = 0; i < listImage.length; i++) {
+        let path = listImage[i];
+        let ii = path.lastIndexOf("/");
+        let nam = path.substring(ii + 1);
+        nam = nam.substring(0, nam.indexOf('.'))
+        let item = createItemListImg(path, nam);
+        item.addEventListener("click", function(event){setSelectImageEl(event, i, par, path)}, true);
+        content.appendChild(item);
+    }
+    let scrollVert = new scrollX(viewport, "scroll");
+    scrollVert.init();
+}
+
+function setSelectImageEl(e, i, par, path) {
+    let el = e.target;
+    closeWindow(el);
+    par.func(i, path);
+    par.el.src = path;
+}

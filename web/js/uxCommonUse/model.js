@@ -3,7 +3,7 @@ let uxModel1 = '<div class="model_view" style="height:40px;">'
         +'<select class="model_method type_screen select_';
 
 let uxModel2 = '" onchange="changeMethod(this)" style="width:120px;"><option>GET</option><option>POST</option><option>TEST</option>'
-            +'<option>JASON</option><option>ARGUMENTS</option><option>PARAMETERS</option><option>NULL</option></select>'
+            +'<option>JASON</option><option>ARGUMENTS</option><option>PARAMETERS</option><option>GLOBAL</option><option>NULL</option></select>'
         +'</div>'
         +'<div class="param_method" style="float:left;margin-left:10px;"></div>';
 
@@ -11,6 +11,9 @@ let pmUrl = '<div style="display:inline-block;"><div style="color:#2228;font-siz
             +'<input class="url input_style" onkeyup="return clickUpURL(event)" style="color:#000a" type="text" size="20" value=""/>'
             +'</div>';
 let pmParamUrl = '<div style="display:inline-block;margin-left:10px"><div style="color: #2228;font-size: 10px;margin-left:4px">URL Parameters</div>'
+            +'<input class="param input_style" onchange="changeUrlParam(this.value)" style="color:#000a" type="text" size="15" value=""/>'
+            +'</div>';
+let pmParameters = '<div style="display:inline-block;margin-left:10px"><div style="color: #2228;font-size: 10px;margin-left:4px">Parameters</div>'
             +'<input class="param input_style" onchange="changeUrlParam(this.value)" style="color:#000a" type="text" size="15" value=""/>'
             +'</div>';
 let pmProgr = '<div class="progr_mod" style="display:inline-block;margin-left:10px;">\n\
@@ -126,10 +129,38 @@ function changeMethod(el) {
             case "PARAMETERS":
                 pm.innerHTML = pmParamUrl;
                 break;
+            case "GLOBAL":
+                pm.innerHTML = pmParameters;
+                break;
             default:
                 pm.innerHTML = "";
         }
     }
+}
+
+function isValidModel(mod, tab) {
+    let err = {text:"",error:0};
+    if (mod.method < 2) {
+        let pr = mod.progr;
+        if (pr != null && pr.length > 0) {
+            if (pr != "standard" && pr != "no") {
+                let p = getCompByViewId(layout.children, pr);
+                if (p == null) {
+                    err.text += txtError(2, tab, "component " + compD.view.viewId + " error in progress " + pr);
+                    err.error = 2;
+                }
+            }
+        }
+        if (mod.url == null || mod.url == "") {
+            err.text += txtError(2, tab, "component " + compD.view.viewId + " URL not specified  " + pr);
+            err.error = 2;
+        }
+    }
+    if (mod.method == 6 && (mod.param == null || mod.param == "") ) {
+            err.text += txtError(2, tab, "component " + compD.view.viewId + " parameters not specified  " + pr);
+            err.error = 2;
+    }
+    return err;
 }
 
 function editDataModel(el, ind) {

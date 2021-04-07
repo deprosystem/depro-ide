@@ -30,5 +30,6 @@ public class AndroidPar {
     public Integer scaleType;
     public String imgBack, imgHamburg;
     public SheetParam sheetParam;
+    public SeekBarParam seekBarParam;
     public List<AndroidPar> children;
 }

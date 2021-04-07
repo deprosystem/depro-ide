@@ -90,7 +90,13 @@ function clearSelectValue(el) {
     let par = el.parentElement;
     let numb = par.getElementsByTagName("input")[0];
     if (numb != null) {
-        numb.value = el.innerHTML;
+//        numb.value = el.innerHTML;
+        let cc = el.style.backgroundColor;
+        if (cc == null || cc == "") {
+            numb.value = "";
+        } else {
+            numb.value = el.innerHTML;
+        }
     }
 }
 
@@ -107,10 +113,16 @@ function clearSelectList(el) {
     let par = el.parentElement;
     let ch = par.children;
     let ik = ch.length - 1;
+    let val = el.innerHTML;
     for (let i = 0; i < ik; i++) {
         let item = ch[i];
-        if (item == el) {
-            item.style.backgroundColor = fonSel;
+        if (item.innerHTML == val) {
+            let cc = item.style.backgroundColor;
+            if (cc == null || cc == "") {
+                item.style.backgroundColor = fonSel;
+            } else {
+                item.style.backgroundColor = "";
+            }
         } else {
             item.style.backgroundColor = "";
         }

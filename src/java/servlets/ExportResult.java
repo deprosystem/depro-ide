@@ -6,6 +6,7 @@ import android.ComponParam;
 import android.Corners;
 import android.Drawable;
 import android.ItemChange;
+import android.SeekBarParam;
 import android.TabLayout;
 import com.google.gson.JsonSyntaxException;
 import db.ProjectDB;
@@ -46,13 +47,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import projects.DataList;
 import projects.Handler;
+import projects.InitData;
 import projects.ItemAppParam;
+import projects.ItemInitData;
 import projects.ItemResurces;
 import projects.ItemStyle;
 import projects.MenuItem;
 import projects.MenuList;
 import projects.Model;
 import projects.Navigator;
+import projects.Options;
 import projects.Param;
 import projects.ProjectM;
 
@@ -259,7 +263,6 @@ public class ExportResult extends BaseServlet {
         HashSet<String> importD = new HashSet();
         try {
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter( new FileOutputStream(path + "/MyDeclare.java"), "UTF8"));
-//            FileWriter writer = new FileWriter(path + "/MyDeclare.java", false);
             parSave.sreens = gson.fromJson(pr.screens, ListScreen.class);
             int ik = parSave.sreens.size();
             int ik1 = ik - 1;
@@ -300,7 +303,14 @@ public class ExportResult extends BaseServlet {
                 }
                 String endScr = ")" + anim + ";\n";
                 int jk = sc.components.size();
-                if (jk > 0) {
+                boolean isNavSet = false;
+                if (sc.navigator != null && sc.navigator.size() > 0) {
+                    isNavSet = true;
+                }
+                if (sc.initData != null && sc.initData.size() > 0) {
+                    isNavSet = true;
+                }
+                if (jk > 0 || isNavSet) {
                     endScr = ")" + anim + "\n";
                 }
                 String tit = "";
@@ -312,14 +322,60 @@ public class ExportResult extends BaseServlet {
                     titPar = ", \"" + sc.titleParam.toLowerCase() + "\"";
                 }
                 declare.add("        " + type + "(" + scName.toUpperCase() + ", R.layout." + type + "_" + scName + tit + titPar + endScr);
+                
+                String startNavig = "";
+                String sepSatrtNav = "";
+                for (int j = 0; j < jk; j++) {
+                    Component comp = sc.components.get(j);
+                    if (comp.type.equals(Constants.LIST)) {
+                        if (comp.options != null && comp.options.isCascade != null && comp.options.isCascade) {
+                            if (comp.options.first) {
+                                startNavig += sepSatrtNav + "cleanCopyVar(\"" + comp.options.nameGlob + "\")";
+                                sepSatrtNav = ",\n";
+                            }
+                        }
+                    }
+                }
+                
+                String initData = "";
+                if (sc.initData != null && sc.initData.size() > 0) {
+                    int dk = sc.initData.size();
+                    String sepInitData = "";
+                    for (int d = 0; d < dk; d++) {
+                        ItemInitData id = sc.initData.get(d);
+                        switch (id.typeSource) {
+                            case "SIZE":
+                                initData += sepInitData + "set(R.id." + id.viewId + ", TS.SIZE, R.id." + id.idComp + ")";
+                                break;
+                            case "PARAM":
+                                initData += sepInitData + "setParam(R.id." + id.viewId + ", \"" + id.param + "\")";
+                                break;
+                        }
+                        sepInitData = ",\n";
+                    }
+                }
+                
+                if (initData.length() > 0) {
+                    declare.add(tab16 + ".setValue(" + initData + ")\n");
+                }
+                
+                if (startNavig.length() > 0) {
+                    declare.add(tab16 + ".startNavigator(" + startNavig + ")\n");
+                }
+                
                 if (sc.navigator != null && sc.navigator.size() > 0) {
-                    declare.add(formNavigator(sc.navigator, tab16, tab12 + ".") + "\n");
+                    String endScrNav = "";
+                    if (jk == 0) {
+                        endScrNav = ";";
+                    }
+                    declare.add(formNavigator(sc.navigator, tab16, tab12 + ".") + endScrNav + "\n");
                 }
                 int jk1 = jk - 1;
                 MenuList ml;
                 String nameMenu;
                 int mk, mk1;
                 boolean noStart;
+                String navList;
                 for (int j = 0; j < jk; j++) {
                     Component comp = sc.components.get(j);
                     String cViewId = comp.view.viewId.toLowerCase();
@@ -329,16 +385,22 @@ public class ExportResult extends BaseServlet {
                     }
                     switch (comp.type) {
                         case Constants.LIST:
+                            navList = "";
+                            if (comp.options != null && comp.options.isCascade != null && comp.options.isCascade) {
+                                navList = formNavigatorList(comp.navigator, comp.options, tab20, ",\n" + tab16);
+                            } else {
+                                navList = formNavigator(comp.navigator, tab20, ",\n" + tab16);
+                            }
                             declare.add(tab12 + ".list(" + formModel(comp)
-                                    + "\n" + tab16 + formView(comp, scName) + formNavigator(comp.navigator, tab20, ",\n" + tab16) + endComp);
+                                    + "\n" + tab16 + formView(comp, scName) + navList + endComp);
                             break;
                         case Constants.SCROLL:
                         case Constants.PANEL:
-                            declare.add(tab12 + ".component(TC.PANEL_ENTER, " + formModel(comp)
+                            declare.add(tab12 + ".component(TC.PANEL, " + formModel(comp)
                                     + "\n" + tab16 + "view(R.id." + comp.view.viewId + ")" + formNavigator(comp.navigator, tab20, ",\n" + tab16) + endComp);
                             break;
                         case Constants.FORM:
-                            declare.add(tab12 + ".component(TC.PANEL, " + formModel(comp)
+                            declare.add(tab12 + ".component(TC.PANEL_ENTER, " + formModel(comp)
                                     + "\n" + tab16 + "view(R.id." + comp.view.viewId + ")" + formNavigator(comp.navigator, tab20, ",\n" + tab16) + endComp);
                             break;
                         case Constants.PAGER:
@@ -477,6 +539,15 @@ public class ExportResult extends BaseServlet {
                             parSave.addPermish.add("<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>");
                             parSave.addPermish.add("<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>");
                             break;
+                        case Constants.TAGS:
+                            navList = formNavigator(comp.navigator, tab20, ",\n" + tab16);
+                            declare.add(tab12 + ".component(TC.TAGS, " + formModel(comp)
+                                    + "\n" + tab16 + formView(comp, scName) + navList + endComp);
+                            break;
+                        case Constants.PLUS_MINUS:
+                            navList = formNavigator(comp.navigator, tab20, ",\n" + tab16);
+                            declare.add(tab12 + ".plusMinus(R.id." + comp.view.viewId + ", R.id." + comp.view.plusId + ", R.id." + comp.view.minusId + navList + endComp);
+                            break;
                     }
                 }
             }
@@ -529,6 +600,7 @@ public class ExportResult extends BaseServlet {
     private String formModel(Component comp) {
         Model m = comp.model;
         String res = "model(";
+        String stPar;
         switch (m.method) {
             case Constants.TEST:
                 res += "JSON, " + gson.toJson(comp.model.testData) + "),";
@@ -546,11 +618,18 @@ public class ExportResult extends BaseServlet {
                 res += "),";
                 break;
             case Constants.PARAMETERS:
-                String stPar = "";
+                stPar = "";
                 if (m.param != null && m.param.length() > 0) {
                     stPar += ", " + formUrlParam(comp);
                 }
                 res += "PARAMETERS" + stPar + "),";
+                break;
+            case Constants.GLOBAL:
+                stPar = "";
+                if (m.param != null && m.param.length() > 0) {
+                    stPar += ", " + formUrlParam(comp);
+                }
+                res += "GLOBAL" + stPar + "),";
                 break;
             case Constants.NULL:
                 res = "null,";
@@ -592,6 +671,30 @@ public class ExportResult extends BaseServlet {
         return inDoubleQuotes(comp.model.param);
     }
     
+    private String formNavigatorList(Navigator navigator, Options opt, String tab, String beg) {
+        int ik = navigator.size();
+        String res = beg + "navigator(";
+        String sep = ",\n" + tab;
+        if (opt.nextId != null && opt.nextId.length() > 0) {
+            res += "addVar(R.id." + opt.nextId + ", \"" + opt.nameGlob + "\", \"" + opt.listVar + "\")";
+        } else {
+            sep = "";
+        }
+        res += sep + "addVar(R.id." + opt.enterId + ", \"" + opt.nameGlob + "\", \"" + opt.listVar + "\")";
+        sep = ",\n" + tab;
+        res += sep + "delVarFollow(R.id." + opt.enterId + ", \"" + opt.nameGlob + "\", \"" + opt.listVar + "\")";
+        res += sep + "backOk(R.id." + opt.enterId + ")";
+        if (ik > 0) {
+            for (int i = 0; i < ik; i++) {
+                if ( ! navigator.get(i).after) {
+                    res += sep + formHandler(navigator, i, false);
+                }
+            }
+        }
+        res += ")";
+        return res;
+    }
+    
     private String formNavigator(Navigator navigator, String tab, String beg) {
         int ik = navigator.size();
         if (ik > 0) {
@@ -599,7 +702,7 @@ public class ExportResult extends BaseServlet {
             String sep = "";
             for (int i = 0; i < ik; i++) {
                 if ( ! navigator.get(i).after) {
-                    res += sep + formHandler(navigator, i);
+                    res += sep + formHandler(navigator, i, false);
                     sep = ",\n" + tab;
                 }
             }
@@ -610,22 +713,34 @@ public class ExportResult extends BaseServlet {
         }
     }
     
-    private String formHandler(Navigator navigator, int i) {
+    private String formHandler(Navigator navigator, int i, boolean menu) {
         Handler hh = navigator.get(i);
         String res = "";
         String stId;
         String parId;
         String sep = "";
         int ik = navigator.size();
-        if (hh.viewId != null && hh.viewId.length() > 0 && ! hh.viewId.equals("0")) {
-            stId = "R.id." + hh.viewId;
-        } else {
+        if (menu) {
             stId = "";
+        } else {
+            if (hh.viewId != null && hh.viewId.length() > 0 && ! hh.viewId.equals("0")) {
+                stId = "R.id." + hh.viewId;
+            } else {
+                stId = "";
+            }
         }
         if (hh.id != null && hh.id.length() > 0) {
             parId = "R.id." + hh.id;
         } else {
             parId = "";
+        }
+        String com = "";
+        if (stId.length() > 0 && parId.length() > 0) {
+            com = ", ";
+        }
+        String comSh = "";
+        if (stId.length() > 0) {
+            comSh = ", ";
         }
         switch (hh.handler) {
             case "start":
@@ -643,7 +758,7 @@ public class ExportResult extends BaseServlet {
                         for (int j = i_1; j < ik; j++) {
                             Handler hAfter = navigator.get(j);
                             if (hAfter.after) {
-                                stAfter += sepAft + formHandler(navigator, j);
+                                stAfter += sepAft + formHandler(navigator, j, menu);
                                 sepAft = ",\n" + tab20;
                             } else {
                                 break;
@@ -652,22 +767,52 @@ public class ExportResult extends BaseServlet {
                         stAfter += ")";
                     }
                 }
-                res = "start(" + stId + sep + hh.param.toUpperCase() + stAfter + ")";
+                String mustValid = "";
+                if (hh.param_1 != null && hh.param_1.length() > 0) {
+                    mustValid = formMustValid(hh.param_1);
+                }
+                res = "start(" + stId + sep + hh.param.toUpperCase() + stAfter + mustValid + ")";
                 break;
 
+            case "setVar":
+                res = "setVar(R.id." + hh.id + ",\"" + hh.param + "\",\"" + hh.param_1 + "\")";
+                break;
             case "hide":
-                res = "hide(R.id." + hh.id + ")";
+                res = "hide(" + stId + comSh + "R.id." + hh.id + ")";
                 break;
             case "show":
-                res = "show(R.id." + hh.id + ")";
+                res = "show(" + stId + comSh + "R.id." + hh.id + ")";
                 break;
-
-            default:
-                String com = "";
-                if (stId.length() > 0 && parId.length() > 0) {
-                    com = ", ";
+            case "addRecord":
+                String vId = "0";
+                if (stId.length() > 0) {
+                    vId = stId;
                 }
-                res = hh.handler + "(" + stId + com + parId + ")";
+                res = "handler(" + vId + ", VH.ADD_RECORD, R.id." + hh.id + ")";
+                break;
+            case "delRecord":
+                vId = "0";
+                if (stId.length() > 0) {
+                    vId = stId;
+                }
+                res = "handler(" + vId + ", VH.DEL_RECORD)";
+                break;
+            default:
+                String par = "";
+                if (hh.param != null && hh.param.length() > 0) {
+                    par = ", \"" + hh.param + "\"";
+                }
+                res = hh.handler + "(" + stId + com + parId + par + ")";
+        }
+        return res;
+    }
+    
+    private String formMustValid(String listView) {
+        String res = ", false";
+        String[] arr = listView.split(",");
+        int ik = arr.length;
+        for (int i = 0; i < ik; i++) {
+            res += ", R.id." + arr[i];
         }
         return res;
     }
@@ -682,7 +827,7 @@ public class ExportResult extends BaseServlet {
             for (int n = 0; n < nk; n++) {
                 Handler hh = nav.get(n);
                 if (hh.viewId != null && hh.viewId.length() > 0 && hh.viewId.equals(vId)) {
-                    st += sep + formHandler(nav, n);
+                    st += sep + formHandler(nav, n, true);
                     sep = ",";
                 }
             }
@@ -699,6 +844,17 @@ public class ExportResult extends BaseServlet {
         String span = "";
         if (comp.view.spanC > 1) {
             span = ".spanCount(" + comp.view.spanC + ")";
+        }
+        String visib = "";
+        if (comp.view.visibility != null && comp.view.visibility.length() > 0) {
+            visib = ".visibilityManager(";
+            String[] arr = comp.view.visibility.split(",");
+            String sep = "";
+            for (int i = 0; i < arr.length; i++) {
+                String aI = arr[i];
+                visib += sep + "visibility(R.id." + aI + ",\"" + aI + "\")";
+            }
+            visib += ")";
         }
         String sel = "";
         if (comp.view.selectedType != null) {
@@ -739,7 +895,7 @@ public class ExportResult extends BaseServlet {
         } else {
             stItems = ", R.layout.item_" + name + "_" + comp.view.viewId + "_0";
         }
-        return "view(R.id." + comp.view.viewId + ft + stItems + ")" + span + sel;
+        return "view(R.id." + comp.view.viewId + ft + stItems + ")" + visib + span + sel;
     }
     
     private String formViewPager(Component comp, String name, ParamSave parSave) {
@@ -899,6 +1055,19 @@ public class ExportResult extends BaseServlet {
                         }
                     }
                     break;
+
+                case Constants.TAGS :
+                    writer.write(tab0 + "/>");
+                    ik = elScreen.children.size();
+                    if (ik == 0) {
+                        createItemLayoutBlank(parSave.pathLayoutItem + elScreen.viewId + "_0.xml", parSave);
+                    } else {
+                        for (int i = 0; i < ik; i++) {
+                            createItemLayout(elScreen.children.get(i), parSave.pathLayoutItem + elScreen.viewId + "_" + i + ".xml", parSave);
+                        }
+                    }
+                    break;
+
                 default :
                     if (elScreen.children != null && elScreen.children.size() > 0) {
                         writer.write(tab0 + ">");
@@ -1121,6 +1290,19 @@ public class ExportResult extends BaseServlet {
         }
         
         switch (p.type) {
+            case Constants.TEXTVIEW:
+                if (p.componParam != null) { 
+                    if (p.componParam.acceptNotif != null && p.componParam.acceptNotif.length() > 0) {
+                        typeEl = Constants.TextCompon;
+                    }
+                    if (p.componParam.typeValidTV != null && ! p.componParam.typeValidTV.equals("no")) {
+                        typeEl = Constants.TextValid;
+                    }
+                    if (p.componParam.grammar != null && p.componParam.grammar.length() > 0) {
+                        typeEl = Constants.TextGrammar;
+                    }
+                }
+                break;
             case Constants.TOOL:
                 parSave.toolId = p.viewId;
                 break;
@@ -1421,6 +1603,134 @@ public class ExportResult extends BaseServlet {
                         }
                     }
                     break;
+                case Constants.TEXTVIEW:
+                    if (p.componParam != null) {
+                        if (p.componParam.typeValidTV != null && ! p.componParam.typeValidTV.equals("no")) {
+                            writer.write(tab + "app:typeValidate=\"" + p.componParam.typeValidTV + "\"");
+                            if (p.componParam.errorId != null && p.componParam.errorId.length() > 0) {
+                                writer.write(tab + "app:idError=\"@id/" + p.componParam.errorId + "\"");
+                            }
+                            if (p.componParam.errorTxt != null && p.componParam.errorTxt.length() > 0) {
+                                writer.write(tab + "app:textError=\"" + p.componParam.errorTxt + "\"");
+                            }
+                        }
+                        if (p.componParam.acceptNotif != null && p.componParam.acceptNotif.length() > 0) {
+                            writer.write(tab + "app:acceptNotif=\"" + p.componParam.acceptNotif + "\"");
+                        }
+                        if (p.componParam.grammar != null && p.componParam.grammar.length() > 0) {
+                            String namId = p.viewId;
+                            if (namId == null) {
+                                namId = "";
+                            }
+                            String nameStrId = parSave.currentScreen + namId + "grammar";
+                            formStringId(nameStrId, p.componParam.grammar, parSave.listString);
+                            writer.write(tab + "app:stringArray=\"@string/" + nameStrId + "\"");
+                            if (p.componParam.spaceZero != null && p.componParam.spaceZero) {
+                                writer.write(tab + "app:zeroNotView=\"true\"");
+                            }
+                        }
+                    }
+                    break;
+                case Constants.CALENDAR:
+                    if (p.componParam.heightMonth != null) {
+                        writer.write(tab + "app:heightMonth=\"" + p.componParam.heightMonth + "dp\"");
+                    }
+                    if (p.componParam.heightCell != null) {
+                        writer.write(tab + "app:heightCell=\"" + p.componParam.heightCell + "dp\"");
+                    }
+                    if (p.componParam.monthSize != null) {
+                        writer.write(tab + "app:monthSize=\"" + p.componParam.monthSize + "sp\"");
+                    }
+                    if (p.componParam.textDaySize != null) {
+                        writer.write(tab + "app:textDaySize=\"" + p.componParam.textDaySize + "sp\"");
+                    }
+                    if (p.componParam.tintDiam != null) {
+                        writer.write(tab + "app:selectTintDiam=\"" + p.componParam.tintDiam + "dp\"");
+                    }
+                    if (p.componParam.countAfterMonth != null && p.componParam.countAfterMonth > 0) {
+                        writer.write(tab + "app:countAfterMonth=\"" + p.componParam.countAfterMonth + "\"");
+                    }
+                    if (p.componParam.countBeforeMonth != null && p.componParam.countBeforeMonth > 0) {
+                        writer.write(tab + "app:countBeforeMonth=\"" + p.componParam.countBeforeMonth + "\"");
+                    }
+                    if (p.componParam.workDayColor != null) {
+                        writer.write(tab + "app:workDayColor=\"" + findColorByIndex(p.componParam.workDayColor, parSave.colors) + "\"");
+                    }
+                    if (p.componParam.selectTintColor != null) {
+                        writer.write(tab + "app:selectTintColor=\"" + findColorByIndex(p.componParam.selectTintColor, parSave.colors) + "\"");
+                    }
+                    if (p.componParam.selectTextColor != null) {
+                        writer.write(tab + "app:selectTextColor=\"" + findColorByIndex(p.componParam.selectTextColor, parSave.colors) + "\"");
+                    }
+                    if (p.componParam.isHolidays != null && p.componParam.isHolidays) {
+                        if (p.componParam.holidaysColor != null && p.componParam.holidaysColor != 6) {
+                            writer.write(tab + "app:noWorkDayColor=\"" + findColorByIndex(p.componParam.holidaysColor, parSave.colors) + "\"");
+                        }
+                    }
+                    if (p.componParam.sendNotif != null && p.componParam.sendNotif.length() > 0) {
+                        writer.write(tab + "app:sendNotif=\"" + p.componParam.sendNotif + "\"");
+                    }
+                    if (p.componParam.dateFormat != null && p.componParam.dateFormat.length() > 0) {
+                        writer.write(tab + "app:dateFormat=\"" + p.componParam.dateFormat + "\"");
+                    }
+                    if (p.componParam.saveParam != null && p.componParam.saveParam.length() > 0) {
+                        writer.write(tab + "app:saveParam=\"" + p.componParam.saveParam + "\"");
+                    }
+                    if (p.componParam.rangeDate != null && p.componParam.rangeDate) {
+                        writer.write(tab + "app:rangeDate=\"" + p.componParam.rangeDate + "\"");
+                    }
+                    if (p.componParam.afterToday != null && p.componParam.afterToday) {
+                        writer.write(tab + "app:afterToday=\"" + p.componParam.afterToday + "\"");
+                    }
+                    if (p.componParam.tillToday != null && p.componParam.tillToday) {
+                        writer.write(tab + "app:tillToday=\"" + p.componParam.tillToday + "\"");
+                    }
+                    if (p.componParam.nameMonth != null && p.componParam.nameMonth.length() > 0) {
+                        String namId = p.viewId;
+                        if (namId == null) {
+                            namId = "";
+                        }
+                        String nameStrId = parSave.currentScreen + namId + "calendar";
+                        formStringId(nameStrId, p.componParam.nameMonth, parSave.listString);
+                        writer.write(tab + "app:nameMonth=\"@string/" + nameStrId + "\"");
+                    }
+                    break;
+                case Constants.SEEKBAR:
+                    SeekBarParam sbp = p.seekBarParam;
+                    if (sbp != null) {
+                        if (sbp.barHeight != null) {
+                            writer.write(tab + "app:barHeight=\"" + sbp.barHeight + "dp\"");
+                        }
+                        if (sbp.betweenColor != null) {
+                            writer.write(tab + "app:betweenColor=\"" + findColorByIndex(sbp.betweenColor, parSave.colors) + "\"");
+                        }
+                        if (sbp.tumbColor != null) {
+                            if (sbp.tumbColor == 100000) {
+                                writer.write(tab + "app:thumbImg=\"@drawable/" + nameFromUrl(p.src) + "\"");
+                            } else {
+                                writer.write(tab + "app:thumbColor=\"" + findColorByIndex(sbp.tumbColor, parSave.colors) + "\"");
+                            }
+                        }
+                        if (sbp.range != null && ! sbp.range) {
+                            writer.write(tab + "app:singleThumb=\"true\"");
+                        }
+                        if (p.componParam.background != null && p.componParam.background > 999) {
+                            writer.write(tab + "app:barDrawable=\"@drawable/shape_" + p.componParam.background + "\"");
+                        } else {
+                            writer.write(tab + "app:barColor=\"" + findColorByIndex(p.componParam.background, parSave.colors) + "\"");
+                        }
+                        writer.write(tab + "app:minValueSeek=\"" + sbp.minV + "\"");
+                        writer.write(tab + "app:maxValueSeek=\"" + sbp.maxV + "\"");
+                        writer.write(tab + "app:minStartValue=\"" + sbp.minInit + "\"");
+                        writer.write(tab + "app:maxStartValue=\"" + sbp.maxInit + "\"");
+                        if (sbp.sliderId != null) {
+                            writer.write(tab + "app:sliderViewInfo=\"@id/" + sbp.sliderId + "\"");
+                        }
+                        if (sbp.sendNotif != null && sbp.sendNotif.length() > 0) {
+                            writer.write(tab + "app:sendNotif=\"" + sbp.sendNotif + "\"");
+                        }
+                    }
+                    break;
                 case Constants.TAB:
                     TabLayout tl = p.tabLayout;
                     if (tl.indColor != null) {
@@ -1519,7 +1829,30 @@ public class ExportResult extends BaseServlet {
                         writer.write(tab + "app:cardElevation=\"" + Integer.valueOf(p.elevCardShadow) + "dp\"");
                     }
                     break;
-
+                case Constants.PLUS_MINUS:
+                    if (p.componParam != null) {
+                        if (p.componParam.noEdit != null && p.componParam.noEdit) {
+                            writer.write(tab + "app:noEdit=\"true\"");
+                        }
+                        if (p.componParam.maxV != null) {
+                            writer.write(tab + "app:maxValue=\"" + p.componParam.maxV + "\"");
+                        }
+                        if (p.componParam.minV != null) {
+                            writer.write(tab + "app:minValue=\"" + p.componParam.minV + "\"");
+                        }
+/*
+                        if (p.componParam.minusId != null && p.componParam.minusId.length() > 0) {
+                            writer.write(tab + "app:minusViewId=\"@id/" + p.componParam.minusId + "\"");
+                        }
+                        if (p.componParam.plusId != null && p.componParam.plusId.length() > 0) {
+                            writer.write(tab + "app:plusViewId=\"@id/" + p.componParam.plusId + "\"");
+                        }
+*/
+                        if (p.componParam.resultId != null && p.componParam.resultId.length() > 0) {
+                            writer.write(tab + "app:viewMirror=\"@id/" + p.componParam.resultId + "\"");
+                        }
+                    }
+                    break;
             }
             if (p.componParam != null) {
                 if (p.componParam.formatTime != null) {

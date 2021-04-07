@@ -5,8 +5,10 @@ listMenu_UX[0] = {nameM : 'Projects', dependProject : true};
 listMenu_UX[0].children = new Array(
         {nameI : 'Create', func : createProject}, 
         {nameI : 'Open project', func : openProject},
+        {nameI : 'Take from templates', func : fromTemplates},
         {nameI : 'Change project', func : changeProject, dependProject : true},
         {nameI : 'Save project', func : saveProject, dependProject : true},
+        {nameI : 'Place in templates', func : inTemplates, dependProject : true},
         {nameI : 'Close project', func : closeProject, dependProject : true},
         {nameI : 'Delete project', func : deleteProject, dependProject : true});
 listMenu_UX[1] = {nameM : 'Screens '};
@@ -158,7 +160,7 @@ function scalePlus() {
         content_src.scroll_y.resize(content_src);
     }
 }
-
+/*
 function changeRoot() {
     var child = root.childNodes;
     var ik = child.length;
@@ -169,6 +171,7 @@ function changeRoot() {
         }
     }
 }
+*/
 
 function menuhide(el) {
     var currentmenu = el.getElementsByClassName("navbody")[0];

@@ -30,14 +30,61 @@ function uxMenuBottom() {
         return "https://docs.google.com/document/d/1iYRvK_JAz67laVPot_pCEUa0sM9Jp3hSJZMMG4qmtxQ/edit#heading=h.sh9l77syqm0d";
     }
     
-    this.isValid = function(compD) {
+    this.isValid = function(comp) {
+        let tab = "&ensp;";
         let err = {text:"",error:0};
-        
+        let men = comp.model.menuList.list;
+        let nav = comp.navigator;
+        let navL = (nav == null || nav.length == 0);
+        let mk = men.length;
+        if (mk == 0) {
+            err.text += txtError(2, tab, "component " + comp.view.viewId + " has no menu description");
+            err.error = 2;
+        } else {
+            for (let m = 0; m < mk; m++) {
+                let scrTit = men[m].title;
+                if (scrTit == null || scrTit.length == 0) {
+                    err.text += txtError(2, tab, "component " + comp.view.viewId + " menu item " + m + " has no name");
+                    err.error = 2;
+                }
+                let scrItem = men[m].screen;
+                if (scrItem == null || scrItem.length == 0) {
+                    if (navL) {
+                        err.text += txtError(2, tab, "component " + comp.view.viewId + " menu item " + m + " has no screen link");
+                        err.error = 2;
+                    } else {
+                        if (noHandler(nav, m)) {
+                            err.text += txtError(2, tab, "component " + comp.view.viewId + " menu item " + m + " has no screen link");
+                            err.error = 2;
+                        }
+                    }
+                } else {
+                    scrN = scrItem.toUpperCase();
+                    if (isScreenDeclare(scrN) == -1) {
+                        err.text += txtError(2, tab, "component " + comp.view.viewId + " menu item " + m + " refers to an undescribed screen "  + scrN);
+                        err.error = 2;
+                    }
+                }
+            }
+        }
         return err;
     }
 }
 
+function noHandler(nav, m) {
+    let ik = nav.length;
+    for (let i = 0; i < ik; i++) {
+        if (nav[i].viewId == m) {
+            return false;
+        }
+    }
+    return true;
+}
+
 function editMenu_b() {
+    if (currentComponentDescr.model.menuList == null) {
+        currentComponentDescr.model.menuList = {list:[]};
+    }
     editDataWind(metaMenu, currentComponentDescr.model.menuList.list, cbSaveMenuB);
 }
 

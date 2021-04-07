@@ -56,6 +56,8 @@ function moveEl(event) {
 function moveUp(e) {
     footer_inf.innerHTML = "";
     document.onmousemove = null;
+    document.onmousemove = null;
+    document.onmouseup = null;
     let rect = currentElement.getBoundingClientRect();
     let dX = elementLeft - rect.left;
     let dY = elementTop - rect.top;
@@ -67,12 +69,15 @@ function moveUp(e) {
     }
     if (dX < deltaOfset && dY < deltaOfset) {
         clickEl();
+/*
         if (dX != 0 || dY != 0) {
             setParamCompon();
             viewCompon();
         }
+*/
         return;
     }
+
     elementTop = rect.top;
     elementLeft = rect.left;
     
@@ -167,7 +172,6 @@ function createNewEl() {
 
 function mouseUpNewEl(e) {
     formNewElem = false;
-//    e.stopPropagation();
     document.onmousemove = null;
     document.onmouseup = null;
     var e = e || window.event;
@@ -213,7 +217,6 @@ function mouseUpNewEl(e) {
         ACTIVE.removeChild(currentElement);
         currentElement = null;
         layoutParam.style.display = 'none';
-
         if (elClick != null) {
             clickElement(e, elClick);
             elClick = null;
@@ -237,6 +240,7 @@ function resizeContour(e) {
         }
     }
     status = statusOLD;
+
     if (classN === 'active' || (classN.indexOf('contour') > -1)) {
         switch(classN) {
             case 'active':
@@ -289,7 +293,9 @@ function resizeContour(e) {
         } else {
             document.onmouseup = mouseUpEl;
         }
-    } 
+    } else {
+        document.onmouseup = clickEl;
+    }
 }
 
 function resizeNewAngle(e) {

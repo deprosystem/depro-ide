@@ -62,7 +62,6 @@ function uiTextView() {
         let lineSpacBl = selectBlock("lineSpacing", "0,1,2,3,4,6,8,10", "setLineSpacTV", 0, 14);
         setValueSelectBlock(lineSpacBl, p.lineSpac);
         uiParamTextView.appendChild(lineSpacBl);
-        
         let typeValid = dropDownList("Validation type", "no,filled,email", 65, "changeValidTypeTV", p.componParam.typeValidTV);
         typeValid.style.clear = "both";
         typeValid.style.marginLeft = "";
@@ -80,8 +79,25 @@ function uiTextView() {
         let sss = selectListID("error ID", 80, currentChildren, p.componParam.errorId, changeErrorIdTV, "TextView");
         errorV.appendChild(sss);
 
-        errorV.appendChild(editTextParam("Error message text ", 140, p.componParam.errorTxt, "changeErrotTxtTV"));
+        let txtErr = editTextParam("Error message text ", 120, p.componParam.errorTxt, "changeErrotTxtTV");
+        txtErr.style.marginLeft = "10px";
+        errorV.appendChild(txtErr);
         uiParamTextView.appendChild(errorV);
+        
+        let acceptN = editTextParam("Accept notification", 80, p.componParam.acceptNotif, "acceptNotifTV");
+        acceptN.style.marginTop = "5px";
+        acceptN.style.clear = "both";
+        contentAttributes.appendChild(acceptN);
+        
+        let grammar = editTextParam("Grammar", 150, p.componParam.grammar, "grammarTV");
+        grammar.style.marginTop = "5px";
+        grammar.style.clear = "both";
+        contentAttributes.appendChild(grammar);
+        
+        let space = editCheckbox("Space if zero", p.componParam.spaceZero, "grammarSpaceIfZero");
+        space.style.marginTop = "5px";
+        space.style.marginLeft = "10px";
+        contentAttributes.appendChild(space);
 
         setTextViewAttr(p);
     }
@@ -215,6 +231,7 @@ function changeValidTypeTV(el) {
     } else {
         ee.style.display = "block";
     }
+    viewCompon();
 }
 
 function changeErrorIdTV(el) {
@@ -225,4 +242,17 @@ function changeErrorIdTV(el) {
 function changeErrotTxtTV(el) {
     currentElement.android.componParam.errorTxt = el.value;
 }
+
+function acceptNotifTV(el) {
+    currentElement.android.componParam.acceptNotif = el.value;
+}
+
+function grammarTV(el) {
+    currentElement.android.componParam.grammar = el.value;
+}
+
+function grammarSpaceIfZero(vv) {
+    currentElement.android.componParam.spaceZero = vv;
+}
+
 

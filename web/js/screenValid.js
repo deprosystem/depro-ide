@@ -5,12 +5,10 @@ function screenValid() {
     
 }
 
-//function oneScreenValid(scrD, scrV) {
 function oneScreenValid(scrD, ii) {
     let newErrors = "";
     let newLevelErrors = 0;
     if (scrD.screenName == "") { 
-//        newErrors += '<span class="colorErrorL2">No screen name\n</span>';
         newErrors += txtError(2, "", "Screen number " + ii + " has no title");
         newLevelErrors = 2;
     }

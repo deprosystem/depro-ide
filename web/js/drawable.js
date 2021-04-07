@@ -25,6 +25,7 @@ function editDrawable(fCB, p) {
                 <div onclick="setCorners(this)" class="el_marg_pad" >2</div> \n\
                 <div onclick="setCorners(this)" class="el_marg_pad">4</div> \n\
                 <div onclick="setCorners(this)" class="el_marg_pad">8</div> \n\
+                <div onclick="setCorners(this)" class="el_marg_pad">10</div> \n\
                 <div onclick="setCorners(this)" class="el_marg_pad">12</div> \n\
                 <div onclick="setCorners(this)" class="el_marg_pad">16</div> \n\
                 <div onclick="setCorners(this)" class="el_marg_pad">20</div> \n\
@@ -299,8 +300,6 @@ function clearBackgroundDraw(el) {
 function setDrawableEl(el, draw) {
     if (draw == null) return;
     let drawEl = el.firstChild;
-//    let drawEl = el.getElementsByClassName('drawableBackground')[0];
-//    if (drawEl == null) {
     if (drawEl == null || drawEl.className != 'drawableBackground') {
         drawEl = createDrawableEl();
         el.insertBefore(drawEl, el.firstChild);

@@ -31,9 +31,12 @@ function formCompon() {
             {name: 'Gallery', typeBlock: 0},
             {name: 'Indicator', typeBlock: 0},
             {name: 'Ellipsis', typeBlock: 0},
+            {name: 'Ratings', typeBlock: 0},
             {name: 'Map', typeBlock: 0},
             {name: 'SheetBottom', typeBlock: 2},
-            {name: 'CalendarView', typeBlock: 0});
+            {name: 'SeekBar', typeBlock: 0},
+            {name: 'PlusMinus', typeBlock: 0},
+            {name: 'Calendar', typeBlock: 0});
     listComponent[4] = {};
     listComponent[4].name = 'Progress';
     listComponent[4].children = new Array({name: 'ProgressGroup', typeBlock: 2}, 
@@ -78,7 +81,7 @@ function clickCategory2(i, j){
 
 function createDivText() {
     var container = document.createElement('div')
-    container.innerHTML = '<div class="text" style="position: absolute; white-space: pre-wrap; color: #808080;"></div>'
+    container.innerHTML = '<div class="text" style="position: absolute; white-space: pre; color: #808080;"></div>'
     return container.firstChild
 }
 
@@ -123,13 +126,13 @@ function createDivImg() {
 
 function clickElement(event, el) {
     if (formNewElem) return;
-    if (el != ACTIVE) {
+//    if (el != ACTIVE) {
         hideContourEl();
         currentElement = el;
         setParamCompon();
         setPickElement(el);
         selectNavigatorEl(el);
-    }
+//    }
 }
 
 function setPickElement(el) {
@@ -219,54 +222,81 @@ function viewComponElem(el) {
     var pLL, pRR, pTT, pBB;
     LL = RR = TT = BB = 0;
     pLL = pRR = pTT = pBB = 0;
-    if (p.margin != undefined) {
-        if (p.margin == '') {
-            el.style.margin = '';
-        } else {
-            LL = RR = TT = BB = parseInt(p.margin) * MEASURE;
-            el.style.margin = LL + px;
+    
+    let par = p.parent.android;
+    let parL = 0, parT = 0, parR = 0, parB = 0;
+    let allParPad = false;
+//console.log("VVVVV_IIIII="+p.viewId+"<< PAR="+par);
+    if (par != null) {
+        if (par.padding != undefined && par.padding != '') {
+                parL = parT = parR = parB = parseInt(par.padding) * MEASURE;
+                allParPad = true;
+        }
+        if (par.leftPad != undefined && par.leftPad != '') {
+                parL = parseInt(par.leftPad) * MEASURE;
+        }
+
+        if (par.topPad != undefined && par.topPad != '') {
+                parT = parseInt(par.topPad) * MEASURE;
+        }
+        if (par.rightPad != undefined && par.rightPad != '') {
+                parR = parseInt(par.rightPad) * MEASURE;
+        }
+        if (par.bottomPad != undefined && par.bottomPad != '') {
+                parB = parseInt(par.bottomPad) * MEASURE;
         }
     }
-    if (p.leftMarg != undefined) {
-        if (p.leftMarg == '') {
-            if (LL == 0) el.style.marginLeft = '';
-        } else {
+
+    let allMarg = false;
+    if (p.margin != undefined && p.margin != '') {
+            LL = RR = TT = BB = parseInt(p.margin) * MEASURE;
+            allMarg = true;
+    }
+    if (p.leftMarg != undefined && p.leftMarg != '') {
             LL = parseInt(p.leftMarg) * MEASURE;
-            el.style.marginLeft = LL + px;
-        }
     }
     
-    if (p.topMarg != undefined) {
-        if (p.topMarg == '') {
-            if (TT == 0) el.style.marginTop = '';
-        } else {
+    if (p.topMarg != undefined && p.topMarg != '') {
             TT = parseInt(p.topMarg) * MEASURE;
-            el.style.marginTop = TT + px;
-        }
     }
-    if (p.rightMarg != undefined) {
-        if (p.rightMarg == '') {
-            if (RR == 0) el.style.marginRight = '';
-        } else {
+    if (p.rightMarg != undefined && p.rightMarg != '') {
             RR = parseInt(p.rightMarg) * MEASURE;
-            el.style.marginRight = RR + px;
-        }
     }
-    if (p.bottomMarg != undefined) {
-        if (p.bottomMarg == '') {
-            if (BB == 0) el.style.marginBottom = '';
-        } else {
+    if (p.bottomMarg != undefined && p.bottomMarg != '') {
             BB = parseInt(p.bottomMarg) * MEASURE;
-            el.style.marginBottom = BB + px;
-        }
     }
+
+    let padMarL = LL + parL;
+    if (padMarL > 0) {
+        el.style.marginLeft = padMarL + px;
+    } else {
+        el.style.marginLeft = "";
+    }
+    let padMarT = TT + parT;
+    if (padMarT > 0) {
+        el.style.marginTop = padMarT + px;
+    } else {
+        el.style.marginTop = "";
+    }
+    let padMarR = RR + parR;
+    if (padMarR > 0) {
+        el.style.marginRight = padMarR + px;
+    } else {
+        el.style.marginRight = "";
+    }
+    let padMarB = BB + parB;
+    if (padMarB > 0) {
+        el.style.marginBottom = padMarB + px;
+    } else {
+        el.style.marginBottom = "";
+    }
+
     
     if (p.padding != undefined) {
         if (p.padding == '') {
             el.style.padding = '';
         } else {
             pLL = pRR = pTT = pBB = parseInt(p.padding) * MEASURE;
-            el.style.padding = pLL + px;
         }
     }
     if (p.leftPad != undefined) {
@@ -274,7 +304,6 @@ function viewComponElem(el) {
             if (pLL == 0) el.style.paddingLeft = '';
         } else {
             pLL = parseInt(p.leftPad) * MEASURE;
-            el.style.paddingLeft = pLL + px;
         }
     }
     
@@ -283,7 +312,6 @@ function viewComponElem(el) {
             if (pTT == 0) el.style.paddingTop = '';
         } else {
             pTT = parseInt(p.topPad) * MEASURE;
-            el.style.paddingTop = pTT + px;
         }
     }
     if (p.rightPad != undefined) {
@@ -291,7 +319,6 @@ function viewComponElem(el) {
             if (pRR == 0) el.style.paddingRight = '';
         } else {
             pRR = parseInt(p.rightPad) * MEASURE;
-            el.style.paddingRight = pRR + px;
         }
     }
     if (p.bottomPad != undefined) {
@@ -299,7 +326,6 @@ function viewComponElem(el) {
             if (pBB == 0) el.style.paddingBottom = '';
         } else {
             pBB = parseInt(p.bottomPad) * MEASURE;
-            el.style.paddingBottom = pBB + px;
         }
     }
     let img;
@@ -312,7 +338,8 @@ function viewComponElem(el) {
     let margR;
     if (p.parent != null) {
         pp = p.parent.android;
-        if (pp.type == "List") {
+//console.log("PPPPP_IIII=="+p.viewId+"<< PPPPP="+pp);
+        if (pp != null && pp.type == "List") {
             let span = pp.spanC;
             let mm = -1;
             if (span != null) {
@@ -324,156 +351,7 @@ function viewComponElem(el) {
         }
     }
     if (p.parent != null) {
-        let root_w = p.parent.offsetWidth;
-        let root_h = p.parent.offsetHeight;
-        let pParent = p.parent.android;
-        if (p.width == MATCH) {
-            el.style.width = "";
-            el.style.left = "0px";
-            if (margR != null) {
-                el.style.right = margR + px;
-            } else {
-                el.style.right = "0";
-            }
-        } else if (p.width == WRAP) {
-            let contentEl;
-            let rectParent;
-            let wWpx;
-            el.style.width = "";
-            el.style.left = "0px";
-            el.style.right = "0px";
-            switch(p.type) {
-                case "EditText" :
-                    contentEl = el.getElementsByClassName("text")[0];
-                    rectParent = contentEl.getBoundingClientRect();
-                    wWpx = parseInt(rectParent.right - rectParent.left);
-                    if (wWpx == 0) {
-                        wWpx = 10;
-                    } 
-                    wWpx = wWpx + 8;
-                    el.style.width = wWpx + px;
-                    break;
-                case "TextView" :
-                    contentEl = el.getElementsByClassName("text")[0];
-                    rectParent = contentEl.getBoundingClientRect();
-                    wWpx = parseInt(rectParent.right - rectParent.left) + 1;
-                    el.style.right = "";
-                    el.style.width = wWpx + px;
-                    if (pLL > 0) {
-                        contentEl.style.marginLeft = pLL + px;
-                    } else {
-                        contentEl.style.marginLeft = "";
-                    }
-                    if (pTT > 0) {
-                        contentEl.style.marginTop = pTT + px;
-                    } else {
-                        contentEl.style.marginTop = "";
-                    }
-                    break;
-                case "RelativeLayout" :
-                    el.style.width = maxChildWidth(el) + px;
-                    break;
-                default:
-                    el.style.width = maxChildWidth(el) + px;
-//                    el.style.width = '';
-            }
-        } else {
-            el.style.width = (p.width * MEASURE - pLL - pRR) + px;
-        }
-        if (typeof(p.height) == "string") {
-            var hhh = findDimenByName(p.height);
-            var hi = parseInt(hhh);
-            el.style.height = (hi * MEASURE) + px;
-        } else {
-            if (p.height == MATCH) {
-                el.style.height = "";
-                el.style.top = "0px";
-                el.style.bottom = "0px";
-            } else if (p.height == WRAP) {
-                switch(p.type) {
-                    case "EditText" :
-                        el.style.height = standartHeightEditText(p.textSize) * MEASURE + px;
-                        break;
-                    case "TextView" :
-                        el.style.height = parseInt(p.textSize) * MEASURE + px;
-                        break;
-                    case "RelativeLayout" :
-                        el.style.height = maxChildHeight(el) + px;
-                        break;
-                    default:
-                        el.style.height = maxChildHeight(el) + px;
-//                        el.style.height = '';
-                }
-            } else {
-                el.style.height = (p.height * MEASURE - pTT - pBB) + px;
-            }
-        }
-        
-        if (p.type == "ImageView" || p.type == "Gallery" || p.type == "Map") {
-            if (p.src != null && p.src != '') {
-                var elDivImg = el.getElementsByClassName('image')[0];
-                if (elDivImg == null) {
-                    elDivImg = createDivImg();
-                    el.appendChild(elDivImg);
-                }
-                elDivImg.innerHTML = '<IMG SRC="'+ p.src +'" style="width:100%;height:100%;pointer-events: none;">';
-                elImg = elDivImg.firstChild;
-                if (p.width != WRAP) {
-                    var ww = parseInt(el.style.width);                    
-                    elImg.width = ww;
-                }
-                if (p.height != WRAP) {
-                    var hh = parseInt(el.style.height);                    
-                    elImg.height = hh;
-                }
-            }
-        }
-
-        if (p.gravLayout != null) {
-            el.style.position = 'absolute';
-            if (p.height != MATCH) {
-                switch(p.gravLayout.v) {
-                    case NONE:
-                    case TOP:
-                        el.style.bottom = '';
-                        el.style.top = '0px';
-                        break
-                    case BOTTOM:
-                        el.style.top = '';
-                        el.style.bottom = '0px';
-                        break
-                    case CENTER:
-                        var ccc = el.clientHeight;
-                        cc = root_h / 2 - ccc / 2;
-                        el.style.bottom = '';
-                        el.style.top = cc + px;
-                        break
-                }
-            }
-            if (p.width != MATCH) {
-                switch(p.gravLayout.h) {
-                    case RIGHT:
-                        el.style.left = '';
-                        if (pParent.rightPad != null && pParent.rightPad != "") {
-                            el.style.right = (parseInt(pParent.rightPad) * MEASURE) + 'px';
-                        } else {
-                            el.style.right = '0px';
-                        }
-                        break
-                    case NONE:
-                    case LEFT:
-                        el.style.right = '';
-                        el.style.left = '0px';
-                        break
-                    case CENTER:
-                        var ccc = el.clientWidth;
-                        cc = root_w / 2 - ccc / 2;
-                        el.style.right = '';
-                        el.style.left = cc + px;
-                        break
-                }
-            }
-        }
+        relativeL(el, p, parL, parT, parR, parB);
     }
     
     let ik;
@@ -494,9 +372,10 @@ function viewComponElem(el) {
         }
         if (leftOf > -1) {
             let leftMargElem = 0;
-            if (elem.android.leftMarg != null) {
+            if (elem.android.leftMarg != null && elem.android.leftMarg != "") {
                 leftMargElem = parseInt(elem.android.leftMarg) * MEASURE;
             }
+            el.style.left = "";
             el.style.right = (leftOf + leftMargElem + RR) + px;
         }
     }
@@ -524,26 +403,29 @@ function viewComponElem(el) {
     if (p.below != null && p.below != "") {
         let below = -1;
         let parentV = el.parentElement;
-        let child = parentV.children;
-        let ik = child.length;
-        let elem;
-        for (let i = 0; i < ik; i++) {
-            elem = child[i];
-            if (elem.android != null && elem.android.viewId == p.below) {
-                let rectEl = elem.getBoundingClientRect();
-                below = parseInt(rectEl.bottom) - parentY;
-                break;
+//console.log("IIIIII="+el.android.viewId+"<< parentV="+parentV);
+        if (parentV != null) {
+            let child = parentV.children;
+            let ik = child.length;
+            let elem;
+            for (let i = 0; i < ik; i++) {
+                elem = child[i];
+                if (elem.android != null && elem.android.viewId == p.below) {
+                    let rectEl = elem.getBoundingClientRect();
+                    below = parseInt(rectEl.bottom) - parentY;
+                    break;
+                }
             }
-        }
-        if (below > -1) {
-            let botMargElem = 0;
-            if (elem.android.bottomMarg != null) {
-                botMargElem = parseInt(elem.android.bottomMarg) * MEASURE;
-            }
-            if (p.height == MATCH) {
-                el.style.top = (below + botMargElem + TT) + px;
-            } else {
-                el.style.marginTop = (below + botMargElem + TT) + px;
+            if (below > -1) {
+                let botMargElem = 0;
+                if (elem.android.bottomMarg != null) {
+                    botMargElem = parseInt(elem.android.bottomMarg) * MEASURE;
+                }
+                if (p.height == MATCH) {
+                    el.style.top = (below + botMargElem + TT) + px;
+                } else {
+                    el.style.marginTop = (below + botMargElem + TT) + px;
+                }
             }
         }
     }
@@ -552,117 +434,79 @@ function viewComponElem(el) {
         let above = -1;
 
         let parentV = el.parentElement;
-        let child = parentV.children;
-        let ik = child.length;
-        let elem;
-        for (let i = 0; i < ik; i++) {
-            elem = child[i];
-            if (elem.android != null && elem.android.viewId == p.above) {
-                let rectEl = elem.getBoundingClientRect();
-                above = parseInt(rectParentEl.bottom - rectEl.top);
-                break;
+        if (parentV != null) {
+            let child = parentV.children;
+            let ik = child.length;
+            let elem;
+            for (let i = 0; i < ik; i++) {
+                elem = child[i];
+                if (elem.android != null && elem.android.viewId == p.above) {
+                    let rectEl = elem.getBoundingClientRect();
+                    above = parseInt(rectParentEl.bottom - rectEl.top);
+                    break;
+                }
             }
-        }
-        let topMargElem = 0;
-        if (above > -1) {
-            if (elem.android.topMarg != null && elem.android.topMarg != "") {
-                topMargElem = parseInt(elem.android.topMarg) * MEASURE;
-            }
-            if (p.height == MATCH) {
-                el.style.bottom = (above + topMargElem + BB) + px;
-            } else {
-                el.style.marginBottom = (above + topMargElem + BB) + px;
+            let topMargElem = 0;
+            if (above > -1) {
+                if (elem.android.topMarg != null && elem.android.topMarg != "") {
+                    topMargElem = parseInt(elem.android.topMarg) * MEASURE;
+                }
+                if (p.height == MATCH) {
+                    el.style.bottom = (above + topMargElem + BB) + px;
+                } else {
+                    el.style.marginBottom = (above + topMargElem + BB) + px;
+                }
             }
         }
     }
     
     var hH = parseInt(el.style.height);
     var wW = parseInt(el.style.width);
-    var contentEl;
+    let contentEl;
+    let pc;
     switch(p.type) {
         case "TextView":
-            contentEl = el.getElementsByClassName("text")[0];
-            switch(p.gravity.v) {
-                case NONE:
-                case TOP:
-                    contentEl.style.bottom = '';
-                    contentEl.style.top = '0px';
-                    break;
-                case BOTTOM:
-                    contentEl.style.top = '';
-                    contentEl.style.bottom = '0px';
-                    break;
-                case CENTER:
-                    var ccc = contentEl.clientHeight;
-                    cc = hH / 2 - ccc / 2;
-                    contentEl.style.bottom = '';
-                    contentEl.style.top = cc + px;
-                    break;
-            }
-            switch(p.gravity.h) {
-                case RIGHT:
-                    contentEl.style.left = '';
-                    contentEl.style.right = '0px';
-                    break;
-                case NONE:
-                case LEFT:
-                    contentEl.style.right = '';
-                    contentEl.style.left = '0px';
-                    break;
-                case CENTER:
-                    var ccc = contentEl.clientWidth;
-                    cc = wW / 2 - ccc / 2;
-                    contentEl.style.right = '';
-                    contentEl.style.left = cc + 'px';
-                    break;
+            viewTextView(el, p, hH, wW);
+            break;
+        case "PlusMinus":
+            let line = el.getElementsByClassName("line")[0]
+            if (p.componParam != null && p.componParam.noEdit != null && p.componParam.noEdit) {
+                if (line != null) {
+                    line.style.display = "none";
+                }
+                viewTextView(el, p, hH, wW);
+            } else {
+                if (line != null) {
+                    line.style.display = "block";
+                }
+                viewEditText(el, p, hH, wW);
             }
             break;
         case "EditText":
-            contentEl = el.getElementsByClassName("text")[0];
-            var pad4 = 4 * MEASURE;
-            switch(p.gravity.v) {
-                case TOP:
-                    contentEl.style.bottom = '';
-                    contentEl.style.top = '0px';
-                    break;
-                case BOTTOM:
-                    contentEl.style.top = '';
-                    contentEl.style.bottom = '0px';
-                    break;
-                case NONE:
-                case CENTER:
-//                    var ccc = contentEl.clientHeight;
-                    var ccc = p.textSize * MEASURE;
-                    cc = hH / 2 - ccc / 2;
-                    contentEl.style.bottom = '';
-                    contentEl.style.top = cc + 'px';
-                    break;
-            }
-            switch(p.gravity.h) {
-                case RIGHT:
-                    contentEl.style.left = '';
-                    contentEl.style.right = pad4 + px;
-                    break;
-                case NONE:
-                case LEFT:
-                    contentEl.style.right = '';
-                    contentEl.style.left = pad4 + px;
-                    break;
-                case CENTER:
-                    var ccc = contentEl.clientWidth;
-                    cc = wW / 2 - ccc / 2;
-                    contentEl.style.right = '';
-                    contentEl.style.left = cc + 'px';
-                    break;
-            }
+            viewEditText(el, p, hH, wW);
             break;
         case "ImageView":
-            let pc = p.corners;
+            pc = p.corners;
+            contentEl = el.getElementsByTagName("img")[0];
             if (pc != null) {
-                contentEl = el.getElementsByTagName("img")[0];
                 let stR = (parseInt(pc.lt) * MEASURE) + "px " + (parseInt(pc.tr) * MEASURE) + "px " + (parseInt(pc.rb) * MEASURE) + "px " 
                         + (parseInt(pc.bl) * MEASURE) + "px";
                 contentEl.style.borderRadius = stR;
+            }
+            contentEl = el.getElementsByClassName("image")[0];
+            contentEl.style.width = "";
+            contentEl.style.height = "";
+            if (pLL > 0) {
+                contentEl.style.marginLeft = pLL + px;
+            }
+            if (pTT > 0) {
+                contentEl.style.marginTop = pTT + px;
+            }
+            if (pRR > 0) {
+                contentEl.style.marginRight = pRR + px;
+            }
+            if (pBB > 0) {
+                contentEl.style.marginBottom = pBB + px;
             }
             break;
         case "CardView":
@@ -683,9 +527,11 @@ function viewComponElem(el) {
             break;
     }
     
-    el.style.id = p.id;
+//    el.style.id = p.id;
+    if (p.type != "SeekBar") {
+        setBackgoundEl(el, p);
+    }
 
-    setBackgoundEl(el, p);
     let parentW = el.parentElement;
     if (parentW != null && parentW.android != null && parentW.android.height == WRAP) {
         parentW.style.height = maxChildHeight(parentW) + px;
@@ -722,9 +568,360 @@ function viewComponElem(el) {
                 viewComponElem(parentW);
             }
         }
+    }
+}
 
+function viewTextView(el, p, hH, wW) {
+    let contentEl = el.getElementsByClassName("text")[0];
+    switch(p.gravity.v) {
+        case TOP:
+            contentEl.style.bottom = '';
+            contentEl.style.top = '0px';
+            break;
+        case BOTTOM:
+            contentEl.style.top = '';
+            contentEl.style.bottom = '0px';
+            break;
+        case NONE:
+        case CENTER:
+            let ccc;
+            if (p.componParam != null && p.componParam.typeValidTV != null && p.componParam.typeValidTV != "no") {
+                ccc = p.textSize * MEASURE;
+            } else {
+                ccc = contentEl.clientHeight;
+            }
+            contentEl.style.bottom = '';
+            let cc = hH - ccc ;
+            if (cc < 0) {
+                cc = 0;
+            } else {
+                cc = cc / 2;
+            }
+            contentEl.style.top = cc + px;
+            break;
+    }
+    switch(p.gravity.h) {
+        case RIGHT:
+            contentEl.style.left = '';
+            contentEl.style.right = '0px';
+            break;
+        case NONE:
+        case LEFT:
+            contentEl.style.right = '';
+            contentEl.style.left = '0px';
+            break;
+        case CENTER:
+            let ccc = contentEl.clientWidth;
+            wW = el.clientWidth;
+            let cc = wW / 2 - ccc / 2;
+            contentEl.style.right = '';
+            contentEl.style.left = cc + 'px';
+            break;
+    }
+}
+
+function viewEditText(el, p, hH, wW) {
+    let contentEl = el.getElementsByClassName("text")[0];
+    var pad4 = 4 * MEASURE;
+    switch(p.gravity.v) {
+        case TOP:
+            contentEl.style.bottom = '';
+            contentEl.style.top = '0px';
+            break;
+        case BOTTOM:
+            contentEl.style.top = '';
+            contentEl.style.bottom = '0px';
+            break;
+        case NONE:
+        case CENTER:
+            var ccc = p.textSize * MEASURE;
+            cc = hH / 2 - ccc / 2;
+            contentEl.style.bottom = '';
+            contentEl.style.top = cc + 'px';
+            break;
+    }
+    switch(p.gravity.h) {
+        case RIGHT:
+            contentEl.style.left = '';
+            contentEl.style.right = pad4 + px;
+            break;
+        case NONE:
+        case LEFT:
+            contentEl.style.right = '';
+            contentEl.style.left = pad4 + px;
+            break;
+        case CENTER:
+            var ccc = contentEl.clientWidth;
+            wW = el.clientWidth;
+            cc = wW / 2 - ccc / 2;
+            contentEl.style.right = '';
+            contentEl.style.left = cc + 'px';
+            break;
+    }
+}
+
+function relativeL(el, p, pLL, pTT, pRR, pBB) {
+    let margR;
+    
+    let root_w = p.parent.offsetWidth;
+    let root_h = p.parent.offsetHeight;
+    let pParent = p.parent.android;
+    let contentEl;
+    let rectParent;
+    if (p.width == MATCH) {
+        el.style.width = "";
+        el.style.left = "0px";
+        if (margR != null) {
+            el.style.right = margR + px;
+        } else {
+            el.style.right = "0";
+        }
+    } else if (p.width == WRAP) {
+        let wWpx;
+        el.style.width = "";
+        el.style.left = "0px";
+        el.style.right = "0px";
+        switch(p.type) {
+            case "PlusMinus":
+                let line = el.getElementsByClassName("line")[0]
+                if (p.componParam != null && p.componParam.noEdit != null && p.componParam.noEdit) {
+                    if (line != null) {
+                        line.style.display = "none";
+                    }
+                    wrapTextViewW(el, p, pLL, pTT);
+                } else {
+                    if (line != null) {
+                        line.style.display = "block";
+                    }
+                    wrapEditTextW(el, p);
+                }
+                break;
+            case "EditText" :
+                wrapEditTextW(el, p);
+                break;
+            case "TextView" :
+                wrapTextViewW(el, p, pLL, pTT);
+                break;
+            case "RelativeLayout" :
+                el.style.width = maxChildWidth(el) + px;
+                break;
+            default:
+                el.style.width = maxChildWidth(el) + px;
+        }
+    } else {
+        el.style.width = (p.width * MEASURE - pLL - pRR) + px;
+    }
+    if (typeof(p.height) == "string") {
+        var hhh = findDimenByName(p.height);
+        var hi = parseInt(hhh);
+        el.style.height = (hi * MEASURE) + px;
+    } else {
+        if (p.height == MATCH) {
+            el.style.height = "";
+            el.style.top = "0px";
+            el.style.bottom = "0px";
+        } else if (p.height == WRAP) {
+            switch(p.type) {
+                case "PlusMinus":
+                    let line = el.getElementsByClassName("line")[0]
+                    if (p.componParam != null && p.componParam.noEdit != null && p.componParam.noEdit) {
+                        if (line != null) {
+                            line.style.display = "none";
+                        }
+                        wrapTextViewH(el, p);
+                    } else {
+                        if (line != null) {
+                            line.style.display = "block";
+                        }
+                        wrapEditTextH(el, p);
+                    }
+                    break;
+                case "EditText" :
+                    wrapEditTextH(el, p);
+                    break;
+                case "TextView" :
+                    wrapTextViewH(el, p);
+                    break;
+                case "SeekBar" :
+                    if (p.seekBarParam != null) {
+                        el.style.height = parseInt(p.seekBarParam.thumbDiam) * MEASURE + px;
+                    }
+                    break;
+                case "Ratings":
+                    el.style.height = (p.componParam.diam * MEASURE) + px;
+                    break;
+                case "RelativeLayout" :
+                    el.style.height = maxChildHeight(el) + px;
+                    break;
+                default:
+                    el.style.height = maxChildHeight(el) + px;
+            }
+        } else {
+            el.style.height = (p.height * MEASURE - pTT - pBB) + px;
+        }
     }
 
+    if (p.type == "ImageView" || p.type == "Gallery" || p.type == "Map") {
+        if (p.src != null && p.src != '') {
+            var elDivImg = el.getElementsByClassName('image')[0];
+            if (elDivImg == null) {
+                elDivImg = createDivImg();
+                el.appendChild(elDivImg);
+            }
+            elDivImg.innerHTML = '<IMG SRC="'+ p.src +'" style="width:100%;height:100%;pointer-events: none;">';
+            elImg = elDivImg.firstChild;
+            if (p.width != WRAP) {
+                var ww = parseInt(el.style.width);                    
+                elImg.width = ww;
+            }
+            if (p.height != WRAP) {
+                var hh = parseInt(el.style.height);                    
+                elImg.height = hh;
+            }
+        }
+    }
+
+    if (p.gravLayout != null) {
+        el.style.position = 'absolute';
+        if (p.height != MATCH) {
+            switch(p.gravLayout.v) {
+                case NONE:
+                case TOP:
+                    el.style.bottom = '';
+                    el.style.top = '0px';
+                    break
+                case BOTTOM:
+                    el.style.top = '';
+                    el.style.bottom = '0px';
+                    break
+                case CENTER:
+                    var ccc = el.clientHeight;
+                    cc = root_h - ccc;
+                    if (cc < 0) {
+                        cc = 0;
+                    } else {
+                        cc = cc / 2;
+                    }
+                    el.style.bottom = '';
+                    el.style.top = cc + px;
+                    break
+            }
+        }
+        if (p.width != MATCH) {
+            switch(p.gravLayout.h) {
+                case RIGHT:
+                    el.style.left = '';
+                    if (pParent.rightPad != null && pParent.rightPad != "") {
+                        el.style.right = (parseInt(pParent.rightPad) * MEASURE) + 'px';
+                    } else {
+                        el.style.right = '0px';
+                    }
+                    break
+                case NONE:
+                case LEFT:
+                    el.style.right = '';
+                    el.style.left = '0px';
+                    break
+                case CENTER:
+                    var ccc = el.clientWidth;
+                    cc = root_w / 2 - ccc / 2;
+                    el.style.right = '';
+                    el.style.left = cc + px;
+                    break
+            }
+        }
+    }
+}
+
+function wrapTextViewH(el, p) {
+    let contentEl = el.getElementsByClassName("text")[0];
+    rectParent = contentEl.getBoundingClientRect();
+    if (p.componParam != null && p.componParam.typeValidTV != null && p.componParam.typeValidTV != "no") {
+        el.style.height = standartHeightEditText(p.textSize) * MEASURE + px;
+    } else {
+                        el.style.height = parseInt(p.textSize) * MEASURE + px;
+//        el.style.height = (rectParent.bottom - rectParent.top) + px;
+    }
+}
+
+function wrapTextViewW(el, p, pLL, pTT) {
+    let wWpx;
+    let contentEl = el.getElementsByClassName("text")[0];
+    rectParent = contentEl.getBoundingClientRect();
+    if (p.componParam != null && p.componParam.typeValidTV != null && p.componParam.typeValidTV != "no") {
+        wWpx = parseInt(rectParent.right - rectParent.left);
+        if (wWpx == 0) {
+            wWpx = 10;
+        } 
+        wWpx = wWpx + 8;
+        el.style.width = wWpx + px;
+    } else {
+        wWpx = parseInt(rectParent.right - rectParent.left) + 1;
+        el.style.right = "";
+        el.style.width = wWpx + px;
+        if (pLL > 0) {
+            contentEl.style.marginLeft = pLL + px;
+        } else {
+            contentEl.style.marginLeft = "";
+        }
+        if (pTT > 0) {
+            contentEl.style.marginTop = pTT + px;
+        } else {
+            contentEl.style.marginTop = "";
+        }
+    }
+}
+
+function wrapEditTextH(el, p) {
+    let h;
+    if (p.textSize == null || p.textSize == 0) {
+        h = 14;
+    } else {
+        h = p.textSize;
+    }
+    el.style.height = standartHeightEditText(h) * MEASURE + px;
+}
+
+function wrapEditTextW(el, p) {
+        let contentEl = el.getElementsByClassName("text")[0];
+        rectParent = contentEl.getBoundingClientRect();
+        let wWpx = parseInt(rectParent.right - rectParent.left);
+        if (wWpx == 0) {
+            wWpx = 10;
+        } 
+        wWpx = wWpx + 8;
+        el.style.width = wWpx + px;
+}
+
+function showSeekBarEl(seekBar, p) {
+    let el = seekBar.getElementsByClassName("_bar")[0];
+    if (p.componParam.background != null) {
+        if (p.componParam.background > 999) {
+            if (el.style.backgroundColor.length > 0) {
+                el.style.backgroundColor = "";
+            }
+            if (p.componParam.background > 1999) {      // Selector
+
+            } else {        // Drawable
+                if (p.componParam.background == 1999) {         // new Drawable
+                    setDrawable(el, tempDrawable);
+                } else {
+                    setDrawable(el, JSON.parse(findDrawableByIndex(p.componParam.background)));
+                }
+            }
+        } else {
+            el.style.background == "";
+            el.style.border = "";
+            el.style.borderRadius = "";
+            el.style.backgroundColor = findColorByIndex(p.componParam.background);
+        }
+    } else {
+        el.style.background == "";
+        el.style.border = "";
+        el.style.borderRadius = "";
+        el.style.backgroundImage = "";
+        el.style.backgroundColor = "";
+    }
 }
 
 function setBackgoundEl(el, p) {
@@ -732,6 +929,7 @@ function setBackgoundEl(el, p) {
         if ( p.background == 100000) {
             if (p.src != null && p.src != "") {
                 el.style.backgroundImage = "url('" + p.src + "')";
+                el.style.backgroundSize = "cover";
             } else {
                 el.style.backgroundImage = "";
             }
@@ -797,19 +995,6 @@ function maxChildWidth(el) {
             maxR = bb;
         }
     }
-    
-    elL = el.style.paddingLeft;
-    elTt = 0;
-    if (elL != null && elL != "") {
-        elTt = parseInt(elL);
-    }
-    
-    elR = el.style.paddingRight;
-    elPad = 0;
-    if (elR != null && elR != "") {
-        elPad = parseInt(elR);
-    }
-//    return maxR - minR + (elPad + elTt) * MEASURE;
     return maxR - minR;
 }
 
@@ -846,18 +1031,6 @@ function maxChildHeight(el) {
         if (bb > maxB) {
             maxB = bb;
         }
-    }
-    
-    elT = el.style.paddingTop;
-    elTt = 0;
-    if (elT != null && elT != "") {
-        elTt = parseInt(elT);
-    }
-    
-    elB = el.style.paddingBottom;
-    elPad = 0;
-    if (elB != null && elB != "") {
-        elPad = parseInt(elB);
     }
     return maxB - minB;
 }

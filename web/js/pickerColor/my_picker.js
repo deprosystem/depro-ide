@@ -196,7 +196,8 @@ function getIndColor(color) {
 
 function setSystemColor(el) {
     var ind = el.id.substring(el.id.indexOf("_") + 1);
-    clientCallBack(ind, el.style.backgroundColor);
+//    clientCallBack(ind, el.style.backgroundColor);
+    clientCallBack(ind, findColorByIndex(ind));
 }
 
 function changeSystemColor(el) {
@@ -237,14 +238,7 @@ var setBackgroundColor = function (id, color) {
     windSelectColor.style.display = 'none';
     viewCompon();
 }
-/*
-var setTextColor = function (id, color) {
-    paramCompon.textColor = id;
-    text_color.style.backgroundColor = color;
-    windSelectColor.style.display = 'none';
-    viewCompon();
-}
-*/
+
 var setToolTextColor = function (id, color) {
     paramCompon.textColor = id;
     tool_text_color.style.backgroundColor = color;
@@ -260,9 +254,9 @@ var setEditTextColor = function (id, color) {
 }
 
 function findColorByIndex(ind) {
-    var ik = listColor.length;
-    for (var i = 0; i < ik; i ++) {
-        var item = listColor[i];
+    let ik = listColor.length;
+    for (let i = 0; i < ik; i ++) {
+        let item = listColor[i];
         if (item.itemId == ind) {
             return item.itemValue;
         }

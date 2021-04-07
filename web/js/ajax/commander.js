@@ -56,7 +56,7 @@ function cbCommander(res) {
         list.append(createNewElRoot());
     }
     for (var i = 0; i < ik; i++) {
-        list.append(createNewEl(lf[i], i));
+        list.append(createNewElCom(lf[i], i));
     }
 }
 
@@ -76,7 +76,7 @@ function createNewElRoot() {
     return container.firstChild
 }
 
-function createNewEl(item, i) {
+function createNewElCom(item, i) {
     var container = document.createElement('div')
     var icon = "";
     var size = "";

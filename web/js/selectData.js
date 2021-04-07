@@ -47,7 +47,11 @@ function createSelectValue(ll, value, on) {
 
 //  Для below, abowe, ToRightOf, ToLeftOf
 function formListViewId(el, name) {     //  Для below, abowe, ToRightOf, ToLeftOf
-    let listEl = currentElement.parentElement.children;
+    let pPar = currentElement.parentElement;
+    if (pPar == null) {
+        return;
+    }
+    let listEl = pPar.children;
     if (listEl != null && listEl.length > 0) {
         let ik = listEl.length;
         let arrViewId = [];
@@ -71,7 +75,7 @@ function formListViewId(el, name) {     //  Для below, abowe, ToRightOf, ToLe
             if (vv == null) {
                 vv = "";
             }
-            if (vv = "") {
+            if (vv == "") {
                 vv = " ";
             }
             let sel = createSelectValue(arrViewId, vv, name);

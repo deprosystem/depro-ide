@@ -147,6 +147,7 @@ function setParamCompon() {
     padParam.appendChild(selPad);
     padParam.appendChild(newDOMelement('<div id="hidePad" style="width: 100%;height: 100%;background-color: #fffa;position: absolute;display: none"></div>'));
 
+    bg_img.src = "";
     if (paramCompon.background == null) {
         bg_color.style.backgroundColor = '#ffffff';
     } else {
@@ -356,7 +357,6 @@ function setMarginHoriz(el) {
         par = el.parentElement.parentElement;
     }
     let type = par.firstElementChild.innerHTML;
-
     switch (type) {
         case 'L:':
             p.leftMarg = value;
@@ -379,14 +379,19 @@ function setMarginHoriz(el) {
 
 function setPadHoriz(el) {
     let p = currentElement.android;
-    let value;
+    let value = "";
     let par;
     if (el.tagName == "INPUT") {
         value = el.value;
         par = el.parentElement.parentElement.parentElement;
     } else {
         if (el.tagName == "DIV") {
-            value = el.innerHTML;
+            let cc = el.style.backgroundColor;
+            if (cc == null || cc == "") {
+                value = "";
+            } else {
+                value = el.innerHTML;
+            }
         } else {
             value = "";
         }
@@ -411,7 +416,8 @@ function setPadHoriz(el) {
             p.padding = value;
             break;
     }
-    viewCompon();
+    showElemChilds(currentElement);
+//    viewCompon();
 }
 
 function backgroundClear(el) {

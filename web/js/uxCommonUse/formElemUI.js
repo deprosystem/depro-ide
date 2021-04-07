@@ -1,4 +1,4 @@
-function formElement(item, toRightOf, namePrev, topM) {
+function formElement(item, toRightOf, namePrev, topM, leftM) {
     let txtView;
     let p;
     switch (item.type) {    // Text,Img,Int,Float,Time
@@ -55,8 +55,14 @@ function formElement(item, toRightOf, namePrev, topM) {
     if (namePrev != "") {
         p.below = namePrev;
     }
-    p.topMarg = topM;
-    p.leftMarg = 12;
+    if (topM != null && topM != 0) {
+        p.topMarg = topM;
+    }
+    if (leftM != null) {
+        p.leftMarg = leftM;
+    } else {
+        p.leftMarg = 12;
+    }
     if (toRightOf != "") {
         p.toRightOf = toRightOf;
     }
@@ -151,6 +157,8 @@ function formTxt(item) {
     p.text = item.name;
     p.viewId = item.name;
     p.textSize = 14;
+    p.letterSpac = '0.0';
+    p.componParam = {typeValidTV:"no"};
     currentElement.appendChild(typeEl);
     addNewElement(ACTIVE, currentElement);
     addNavigatorEl(currentElement);

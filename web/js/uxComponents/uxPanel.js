@@ -21,6 +21,10 @@ function uxPanel() {
         currentComponentDescr = {type:tt, componId: componId, model:{method:0,data:[[]]},view:{viewId: viewId},navigator:[]};
     }
     
+    this.getCreateListener = function () {
+        return {vert:"createViewForPanelV", horiz:""};
+    }
+    
     this.setValue = function(componParam) {
         setValueModel(componParam);
     }

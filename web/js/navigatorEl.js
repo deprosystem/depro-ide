@@ -178,6 +178,7 @@ function upNavigEl(e) {
             uiElTarg.after(uiEl);
             uiEl.android.parent = targ.parentElement;
             targ.after(downMouseElem.parentElement);
+console.log("JJJJ="+jsonNoViewParent(currentScreen.layout));
         }
     }
     overMouseElem = null;
@@ -207,8 +208,14 @@ function pMoving(what, whereTo) {
         if (whereToP.p.children == null) {
             whereToP.p.children = [];
         }
-        whereToP.ch.splice(whereToP.i, 0, whatP.p);
-        whatP.ch.splice(whatP.i);
+        let iDel = whereToP.i + 1;
+        let ik = whereToP.ch;
+        if (ik == iDel) {
+            whereToP.ch.push(whatP.p);
+        } else {
+            whereToP.ch.splice(iDel, 0, whatP.p);
+        }
+        whatP.ch.splice(whatP.i, 1);
     } else {
         console.log("pMoving whatP OR whereToP = NULL");
     }

@@ -2,6 +2,7 @@ package entity;
 
 import projects.Model;
 import projects.Navigator;
+import projects.Options;
 import projects.Param;
 import projects.View;
 
@@ -12,4 +13,5 @@ public class Component {
     public View view;
     public Param param;
     public Navigator navigator;
+    public Options options;
 }

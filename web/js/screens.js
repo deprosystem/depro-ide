@@ -1,4 +1,4 @@
-var components = ["ToolBar", "MenuBottom", "Menu", "List", "Pager", "TabLayout", "Drawer", "Map", "Panel", "Form", "ScrollPanel", "SheetBottom"];
+var components = ["ToolBar", "MenuBottom", "Menu", "List", "Pager", "TabLayout", "Drawer", "Map", "Panel", "Form", "ScrollPanel", "SheetBottom", "Tags", "PlusMinus"];
 var list_cont;
 var uxFunction, uiFunction;
 
@@ -72,7 +72,7 @@ function screenClone() {
 
 function crScreenForList(scrP) {
     let crScreen = {screenName: scrP.scrN, screenId: scrP.scrNum, screenComment: "", animate: 0, castom: "", typeScreen: scrP.scrT, 
-        title: scrP.scrTit, titleParam: "", components: [], textErrors: "", levelErrors: 0, navigator:[]};
+        title: scrP.scrTit, titleParam: "", components: [], textErrors: "", levelErrors: 0, navigator:[], initData:[]};
     crScreen.layout =  {type:"RelativeLayout",typeFull:{name:"RelativeLayout",typeBlock:2},parent:null,width:-1,height:-1,gravLayout:{h:4,v:4},
         gravity:{h:4,v:4},itemNav:{},viewId:"root", children:[]};
     return crScreen;
@@ -213,6 +213,12 @@ function setScreenComponents() {
                     listComp.append(currentComponentView);
                     currentComponentView.componId = componId;
                     currentComponent = getComponentById(componId);
+                    if (currentComponent == null) {
+                        currentComponent = tryFindByViewId(currentComponentDescr.view.viewId);
+                        if (currentComponent != null) {
+                            currentComponent.componId = componId;
+                        }
+                    }
                     if (i == 0) {
                         currentComponentView.className = "component_sel";
                         firstView = currentComponentView;
@@ -341,11 +347,14 @@ function newScreen(scr) {
             +'<img width="20" height="20" style="margin-top:3px;margin-left:5px" src="img/navigator.png">'
             +'</div>'
     
+            +'<div onclick="initDataScreen()" style="float:left;margin-left:5px;cursor:pointer"><div style="color:#2228;font-size:10px;">Set initial data</div>'
+            +'<img width="20" height="20" style="margin-top:3px;margin-left:5px" src="img/init_data.png">'
+            +'</div>'
+    
             +'<div onclick="viewComment()" style="float:left;margin-left:10px;cursor:pointer"><div style="color:#2228;font-size:10px;">Description</div>'
             +'<img width="20" height="20" style="margin-top:3px;" src="img/roll.png">'
             +'</div>'
 
-//            +'<img onclick="del_screen(this)" style="float:right;cursor:pointer;margin-top:14.5px;margin-right:10px" width="18" height="18" src="img/close-o.png">'
             +'<img onclick="plusCompon(this)" style="float:right;cursor:pointer;margin-top:15px;margin-right:10px" width="16" height="16" src="img/add_blue.png">'
         +'</div>'
 
@@ -360,7 +369,17 @@ function navigatorScreen() {
         currentScreen.navigator = [];
     }
     editDataWind(metaNavigator, currentScreen.navigator, saveNavigator);
-    
+}
+
+function initDataScreen() {
+    if (currentScreen.initData == null) {
+        currentScreen.initData = [];
+    }
+    editDataWind(metaInitData, currentScreen.initData, saveinitData);
+}
+
+function saveinitData(dat) {
+
 }
 
 function viewComment() {

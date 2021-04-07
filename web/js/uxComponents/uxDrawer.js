@@ -56,9 +56,13 @@ function uxDrawer() {
         return "https://docs.google.com/document/d/1iYRvK_JAz67laVPot_pCEUa0sM9Jp3hSJZMMG4qmtxQ/edit#heading=h.qmbjlbu72dsk";
     }
     
-    this.isValid = function(compD) {
+    this.isValid = function(comp) {
         let err = {text:"",error:0};
-        
+        scrN = comp.view.drawer_fragm.toUpperCase();
+        if (isScreenDeclare(scrN) == -1) {
+            err.text += txtError(2, tab, "component " + comp.view.viewId + " menu item " + m + " refers to an undescribed screen "  + scrN);
+            err.error = 2;
+        }
         return err;
     }
 }

@@ -42,7 +42,7 @@ function uiTabLayout() {
         setTabAttr(p);
     }
 }
-
+/*
 function setTabAttr(p) {
     let compon = getComponentById(p.viewId);
     uiCurrentComponent = compon;
@@ -58,6 +58,19 @@ function setTabAttr(p) {
         indH.value = item.indHeight;
     }
 }
+*/
+
+function setTabAttr(p) {
+    let item = p.tabLayout;
+    let colorTxt = contentAttributes.getElementsByClassName("text_norm")[0];
+    colorTxt.style.backgroundColor = findColorByIndex(item.textColor);
+    colorTxt = contentAttributes.getElementsByClassName("text_sel")[0];
+    colorTxt.style.backgroundColor = findColorByIndex(item.textSelect);
+    colorTxt = contentAttributes.getElementsByClassName("text_ind")[0];
+    colorTxt.style.backgroundColor = findColorByIndex(item.indColor);
+    let indH = contentAttributes.getElementsByClassName("ind_h")[0];
+    indH.value = item.indHeight;
+}
 
 function showTabLayoutNoParam() {
     let myCompon = myComponentDescr(currentElement.android.componId);
@@ -68,7 +81,7 @@ function showTabLayoutNoParam() {
 }
 
 function changeIndHTab(el) {
-    uiCurrentComponent.tabLayout.indHeight = el.value;
+    currentElement.android.tabLayout.indHeight = el.value;
     showTabLayoutNoParam();
 }
 
@@ -78,7 +91,7 @@ function changeNormColorTab(el) {
 }
 
 function setNormColorTab(id, color) {
-    uiCurrentComponent.tabLayout.textColor = id;
+    currentElement.android.tabLayout.textColor = id;
     elementChangeColor.style.backgroundColor = color;
     windSelectColor.style.display = 'none';
     showTabLayoutNoParam();
@@ -90,7 +103,7 @@ function changeSelColorTab(el) {
 }
 
 function setSelColorTab(id, color) {
-    uiCurrentComponent.tabLayout.textSelect = id;
+    currentElement.android.tabLayout.textSelect = id;
     elementChangeColor.style.backgroundColor = color;
     windSelectColor.style.display = 'none';
     showTabLayoutNoParam();
@@ -102,7 +115,7 @@ function changeIndColorTab(el) {
 }
 
 function setIndColorTab(id, color) {
-    uiCurrentComponent.tabLayout.indColor = id;
+    currentElement.android.tabLayout.indColor = id;
     elementChangeColor.style.backgroundColor = color;
     windSelectColor.style.display = 'none';
     showTabLayoutNoParam();

@@ -33,9 +33,34 @@ function uxTabLayout() {
         return "https://docs.google.com/document/d/1iYRvK_JAz67laVPot_pCEUa0sM9Jp3hSJZMMG4qmtxQ/edit#heading=h.ca2u9o7gq86q";
     }
     
-    this.isValid = function(compD) {
+    this.isValid = function(comp) {
+        let tab = "&ensp;";
         let err = {text:"",error:0};
-        
+        let men = comp.model.menuList.list;
+        let mk = men.length;
+        if (mk == 0) {
+            err.text += txtError(2, tab, "component " + comp.view.viewId + " has no menu description");
+            err.error = 2;
+        } else {
+            for (let m = 0; m < mk; m++) {
+                let scrTit = men[m].title;
+                if (scrTit == null || scrTit.length == 0) {
+                    err.text += txtError(2, tab, "component " + comp.view.viewId + " menu item " + m + " has no name");
+                    err.error = 2;
+                }
+                let scrItem = men[m].screen;
+                if (scrItem == null || scrItem.length == 0) {
+                    err.text += txtError(2, tab, "component " + comp.view.viewId + " menu item " + m + " has no screen link");
+                    err.error = 2;
+                } else {
+                    scrN = scrItem.toUpperCase();
+                    if (isScreenDeclare(scrN) == -1) {
+                        err.text += txtError(2, tab, "component " + comp.view.viewId + " menu item " + m + " refers to an undescribed screen "  + scrN);
+                        err.error = 2;
+                    }
+                }
+            }
+        }
         return err;
     }
 }
@@ -58,14 +83,26 @@ function callbackSaveDataTab() {
                 createScreen(false, scr, item.title);
             }
         }
-        let id = currentComponent.viewId;
-        plusComponName("Pager");
-        currentComponentDescr.view.tabLayout = id;
-        let selTab = currentComponentView.getElementsByClassName("select_tab")[0];
-        if (selTab != null) {
-            let sel = selTab.getElementsByTagName("select")[0];
-            if (sel != null) {
-                sel.value = id;
+        let comp = currentScreen.components;
+        let ck = comp.length;
+        let noPager = true;
+        for (let c = 0; c < ck; c++) {
+            if (comp[c].type == "Pager") {
+                noPager = false;
+                break;
+            }
+        }
+        if (noPager) {
+            let id = currentComponent.viewId;
+            list_cont = currentScreenView.getElementsByClassName("list_components")[0];
+            plusComponName("Pager");
+            currentComponentDescr.view.tabLayout = id;
+            let selTab = currentComponentView.getElementsByClassName("select_tab")[0];
+            if (selTab != null) {
+                let sel = selTab.getElementsByTagName("select")[0];
+                if (sel != null) {
+                    sel.value = id;
+                }
             }
         }
     }

@@ -280,11 +280,11 @@ function createViewForListH(el, ind) {
                     estimatedHeight += 22;
                 }
             }
-            let Divider = formDivider();
+//            let Divider = formDivider();
             if (height < estimatedHeight) {
                 height = estimatedHeight;
             }
-            Divider.android.viewElement = Divider;
+//            Divider.android.viewElement = Divider;
             listView.android.height = height;
             showElemChilds(listV);
         } else {
@@ -337,6 +337,7 @@ function createViewForListV(el, ind) {
                     estimatedHeight += 22;
                 }
             }
+/*
             let Divider = formDivider();
             let pp = Divider.android;
             pp.viewElement = Divider;
@@ -345,6 +346,7 @@ function createViewForListV(el, ind) {
             }
             pp.gravLayout.v = NONE;
             pp.topMarg = 12;
+*/
             showElemChilds(listV);
         } else {
             tooltipMessage(el, "You need to describe the data");

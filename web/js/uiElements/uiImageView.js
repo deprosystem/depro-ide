@@ -39,6 +39,9 @@ function uiImageView() {
 
     this.setElementUI = function(p, newEl, parent) {
         let im = newEl.getElementsByClassName("image");
+        if (p.componParam == null) {
+            p.componParam = {borderColor:0,w_bord:0,oval:false};
+        }
         if (im == null || im.length == 0) {
             newEl.appendChild(createDivImg());
         }
@@ -47,11 +50,15 @@ function uiImageView() {
     this.newElementUI = function(p) {
         p.src = "";
         p.scaleType = 0;
+        if (p.componParam == null) {
+            p.componParam = {borderColor:0,w_bord:0,oval:false};
+        }
         return createDivImg();
     }
     
     this.setContent = function(p) {
         contentAttributes.innerHTML = uiParamView + browser + uiParamView_2;
+
         setImgAttr(p);
         if (p.formResourse != null) {
             let cfr = contentAttributes.getElementsByClassName("check_form_res")[0];
@@ -101,6 +108,20 @@ function uiImageView() {
             radiusRB.value = p.corners.rb;
             radiusBL.value = p.corners.bl;
         }
+        let oval = editCheckbox("Oval", p.componParam.oval, "changeOvalIMG");
+        oval.style.marginTop = "5px";
+        oval.style.clear = "both";
+        contentAttributes.appendChild(oval);
+
+        let w_bord = editNumberParam("With border", 50, 24, 0, 10, "wBordIMG");
+        w_bord.style.marginLeft = "10px";
+        w_bord.style.marginTop = "5px";
+        setValueNumber(w_bord, p.componParam.w_bord);
+        contentAttributes.appendChild(w_bord);
+
+        let cBord = editColorParam("Border color", findColorByIndex(p.componParam.borderColor), 'col_bord', setColorBordIMG);
+        cBord.style.marginLeft = "10px";
+        contentAttributes.appendChild(cBord);
     }
 }
 
@@ -191,5 +212,23 @@ function cornersAllClearIMG(el) {
     radiusRB.value = value;
     radiusBL.value = value;
     currentElement.android.corners = {"lt" : 0, "tr" : 0, "rb" : 0, "bl" : 0};
+    viewCompon();
+}
+
+function changeOvalIMG(vv) {
+    currentElement.android.componParam.oval = vv;
+    viewCompon();
+}
+
+function wBordIMG(el) {
+    currentElement.android.componParam.w_bord = el.value;
+    viewCompon();
+}
+
+function setColorBordIMG(id, color) {
+    paramCompon.componParam.borderColor = id;
+    let el_txt = contentAttributes.getElementsByClassName("col_bord")[0];
+    el_txt.style.backgroundColor = color;
+    windSelectColor.style.display = 'none';
     viewCompon();
 }

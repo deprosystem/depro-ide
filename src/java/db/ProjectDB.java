@@ -112,6 +112,7 @@ public class ProjectDB extends BaseDB {
                 pm.logo = res.getString("logo");
                 pm.dateCreate = res.getLong("date_create");
                 pm.image = res.getString("image");
+                pm.host = res.getString("host");
                 pm.listUsers = "[{\"userId\":" + userId + ",\"color\":\"#ff1eac\",\"litera\":\"B\"}]";
                 lp.add(pm);
             }
@@ -135,6 +136,7 @@ public class ProjectDB extends BaseDB {
                 pm.nameAPP = res.getString("app_name");
                 pm.comment = res.getString("project_comment");
                 pm.logo = res.getString("logo");
+                pm.host = res.getString("host");
                 pm.colors = res.getString("color");
                 pm.strings = res.getString("strings");
                 pm.appParam = res.getString("app_param");

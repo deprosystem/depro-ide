@@ -1,4 +1,5 @@
 var clientCallBack;
+var clientElement;
 var notPicker = true;
 var maxIndexColor;
 var listColor;
@@ -12,9 +13,10 @@ var styleAlpha1 = "position: absolute; right: 5px; top: 200px; width: 310px; hei
 var styleAlpha2 = "); background: -webkit-linear-gradient(left,";
 var elementchangeNameColor;
 
-function openPickerColor(colorInit, cb) {
+function openPickerColor(colorInit, cb, el) {
     windSelectColor.style.display = 'block';
     clientCallBack = cb;
+    clientElement = el;
     if (colorInit.length > 0) {
         var color = colorInit;
         if (colorInit.charAt(0) != "#") {

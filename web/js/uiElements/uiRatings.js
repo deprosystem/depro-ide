@@ -1,6 +1,6 @@
 
 function uiRatings() {
-    let cont = '<div class="container" style="width:100%;height:100%;display:flex;justify-content:space-around;flex-direction:row;"></div>';
+    let cont = '<div class="container" style="width:100%;height:100%;display:flex;justify-content:space-between;flex-direction:row;"></div>';
     
     this.setElementUI = function(p, newEl, parent) {
         if (p.componParam == null) {

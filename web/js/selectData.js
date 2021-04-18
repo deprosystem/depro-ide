@@ -38,6 +38,29 @@ function createSelect(ll, num, on) {
     return container.firstChild;
 }
 
+function editSelect(title, w, list, value, on) {
+    let elAll = newDOMelement('<div style="margin-top: 5px;float: left;"><div class="text_style_ui" style="margin-left:4px">' + title + '</div></div>');
+    let ll = list.split(",");
+    let sel = newDOMelement(editCreateSelect(ll, value, on));
+    sel.style.width = w + "px";
+    elAll.appendChild(sel);
+    return elAll;
+}
+
+function editCreateSelect(ll, value, on) {
+    let ik = ll.length;
+    let st = '<select class = "select_' + browser + '" onchange="' + on + '(this)">';
+    for (let i = 0; i < ik; i++) {
+        let sel = "";
+        if (value == ll[i]) {
+            sel = "selected";
+        }
+        st += '<option ' + sel + '>' + ll[i] + '</option>'
+    }
+    st += '</select>';
+    return st;
+}
+
 function createSelectValue(ll, value, on) {
     var container = document.createElement('div')
     container.innerHTML = createSelectTagValue(ll, value, on);
@@ -212,9 +235,13 @@ function formListIdElemIsType(childEl, type) {
     return st;
 }
 
-function formSelectViewIdHandl(valueSel) {
+function formSelectViewIdHandl(valueSel, addItem) {
     let st = formListIdElemHandl(currentChildren);
-    return formSelectForEditData("0" + st, valueSel);
+    let dop = "0";
+    if (addItem != null && addItem.length > 0) {
+        dop = "0," + addItem;
+    }
+    return formSelectForEditData(dop + st, valueSel);
 }
 
 function formListIdElemHandl(childEl) {

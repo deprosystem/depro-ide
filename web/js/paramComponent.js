@@ -513,6 +513,7 @@ function setVisibility(check) {
             vv = currentElement.oldDisplay;
         }
         currentElement.style.display = vv;
+        showElemChilds(currentElement);
     } else {
         visibility.src = "img/check-act.png";
         currentElement.oldDisplay = currentElement.style.display;

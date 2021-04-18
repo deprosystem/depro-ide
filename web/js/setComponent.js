@@ -338,7 +338,6 @@ function viewComponElem(el) {
     let margR;
     if (p.parent != null) {
         pp = p.parent.android;
-//console.log("PPPPP_IIII=="+p.viewId+"<< PPPPP="+pp);
         if (pp != null && pp.type == "List") {
             let span = pp.spanC;
             let mm = -1;
@@ -351,7 +350,7 @@ function viewComponElem(el) {
         }
     }
     if (p.parent != null) {
-        relativeL(el, p, parL, parT, parR, parB);
+        relativeL(el, p, parL, parT, parR, parB, margR);
     }
     
     let ik;
@@ -486,27 +485,49 @@ function viewComponElem(el) {
             viewEditText(el, p, hH, wW);
             break;
         case "ImageView":
-            pc = p.corners;
-            contentEl = el.getElementsByTagName("img")[0];
-            if (pc != null) {
-                let stR = (parseInt(pc.lt) * MEASURE) + "px " + (parseInt(pc.tr) * MEASURE) + "px " + (parseInt(pc.rb) * MEASURE) + "px " 
-                        + (parseInt(pc.bl) * MEASURE) + "px";
-                contentEl.style.borderRadius = stR;
-            }
             contentEl = el.getElementsByClassName("image")[0];
-            contentEl.style.width = "";
-            contentEl.style.height = "";
-            if (pLL > 0) {
-                contentEl.style.marginLeft = pLL + px;
+            imgEl = el.getElementsByTagName("img")[0];
+            if (imgEl == null) {
+                let p_src = p.src;
+                if (p_src == null || p_src == "") {
+                    p_src = "img/picture.png";
+                }
+                imgEl = newDOMelement('<IMG SRC="'+ p_src +'" style="width:100%;height:100%;pointer-events: none;">');
+                contentEl.appendChild(imgEl);
             }
-            if (pTT > 0) {
-                contentEl.style.marginTop = pTT + px;
+            if (p.componParam != null && p.componParam.oval != null && p.componParam.oval) {
+                contentEl.style.width = "100%";
+                contentEl.style.height = "100%";
+                imgEl.style.borderRadius = "50%";
+            } else {
+                pc = p.corners;
+                if (pc != null) {
+                    contentEl.style.width = "100%";
+                    contentEl.style.height = "100%";
+                    let stR = (parseInt(pc.lt) * MEASURE) + "px " + (parseInt(pc.tr) * MEASURE) + "px " + (parseInt(pc.rb) * MEASURE) + "px " 
+                            + (parseInt(pc.bl) * MEASURE) + "px";
+                    imgEl.style.borderRadius = stR;
+                } else {
+                    contentEl.style.width = "";
+                    contentEl.style.height = "";
+                    if (pLL > 0) {
+                        contentEl.style.marginLeft = pLL + px;
+                    }
+                    if (pTT > 0) {
+                        contentEl.style.marginTop = pTT + px;
+                    }
+                    if (pRR > 0) {
+                        contentEl.style.marginRight = pRR + px;
+                    }
+                    if (pBB > 0) {
+                        contentEl.style.marginBottom = pBB + px;
+                    }
+                }
             }
-            if (pRR > 0) {
-                contentEl.style.marginRight = pRR + px;
-            }
-            if (pBB > 0) {
-                contentEl.style.marginBottom = pBB + px;
+            if (p.componParam != null && p.componParam.borderColor != null && p.componParam.w_bord != null) {
+                imgEl.style.border = p.componParam.w_bord + "px solid " + findColorByIndex(p.componParam.borderColor);
+            } else {
+                imgEl.style.border = "";
             }
             break;
         case "CardView":
@@ -573,50 +594,54 @@ function viewComponElem(el) {
 
 function viewTextView(el, p, hH, wW) {
     let contentEl = el.getElementsByClassName("text")[0];
-    switch(p.gravity.v) {
-        case TOP:
-            contentEl.style.bottom = '';
-            contentEl.style.top = '0px';
-            break;
-        case BOTTOM:
-            contentEl.style.top = '';
-            contentEl.style.bottom = '0px';
-            break;
-        case NONE:
-        case CENTER:
-            let ccc;
-            if (p.componParam != null && p.componParam.typeValidTV != null && p.componParam.typeValidTV != "no") {
-                ccc = p.textSize * MEASURE;
-            } else {
-                ccc = contentEl.clientHeight;
-            }
-            contentEl.style.bottom = '';
-            let cc = hH - ccc ;
-            if (cc < 0) {
-                cc = 0;
-            } else {
-                cc = cc / 2;
-            }
-            contentEl.style.top = cc + px;
-            break;
+    if (p.height != WRAP) {
+        switch(p.gravity.v) {
+            case TOP:
+                contentEl.style.bottom = '';
+                contentEl.style.top = '0px';
+                break;
+            case BOTTOM:
+                contentEl.style.top = '';
+                contentEl.style.bottom = '0px';
+                break;
+            case NONE:
+            case CENTER:
+                let ccc;
+                if (p.componParam != null && p.componParam.typeValidTV != null && p.componParam.typeValidTV != "no") {
+                    ccc = p.textSize * MEASURE;
+                } else {
+                    ccc = contentEl.clientHeight;
+                }
+                contentEl.style.bottom = '';
+                let cc = hH - ccc ;
+                if (cc < 0) {
+                    cc = 0;
+                } else {
+                    cc = cc / 2;
+                }
+                contentEl.style.top = cc + px;
+                break;
+        }
     }
-    switch(p.gravity.h) {
-        case RIGHT:
-            contentEl.style.left = '';
-            contentEl.style.right = '0px';
-            break;
-        case NONE:
-        case LEFT:
-            contentEl.style.right = '';
-            contentEl.style.left = '0px';
-            break;
-        case CENTER:
-            let ccc = contentEl.clientWidth;
-            wW = el.clientWidth;
-            let cc = wW / 2 - ccc / 2;
-            contentEl.style.right = '';
-            contentEl.style.left = cc + 'px';
-            break;
+    if (p.width != WRAP) {
+        switch(p.gravity.h) {
+            case RIGHT:
+                contentEl.style.left = '';
+                contentEl.style.right = '0px';
+                break;
+            case NONE:
+            case LEFT:
+                contentEl.style.right = '';
+                contentEl.style.left = '0px';
+                break;
+            case CENTER:
+                let ccc = contentEl.clientWidth;
+                wW = el.clientWidth;
+                let cc = wW / 2 - ccc / 2;
+                contentEl.style.right = '';
+                contentEl.style.left = cc + 'px';
+                break;
+        }
     }
 }
 
@@ -660,9 +685,7 @@ function viewEditText(el, p, hH, wW) {
     }
 }
 
-function relativeL(el, p, pLL, pTT, pRR, pBB) {
-    let margR;
-    
+function relativeL(el, p, pLL, pTT, pRR, pBB, margR) {
     let root_w = p.parent.offsetWidth;
     let root_h = p.parent.offsetHeight;
     let pParent = p.parent.android;
@@ -839,7 +862,10 @@ function wrapTextViewH(el, p) {
     if (p.componParam != null && p.componParam.typeValidTV != null && p.componParam.typeValidTV != "no") {
         el.style.height = standartHeightEditText(p.textSize) * MEASURE + px;
     } else {
-                        el.style.height = parseInt(p.textSize) * MEASURE + px;
+        el.style.height = parseInt(p.textSize) * MEASURE + px;
+        contentEl.style.top = "0";
+        contentEl.style.marginTop = "0";
+        contentEl.style.marginLeft = "0";
 //        el.style.height = (rectParent.bottom - rectParent.top) + px;
     }
 }

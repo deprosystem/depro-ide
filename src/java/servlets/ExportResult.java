@@ -323,8 +323,13 @@ public class ExportResult extends BaseServlet {
                 }
                 declare.add("        " + type + "(" + scName.toUpperCase() + ", R.layout." + type + "_" + scName + tit + titPar + endScr);
                 
-                String startNavig = "";
-                String sepSatrtNav = "";
+                String startNavig = formStartNavigator(sc.navigator, tab16, tab12 + ".");
+                String sepSatrtNav;
+                if (startNavig.length() > 0) {
+                    sepSatrtNav = ",\n";
+                } else {
+                    sepSatrtNav = "";
+                }
                 for (int j = 0; j < jk; j++) {
                     Component comp = sc.components.get(j);
                     if (comp.type.equals(Constants.LIST)) {
@@ -340,7 +345,7 @@ public class ExportResult extends BaseServlet {
                 String initData = "";
                 if (sc.initData != null && sc.initData.size() > 0) {
                     int dk = sc.initData.size();
-                    String sepInitData = "";
+                    String sepInitData = tab16;
                     for (int d = 0; d < dk; d++) {
                         ItemInitData id = sc.initData.get(d);
                         switch (id.typeSource) {
@@ -348,10 +353,14 @@ public class ExportResult extends BaseServlet {
                                 initData += sepInitData + "set(R.id." + id.viewId + ", TS.SIZE, R.id." + id.idComp + ")";
                                 break;
                             case "PARAM":
-                                initData += sepInitData + "setParam(R.id." + id.viewId + ", \"" + id.param + "\")";
+                                String listPar = "";
+                                if (id.param != null && id.param.length() > 0) {
+                                    listPar = ", \"" + id.param + "\"";
+                                }
+                                initData += sepInitData + "setParam(R.id." + id.viewId + listPar + ")";
                                 break;
                         }
-                        sepInitData = ",\n";
+                        sepInitData = tab16 + ",\n";
                     }
                 }
                 
@@ -396,8 +405,12 @@ public class ExportResult extends BaseServlet {
                             break;
                         case Constants.SCROLL:
                         case Constants.PANEL:
+                            String noData = "";
+                            if (comp.view.no_data != null && comp.view.no_data.length() > 0) {
+                                noData = ".noDataView(R.id." + comp.view.no_data + ")";
+                            }
                             declare.add(tab12 + ".component(TC.PANEL, " + formModel(comp)
-                                    + "\n" + tab16 + "view(R.id." + comp.view.viewId + ")" + formNavigator(comp.navigator, tab20, ",\n" + tab16) + endComp);
+                                    + "\n" + tab16 + "view(R.id." + comp.view.viewId + ")" + noData + formNavigator(comp.navigator, tab20, ",\n" + tab16) + endComp);
                             break;
                         case Constants.FORM:
                             declare.add(tab12 + ".component(TC.PANEL_ENTER, " + formModel(comp)
@@ -462,8 +475,11 @@ public class ExportResult extends BaseServlet {
                             ml = comp.model.menuList;
                             nameMenu = "menu_" + firstUpperCase(scName) + "_" + firstUpperCase(cViewId);
                             importD.add(Constants.importMenu);
+                            menu.add("    Menu " + nameMenu + " = new Menu()\n");
+/*
                             menu.add("    Menu " + nameMenu + " = new Menu(" + findColorResourse(ml.colorNormId, parSave.colors) + ", "
                                     + findColorResourse(ml.colorSelId, parSave.colors) + ")\n");
+*/
                             mk = ml.list.size();
                             mk1 = mk - 1;
                             noStart = true;
@@ -531,8 +547,10 @@ public class ExportResult extends BaseServlet {
                             }
                             String mod = formModel(comp);
                             String nav = "";
-                            if (mod.length() > 0) {
+                            if (comp.navigator.size() == 0) {
                                 nav = ", null";
+                            } else {
+                                nav = formNavigator(comp.navigator, tab20, ",\n" + tab16);
                             }
                             declare.add(tab12 + ".componentMap(R.id." + cViewId + ", " + mod
                                     + "\n" + tab16 + "new ParamMap(true)" + zoom + coord + formMarker(comp) + contr + nav + endComp);
@@ -631,6 +649,9 @@ public class ExportResult extends BaseServlet {
                 }
                 res += "GLOBAL" + stPar + "),";
                 break;
+            case Constants.PROFILE:
+                res += "PROFILE),";
+                break;
             case Constants.NULL:
                 res = "null,";
         }
@@ -695,13 +716,32 @@ public class ExportResult extends BaseServlet {
         return res;
     }
     
+    private String formStartNavigator(Navigator navigator, String tab, String beg) {
+        int ik = navigator.size();
+        if (ik > 0) {
+            String res = "";
+            String sep = "";
+            for (int i = 0; i < ik; i++) {
+                Handler hh = navigator.get(i);
+                if ( ! hh.after && hh.viewId.equals("Execute at startup screen")) {
+                    res += sep + formHandler(navigator, i, false);
+                    sep = ",\n" + tab;
+                }
+            }
+            return res;
+        } else {
+            return "";
+        }
+    }
+    
     private String formNavigator(Navigator navigator, String tab, String beg) {
         int ik = navigator.size();
         if (ik > 0) {
             String res = beg + "navigator(";
             String sep = "";
             for (int i = 0; i < ik; i++) {
-                if ( ! navigator.get(i).after) {
+                Handler hh = navigator.get(i);
+                if ( ! hh.after && ! hh.viewId.equals("Execute at startup screen")) {
                     res += sep + formHandler(navigator, i, false);
                     sep = ",\n" + tab;
                 }
@@ -789,6 +829,12 @@ public class ExportResult extends BaseServlet {
                     vId = stId;
                 }
                 res = "handler(" + vId + ", VH.ADD_RECORD, R.id." + hh.id + ")";
+                break;
+            case "dialUp":
+                res = "handler(" + stId+ ", VH.DIAL_UP)";
+                break;
+            case "springScale":
+                res = "springScale(" + parId+ ", 3, 1000)";
                 break;
             case "delRecord":
                 vId = "0";
@@ -1016,6 +1062,7 @@ public class ExportResult extends BaseServlet {
 //                try (FileWriter writer = new FileWriter(path + "/" + type_screen + screen.screenName.toLowerCase() + ".xml", false)) {
                 try ( BufferedWriter writer = new BufferedWriter(new OutputStreamWriter( new FileOutputStream(path + "/" + type_screen + screen.screenName.toLowerCase() + ".xml"), "UTF8"))) {
                     writer.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+                    parSave.noToolMenu = false;
                     createEl(screen.layout, true, "\n", writer, parSave);
                     writer.flush();
                 }
@@ -1288,7 +1335,7 @@ public class ExportResult extends BaseServlet {
         if (p.componParam != null && p.componParam.type != null) {
             typeEl = Constants.componType[p.componParam.type];
         }
-        
+
         switch (p.type) {
             case Constants.TEXTVIEW:
                 if (p.componParam != null) { 
@@ -1313,7 +1360,7 @@ public class ExportResult extends BaseServlet {
                 typeEl = Constants.cardViewType;
                 break;
             case Constants.IMAGEVIEW:
-                if (p.corners != null) {
+                if (p.corners != null || (p.componParam != null && p.componParam.oval != null && p.componParam.oval)) {
                     typeEl = Constants.roundedType;
                 }
                 break;
@@ -1569,37 +1616,47 @@ public class ExportResult extends BaseServlet {
                     break;
                 case Constants.IMAGEVIEW:
                     Corners pc = p.corners;
-                    if (pc != null) {
-                        int lt = 0, tr = 0, rb = 0, bl = 0;
-                        if (pc.lt.length() > 0) {
-                            lt = Integer.valueOf(pc.lt);
+                    if (p.componParam != null && p.componParam.oval != null && p.componParam.oval) {
+                        writer.write(tab + "app:riv_oval=\"true\"");
+                    } else {
+                        if (pc != null) {
+                            int lt = 0, tr = 0, rb = 0, bl = 0;
+                            if (pc.lt.length() > 0) {
+                                lt = Integer.valueOf(pc.lt);
+                            }
+                            if (pc.tr.length() > 0) {
+                                tr = Integer.valueOf(pc.tr);
+                            }
+                            if (pc.rb.length() > 0) {
+                                rb = Integer.valueOf(pc.rb);
+                            }
+                            if (pc.bl.length() > 0) {
+                                bl = Integer.valueOf(pc.bl);
+                            }
+                            if (lt == tr && lt == rb && lt == bl) {
+                                if (lt > 0) {
+                                    writer.write(tab + "app:riv_corner_radius=\"" + lt + "dp\"");
+                                }
+                            } else {
+                                if (lt > 0) {
+                                    writer.write(tab + "app:riv_corner_radius_top_left=\"" + lt + "dp\"");
+                                }
+                                if (tr > 0) {
+                                    writer.write(tab + "app:riv_corner_radius_top_right=\"" + tr + "dp\"");
+                                }
+                                if (rb > 0) {
+                                    writer.write(tab + "app:riv_corner_radius_bottom_right=\"" + rb + "dp\"");
+                                }
+                                if (bl > 0) {
+                                    writer.write(tab + "app:riv_corner_radius_bottom_left=\"" + bl + "dp\"");
+                                }
+                            }
                         }
-                        if (pc.tr.length() > 0) {
-                            tr = Integer.valueOf(pc.tr);
-                        }
-                        if (pc.rb.length() > 0) {
-                            rb = Integer.valueOf(pc.rb);
-                        }
-                        if (pc.bl.length() > 0) {
-                            bl = Integer.valueOf(pc.bl);
-                        }
-                        if (lt == tr && lt == rb && lt == bl) {
-                            if (lt > 0) {
-                                writer.write(tab + "app:riv_corner_radius=\"" + lt + "dp\"");
-                            }
-                        } else {
-                            if (lt > 0) {
-                                writer.write(tab + "app:riv_corner_radius_top_left=\"" + lt + "dp\"");
-                            }
-                            if (tr > 0) {
-                                writer.write(tab + "app:riv_corner_radius_top_right=\"" + tr + "dp\"");
-                            }
-                            if (rb > 0) {
-                                writer.write(tab + "app:riv_corner_radius_bottom_right=\"" + rb + "dp\"");
-                            }
-                            if (bl > 0) {
-                                writer.write(tab + "app:riv_corner_radius_bottom_left=\"" + bl + "dp\"");
-                            }
+                    }
+                    if (p.componParam != null) {
+                        if (p.componParam.w_bord != null && p.componParam.w_bord > 0 && p.componParam.borderColor != null) {
+                            writer.write(tab + "app:riv_border_width=\"" + p.componParam.w_bord + "dp\"");
+                            writer.write(tab + "app:riv_border_color=\"" + findColorByIndex(p.componParam.borderColor, parSave.colors) + "\"");
                         }
                     }
                     break;
@@ -1627,6 +1684,18 @@ public class ExportResult extends BaseServlet {
                             writer.write(tab + "app:stringArray=\"@string/" + nameStrId + "\"");
                             if (p.componParam.spaceZero != null && p.componParam.spaceZero) {
                                 writer.write(tab + "app:zeroNotView=\"true\"");
+                            }
+                        }
+                        if (p.componParam.ellipsize != null && ! p.componParam.ellipsize.equals("none")) {
+                            writer.write(tab + "android:ellipsize=\"" + p.componParam.ellipsize + "\"");
+                            writer.write(tab + "android:maxLines=\"1\"");
+                            writer.write(tab + "android:singleLine=\"true\"");
+                        } else {
+                            if (p.componParam.singleLine != null && p.componParam.singleLine) {
+                                writer.write(tab + "android:singleLine=\"true\"");
+                            }
+                            if (p.componParam.maxLine != null && p.componParam.maxLine > 0) {
+                                writer.write(tab + "android:maxLines=\"" + p.componParam.maxLine + "\"");
                             }
                         }
                     }
@@ -1768,7 +1837,7 @@ public class ExportResult extends BaseServlet {
                     break;
                 case Constants.ELLIPSIS:
                     if (p.componParam != null) {
-                         if (p.componParam.orient != null && p.componParam.orient.equals("vertical")) {
+                        if (p.componParam.orient != null && p.componParam.orient.equals("vertical")) {
                             writer.write(tab + "android:orientation=\"vertical\"");
                         }
                         if (p.componParam.diam != null) {
@@ -1779,6 +1848,22 @@ public class ExportResult extends BaseServlet {
                         }
                         if (p.componParam.amountDots != null) {
                             writer.write(tab + "app:amountDots=\"" + p.componParam.amountDots + "\"");
+                        }
+                    }
+                    break;
+                case Constants.RATINGS:
+                    if (p.componParam != null) {
+                        if (p.componParam.diam != null) {
+                            writer.write(tab + "app:widthStar=\"" + p.componParam.diam + "dp\"");
+                        }
+                        if (p.componParam.srcContour != null) {
+                            writer.write(tab + "app:star=\"@drawable/" + nameFromUrl(p.componParam.srcContour) + "\"");
+                        }
+                        if (p.componParam.srcFilled != null) {
+                            writer.write(tab + "app:starFilled=\"@drawable/" + nameFromUrl(p.componParam.srcFilled) + "\"");
+                        }
+                        if (p.componParam.amountDots != null) {
+                            writer.write(tab + "app:amountStars=\"" + p.componParam.amountDots + "\"");
                         }
                     }
                     break;
@@ -1793,6 +1878,18 @@ public class ExportResult extends BaseServlet {
                         }
                     }
                     if (p.sheetParam != null) {
+                        if (p.componParam.bool_1) {
+                            writer.write(tab + "app:noSwipeHide=\"true\"");
+                        }
+                        if (p.componParam.bool_2) {
+                            writer.write(tab + "app:noBackPressedHide=\"true\"");
+                        }
+                        if (p.componParam.color_1 != null && p.componParam.color_1 != 17) {
+                            writer.write(tab + "app:fadedScreenColor=\"" + findColorByIndex(p.componParam.color_1, parSave.colors) + "\"");
+                        }
+                    }
+/*
+                    if (p.sheetParam != null) {
                         if (p.sheetParam.noSwipe) {
                             writer.write(tab + "app:noSwipeHide=\"true\"");
                         }
@@ -1800,6 +1897,7 @@ public class ExportResult extends BaseServlet {
                             writer.write(tab + "app:noBackPressedHide=\"true\"");
                         }
                     }
+*/
                     writer.write(tab + "app:viewId=\"@layout/view_" + parSave.currentScreen.toLowerCase() + "_" + p.viewId + "\"");
                     break;
                 case Constants.MENU_B:
@@ -1819,6 +1917,25 @@ public class ExportResult extends BaseServlet {
                     }
                     if (cs.background != null && cs.background.length() > 0) {
                         writer.write(tab + "app:selectBackground=\"@drawable/shape_" + cs.background + "\"");
+                    }
+                    break;
+                case Constants.MENU:
+                    if (p.componParam != null) {
+                        if (p.componParam.colorNorm != 0) {
+                            writer.write(tab + "app:normColor=\"" + findColorByIndex(p.componParam.colorNorm, parSave.colors) + "\"");
+                        }
+                        if (p.componParam.colorSel != 1) {
+                            writer.write(tab + "app:selectColor=\"" + findColorByIndex(p.componParam.colorSel, parSave.colors) + "\"");
+                        }
+                        if (p.componParam.colorEnab != 7) {
+                            writer.write(tab + "app:enablColor=\"" + findColorByIndex(p.componParam.colorEnab, parSave.colors) + "\"");
+                        }
+                        if (p.componParam.colorBadge != 3) {
+                            writer.write(tab + "app:badgeColor=\"" + findColorByIndex(p.componParam.colorBadge, parSave.colors) + "\"");
+                        }
+                        if (p.componParam.colorDivider != 7) {
+                            writer.write(tab + "app:dividerColor=\"" + findColorByIndex(p.componParam.colorDivider, parSave.colors) + "\"");
+                        }
                     }
                     break;
                 case Constants.CARD_VIEW:

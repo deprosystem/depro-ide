@@ -18,7 +18,7 @@ function uxPlusMinus() {
         currentComponent = {type: tt, componId: componId, viewId:viewId, typeUxUi: "ux", componParam:{type:18},
                 typeFull: {name: tt, typeBlock: 0}, textSize:14, gravLayout: {h: 3, v: 3}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
             width:32,height:20,itemNav:{},viewElement: null,children:[]};
-        currentComponentDescr = {type:tt, componId: componId, model:{method:7,data:[[]]},view:{viewId: viewId},navigator:[]};
+        currentComponentDescr = {type:tt, componId: componId, model:{method:15,data:[[]]},view:{viewId: viewId},navigator:[]};
     }
     
     this.setValue = function(componParam) {

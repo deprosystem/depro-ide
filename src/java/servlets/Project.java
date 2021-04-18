@@ -60,6 +60,7 @@ public class Project extends BaseServlet {
                         pc.appParam = formAppParam();
                         pc.screens = formScreens();
                         pc.resurseInd = createRandomStr(10);
+                        pc.host = "";
 //System.out.println("pc.resurseInd="+pc.resurseInd+"<< LL="+pc.resurseInd.length());
                         pc.dateCreate = new Date().getTime();
                         id = projectDb.createProjectId(pc);

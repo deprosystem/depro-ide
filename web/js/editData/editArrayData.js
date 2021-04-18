@@ -245,6 +245,9 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
             case ID_SELECT_HANDL:
                 td.appendChild(setSelectIdHandl(met, item));
                 break;
+            case ID_SELECT_HANDL_SCR:
+                td.appendChild(setSelectIdHandl(met, item, "Execute at startup screen"));
+                break;
             case TYPE_IMG:
                 let divImg = document.createElement('div');
                 divImg.style.backgroundImage = "url(img/chess_2.png)";
@@ -355,7 +358,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
         return selSel;
     }
     
-    function setSelectIdHandl(met, item) {
+    function setSelectIdHandl(met, item, addItem) {
         let vv;
         if (item != null) {
             let nameV = met.name;
@@ -364,7 +367,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
                 vv = "";
             }
         }
-        let selSel = formSelectViewIdHandl(vv);
+        let selSel = formSelectViewIdHandl(vv, addItem);
         selSel.style.width = met.len + "px";
         selSel.style.border = "none";
         selSel.style.backgroundColor = "#0000";

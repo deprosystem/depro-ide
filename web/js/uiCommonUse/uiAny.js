@@ -62,6 +62,7 @@ function getCompByViewId(ch, id) {
 function checkValidityLinks(ch, tab) {
     let ik = ch.length;
     let res = "";
+    let letErr = 0;
     for (let i = 0; i < ik; i++) {
         let chi = ch[i];
         let vId = chi.viewId;
@@ -70,30 +71,85 @@ function checkValidityLinks(ch, tab) {
         } else {
             vId += ":";
         }
+        if (chi.type == "Ratings") {
+            if (chi.componParam.srcFilled == null || chi.componParam.srcFilled == "" ||
+                    chi.componParam.srcContour == null || chi.componParam.srcContour == "") {
+                res += txtError(2, tab, vId + chi.type + " Item rating no images set");
+                letErr = 2;
+//                res += tab + vId + chi.type + " Item rating no images set <br>";
+            }
+        }
         if (chi.below != null && chi.below != "") {
             if ( ! isValidLink(ch, chi.below)) {
                 chi.below = "";
-                res += tab + vId + chi.type + " below." + chi.below + " no resource<br>";
+                res += txtError(1, tab, vId + chi.type + " below." + chi.below + " no resource");
+                if (letErr < 1) {
+                    letErr = 1;
+                }
+//                res += tab + vId + chi.type + " below." + chi.below + " no resource<br>";
             }
         }
         if (chi.above != null && chi.above != "") {
             if ( ! isValidLink(ch, chi.above)) {
                 chi.above = "";
-                res += tab + vId + chi.type + " above." + chi.above + " no resource<br>";
+                res += txtError(1, tab, vId + chi.type + " above." + chi.below + " no resource");
+                if (letErr < 1) {
+                    letErr = 1;
+                }
+//                res += tab + vId + chi.type + " above." + chi.above + " no resource<br>";
             }
         }
         if (chi.toRightOf != null && chi.toRightOf != "") {
             if ( ! isValidLink(ch, chi.toRightOf)) {
                 chi.toRightOf = "";
-                res += tab + vId + chi.type + " toRightOf." + chi.toRightOf + " no resource<br>";
+                res += txtError(1, tab, vId + chi.type + " toRightOf." + chi.toRightOf + " no resource");
+                if (letErr < 1) {
+                    letErr = 1;
+                }
+//                res += tab + vId + chi.type + " toRightOf." + chi.toRightOf + " no resource<br>";
             }
         }
         if (chi.toLeftOf != null && chi.toLeftOf != "") {
             if ( ! isValidLink(ch, chi.toLeftOf)) {
                 chi.toLeftOf = "";
-                res += tab + vId + chi.type + " toLeftOf." + chi.toLeftOf + " no resource<br>";
+                res += txtError(1, tab, vId + chi.type + " toLeftOf." + chi.toLeftOf + " no resource");
+                if (letErr < 1) {
+                    letErr = 1;
+                }
+//                res += tab + vId + chi.type + " toLeftOf." + chi.toLeftOf + " no resource<br>";
             }
         }
+        chN = chi.children;
+        if (chN != null && chN.length > 0) {
+            let tt = tab;
+            if (chN.length > 1) {
+                tt += "&ensp;";
+            }
+            res += checkValidityLinks(chN, tt);
+        }
+    }
+    let resErr = {lev:letErr,txt:res};
+    return resErr;
+}
+
+function checkValidityUI(ch, tab) {
+    let ik = ch.length;
+    let res = "";
+    for (let i = 0; i < ik; i++) {
+        let chi = ch[i];
+        let vId = chi.viewId;
+        if (vId == null) {
+            vId = "";
+        } else {
+            vId += ":";
+        }
+        if (chi.type == "Ratings") {
+            if (chi.componParam.srcFilled == null || chi.componParam.srcFilled == "" ||
+                    chi.componParam.srcContour == null || chi.componParam.srcContour == "") {
+                res += tab + vId + chi.type + " Item rating no images set <br>";
+            }
+        }
+
         chN = chi.children;
         if (chN != null && chN.length > 0) {
             let tt = tab;

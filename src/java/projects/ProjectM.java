@@ -9,6 +9,7 @@ public class ProjectM {
     public String appParam;
     public String comment;
     public String logo;
+    public String host;
     public String strings;
     public String style;
     public String colors;

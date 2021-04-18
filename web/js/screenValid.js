@@ -29,10 +29,10 @@ function oneScreenValid(scrD, ii) {
     }
     
     let noRes = checkValidityLinks(scrD.layout.children, "&ensp;");
-    if (noRes != "") {
-        newErrors += txtError(1, "", noRes);
-        if (newLevelErrors < 1) {
-            newLevelErrors = 1;
+     if (noRes.txt != "") {
+        newErrors += txtError(1, "", noRes.txt);
+        if (newLevelErrors < noRes.lev) {
+            newLevelErrors = noRes.lev;
         }
     }
     if (scrD.levelErrors != newLevelErrors) {

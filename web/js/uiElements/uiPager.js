@@ -8,6 +8,7 @@ function uiPager() {
     }
     
     this.setContent = function(p) {
+        contentAttributes.innerHTML = "";
     }
     
     this.viewElementUI = function(p, el) {

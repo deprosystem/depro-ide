@@ -21,6 +21,7 @@
         <script src="js/uiCommonUse/generalMenu.js" ></script>
         <script src="js/uiElements/uiToolBar.js" ></script>
         <script src="js/uiElements/uiMenuBottom.js" ></script>
+        <script src="js/uiElements/uiMenu.js" ></script>
         <script src="js/uiElements/uiCalendar.js" ></script>
         <script src="js/uiElements/uiImageView.js" ></script>
         <script src="js/uiElements/uiMap.js" ></script>
@@ -84,7 +85,6 @@
         <script src="js/screenValid.js"></script>
         <script src="js/cookie.js"></script>
         <script src="js/initial.js"></script>
-        <script src="js/editComponentsUX.js"></script>
         <script src="js/setComponent.js"></script>
         <script src="js/moveResize/movePanel.js" ></script>
         <script src="js/moveResize/moveElement.js" ></script>
@@ -98,6 +98,7 @@
         
         <script src="js/backEnd/showPanel.js" ></script>
         <script src="js/backEnd/table.js" ></script>
+        <script src="js/backEnd/descrDB.js" ></script>
         <script src="js/backEnd/metaDataBackEnd.js" ></script>
     </head>
     <body>
@@ -156,9 +157,6 @@
             <div id="hierarhy">
                 <div id="navigator_scr" class="viewport" data-control="scroll">
                     <div id="navigator_container" class="content" style="padding-right: 15px">
-<!--
-                        <div id="navigatorEl" style="position: absolute; left: 5px; top: 5px; right: 0px; bottom: 0px;-webkit-user-select: none;-moz-user-select: none;user-select: none;">
--->
                         <div id="navigatorEl" style="margin-left: 5px;margin-right:5px; margin-bottom:10px;-webkit-user-select: none;-moz-user-select: none;user-select: none;">
 
                         </div>
@@ -364,7 +362,13 @@
         <div id="backEnd">
             <div id="servAndTabl" style="position: absolute;left: 0;top: 0;bottom: 0;width: 300px;background-color:#fefeff;border-right: 1px groove #77a;font-size: 14px">
                 <div id="server" style="position: absolute;right: 0;left: 0;height: 100px;border-bottom: 1px solid #1DACE9">
-                    
+                    <div class="text_style_ui" style="float: left;margin-top: 5px;margin-left:8px;">Server hosting</div>
+                    <div style="float: left;clear: both;margin-left:5px;width: 280px;border: 1px solid #bbd4ef; border-radius:5px;height:24px;">
+                        <div id="descr_host" style="margin-left: 3px; margin-top: 3px;"></div>
+                    </div>
+                    <div onclick="descrHost()" style="cursor:pointer;width:150px;height:30px;background:#1DACE9;border-radius:4px;clear: both;margin-left:5px;margin-top:10px;float:left;">
+                        <div id="button_host" style="text-align: center;margin-top:7px;color:#fff"></div>
+                    </div>
                 </div>
                 <div onclick="addTable()" style="position: absolute;right: 0;top: 101px;left: 0;cursor: pointer;background-color: #f7f7ff; height: 30px;text-align: center;border-bottom: 1px solid #1DACE9;width: 100%">
                     <div style="margin-top: 3px; display: inline-block">Add table</div>

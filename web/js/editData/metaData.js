@@ -1,6 +1,6 @@
-var TYPE_TEXT = 0, TYPE_INT = 1, TYPE_FLOAT = 3, TYPE_BOOLEAN = 4, TYPE_SELECT = 5, TYPE_IMG = 6, ID_SELECT = 7, ID_SELECT_HANDL = 8;
+var TYPE_TEXT = 0, TYPE_INT = 1, TYPE_FLOAT = 3, TYPE_BOOLEAN = 4, TYPE_SELECT = 5, TYPE_IMG = 6, ID_SELECT = 7, ID_SELECT_HANDL = 8, ID_SELECT_HANDL_SCR = 9;
 
-var handlers = "start,back,backOk,actual,assignValue,setValueParam,setVar,restoreVar,hide,show,addRecord,delRecord"
+var handlers = "start,back,backOk,actual,assignValue,setValueParam,setVar,restoreVar,hide,show,addRecord,delRecord,dialUp,springScale";
 var typeSource = "PARAM,SIZE,LOCALE,SYSTEM_TIME,GROUPP_PARAM,GLOBAL_VAR";
 
 var metaPager = {titleForm:"Данные для TabLayout", description:
@@ -10,6 +10,15 @@ var metaPager = {titleForm:"Данные для TabLayout", description:
 
 var metaNavigator = {titleForm:"Navigator", description:
     [{name: "viewId", title:"Элемент",len:100,type:ID_SELECT_HANDL},
+    {name: "handler", title:"Обработчик",len:100,type:TYPE_SELECT,select:handlers},
+    {name: "param", title:"Парам",len:15,valid:{latin:true}},
+    {name: "param_1", title:"Additions",len:17,valid:{latin:true}},
+    {name: "id", title:"id",len:100,type:ID_SELECT},
+    {name: "after", title:"After",type:TYPE_BOOLEAN,marg:20}]
+    }
+    
+var metaNavigatorScreen = {titleForm:"Navigator", description:
+    [{name: "viewId", title:"Элемент",len:150,type:ID_SELECT_HANDL_SCR},
     {name: "handler", title:"Обработчик",len:100,type:TYPE_SELECT,select:handlers},
     {name: "param", title:"Парам",len:15,valid:{latin:true}},
     {name: "param_1", title:"Additions",len:17,valid:{latin:true}},

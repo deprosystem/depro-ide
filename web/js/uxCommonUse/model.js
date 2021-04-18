@@ -3,7 +3,9 @@ let uxModel1 = '<div class="model_view" style="height:40px;">'
         +'<select class="model_method type_screen select_';
 
 let uxModel2 = '" onchange="changeMethod(this)" style="width:120px;"><option>GET</option><option>POST</option><option>TEST</option>'
-            +'<option>JASON</option><option>ARGUMENTS</option><option>PARAMETERS</option><option>GLOBAL</option><option>NULL</option></select>'
+            +'<option>JASON</option><option>ARGUMENTS</option><option>PARAMETERS</option>'
+            +'<option>GLOBAL</option><option>ARGUMENTS</option><option>PROFILE</option><option>FIELD</option><option>GET_DB</option>'
+            +'<option>POST_DB</option><option>INSERT_DB</option><option>DEL_DB</option><option>UPDATE_DB</option><option>NULL</option></select>'
         +'</div>'
         +'<div class="param_method" style="float:left;margin-left:10px;"></div>';
 

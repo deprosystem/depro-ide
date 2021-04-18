@@ -1,4 +1,5 @@
 var selectItemInMenuB;
+var elementChangeColor;
 function uiMenuBottom() {
     let uiParamView = 
     '<div style="float: left;clear: both;margin-top: 16px;width:100%;padding-bottom:5px;border-top: 1px solid #1DACEf;border-bottom: 1px solid #1DACEf;">'

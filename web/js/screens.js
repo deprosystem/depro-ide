@@ -368,7 +368,7 @@ function navigatorScreen() {
     if (currentScreen.navigator == null) {
         currentScreen.navigator = [];
     }
-    editDataWind(metaNavigator, currentScreen.navigator, saveNavigator);
+    editDataWind(metaNavigatorScreen, currentScreen.navigator, saveNavigator);
 }
 
 function initDataScreen() {

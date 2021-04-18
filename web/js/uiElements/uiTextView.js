@@ -62,10 +62,32 @@ function uiTextView() {
         let lineSpacBl = selectBlock("lineSpacing", "0,1,2,3,4,6,8,10", "setLineSpacTV", 0, 14);
         setValueSelectBlock(lineSpacBl, p.lineSpac);
         uiParamTextView.appendChild(lineSpacBl);
+        if (p.componParam.ellipsize == null) {
+            p.componParam.ellipsize = "none";
+        }
+        let ellipsize = dropDownList("Ellipsize", "end,start,middle,marquee,none", 65, "changeEllipsizeTV", p.componParam.ellipsize);
+        ellipsize.style.clear = "both";
+        ellipsize.style.marginLeft = "";
+        contentAttributes.appendChild(ellipsize);
+        
+        let single = editCheckbox("Single Line", p.componParam.singleLine, "changeSingleLineTV");
+        single.style.marginTop = "5px";
+        single.style.marginLeft = "10px";
+        contentAttributes.appendChild(single);
+        
+        let maxLine = editNumberParam("maxLines", 50, 24, 0, 20, "maxLineTV");
+        maxLine.style.marginLeft = "10px";
+        maxLine.style.marginTop = "5px";
+        if (p.componParam.maxLine == null) {
+            p.componParam.maxLine = 0;
+        }
+        setValueNumber(maxLine, p.componParam.maxLine);
+        contentAttributes.appendChild(maxLine);
+        
         let typeValid = dropDownList("Validation type", "no,filled,email", 65, "changeValidTypeTV", p.componParam.typeValidTV);
         typeValid.style.clear = "both";
         typeValid.style.marginLeft = "";
-        uiParamTextView.appendChild(typeValid);
+        contentAttributes.appendChild(typeValid);
 
         let errorV = document.createElement('div');
         errorV.className = "errorV";
@@ -82,7 +104,9 @@ function uiTextView() {
         let txtErr = editTextParam("Error message text ", 120, p.componParam.errorTxt, "changeErrotTxtTV");
         txtErr.style.marginLeft = "10px";
         errorV.appendChild(txtErr);
-        uiParamTextView.appendChild(errorV);
+        contentAttributes.appendChild(errorV);
+        
+        
         
         let acceptN = editTextParam("Accept notification", 80, p.componParam.acceptNotif, "acceptNotifTV");
         acceptN.style.marginTop = "5px";
@@ -234,6 +258,10 @@ function changeValidTypeTV(el) {
     viewCompon();
 }
 
+function changeEllipsizeTV(el) {
+    currentElement.android.componParam.ellipsize = el.options[el.selectedIndex].value;
+}
+
 function changeErrorIdTV(el) {
     currentElement.android.componParam.errorId = el.options[el.selectedIndex].value;
     
@@ -255,4 +283,11 @@ function grammarSpaceIfZero(vv) {
     currentElement.android.componParam.spaceZero = vv;
 }
 
+function changeSingleLineTV(vv) {
+    currentElement.android.componParam.singleLine = vv;
+}
+
+function maxLineTV(el) {
+    currentElement.android.componParam.maxLine = el.value;
+}
 

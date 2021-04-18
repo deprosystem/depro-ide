@@ -20,7 +20,7 @@ function uxSheetBottom() {
     
     this.addComponent = function (componId, viewId) {
         let tt = this.param.name;
-        currentComponent = {type: tt, componId: componId, viewId: viewId, typeUxUi: "ux", componParam:{type:7}, sheetParam: {noSwipe:false,noBP:false},
+        currentComponent = {type: tt, componId: componId, viewId: viewId, typeUxUi: "ux", componParam:{type:12, bool_1:false,bool_2:false,color_1:17},
                 typeFull: {name: tt, typeBlock: 10}, gravLayout: {h: 3, v: 3}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
             width:-1,height:-1,itemNav:{},viewElement: null,children:[]};
         currentComponentDescr = {type:tt, componId: componId, model:{method:0,data:[[]]},view:{viewId: viewId},navigator:[]};
@@ -94,12 +94,13 @@ function createSheetBottomForUX(id) {
     p.height = -1;
     p.topMarg = 0;
     p.leftMarg = 0;
-    p.background = 17;      // black_30
-    p.hideParam = 59; // 111011
+    p.hideParam = 63; // 111111
     p.viewId = id;
     p.children = [];
     p.viewElement = currentElement;
-    p.componParam = {type:12};
+    if (p.componParam == null) {
+        p.componParam = {type:12, bool_1:false,bool_2:false,color_1:17};
+    }
     addNewElement(ACTIVE, currentElement);
     addNavigatorEl(currentElement);
     ACTIVE.android.children.push(currentElement.android);

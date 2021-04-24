@@ -450,6 +450,20 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
                         event.preventDefault();
                         tooltip(event.target, "Только английские буквы, _ и цифры");
                     }
+                } else {
+                    if (valid.name_low != null && valid.name_low) {
+                        let targ = event.target;
+                        let k = event.key;
+                        if ( ! ((k >= "a" && k <= "z") || k == "_" || (k >= "0" && k <= "9")))  {
+                            event.preventDefault();
+                            tooltip(targ, "Только английские буквы, _ и цифры");
+                        } else {
+                            if (targ.value.length == 0 && k >= "0" && k <= "9") {
+                                event.preventDefault();
+                                tooltip(targ, "The first character cannot be a digit");
+                            }
+                        }
+                    }
                 }
             }
         }

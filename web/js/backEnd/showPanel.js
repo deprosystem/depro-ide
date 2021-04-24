@@ -1,3 +1,4 @@
+/*
 function showData() {
     if (listTables == null) {
         doServer("GET", 'tables/list', cbGetTables);
@@ -10,25 +11,7 @@ function cbGetTables(res) {
     formListTables(res);
     viewData();
 }
-
-function formListTables(res) {
-    listTables = JSON.parse(res);
-    let ik = listTables.length;
-    if (ik > 0) {
-        for (let i = 0; i < ik; i++) {
-            listTablesView.append(oneTableView(i));
-        }
-    }
-}
-
-function oneTableView(i) {
-    let item = listTables[i];
-    let st = item.descr;
-    if (st == null || st == "") {
-        st = item.name_tab;
-    }
-    return newDOMelement('<div onclick="editTable(' + i + ')" style="float:left;width:100%;padding-top:5px;cursor:pointer;padding-bottom:5px;border-bottom:1px solid #aaf;clear:both">' + st + '</div>');
-}
+*/
 
 function viewData() {
     let right_d = 100;
@@ -37,6 +20,7 @@ function viewData() {
     } else {
         right_d = 450;
     }
+    setHostPanel();
     let hh = document.documentElement.clientHeight;
     if (show_data_inf.innerHTML == "Data") {
         show_data_inf.innerHTML = "UX-UI";
@@ -72,3 +56,4 @@ function showControlHeader() {
     }
     ux_ui_w.style.display = "block";
 }
+

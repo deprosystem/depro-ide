@@ -59,7 +59,7 @@ public class Project extends BaseServlet {
                         pc.drawable = formDrawable();
                         pc.appParam = formAppParam();
                         pc.screens = formScreens();
-                        pc.resurseInd = createRandomStr(10);
+                        pc.resurseInd = lowerCaseRandom(15);
                         pc.host = "";
 //System.out.println("pc.resurseInd="+pc.resurseInd+"<< LL="+pc.resurseInd.length());
                         pc.dateCreate = new Date().getTime();
@@ -122,6 +122,11 @@ public class Project extends BaseServlet {
                     break;
                 case "/project/getparam":
                     sendResult(response, projectDb.getQueryList(SQL.getParam));
+                    break;
+                case "/project/sethost":
+                    projectId = request.getHeader("projectId");
+                    String host = request.getHeader("projectId");
+                    sendResultOk(response);
                     break;
             }
     }

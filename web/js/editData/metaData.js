@@ -59,12 +59,22 @@ var metaModel = {titleForm:"Data formation", description:
     {name: "notShow", title:"not show",type:TYPE_BOOLEAN,marg:25}]
     }
     
-function editDataWind(meta, data, obrSave, dopEl) {
-    let windMenu = formWind(400, 300, 40, 550, meta.titleForm);
+function editDataWind(meta, data, obrSave, dopEl, w, h, l) {
+    let ww = 400, hh = 300, ll = 550;
+    if (w != null) {
+        ww = w;
+    }
+    if (h != null) {
+        hh = h;
+    }
+    if (l != null) {
+        ll = l;
+    }
+    let windMenu = formWind(ww, hh, 40, ll, meta.titleForm);
     let editDat = new EditData(meta.description, data, windMenu, obrSave, dopEl);
     windMenu.parentElement.style.width = (editDat.getWidthW() + 10) + "px";
     if (dopEl != null) {
-        windMenu.parentElement.style.height = (dopEl.clientHeight + 300) + "px";
+        windMenu.parentElement.style.height = (dopEl.clientHeight + hh) + "px";
     }
 }
 

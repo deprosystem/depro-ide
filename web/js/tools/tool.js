@@ -1,9 +1,10 @@
 var windTooltip;
 
 // біля елемента target показується повідомлення message на 2 секунди в рамці
+
 function tooltipMessage(target, message) {
-    let dv = tooltipMessageNoTime(target, message);
-    setTimeout(function(){ document.body.removeChild(dv);},3000);
+    let dv = tooltipMessageOver(target, message);
+    setTimeout(function(){ document.body.removeChild(dv);},2000);
 }
 
 function tooltipMessageOver(target, message) {

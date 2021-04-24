@@ -235,6 +235,17 @@ System.out.println("222222 PatchOutsideProject="+st.substring(0, j)+"<<");
         return st;
     }
     
+    public String lowerCaseRandom(int len) {
+        String alf = "qwertyuiopasdfghjklzxcvbnm1234567890_";
+        Random random = new Random();
+        String st = "" + alf.charAt(random.nextInt(26));
+        for (int i = 0; i < len - 1; i++) {
+            int j = random.nextInt(37);
+            st+= alf.charAt(j);
+        }
+        return st;
+    }
+    
     public String inDoubleQuotes(String par) {
         return "\"" + par + "\"";
     }

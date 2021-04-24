@@ -10,10 +10,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
-import servlets.Constants;
 
 public class BaseDB {
     public String urlDB;
@@ -41,6 +38,17 @@ public class BaseDB {
         }
         Class.forName("org.postgresql.Driver");
         return DriverManager.getConnection (urlDB + nameDB, userNameDB, passwordDB);
+    }
+    
+    public Connection getClientDBConnection() throws SQLException, ClassNotFoundException {
+//        if (Constants.isLocale) {
+        if (request.getServletContext().getRealPath("").indexOf(File.separator) != 0) {
+            urlDB = "jdbc:postgresql://localhost:5001/";
+        } else {
+            urlDB = "jdbc:postgresql://localhost:5432/";
+        }
+        Class.forName("org.postgresql.Driver");
+        return DriverManager.getConnection (urlDB + "clients", "clients", "clients");
     }
 
     public TokenUser getUserByToken(String token){

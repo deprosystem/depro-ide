@@ -7,6 +7,46 @@ function doServer(metod, url, callBack, data, paramCallBack, progress, cbError){
     req.setRequestHeader('Auth-token', AuthToken);
     if (currentProject != null) {
         req.setRequestHeader('projectId', currentProject.projectId);
+        req.setRequestHeader('name_schema', currentProject.resurseInd);
+    }
+    req.onreadystatechange = function () {
+        if (divProgress != null) {
+            document.body.removeChild(divProgress);
+            divProgress = null;
+        }
+        if (req.readyState == 4) {
+            if (req.status == 200) {
+                if (paramCallBack != null) {
+                    callBack(req.responseText, paramCallBack);
+                } else {
+                    callBack(req.responseText);
+                }
+            } else {
+console.log("AJAX="+req.responseText);
+                var mes = JSON.parse(req.responseText).message;
+                dialogError("Server error", "status=" + req.status + " " + mes);
+                if (cbError != null) {
+                    cbError(req.responseText);
+                }
+//                alert("doServer status=" + req.status + " " + mes);
+            }
+        }
+    };
+    data=data||null;
+    if (progress != null) {
+        divProgress = windProgr(progress);
+        document.body.append(divProgress);
+    }
+    req.send(data);
+}
+
+function doServerAlien(metod, url, callBack, data, paramCallBack, progress, cbError){
+    var req = initRequest();
+    let divProgress;
+    req.open(metod, url, true);
+    if (currentProject != null) {
+        req.setRequestHeader('projId', currentProject.projectId);
+        req.setRequestHeader('schemDB', currentProject.resurseInd);
     }
     req.onreadystatechange = function () {
         if (divProgress != null) {

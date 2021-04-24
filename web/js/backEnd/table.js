@@ -6,18 +6,25 @@ var tablePosition;
 
 let htmlTable = '<div style="height:40px;margin-left:20px">'
         +'<div style="float:left;margin-left:10px"><div style="color: #2228;font-size: 10px;margin-left:4px">Name table</div>'
-        +'<input class="name_t input_style" onkeydown="return validName(event)" value="" type="text" size="14"/>'
+        +'<input class="name_t input_style" onkeydown="return validNameLower(event)" value="" type="text" size="30"/>'
         +'</div>'
         +'<div style="float:left;margin-left:10px"><div style="color: #2228;font-size: 10px;margin-left:4px">Description</div>'
-        +'<input class="descr_t input_style" value="" type="text" size="14"/>'
+        +'<input class="descr_t input_style" value="" type="text" size="60"/>'
         +'</div>'
     +'</div>';
+    
+function getListTables()     {
+    if (currentProject != null) {
+        currentProject.resurseInd
+        doServer("GET", 'tables/list', formListTables);
+    }
+}
 
 function addTable() {
     fieldsTable = [];
     tableId = -1;
     descrTable = newDOMelement(htmlTable);
-    editDataWind(metaTable, fieldsTable, cbAddTable, descrTable);
+    editDataWind(metaTable, fieldsTable, cbAddTable, descrTable, 500, 500, 300);
 }
 
 function cbAddTable(dat) {

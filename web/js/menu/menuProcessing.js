@@ -248,14 +248,6 @@ function cbCreateProjectDop() {
         let crScreen = crScreenForList(scrParam);
         listScreen.push(crScreen);
     }
-    let host = "Not described";
-    let hostButt = "Describe the server";
-    if (currentProject.host != null && currentProject.host.length > 0) {
-        host = currentProject.host;
-        hostButt = "Change server description";
-    }
-    descr_host.innerHTML = host;
-    button_host.innerHTML = hostButt;
     setListScreen();
 }
 

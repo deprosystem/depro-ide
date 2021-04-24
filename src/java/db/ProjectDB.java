@@ -183,9 +183,17 @@ public class ProjectDB extends BaseDB {
         strUpd += "project_id = " + idProject + " WHERE user_id = " + idUser;
         try (Connection connection = getDBConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(strUpd);
-        } catch (SQLException ex) {
+        } catch (SQLException | ClassNotFoundException ex) {
             System.out.println("setLastProject error="+ex);
-        } catch (ClassNotFoundException ex) {
+        }
+    }
+    
+    public void setHost(String idPr, String host) {
+        String strUpd = "UPDATE projects SET ";
+        strUpd += "host ='" + host + "' WHERE project_id = " + idPr;
+        try (Connection connection = getDBConnection(); Statement statement = connection.createStatement()) {
+            statement.executeUpdate(strUpd);
+        } catch (SQLException | ClassNotFoundException ex) {
             System.out.println("setLastProject error="+ex);
         }
     }

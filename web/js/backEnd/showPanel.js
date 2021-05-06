@@ -1,18 +1,3 @@
-/*
-function showData() {
-    if (listTables == null) {
-        doServer("GET", 'tables/list', cbGetTables);
-    } else {
-        viewData()
-    }
-}
-
-function cbGetTables(res) {
-    formListTables(res);
-    viewData();
-}
-*/
-
 function viewData() {
     let right_d = 100;
     if (ux_ui.innerHTML == "U I") {

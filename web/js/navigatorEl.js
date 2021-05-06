@@ -178,7 +178,6 @@ function upNavigEl(e) {
             uiElTarg.after(uiEl);
             uiEl.android.parent = targ.parentElement;
             targ.after(downMouseElem.parentElement);
-console.log("JJJJ="+jsonNoViewParent(currentScreen.layout));
         }
     }
     overMouseElem = null;

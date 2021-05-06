@@ -226,7 +226,6 @@ function viewComponElem(el) {
     let par = p.parent.android;
     let parL = 0, parT = 0, parR = 0, parB = 0;
     let allParPad = false;
-//console.log("VVVVV_IIIII="+p.viewId+"<< PAR="+par);
     if (par != null) {
         if (par.padding != undefined && par.padding != '') {
                 parL = parT = parR = parB = parseInt(par.padding) * MEASURE;
@@ -402,7 +401,6 @@ function viewComponElem(el) {
     if (p.below != null && p.below != "") {
         let below = -1;
         let parentV = el.parentElement;
-//console.log("IIIIII="+el.android.viewId+"<< parentV="+parentV);
         if (parentV != null) {
             let child = parentV.children;
             let ik = child.length;

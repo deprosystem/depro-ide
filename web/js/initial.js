@@ -33,9 +33,6 @@ function initialView(AuthResult) {
             listMenu_UX[0].children[1].domElement.className = 'subMainMenuNo';
         }
     } 
-/*    else {
-        doServer("GET", 'tables/list', formListTables);
-    }*/
 }
     
 function eventFocusBlur() {

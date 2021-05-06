@@ -92,7 +92,6 @@ System.out.println("query="+ds.query);
     
     public String getPatchOutsideProject(HttpServletRequest request) {
         String st = request.getServletContext().getRealPath("");
-//System.out.println("getPatchOutsideProject="+st+"<<");
         if (st.indexOf(File.separator) != 0) {
             isSerwer = false;
             return st + File.separator;
@@ -100,14 +99,6 @@ System.out.println("query="+ds.query);
             isSerwer = true;
             int i = st.lastIndexOf(File.separator) + 1;
             return st.substring(0, i);
-            
-/*
-            int i = st.indexOf(Constants.NAME_IDE);
-System.out.println("11111PatchOutsideProject="+st.substring(0, i)+"<<");
-int j = st.lastIndexOf(File.separator) + 1;
-System.out.println("222222 PatchOutsideProject="+st.substring(0, j)+"<<");
-            return st.substring(0, i);
-*/
         }
     }
     
@@ -298,10 +289,8 @@ System.out.println("222222 PatchOutsideProject="+st.substring(0, j)+"<<");
     
     public static void copyFolder(File src, File dest) throws IOException{
         if(src.isDirectory()){
-           //if directory not exists, create it
             if(!dest.exists()){
                dest.mkdir();
-//               System.out.println("Directory copied from " + src + "  to " + dest);
             }
            //list all the directory contents
             String files[]= src.list();
@@ -327,7 +316,6 @@ System.out.println("222222 PatchOutsideProject="+st.substring(0, j)+"<<");
             }
             in.close();
             out.close();
-//            System.out.println("File copied from " + src + " to " + dest);
         }
     }
     

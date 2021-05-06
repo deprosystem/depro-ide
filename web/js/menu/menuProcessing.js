@@ -540,7 +540,6 @@ function selectProject(id) {
 
 function cbGetProject(res) {
     cbCreateProject(res, 2);
-//    doServer("GET", 'tables/list', cbGetTablesNoActiv);
 }
 
 function cbGetTablesNoActiv(res) {
@@ -939,7 +938,6 @@ function consolLogElem(el, tab) {
         if (p != null) {
             pp = "type="+p.type+"<< viewId="+p.viewId+"<< p.itemNav="+p.itemNav.getElementsByClassName('item-name')[0].innerHTML+"<<";
         }
-        console.log(tab+"II="+i+" tag="+el1.tagName+"<< class="+el1.className+"<< "+pp);
         let ch1 = el1.children;
         if (ch1 != null && ch1.length > 0) {
             consolLogElem(el1, tab + "   ");
@@ -955,7 +953,6 @@ function logAndr(ch, tab) {
     let ik = ch.length;
     for (let i = 0; i < ik; i++) {
         let chI = ch[i];
-        console.log(tab + "TYPE="+chI.type+" VIEWID="+chI.viewId+"<<");
         let cch = chI.children;
         if (cch != null && cch.length > 0) {
             logAndr(cch, tab + "   ");

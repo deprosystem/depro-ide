@@ -9,7 +9,10 @@ function setHostPanel() {
         host = currentProject.host;
         hostButt = "Change server description";
         par.onclick = changeHost;
-        doServer("GET", 'tables/list', cbGetTables);
+        let hostDomain = currentProject.host;
+        if (hostDomain != null && hostDomain.length > 0) {
+           doServerAlien("GET", hostDomain + 'tables/list', cbGetTables);
+        }
     }
     descr_host.innerHTML = host;
     button_host.innerHTML = hostButt;
@@ -27,10 +30,11 @@ function cbGetTables(res) {
 
 function oneTableView(i) {
     let item = listTables[i];
-    let st = item.descr;
-    if (st == null || st == "") {
-        st = item.name_tab;
+    let st1 = item.title_table;
+    if (st1 == null) {
+        st1 == "";
     }
+    let st = item.name_table + " " + st1;
     return newDOMelement('<div onclick="editTable(' + i + ')" style="float:left;width:100%;padding-top:5px;cursor:pointer;padding-bottom:5px;border-bottom:1px solid #aaf;clear:both">' + st + '</div>');
 }
 
@@ -88,25 +92,21 @@ function sendDescrHost() {
         hostDomain = "https://apps.deprosystem.com/";
     }
     let dat = {whereServer:hostDescr,domain:hostDomain,pass:hostPassword,res_ind:currentProject.resurseInd};
-console.log("hostDomain="+hostDomain+"<<");
-    doServer("POST", "db/create", cbCreateHost, JSON.stringify(dat));
+    doServerAlien("POST", hostDomain + "db/create", cbCreateHost, JSON.stringify(dat));
 }
 
 function cbCreateHost(res) {
-console.log("cbCreateHost RES="+res+"<<");
     descr_host.innerHTML = hostDomain;
+    currentProject.host = hostDomain;
     button_host.innerHTML = "Change server description";
     let par = button_host.parentElement;
     par.onclick = changeHost;
-//    let dat = {whereServer:hostDescr,domain:hostDomain,pass:hostPassword};
- //   doServer("POST", 'project/sethost', cbSetHost, dat);
-    if (hostDomain != null && hostDomain.length > 0) {
-//        doServer("GET", hostDomain + 'tables/list', cbGetTables);
-    }
+    let dat = {whereServer:hostDescr,domain:hostDomain,pass:hostPassword,res_ind:currentProject.resurseInd};
+    doServer("POST", 'project/sethost', cbSetHost, JSON.stringify(dat));
 }
 
 function cbSetHost(res) {
-    
+// нічого не треба
 }
 
 function changeHostSel(el) {
@@ -117,7 +117,7 @@ function changeHostSel(el) {
         hostPanel.style.display = "block";
     } else {
         hostPanel.style.display = "none";
-        hostDomain = "https://depro-ide.deprosystem.com/";
+        hostDomain = "https://apps.deprosystem.com/";
     }
 }
 

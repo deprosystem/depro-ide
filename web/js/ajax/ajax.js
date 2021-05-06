@@ -44,10 +44,12 @@ function doServerAlien(metod, url, callBack, data, paramCallBack, progress, cbEr
     var req = initRequest();
     let divProgress;
     req.open(metod, url, true);
+
     if (currentProject != null) {
-        req.setRequestHeader('projId', currentProject.projectId);
+//        req.setRequestHeader('projId', currentProject.projectId);
         req.setRequestHeader('schemDB', currentProject.resurseInd);
     }
+
     req.onreadystatechange = function () {
         if (divProgress != null) {
             document.body.removeChild(divProgress);

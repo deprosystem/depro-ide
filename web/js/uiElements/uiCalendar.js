@@ -273,7 +273,6 @@ function calendBefore(el) {
 }
 
 function calendAfterToday(vv) {
-console.log(vv);
     currentElement.android.componParam.afterToday = vv;
 }
 

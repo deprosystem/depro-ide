@@ -115,7 +115,6 @@ function showMenu(menuV, ml, p) {
         let cE = findColorByIndex(p.componParam.colorEnab);
         let cB = findColorByIndex(p.componParam.colorBadge);
         let cD = findColorByIndex(p.componParam.colorDivider);
-//console.log("cN="+cN+" cS="+cS+" cE="+cE);
         let ik = list.length;
         if (ik > 0) {
             let str = "";

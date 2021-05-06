@@ -12,13 +12,6 @@ let htmlTable = '<div style="height:40px;margin-left:20px">'
         +'<input class="descr_t input_style" value="" type="text" size="60"/>'
         +'</div>'
     +'</div>';
-    
-function getListTables()     {
-    if (currentProject != null) {
-        currentProject.resurseInd
-        doServer("GET", 'tables/list', formListTables);
-    }
-}
 
 function addTable() {
     fieldsTable = [];
@@ -31,18 +24,24 @@ function cbAddTable(dat) {
     let nn = descrTable.getElementsByClassName("name_t")[0].value;
     let dd = descrTable.getElementsByClassName("descr_t")[0].value;
     if (nn != null && nn != "") {
-        let ff = JSON.stringify(dat);
-        let t = {id_table:tableId,id_project:currentProject.projectId,name_tab:nn,descr:dd,fields:ff};
-        if (tableId == -1) {
-            doServer("POST", "tables/descr", cbSaveTable, JSON.stringify(t));
-        } else {
-            doServer("POST", "tables/descr", cbChangeTable, JSON.stringify(t));
+        let hostDomain = currentProject.host;
+        if (hostDomain != null && hostDomain.length > 0) {
+            let ff = JSON.stringify(dat);
+            let t = {id_table:tableId,name_table:nn,title_table:dd,fields_table:ff,schema:currentProject.resurseInd};
+            if (tableId == -1) {
+                doServerAlien("POST", hostDomain + "tables/descr", cbSaveTable, JSON.stringify(t));
+            } else {
+                doServerAlien("POST", hostDomain + "tables/descr", cbChangeTable, JSON.stringify(t));
+            }
         }
     }
 }
 
 function cbSaveTable(res) {
     let it = JSON.parse(res);
+    if (listTables == null) {
+        listTables = [];
+    }
     listTables.push(it);
     listTablesView.append(oneTableView(listTables.length - 1));
 }
@@ -62,7 +61,7 @@ function cbChangeTable(res) {
 
 function editTable(i) {
     let item = listTables[i];
-    fieldsTable = JSON.parse(item.fields);
+    fieldsTable = JSON.parse(item.fields_table);
     tableId = item.id_table;
     tablePosition = i;
     descrTable = newDOMelement(htmlTable);

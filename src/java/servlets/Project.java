@@ -5,6 +5,7 @@ import db.ProjectDB;
 import db.SQL;
 import db.UserDB;
 import entity.DataServlet;
+import entity.DescrHost;
 import entity.ListScreen;
 import java.io.File;
 //import entity.ScreenM;
@@ -125,7 +126,16 @@ public class Project extends BaseServlet {
                     break;
                 case "/project/sethost":
                     projectId = request.getHeader("projectId");
-                    String host = request.getHeader("projectId");
+                    try {
+                        String stDescr = getStringRequest(request);
+System.out.println("stDescr="+stDescr+"<<");
+                        DescrHost dh = gson.fromJson(stDescr, DescrHost.class);
+                        projectDb.setHost(projectId, dh.domain);
+                        sendResult(response, dh.domain);
+                    } catch (IOException e) {
+                        System.out.println(e);
+                        sendError(response, "sethost error " + e.toString());
+                    }
                     sendResultOk(response);
                     break;
             }

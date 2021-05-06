@@ -25,14 +25,6 @@ public class WorkingWithDB extends BaseServlet {
                 try {
                     String stDescr = getStringRequest(request);
                     DescrHost dh = gson.fromJson(stDescr, DescrHost.class);
-System.out.println("stDescr="+stDescr);
-
-                    ClientIDE cide = new ClientIDE(dh.domain + "db/create", stDescr, responseListener, errorListener);
-/*
-                    clientsDB.createSchema(dh.host);
-                    projectDb.setHost(idPr, dh.host);
-*/
-//                    sendResultOk(response);
                 } catch (IOException e) {
                     System.out.println(e);
                     sendError(response, "Host create error " + e.toString());
@@ -44,7 +36,6 @@ System.out.println("stDescr="+stDescr);
     ResponseListener responseListener = new ResponseListener() {
         @Override
         public void onResponse(String response) {
-System.out.println("RRRRR="+response);
 
         }
             
@@ -53,7 +44,7 @@ System.out.println("RRRRR="+response);
     ErrorListener errorListener = new ErrorListener() {
         @Override
         public void onError(int code, String message) {
-System.out.println("CCC="+code+" MMMM="+message);
+
         }
             
     };

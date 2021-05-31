@@ -539,6 +539,7 @@ function selectProject(id) {
 }
 
 function cbGetProject(res) {
+    listTables = null;
     cbCreateProject(res, 2);
 }
 
@@ -632,7 +633,7 @@ function generateProject(apk) {
 }
 
 function closeWindTimeout(buttSave) {
-    setTimeout(closeWind(buttSave), 400);
+    setTimeout(closeWind(buttSave), 500);
 }
 
 function validDeclare() {
@@ -659,14 +660,16 @@ function validDeclare() {
     }
     ik = listValueAppParam.length;
     if (ik == 0) {
+/*
         strError += "baseUrl is not filled<br>";
         newLevelErrors = 2;
+*/
         if (isMap()) {
             strError += "not filled geoApiKey for maps<br>";
             newLevelErrors = 2;
         }
     } else {
-        let noUrl = true;
+//        let noUrl = true;
         let noKey = true;
         let noStartScr = true;
         let isParameterStartScr = false;
@@ -685,6 +688,7 @@ function validDeclare() {
                         }
                     }
                     break;
+/*
                 case "baseUrl":
                     noUrl = false;
                     if (vv != null || vv.length > 0) {
@@ -695,6 +699,7 @@ function validDeclare() {
                         strError += "baseUrl is not filled";
                     }
                     break;
+*/
                 case "geoApiKey":
                     noKey = false;
                     if (vv == null || vv == "") {
@@ -705,10 +710,12 @@ function validDeclare() {
                     break;
             }
         }
+/*
         if (noUrl) {
             strError += "baseUrl is not filled<br>";
             newLevelErrors = 2;
         }
+*/
         if (noKey) {
             if (isMap()) {
                 strError += "not filled geoApiKey for maps<br>";

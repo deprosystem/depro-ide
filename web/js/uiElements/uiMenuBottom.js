@@ -107,6 +107,8 @@ function setMenuBAttr(p) {
 
 function showMenuBNoParam() {
     let myCompon = myComponentDescr(currentElement.android.componId);
+//onsole.log("showMenuBNoParam myCompon="+jsonNoViewParent(myCompon)+"<<");
+//console.log("showMenuBNoParam AAAA="+jsonNoViewParent(currentElement.android));
     let dat = myCompon.model.menuList.list;
     let typeEl = currentElement.getElementsByClassName("menu_b")[0];
     let colorSet = currentElement.android.colorSet;

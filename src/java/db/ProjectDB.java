@@ -1,5 +1,6 @@
 package db;
 
+import entity.DescrHost;
 import projects.ProjectM;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -113,6 +114,7 @@ public class ProjectDB extends BaseDB {
                 pm.dateCreate = res.getLong("date_create");
                 pm.image = res.getString("image");
                 pm.host = res.getString("host");
+                pm.whereServer = res.getString("where_server");
                 pm.listUsers = "[{\"userId\":" + userId + ",\"color\":\"#ff1eac\",\"litera\":\"B\"}]";
                 lp.add(pm);
             }
@@ -137,6 +139,7 @@ public class ProjectDB extends BaseDB {
                 pm.comment = res.getString("project_comment");
                 pm.logo = res.getString("logo");
                 pm.host = res.getString("host");
+                pm.whereServer = res.getString("where_server");
                 pm.colors = res.getString("color");
                 pm.strings = res.getString("strings");
                 pm.appParam = res.getString("app_param");
@@ -151,7 +154,7 @@ public class ProjectDB extends BaseDB {
         }
         return pm;
     }
-    
+/*
     public ProjectM getParam(String id) {
         ProjectM pm = null;
         try (Connection connection = getDBConnection(); Statement statement = connection.createStatement()) {
@@ -177,7 +180,7 @@ public class ProjectDB extends BaseDB {
         }
         return pm;
     }
-    
+*/
     public void setLastProject(String idUser, String idProject) {
         String strUpd = "UPDATE users SET ";
         strUpd += "project_id = " + idProject + " WHERE user_id = " + idUser;
@@ -188,9 +191,9 @@ public class ProjectDB extends BaseDB {
         }
     }
     
-    public void setHost(String idPr, String host) {
+    public void setHost(String idPr, DescrHost dh) {
         String strUpd = "UPDATE projects SET ";
-        strUpd += "host ='" + host + "' WHERE project_id = " + idPr;
+        strUpd += "(host, where_server) = ('" + dh.domain + "', '" + dh.whereServer + "') WHERE project_id = " + idPr;
         try (Connection connection = getDBConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(strUpd);
         } catch (SQLException | ClassNotFoundException ex) {

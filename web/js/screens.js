@@ -122,20 +122,6 @@ function hideScreen() {
 function setSelectScreen(goto) {
     currentScreenView.className = "screen_sel";
     var id = currentScreenView.idScreen;
-/*
-    if (currentScreen != null && id != currentScreen.screenId) {
-        var ik = listScreen.length;
-        currentScreen = null;
-        for (let i = 0; i < ik; i++) {
-            let ls = listScreen[i];
-            if (id == ls.screenId) {
-                currentScreen = ls;
-                positionScreen = i;
-                break;
-            }
-        }
-    }
-*/
     var ik = listScreen.length;
     currentScreen = null;
     for (let i = 0; i < ik; i++) {
@@ -147,6 +133,8 @@ function setSelectScreen(goto) {
         }
     }
     if (currentScreen != null) {
+//console.log("SSSS="+jsonNoViewParent(currentScreen.components));
+//console.log("LLLLLL="+jsonNoViewParent(currentScreen.layout.children));
         currentChildren = currentScreen.layout.children;
         clearViewEl(currentChildren);
         let listC = currentScreenView.getElementsByClassName("list_components");
@@ -193,13 +181,14 @@ function setScreenComponents() {
         listComp.innerHTML = "";
         let cc = currentScreen.components;
         let ik = cc.length;
+        let idComponentNumMax = 0;
         if (ik > 0) {
             let firstView = null;
             let firstComp = null;
-            let idComponentNumMax = 0;
             for (let i = 0; i < ik; i++) {
                 currentComponentDescr = cc[i];
                 let componId = currentComponentDescr.componId;
+//console.log("setScreenComponents componId="+componId+"<<");
                 if (idComponentNumMax < componId) {
                     idComponentNumMax = componId;
                 }
@@ -237,8 +226,8 @@ function setScreenComponents() {
                 }
                 container_scr.scroll_y.resize(container_scr);
             }
-            idComponentNum = idComponentNumMax + 1;
         }
+        idComponentNum = idComponentNumMax + 1;
     }
 }
 
@@ -495,6 +484,7 @@ function selComponType(i) {
         list_cont.append(currentComponentView);
         currentComponentView.className = "component_sel";
         list_screens.scrollTop = list_screens.scrollHeight;
+//console.log("selComponType idComponentNum="+idComponentNum);
         currentComponentView.componId = idComponentNum;
         uxFunction.addComponent(idComponentNum, viewId);
         idComponentNum ++;

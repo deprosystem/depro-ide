@@ -122,8 +122,13 @@ function changeMethod(el) {
         switch (el.options[el.selectedIndex].value) {
             case "POST":
             case "GET":
-                pm.innerHTML = pmUrl + pmParamUrl + pmProgr;
-                setValueGetPost();
+                if (hostDescr == "Third party API") {
+                    pm.innerHTML = pmUrl + pmParamUrl + pmProgr;
+                    setValueGetPost();
+                } else {
+                    pm.innerHTML = pmProgr;
+                    setValueQuery();
+                }
                 break;
             case "TEST":
                 pm.innerHTML = pmTest;
@@ -166,14 +171,18 @@ function isValidModel(mod, tab) {
 }
 
 function editDataModel(el, ind) {
-    let num;
-    let p = el.parentElement;
-    if (ind != null) {
-        num = 0;
+    if (hostDescr == "Third party API") {
+        let num;
+        let p = el.parentElement;
+        if (ind != null) {
+            num = 0;
+        } else {
+            num = getNumDataTYpe(p) + 1;
+        }
+        editDataWind(metaModel, currentComponentDescr.model.data[num], cbSaveDataModel);
     } else {
-        num = getNumDataTYpe(p) + 1;
+        editQueryWind();
     }
-    editDataWind(metaModel, currentComponentDescr.model.data[num], cbSaveDataModel);
 }
 
 function getNumDataTYpe(el) {
@@ -192,6 +201,22 @@ function getNumDataTYpe(el) {
 
 function cbSaveDataModel() {
     
+}
+
+function setValueQuery() {
+    let cont = currentComponentView.getElementsByClassName("component_param")[0];
+    let mod = currentComponentDescr.model;
+    let progr = cont.getElementsByClassName("progr_mod")[0];
+    if (mod.progr == null) {
+        mod.progr = "standard";
+    }
+    let st = formListIdElem(currentChildren);
+    let sel = formSelectForEditData("standard,no" + st, mod.progr);
+    currentComponentDescr.model.progr = sel.options[sel.selectedIndex].value;
+    sel.className = "select_" + browser;
+    sel.style.cssText = "width:80px;font-size:12px;color:#110000;";
+    sel.addEventListener("change", function(){changeProgress(sel);}, true);
+    progr.appendChild(sel);
 }
 
 function setValueGetPost() {

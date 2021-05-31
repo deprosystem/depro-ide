@@ -723,6 +723,10 @@ function relativeL(el, p, pLL, pTT, pRR, pBB, margR) {
             case "TextView" :
                 wrapTextViewW(el, p, pLL, pTT);
                 break;
+            case "Indicator":
+                let diam = p.componParam.diam * MEASURE;
+                el.style.width = diam * 6 + px;
+                break;
             case "RelativeLayout" :
                 el.style.width = maxChildWidth(el) + px;
                 break;
@@ -768,6 +772,7 @@ function relativeL(el, p, pLL, pTT, pRR, pBB, margR) {
                         el.style.height = parseInt(p.seekBarParam.thumbDiam) * MEASURE + px;
                     }
                     break;
+                case "Indicator":
                 case "Ratings":
                     el.style.height = (p.componParam.diam * MEASURE) + px;
                     break;
@@ -846,6 +851,7 @@ function relativeL(el, p, pLL, pTT, pRR, pBB, margR) {
                 case CENTER:
                     var ccc = el.clientWidth;
                     cc = root_w / 2 - ccc / 2;
+                    let rect = el.getBoundingClientRect();
                     el.style.right = '';
                     el.style.left = cc + px;
                     break

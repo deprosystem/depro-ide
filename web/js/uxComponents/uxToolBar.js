@@ -24,6 +24,7 @@ function uxToolBar() {
     }
     
     this.addComponent = function (componId, viewId) {
+////console.log("uxToolBar componId="+componId+"<<");
         let tt = this.param.name;
         currentComponent = {type: tt, componId: componId, viewId:viewId, typeUxUi: "ux", componParam:{type:0}, 
                 typeFull: {name: tt, typeBlock: 0}, gravLayout: {h: 3, v: 3}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 

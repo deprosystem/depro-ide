@@ -22,7 +22,8 @@ function uxScrollPanel() {
     }
     
     this.setValue = function(componParam) {
-        setValueListPanel(componParam);
+        setValueModel(componParam);
+//        setValueListPanel(componParam);
     }
     
     this.getHelpLink = function() {

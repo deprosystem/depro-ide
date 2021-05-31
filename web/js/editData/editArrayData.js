@@ -26,6 +26,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
     }
     edData = data;
     let ikD = edData.length
+    let maxIdField;
     
     formEditTab();
     
@@ -84,11 +85,24 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
         tableEdit.style.borderCollapse = "collapse";
         tableEdit.style.backgroundColor = "#fff";
         tabBody.appendChild(tableEdit);
-
+        
+        maxIdField = 0;
+        let isId = false;
         if (ikD > 0) {
             for (let j = 0; j < ikD; j++) {
                 let item = edData[j];
                 tr = document.createElement('tr');
+                let idF = item.id_field;
+                if (idF == null) {
+                    idF = maxIdField;
+                    maxIdField ++;
+                } else {
+                    isId = true;
+                    if (maxIdField < idF) {
+                        maxIdField = idF;
+                    }
+                }
+                tr.idField = idF;
                 tr.addEventListener("mouseover", function(event){mouseoverTr(event)}, true);
                 tr.addEventListener("mouseout", function(event){mouseoutTr(event)}, true);
                 td = createCellNum(j);
@@ -101,6 +115,9 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
                 td = createDel();
                 tr.appendChild(td);
                 tableEdit.appendChild(tr);
+                if (isId) {
+                    maxIdField ++;
+                }
             }
         } else {
             createNewTR();
@@ -557,6 +574,8 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
             num = tableEditRows.length;
         }
         let tr = document.createElement('tr');
+        tr.idField = maxIdField;
+        maxIdField ++;
         let td = createCellNum(num);
         tr.appendChild(td);
 
@@ -588,6 +607,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
         for (j = 0; j < jk; j++) {
             let item = {};
             let row = tableEditRows[j];
+            item.id_field = row.idField;
             let cells = row.getElementsByTagName('td');
             let ik = cells.length - 1;
             for (i = 1; i < ik; i++) {

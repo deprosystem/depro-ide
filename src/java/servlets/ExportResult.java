@@ -215,6 +215,7 @@ public class ExportResult extends BaseServlet {
                 writer.write("public class MyParams extends AppParams {\n\n");
                 writer.write("    @Override\n");
                 writer.write("    public void setParams() {\n\n");
+                writer.write(tab8 + "baseUrl = \"" + pr.host + "\";\n");
                 if (param != null) {
                     for (ItemAppParam iap : param) {
                         switch (iap.name) {
@@ -223,6 +224,9 @@ public class ExportResult extends BaseServlet {
                                 break;
                             case "ActivityStart":
                                 parSave.nameClassStart = iap.value;
+                                break;
+                            case "baseUrl":
+//                                writer.write(tab8 + iap.name + " = \"" + pr.host + "\";\n");
                                 break;
                             case "geoApiKey":
                                 String idGeo = formStringId("geoApiKey", iap.value, parSave.listString);
@@ -1342,6 +1346,9 @@ public class ExportResult extends BaseServlet {
                     if (p.componParam.acceptNotif != null && p.componParam.acceptNotif.length() > 0) {
                         typeEl = Constants.TextCompon;
                     }
+                    if (p.componParam.format != null && ! p.componParam.format.equals("no")) {
+                        typeEl = Constants.TextCompon;
+                    }
                     if (p.componParam.typeValidTV != null && ! p.componParam.typeValidTV.equals("no")) {
                         typeEl = Constants.TextValid;
                     }
@@ -1423,6 +1430,10 @@ public class ExportResult extends BaseServlet {
                         }
                     } else {
                         writer.write(tab + "android:background=\""+ findColorByIndex(p.background, parSave.colors) + "\"");
+                    }
+                } else {
+                    if (first) {
+                        writer.write(tab + "android:background=\"#ffffff\"");
                     }
                 }
             }
@@ -1673,6 +1684,14 @@ public class ExportResult extends BaseServlet {
                         }
                         if (p.componParam.acceptNotif != null && p.componParam.acceptNotif.length() > 0) {
                             writer.write(tab + "app:acceptNotif=\"" + p.componParam.acceptNotif + "\"");
+                        }
+                        String format = p.componParam.format;
+                        if (format != null && format.length() > 0) {
+                            if (Character.isDigit(format.charAt(0))) {
+                                writer.write(tab + "app:numberFormat=\"" + format + "\"");
+                            } else {
+                                writer.write(tab + "app:dateFormat=\"" + format + "\"");
+                            }
                         }
                         if (p.componParam.grammar != null && p.componParam.grammar.length() > 0) {
                             String namId = p.viewId;

@@ -1,5 +1,6 @@
 function initialView(AuthResult) {
     eventFocusBlur();
+    listTables = null;
     var ar = JSON.parse(AuthResult);
     AuthToken = ar.token;
     let prof = ar.profile;

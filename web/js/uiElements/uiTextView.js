@@ -5,9 +5,17 @@ function uiTextView() {
             +'<div class="text_style_ui" style="float: left;">Value</div>'
             +'<textarea id="text_text_value" style="margin-top: 5px; float:left;clear:both;width:100%;border:1px solid #C5DCFA;box-sizing: border-box;border-radius: 8px;"\n\
                 onKeyUp="inputTextValue(event, this)" rows="3" cols="27"></textarea>'
-            +'<div style="float:left;clear:both;margin-top:12px;">'
-                +'<div style="font-size:10px;color:#2228">Show text in APP</div>'
-                +'<img class="check_form_res" onclick="checkFormResourseText(this);" style="cursor:pointer;margin-top:5px;margin-left:14px" width="16" height="16" src="img/check-act.png">'
+            +'<div style="float:left;clear:both;margin-top:12px;width:100%">'
+                +'<div style="float:left;">'
+                    +'<div style="font-size:10px;color:#2228">Show text in APP</div>'
+                    +'<img class="check_form_res" onclick="checkFormResourseText(this);" style="cursor:pointer;margin-top:5px;margin-left:14px" width="16" height="16" src="img/check-act.png">'
+                +'</div>'
+                +'<div style="float:right;margin-right:10px;">'
+                    +'<div style="font-size:10px;color:#2228">Format</div>'
+                    +'<select class="select_format type_screen select_' + browser 
+                    +'" onchange="changeFormatTV(this)" style="width:88px;font-size:12px;color:#110000;"><option>no</option><option>dd.MM.yy</option>'
+                    +'<option>dd.MMM.yy</option><option>dd.MMM.yy</option><option>yy.MM.dd</option><option>12 345</option><option>12 345.67</option><option>12 345.678</option></select>'
+                +'</div>'
             +'</div>'
             +'<div style="margin-top: 5px;float: left;clear:both">'
                 +'<div class="text_style_ui">Color</div>'
@@ -35,6 +43,7 @@ function uiTextView() {
         p.text = "";
         p.textSize = 14;
         p.letterSpac = '0.0';
+        p.textColor = 12;
         p.componParam = {typeValidTV:"no"};
         return createDivText();
     }
@@ -53,7 +62,12 @@ function uiTextView() {
                 cfr.src = "img/check-act.png";
             }
         }
-        let sizeBl = selectBlock("Size", "8,10,12,14,16,18,20,24,28,32,40", "setSizeTV", 6, 56);
+        if (p.componParam.format == null) {
+            p.componParam.format = "no";
+        }
+        cfr = contentAttributes.getElementsByClassName("select_format")[0];
+        cfr.value = p.componParam.format;
+        let sizeBl = selectBlock("Size", "8,10,12,14,16,18,20,22,24,28,32,40", "setSizeTV", 6, 56);
         setValueSelectBlock(sizeBl, p.textSize);
         uiParamTextView.appendChild(sizeBl);
         let spacBl = selectBlock("letterSpacing", "-0.05,-0.02,0.0,0.02,0.05,0.07,0.1", "setLetterTV", -0.05, 0.5, 0.01);
@@ -221,6 +235,10 @@ function setTextColor (id, color) {
 
 function checkFormResourseText(el) {
     currentElement.android.formResourse = checkElement(el);
+}
+
+function changeFormatTV(el) {
+    currentElement.android.componParam.format = el.options[el.selectedIndex].value;
 }
 
 function textStyle(el) {

@@ -15,6 +15,7 @@ function uxMenuBottom() {
     }
     
     this.addComponent = function (componId, viewId) {
+//console.log("uxMenuBottom componId="+componId+"<<");
         let tt = this.param.name;
         currentComponent = {type: tt, componId: componId, viewId:viewId, typeUxUi: "ux", componParam:{type:1},
                 typeFull: {name: tt, typeBlock: 0}, gravLayout: {h: 3, v: 2}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}},

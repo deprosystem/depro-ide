@@ -62,6 +62,7 @@ public class Project extends BaseServlet {
                         pc.screens = formScreens();
                         pc.resurseInd = lowerCaseRandom(15);
                         pc.host = "";
+//                        pc.whereServer = "Server IDE";
 //System.out.println("pc.resurseInd="+pc.resurseInd+"<< LL="+pc.resurseInd.length());
                         pc.dateCreate = new Date().getTime();
                         id = projectDb.createProjectId(pc);
@@ -128,9 +129,9 @@ public class Project extends BaseServlet {
                     projectId = request.getHeader("projectId");
                     try {
                         String stDescr = getStringRequest(request);
-System.out.println("stDescr="+stDescr+"<<");
+//System.out.println("stDescr="+stDescr+"<<");
                         DescrHost dh = gson.fromJson(stDescr, DescrHost.class);
-                        projectDb.setHost(projectId, dh.domain);
+                        projectDb.setHost(projectId, dh);
                         sendResult(response, dh.domain);
                     } catch (IOException e) {
                         System.out.println(e);
@@ -148,8 +149,6 @@ System.out.println("stDescr="+stDescr+"<<");
     
     private void createBaseRes(String basePath, String resurseInd) {
         String projectPath = basePath + Constants.PROJECTS_DATA + resurseInd + "/res";
-//System.out.println("projectPath="+projectPath+"<<");
-//System.out.println("basePath="+basePath+ Constants.NAME_IDE + "/mipmap/res"+"<<");
         formDir(projectPath);
         String mipmapPath;
         if (isSerwer) {
@@ -157,7 +156,6 @@ System.out.println("stDescr="+stDescr+"<<");
         } else {
             mipmapPath = basePath + "mipmap/res";
         }
-//System.out.println("mipmapPath="+mipmapPath+"<<");
         copyDir(mipmapPath, projectPath);
         
     }

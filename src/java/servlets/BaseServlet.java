@@ -122,7 +122,7 @@ System.out.println("query="+ds.query);
         response.setStatus (status);
 //        response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            out.println(result);
+            out.print(result);
         } catch (IOException ex) {
             System.out.println("BaseServlet sendResult error" + ex);
         }

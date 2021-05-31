@@ -81,7 +81,6 @@ function createViewForPanelV(el) {
                 if (item.notShow) continue;
                 if (imgId != i) {
                     formElement(item, "", namePrev, topM);
-                    currentElement.android.viewElement = currentElement;
                     namePrev = item.name;
                     if (item.type == "Gallery") {
                         estimatedHeight += 242;
@@ -90,11 +89,8 @@ function createViewForPanelV(el) {
                     }
                 }
             }
-
-            listV.android.height = estimatedHeight + 10;
-//            currentElement = listV;
+            listV.android.height = MATCH;
             showElemChilds(listV);
-//            viewCompon();
         } else {
             tooltipMessage(el, "You need to describe the data");
         }

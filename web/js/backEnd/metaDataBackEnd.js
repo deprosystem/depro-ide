@@ -1,7 +1,9 @@
+var typeFieldDescr = "Text,Img,Serial,Bigserial,Int,Long,Float,Double,Date,Time,Timestamp,TimestampZ,Boolean,Gallery,Select";
+
 var metaTable = {titleForm:"Description Table", description:
     [{name: "name", title:"Name",len:15,valid:{name_low:true}},
     {name: "title", title:"Title",len:20},
-    {name: "type", title:"Type",len:70,type:TYPE_SELECT,select:"Text,Img,Serial,Int,Float,Time,Gallery,Boolean,Select"},
+    {name: "type", title:"Type",len:70,type:TYPE_SELECT,select:typeFieldDescr},
     {name: "length", title:"Length",len:5,type:TYPE_INT},
     {name: "def", title:"Default value",len:20},
     {name: "format", title:"Format",len:10},

@@ -1,12 +1,11 @@
 function formElement(item, toRightOf, namePrev, topM, leftM) {
     let txtView;
-    let p;
+    let p = {};
     switch (item.type) {    // Text,Img,Int,Float,Time
+        case "Date":
         case "Text":
             txtView = formTxt(item);
             p = txtView.android;
-            p.width = WRAP;
-            p.height = WRAP;
             break;
         case "Img":
             txtView = formImg(item);
@@ -18,8 +17,6 @@ function formElement(item, toRightOf, namePrev, topM, leftM) {
         case "Int":
             txtView = formTxt(item);
             p = txtView.android;
-            p.width = WRAP;
-            p.height = WRAP;
             if (item.format != null && item.format.length > 0) {
                 p.componParam = {type:3, formatNum:item.format};
             }
@@ -27,8 +24,6 @@ function formElement(item, toRightOf, namePrev, topM, leftM) {
         case "Float":
             txtView = formTxt(item);
             p = txtView.android;
-            p.width = WRAP;
-            p.height = WRAP;
             if (item.format != null && item.format.length > 0) {
                 p.componParam = {type:3, formatNum:item.format};
             }
@@ -36,8 +31,6 @@ function formElement(item, toRightOf, namePrev, topM, leftM) {
         case "Time":
             txtView = formTxt(item);
             p = txtView.android;
-            p.width = WRAP;
-            p.height = WRAP;
             if (item.format != null && item.format.length > 0) {
                 p.componParam = {type:3, formatTime:item.format};
             }
@@ -50,8 +43,18 @@ function formElement(item, toRightOf, namePrev, topM, leftM) {
             p.rightMarg = 12;
             p.src = "img/picture.png";
             p.componParam = {type:8};
+            p.componParam.bindEl = "ind_" + item.name;
+            let curr = currentElement;
+            let ind = formIndicator(item);
+            currentElement.android.viewElement = currentElement;
+            ind.android.topMarg = 210;
+            if (namePrev != "") {
+                ind.android.below = namePrev;
+            }
+            currentElement = curr;
             break;
     }
+    currentElement.android.viewElement = currentElement;
     if (namePrev != "") {
         p.below = namePrev;
     }
@@ -145,10 +148,30 @@ function formGallery(item) {
     return currentElement;
 }
 
+function formIndicator(item) {
+    currentElement = createNewEl();
+    p = {typeUxUi: "ui"};
+    p.type = "Indicator";
+    p.typeFull = {name: 'Indicator', typeBlock: 0};
+    p.width = WRAP;
+    p.height = WRAP;
+    p.gravLayout = {h:CENTER,v:4};
+    currentElement.android = p;
+    let typeEl = createDivImg();
+    p.viewId = "ind_" + item.name;
+    currentElement.appendChild(typeEl);
+    addNewElement(ACTIVE, currentElement);
+    addNavigatorEl(currentElement);
+    ACTIVE.android.children.push(currentElement.android);
+    return currentElement;
+}
+
 function formTxt(item) {
     currentElement = createNewEl();
     p = {typeUxUi: "ui"};
     p.type = "TextView";
+    p.width = MATCH;
+    p.height = WRAP;
     p.typeFull = {name: 'TextView', typeBlock: 0};
     p.gravLayout = {h:4,v:4};
     p.gravity = {h:4,v:4};
@@ -158,6 +181,8 @@ function formTxt(item) {
     p.viewId = item.name;
     p.textSize = 14;
     p.letterSpac = '0.0';
+    p.textColor = 12;
+    p.rightMarg = 12;
     p.componParam = {typeValidTV:"no"};
     currentElement.appendChild(typeEl);
     addNewElement(ACTIVE, currentElement);

@@ -6,6 +6,7 @@ function formWind(w, h, t, l, tit, scroll, cbClose) {
     ww.className = "dataWindow";
     ww.style.width = w + 'px';
     ww.style.height = h + 'px';
+    ww.style.boxShadow = "0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)";
     if (l < 0) {
         ww.style.right = -l + 'px';
     } else {
@@ -77,15 +78,16 @@ function createTitle(tit, cbClose) {
     }
     let container = document.createElement('div')
     var str = "<div class='titleWind' onmousedown='moveWind(event)'>"
-                +"<div class='titleWindName'>" + tit + "</div>"
-                +"<IMG SRC='img/x_blue.png' class='titleWindClose' onclick='" + cb + "closeDataWindow(event)'>"
+                +"<div style='float:left;height:100%;display:flex;flex-direction:row;align-items:center'><div class='titleWindName'>" + tit + "</div></div>"
+                +"<div style='float:right;height:100%;display:flex;flex-direction:row;align-items:center'><IMG SRC='img/x_blue.png' class='titleWindClose' onclick='" + cb + "closeDataWindow(event)'></div>"
             +"</div>";
     container.innerHTML = str;
     return container.firstChild;
 }
 
 function closeDataWindow(e) {
-    let el = e.target.parentElement.parentElement;
+//    let el = e.target.parentElement.parentElement;
+    let el = e.target.closest('.dataWindow');
     el.parentNode.removeChild(el);
 }
 
@@ -156,5 +158,28 @@ function dragWind(event) {
 
 function clearMoveWind(e) {
     document.onmousemove = null;
+}
+
+//  ViewScrol заносится в wraperScroll
+function formViewScrolY(wraperScroll) {
+    let viewport = document.createElement('div');
+    viewport.className = "viewport";
+//    viewport.style.left = "3px";
+    viewport.style.top = "0px";
+    wraperScroll.appendChild(viewport);
+//    queryFields.appendChild(viewport);
+    
+    let content = document.createElement('div');
+    content.className = "content";
+    viewport.appendChild(content);
+    
+    let viewDataY = document.createElement('div');
+    viewDataY.className = "viewData";
+    content.appendChild(viewDataY);
+
+    let scrollY = new ScrollY(viewport, true);
+    scrollY.setScrollHide(true);
+    scrollY.init();
+    return viewport;
 }
 

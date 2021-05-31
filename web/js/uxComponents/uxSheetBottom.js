@@ -11,11 +11,11 @@ function uxSheetBottom() {
     }
     
     this.getEditParam = function () {
-        return uxModelView("createViewForPanelV", "");
+        return uxModelView("createViewForSheetV", "");
     }
     
     this.getCreateListener = function () {
-        return {vert:"createViewForPanelV", horiz:""};
+        return {vert:"createViewForSheetV", horiz:""};
     }
     
     this.addComponent = function (componId, viewId) {
@@ -41,7 +41,7 @@ function uxSheetBottom() {
     }
 }
 
-function createViewForPanelV(el) {
+function createViewForSheetV(el) {
     let listV = currentComponent.viewElement;
     if (listV != null) {
         let ik = currentComponentDescr.model.data[0].length;

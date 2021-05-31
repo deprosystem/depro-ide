@@ -19,8 +19,8 @@ function uiGallery() {
 }
 
 function formGalleryContent(p) {
-    return '<div><div style="float: left; width: 120px; ">Indicator:</div>'
-        +formSelectTagType("Indicator", "setIndicator");
+    return '<div style="margin-top:10px"><div style="float: left;margin-top:6px;margin-right:10px;">Indicator:</div>'
+        +formSelectTagType("Indicator", "setIndicator") + '</div>';
 }
 
 function setIndicator(el) {

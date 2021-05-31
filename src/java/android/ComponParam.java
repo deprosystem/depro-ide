@@ -3,7 +3,7 @@ package android;
 public class ComponParam {
     public Integer type, diam, colorNorm, colorSel, colorEnab, colorBadge, colorDivider, amountDots, background, borderColor, maxLine;
     public String formatTime, formatNum, orient, typeValidTV, errorId, errorTxt, srcContour, srcFilled;
-    public String bindEl, acceptNotif, grammar, minusId, plusId, resultId, ellipsize;
+    public String bindEl, acceptNotif, grammar, minusId, plusId, resultId, ellipsize, format;
     public Integer heightMonth, heightCell, monthSize, textDaySize, tintDiam, minV, maxV, w_bord;
     public Integer workDayColor, selectTintColor, selectTextColor, holidaysColor, countAfterMonth, countBeforeMonth;
     public String sendNotif, saveParam,dateFormat, nameMonth;

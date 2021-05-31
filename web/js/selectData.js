@@ -131,7 +131,7 @@ function formSelectTagType(type, on) {
                 oldValue = p.componParam.bindEl;
             }
             
-            let st = '<select style="width:100px;" onchange="' + on + '(this)">';
+            let st = '<select class="select_'+ browser + ' onchange="' + on + '(this)">';
             for (let i = 0; i < ik; i++) {
                 let sel = "";
                 if (oldValue == arrViewId[i]) {

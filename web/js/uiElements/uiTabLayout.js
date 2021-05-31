@@ -124,6 +124,7 @@ function setIndColorTab(id, color) {
 function showTabLayout(dat, mB, tab) {
     mB.innerHTML = "";
     let ik = dat.length;
+//console.log("showTabLayout IK="+ik);
     if (ik == 0) return;
     let widthItem = 100 / ik;
     mB.append(newItemTab(dat[0], tab, widthItem));
@@ -133,6 +134,7 @@ function showTabLayout(dat, mB, tab) {
 }
 
 function newItemTab(item, tabLayout, ww) {
+//console.log("newItemTab item.title="+item.title+"<<");
     let container = document.createElement('div')
     let str = '<div class="item_buttons" style="position:relative;width:'+ ww + '%;display:inline-block;height:100%">'
             +'<div style="margin-top:5px;text-align: center;font-size:' + dp_20 + 'px;color:' + findColorByIndex(tabLayout.textSelect) + '">' + item.title + '</div>'

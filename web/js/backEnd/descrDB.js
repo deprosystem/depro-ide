@@ -1,41 +1,65 @@
-var hostDescr, hostDomain, hostPassword, hostPanel;
+var hostDescr, hostDomain, hostPassword, hostPanel, whereServer;
 
 function setHostPanel() {
     let host = "Not described";
     let hostButt = "Describe the server";
+    hostDescr = whereServ = currentProject.whereServer;
     let par = button_host.parentElement;
     par.onclick = descrHost;
-    if (currentProject.host != null && currentProject.host.length > 0) {
+    hostDomain = currentProject.host;
+    if (hostDescr == "Third party API") {
+        addTab.innerHTML = "";
+        addTab.onclick = none;
+        openAdmin.onclick = none;
+    } else {
+        addTab.onclick = addTable;
+        openAdmin.onclick = openAdminWind;
+        addTab.innerHTML = '<div style="margin-top: 5px; display: inline-block">Add table</div>';
+    }
+    where_serv.innerHTML = whereServ;
+    button_host.innerHTML = hostButt;
+    if (hostDomain != null && hostDomain.length > 0) {
         host = currentProject.host;
+        descr_host.innerHTML = host;
         hostButt = "Change server description";
         par.onclick = changeHost;
-        let hostDomain = currentProject.host;
-        if (hostDomain != null && hostDomain.length > 0) {
-           doServerAlien("GET", hostDomain + 'tables/list', cbGetTables);
+        if (hostDomain != null && hostDomain.length > 0  && hostDescr != "Third party APIF") {
+            if (listTables == null) {
+                doServerAlien("GET", hostDomain + 'tables/list', cbGetTables);
+            } else {
+                formListTables();
+            }
         }
     }
-    descr_host.innerHTML = host;
-    button_host.innerHTML = hostButt;
 }
 
 function cbGetTables(res) {
+//console.log("cbGetTables res="+res);
     listTables = JSON.parse(res);
+    formListTables();
+}
+
+function formListTables() {
+    listTablesView.innerHTML = "";
     let ik = listTables.length;
     if (ik > 0) {
         for (let i = 0; i < ik; i++) {
-            listTablesView.append(oneTableView(i));
+            oneTableView(i, listTablesView);
         }
     }
 }
 
-function oneTableView(i) {
+function oneTableView(i, el) {
     let item = listTables[i];
-    let st1 = item.title_table;
-    if (st1 == null) {
-        st1 == "";
-    }
-    let st = item.name_table + " " + st1;
-    return newDOMelement('<div onclick="editTable(' + i + ')" style="float:left;width:100%;padding-top:5px;cursor:pointer;padding-bottom:5px;border-bottom:1px solid #aaf;clear:both">' + st + '</div>');
+    let cont = newDOMelement('<div onclick="editTable(' + i + ')" style="float:left;width:100%;height:30px;overflow: hidden;cursor:pointer;border-bottom:1px solid #aaf;clear:both"></div>');
+    let name = newDOMelement('<div class="name_t" style="font-size:16px;color:#000;margin-top:5px;float:left;margin-left:5px">' + item.name_table + '</div>');
+    cont.appendChild(name);
+    el.appendChild(cont);
+    let rect = cont.getBoundingClientRect();
+    let rect_1 = name.getBoundingClientRect();
+    let descr = newDOMelement('<div class="title_t" style="font-size:12px;color:#555;margin-top:9px;height:12px;width:' + (rect.width - rect_1.width - 20) 
+            + 'px;float:left;margin-left:10px;overflow:hidden">' + item.title_table + '</div>');
+    cont.appendChild(descr);    
 }
 
 function descrHost() {
@@ -53,7 +77,7 @@ function descrHost() {
     buttonCancel.addEventListener("click", function(event){closeWindow(wind);}, true);
     footer.appendChild(buttonCancel);
     
-    let chHost = editSelect("Where is the server", 110, "Server IDE,Own server", "", "changeHostSel");
+    let chHost = editSelect("Where is the server", 110, "Server IDE,Own server,Third party API", "", "changeHostSel");
     chHost.style.marginTop = "5px";
     chHost.style.marginLeft = "5px";
     wind.appendChild(chHost);
@@ -64,11 +88,12 @@ function descrHost() {
     
     let domain = editTextParam("Domain name", 200, "", "changeHostDomain");
     hostPanel.appendChild(domain);
-    
+/*
     let pass = editTextParam("Password", 120, "", "changeHostPassw");
     pass.style.marginTop = "5px";
     pass.style.clear = "both";
     hostPanel.appendChild(pass);
+*/
 }
 
 function changeHost() {
@@ -92,12 +117,27 @@ function sendDescrHost() {
         hostDomain = "https://apps.deprosystem.com/";
     }
     let dat = {whereServer:hostDescr,domain:hostDomain,pass:hostPassword,res_ind:currentProject.resurseInd};
-    doServerAlien("POST", hostDomain + "db/create", cbCreateHost, JSON.stringify(dat));
+    if (hostDescr == "Third party API") {
+        cbCreateHost(dat);
+    } else {
+        doServerAlien("POST", hostDomain + "db/create", cbCreateHost, JSON.stringify(dat));
+    }
 }
 
 function cbCreateHost(res) {
-    descr_host.innerHTML = hostDomain;
+    if (hostDescr == "Third party API") {
+        addTab.innerHTML = "";
+        addTab.onclick = none;
+        openAdmin.onclick = none;
+    } else {
+        addTab.onclick = addTable;
+        openAdmin.onclick = openAdminWind;
+        addTab.innerHTML = '<div style="margin-top: 5px; display: inline-block">Add table</div>';
+    }
     currentProject.host = hostDomain;
+    descr_host.innerHTML = hostDomain;
+    currentProject.whereServer = hostDescr;
+    where_serv.innerHTML = hostDescr;
     button_host.innerHTML = "Change server description";
     let par = button_host.parentElement;
     par.onclick = changeHost;
@@ -109,11 +149,15 @@ function cbSetHost(res) {
 // нічого не треба
 }
 
+function openAdminWind() {
+    window.open(hostDomain + "?schema=" + currentProject.resurseInd, '_blank');
+}
+
 function changeHostSel(el) {
     if (hostPanel == null) return;
     let val = el.options[el.selectedIndex].value;
     hostDescr = val;
-    if (val == "Own server") {
+    if (val != "Server IDE") {
         hostPanel.style.display = "block";
     } else {
         hostPanel.style.display = "none";

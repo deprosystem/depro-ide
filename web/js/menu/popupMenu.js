@@ -8,18 +8,6 @@ function popupMenu(target, w, menu, listener, param) {
     let dv = document.createElement('div');
     dv.style.cssText = "position:absolute;width:" + w + "px;padding-left:10px;padding-right:10px;background:white;border:1px solid #1dace9;border-radius:8px;left:" 
             + x + "px;top:" + y + "px;z-index:100";
-/*
-    if (y > 30) {
-        y -= 30;
-    } else {
-        y += 20;
-    }
-
-    let wD = document.documentElement.clientWidth;
-    if ((wD - x) < w) {
-        x = wD - w - 20;
-    }
-*/
     let st = "";
     if (menu != null && menu.length > 0) {
         let arrMes = menu.split(",");

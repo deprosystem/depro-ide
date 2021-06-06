@@ -117,6 +117,7 @@ public class ExportResult extends BaseServlet {
                 setManifestAndroid(realPath + "/android_base/manifest", basePath + userProjPath + "/app/src/main/AndroidManifest.xml", arChange, parSave);
                 setFileAndroid(realPath + "/android_base/my_app", basePath + javaPath + "/MyApp.java", arChange);
                 copyFile(realPath + "/android_base/gradle_proj", basePath + userProjPath + "/build.gradle");
+                copyFile(realPath + "/android_base/compon-release.aar", basePath + userProjPath + "/app/libs/compon-release.aar");
                 copyFile(realPath + "/android_base/gradle_prop", basePath + userProjPath + "/gradle.properties");
                 copyFile(realPath + "/android_base/git_ignor", basePath + userProjPath + "/.gitignore");
                 copyFile(realPath + "/android_base/git_ignor_app", basePath + userProjPath + "/app/.gitignore");
@@ -195,6 +196,7 @@ public class ExportResult extends BaseServlet {
     private void createBaseProject(String realPath, String basePath, String userPath, String projectPath) {
         String userRes = basePath + userPath + "/app/src/main/res";
         formDir(basePath + userPath);
+        formDir(basePath + userPath + "/app/libs");
         formDir(userRes);
         String mipmap = userRes + "/mipmap";
         File file = new File(mipmap);
@@ -1686,7 +1688,7 @@ public class ExportResult extends BaseServlet {
                             writer.write(tab + "app:acceptNotif=\"" + p.componParam.acceptNotif + "\"");
                         }
                         String format = p.componParam.format;
-                        if (format != null && format.length() > 0) {
+                        if (format != null && format.length() > 0 && ! p.componParam.format.equals("no")) {
                             if (Character.isDigit(format.charAt(0))) {
                                 writer.write(tab + "app:numberFormat=\"" + format + "\"");
                             } else {

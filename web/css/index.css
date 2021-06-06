@@ -91,8 +91,8 @@ li:hover ul {display: block;}
 
 
 .titleWind {height: 48px;background:#f3f8ff;cursor:move;border-radius: 5px 5px 0px 0px;}
-.titleWindName {margin-left: 16px;font-size:18px;font-family:Proxima Nova;font-style:normal;font-weight: bold;margin-top:12px;float:left}
-.titleWindClose {margin-right: 16px;cursor: pointer;margin-top:16px;float: right}
+.titleWindName {margin-left: 16px;font-size:18px;font-family:Proxima Nova;font-style:normal;font-weight: bold;float:left}
+.titleWindClose {margin-right: 16px;cursor: pointer;float: right}
 
 /*
 #commonWindow {z-index: 100; position: absolute; background: #eeeeee; border: 2px threedhighlight outset; top:35px; display: none}

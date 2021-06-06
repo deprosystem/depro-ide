@@ -112,6 +112,7 @@ public class ProjectDB extends BaseDB {
                 pm.comment = res.getString("project_comment");
                 pm.logo = res.getString("logo");
                 pm.dateCreate = res.getLong("date_create");
+                pm.resurseInd = res.getString("resurse_ind");
                 pm.image = res.getString("image");
                 pm.host = res.getString("host");
                 pm.whereServer = res.getString("where_server");

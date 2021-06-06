@@ -3,7 +3,7 @@ function viewData() {
     if (ux_ui.innerHTML == "U I") {
         right_d = 150;
     } else {
-        right_d = 450;
+        right_d = 465;
     }
     setHostPanel();
     let hh = document.documentElement.clientHeight;

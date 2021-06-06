@@ -153,6 +153,7 @@ function formIndicator(item) {
     p = {typeUxUi: "ui"};
     p.type = "Indicator";
     p.typeFull = {name: 'Indicator', typeBlock: 0};
+    p.componParam = {diam:7,colorNorm:3,colorSel:4,type:10};
     p.width = WRAP;
     p.height = WRAP;
     p.gravLayout = {h:CENTER,v:4};

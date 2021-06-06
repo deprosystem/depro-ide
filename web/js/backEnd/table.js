@@ -286,7 +286,7 @@ function oneFieldView(idTab, item, el) {
             + hItemListFieldsTable + 'px;overflow: hidden;border-bottom:1px solid #aaf;clear:both"></div>');
     cont.idTable = idTab;
     cont.idField = item.id_field;
-    let name = newDOMelement('<div style="font-size:14px;color:#000;margin-top:2px;float:left;margin-left:3px">' + item.name + '</div>');
+    let name = newDOMelement('<div class="name" style="font-size:14px;color:#000;margin-top:2px;float:left;margin-left:3px">' + item.name + '</div>');
     cont.appendChild(name);
     el.appendChild(cont);
     let rect = cont.getBoundingClientRect();

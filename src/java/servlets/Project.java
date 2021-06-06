@@ -139,6 +139,10 @@ public class Project extends BaseServlet {
                     }
                     sendResultOk(response);
                     break;
+                case "/project/delete":
+                    
+                    sendResultOk(response);
+                    break;
             }
     }
     
@@ -304,7 +308,7 @@ public class Project extends BaseServlet {
         item = new ItemResurces();
         item.itemId = 4;
         item.itemName = "accentDark";
-        item.itemValue = "#f2d100";
+        item.itemValue = "#ffc300";
         li.add(item);
         
         item = new ItemResurces();
@@ -352,7 +356,7 @@ public class Project extends BaseServlet {
         item = new ItemResurces();
         item.itemId = 12;
         item.itemName = "text";
-        item.itemValue = "#444444";
+        item.itemValue = "#454545";
         li.add(item);
         
         item = new ItemResurces();

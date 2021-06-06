@@ -7,8 +7,13 @@ var wOperQuery = 32;
 var wraperQuery;
 var selectQueryEl;
 var footerQuery;
-var queryTables, queryFields, queryFieldsData, queryQueryData;
+var queryTables, queryFields, queryFieldsData, queryQueryData, queryOrder;
+var queryFieldsOrderView;
 var errorQuery;
+
+
+var qqqQQQ;
+
 
 function editQueryWind() {
     let hFooter = 150;
@@ -41,11 +46,14 @@ function editQueryWind() {
     buttonCancel.addEventListener("click", function(event){closeWindow(wind);}, true);
     controll.appendChild(buttonCancel);
     
-    let windMenu = newDOMelement('<div style="position:absolute;top:0;left:0;right:0;bottom:50px"></div>')
+    let windMenu = newDOMelement('<div style="position:absolute;top:0;left:0;right:0;bottom:50px"></div>');
+    qqqQQQ = windMenu;
     wind.appendChild(windMenu);
     let titleEl = newDOMelement(title);
     let addTab = newDOMelement('<img style="margin-top:4px;margin-left:25px;float:left;cursor:pointer;" width="16" height="16" src="img/add_blue.png">');
+    let order = newDOMelement('<img style="margin-top:6px;margin-right:15px;float:right;cursor:pointer;" width="12" height="12" src="img/sort-2.png">');
     titleEl.appendChild(addTab);
+    titleEl.appendChild(order);
     windMenu.appendChild(titleEl);
     
     let footerEl = newDOMelement(footer);
@@ -58,7 +66,7 @@ function editQueryWind() {
         addWhereForQuery();
     }, true);
     titleWhereEl.appendChild(addWhere);
-    wraperQuery = newDOMelement('<div style="position:absolute;top:' + (hTitleQuery + 1) + 'px;left:0;right:0;bottom:0"></div>')
+    wraperQuery = newDOMelement('<div class="wraperQuery" style="position:absolute;top:' + (hTitleQuery + 1) + 'px;left:0;right:0;bottom:0"></div>')
     footerEl.appendChild(wraperQuery);
     let scrollQu = formViewScrolY(wraperQuery);
     queryQueryData = scrollQu.getElementsByClassName("viewData")[0];
@@ -67,6 +75,9 @@ function editQueryWind() {
     windMenu.appendChild(queryFields);
     queryTables = newDOMelement(tables);
     windMenu.appendChild(queryTables);
+    order.addEventListener("click", function(){
+        setOrderForQuery();
+    }, true);
     addTab.addEventListener("click", function(){
         addTableForQuery();
     }, true);
@@ -88,6 +99,12 @@ function editQueryWind() {
     scrollFields.setScrollHide(true);
     scrollFields.init();
     
+    if (queryOrder == null) {
+        queryOrder = [];
+    } else {
+        queryOrder.length = 0;
+    }
+    
     if (listTables != null) {
         setQueryValue();
     } else {
@@ -98,7 +115,120 @@ function editQueryWind() {
         }
     }
     
-//    setQueryValue();
+//console.log("WWWWW="+wind.innerHTML);
+}
+
+function setOrderForQuery() {
+    let wFields = 180;
+    let contWind = formWind(wFields + wFields + 15, 400, 40, 650, "Sorting", false, null, "Save", saveSorting);
+    let tit = newDOMelement('<div style="height:' + hTitleQuery + 'px;border-top:1px solid #1dace9;border-bottom:1px solid #1dace9;position:absolute;left:0;top:0;right:0">'
+            +'<div style="float:left;margin-top:4px;margin-left:15px;width:' + wFields + 'px;">Selected query fields</div>'
+            +'<div style="float:left;margin-top:4px;">Sort fields</div></div')
+    contWind.appendChild(tit);
+    let contOrd = newDOMelement('<div style="position:absolute;top:' + (hTitleQuery + 1) + 'px;left:0;bottom:0;right:0;"></div>');
+    contWind.appendChild(contOrd);
+    let fields = newDOMelement('<div style="position:absolute;top:0;left:5px;bottom:0;width:' + wFields + 'px;border-right:1px solid #1dace9"></div>');
+    contOrd.appendChild(fields);
+    queryFieldsOrderView = newDOMelement('<div style="position:absolute;top:0;left:' + (10 + wFields) + 'px;bottom:0;width:' + wFields + 'px;"></div>');
+    contOrd.appendChild(queryFieldsOrderView);
+    let viewPort = formViewScrolY(fields);
+    let fieldsData = viewPort.querySelector(".viewData");
+    let aaa = queryFieldsData.innerHTML;
+    fieldsData.innerHTML = aaa;
+    let fieldsC = fieldsData.children;
+//    let fieldsC = fields.children;
+    let ik = fieldsC.length;
+    let listFields = [];
+    for (let i = 0; i < ik; i++) {
+        let ffI = fieldsC[i];
+        ffI.style.cursor = "pointer";
+        let nameFfI = ffI.querySelector(".name").innerHTML;
+        listFields.push(nameFfI);
+        ffI.addEventListener("click", function(event){
+            let ffCl = event.target.closest('.field');
+            let nn = ffCl.querySelector(".name").innerHTML;
+            let ffO = fieldForOrder(nn, 'order_az.png');
+            queryFieldsOrderView.appendChild(ffO);
+        }, true);
+    }
+    viewPort.scroll_y.resize();
+    ik = queryOrder.length;
+    let jk = listFields.length;
+    for (let i = 0; i < ik; i++) {
+        let it = queryOrder[i];
+        let nameF = it.nameF;
+        let ordF = it.ordF;
+        if (ordF != 0) {
+            let noIs = true;
+            for (j = 0; j < jk; j++) {
+                if (listFields[j] == nameF) {
+                    let srcOrd = 'order_az.png';
+                    if (ordF == 2) {
+                        srcOrd = 'order_za.png';
+                    }
+                    let ffOrd = fieldForOrder(nameF, srcOrd);
+                    queryFieldsOrderView.appendChild(ffOrd);
+                    noIs = false;
+                    break;
+                }
+            }
+            if (noIs) {
+                it.ordF = 0;
+            }
+        }
+    }
+}
+
+function fieldForOrder(name, src) {
+    let res = newDOMelement('<div class="fieldOrd" style="width:100%;height:' + hTitleQuery + 'px;border-bottom:1px solid #1dace9"></div>');
+    let nn = newDOMelement('<div class="name" style="float:left;margin-left:4px;margin-top:4px">' + name + '</div>');
+    res.appendChild(nn);
+    let del = newDOMelement('<img onclick="delOrd(this)" style="margin-top:6px;float:right;margin-right:7px;cursor:pointer;" width="10" height="10" src="img/del_red.png">')
+    res.appendChild(del);
+    let arrT = newDOMelement('<img onclick="liftUpOrd(this)" style="margin-top:5px;float:right;margin-right:7px;cursor:pointer;" width="12" height="12" src="img/arrow_top.png">')
+    res.appendChild(arrT);
+    let ord = newDOMelement('<img class="typeOrd" onclick="typeOrd(this)" style="margin-top:4px;float:right;margin-right:7px;cursor:pointer;" width="14" height="14" src="img/' + src + '">')
+    res.appendChild(ord);
+    return res;
+}
+
+function typeOrd(el) {
+    if (el.src.indexOf("order_za") == -1) {
+        el.src = "img/order_za.png"
+    } else {
+        el.src = "img/order_az.png"
+    }
+}
+
+function liftUpOrd(el) {
+    let view = el.closest(".fieldOrd");
+    if (view.previousElementSibling != null) {
+        view.previousElementSibling.before(view);
+    }
+}
+
+function delOrd(el) {
+    el.parentElement.remove(el);
+}
+
+function saveSorting() {
+    let childOrd = queryFieldsOrderView.children;
+    let ik = childOrd.length;
+    if (queryOrder == null) {
+        queryOrder = [];
+    } else {
+        queryOrder.length = 0;
+    }
+    for (let i = 0; i < ik; i++) {
+        let viewF = childOrd[i];
+        let nn = viewF.querySelector(".name").innerHTML;
+        let src = viewF.querySelector(".typeOrd").src;
+        let ord = 1;
+        if (src.indexOf("order_za") > -1) {
+            ord = 2;
+        }
+        queryOrder.push({nameF:nn,ordF:ord});
+    }
 }
 
 function addWhereForQuery(item) {
@@ -334,14 +464,19 @@ function saveQuery() {
         qu = -1;
     }
 // Query
+
+//console.log("qqqQQQ="+qqqQQQ.innerHTML);
+
     let queryChild = queryQueryData.children;
     ik = queryChild.length;
     let where_query = "";
     let strParam = "";
     let sepStrPar = "";
     let queryForSave = [];
+//console.log("saveQuery ik="+ik);
     for (let i = 0; i < ik; i++) {
         let itemQ = queryChild[i];
+//console.log("saveQuery CLAS itemQ="+itemQ.className+"<< INER="+itemQ.innerHTML);
         let childQ = itemQ.children;
         let onlyTab = itemQ.getElementsByClassName("table");
         let jk = onlyTab.length;
@@ -397,7 +532,42 @@ function saveQuery() {
         }
     }
     SQL += where_query;
-    let origin_query = {fieldTable:res,where:queryForSave}
+//   ORDER BY
+
+    let fieldsC = queryFieldsData.children;
+    ik = fieldsC.length;
+    let listFields = [];
+    for (let i = 0; i < ik; i++) {
+        let ffI = fieldsC[i];
+        let nameFfI = ffI.querySelector(".name").innerHTML;
+        listFields.push(nameFfI);
+    }
+    ik = queryOrder.length;
+    let jk = listFields.length;
+    let order_query = "";
+    let sepOrd = "";
+    for (let i = 0; i < ik; i++) {
+        let it = queryOrder[i];
+        let nameF = it.nameF;
+        let ordF = it.ordF;
+        if (ordF != 0) {
+            for (j = 0; j < jk; j++) {
+                if (listFields[j] == nameF) {
+                    let ordSort = "";
+                    if (ordF == 2) {
+                        ordSort = ' DESC';
+                    }
+                    order_query += sepOrd + nameF + ordSort;
+                    sepOrd = ", "
+                    break;
+                }
+            }
+        }
+    }
+    if (order_query.length > 0) {
+        SQL += " ORDER BY " + order_query;
+    }
+    let origin_query = {fieldTable:res,where:queryForSave,order:queryOrder};
     currentComponentDescr.model.param = strParam;
     let original = JSON.stringify(origin_query);
     let nam = currentScreen.screenName + "_" + currentComponent.viewId;
@@ -462,11 +632,17 @@ function setQueryValue() {
 
 function cbQueryValue(res) {
     errorQuery = false;
+    if (queryOrder == null) {
+        queryOrder = [];
+    } else {
+        queryOrder.length = 0;
+    }
+    let ik;
     let query = JSON.parse(res);
     let originQuery = JSON.parse(query.origin_query);
     if (originQuery.fieldTable != null) {
         let origin = originQuery.fieldTable;
-        let ik = origin.length;
+        ik = origin.length;
         let item;
         for (let i = 0; i < ik; i++) {
             item = origin[i];
@@ -498,6 +674,13 @@ function cbQueryValue(res) {
         for (let i = 0; i < ik; i++) {
             item = where[i];
             addWhereForQuery(item);
+        }
+    }
+    let ord = originQuery.order;
+    if (ord != null) {
+        ik = ord.length;
+        for (let i = 0; i < ik; i++) {
+            queryOrder.push(ord[i]);
         }
     }
 }

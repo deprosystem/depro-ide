@@ -53,7 +53,12 @@ function createScreen(plus, nameScr, titleScr, typeScr) {
         nn = ns.getElementsByClassName("title_screen")[0];
         nn.value = titleScr;
         let tt = ns.getElementsByClassName("type_screen")[0];
-        tt.value = "Fragment";
+        let ttScr = "Fragment";
+        if (crScreen.typeScreen == 0) {
+            ttScr = "Activity";
+        }
+        tt.value = ttScr;
+//        tt.value = "Fragment";
     }
 }
 

@@ -24,7 +24,7 @@ function popupMenu(target, w, menu, listener, param) {
             txtItem.innerHTML = arrMes[i];
             item.appendChild(txtItem);
             txtItem.addEventListener("click", function(){
-                listener(i, param.elem, param.idProj);
+                listener(i, param);
                 dv.parentNode.removeChild(dv);
             }, true);
             dv.appendChild(item);

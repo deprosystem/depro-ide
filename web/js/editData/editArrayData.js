@@ -461,7 +461,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
             return clickUpInput(event);
         } else { 
             if (k == "ArrowRight" || k == "ArrowLeft" || k == "Tab" 
-                || k == "Home" || k == "End" || k == "Backspace" || k == "Delete") {
+                || k == "Home" || k == "End" || k == "Backspace" || k == "Delete" || k == 'Shift') {
                 return true;
             }
         }

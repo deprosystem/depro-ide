@@ -80,7 +80,7 @@ function callbackSaveDataTab() {
             let item = dat[i];
             let scr = item.screen;
             if (noScreen(scr)) {
-                createScreen(false, scr, item.title);
+                createScreen(false, scr, "");
             }
         }
         let comp = currentScreen.components;

@@ -1,7 +1,8 @@
 var currentWind;
 var delta_x_wind, delta_y_wind;
+var h_footerWind = 50;
 
-function formWind(w, h, t, l, tit, scroll, cbClose) {
+function formWind(w, h, t, l, tit, scroll, cbClose, footName, footListener) {
     let ww = document.createElement('div');
     ww.className = "dataWindow";
     ww.style.width = w + 'px';
@@ -15,11 +16,30 @@ function formWind(w, h, t, l, tit, scroll, cbClose) {
     ww.style.top = t + 'px';
     let titleW = createTitle(tit, cbClose);
     ww.appendChild(titleW);
+    let bott = 0;
+    if (footName != null && footListener != null) {
+        let controll = createFooter(h_footerWind);
+        bott = h_footerWind + 1;
+        ww.appendChild(controll);
+//        addFooter(ww, controll);
+        let buttonOk = createButtonBlue(footName);
+        buttonOk.addEventListener("click", function(){footListener();closeWindow(ww);}, true);
+        controll.appendChild(buttonOk);
+        let buttonCancel = createButtonWeite('Cancel', 70);
+        buttonCancel.addEventListener("click", function(event){closeWindow(ww);}, true);
+        controll.appendChild(buttonCancel);
+    }
     let contW = document.createElement('div');
-    contW.style.cssText = "position:absolute;right:0px;bottom:0px;left:0px;top:56px;";
+    contW.style.cssText = "position:absolute;right:0px;bottom:" + bott + "px;left:0px;top:49px;";
     ww.appendChild(contW);
     document.body.append(ww);
     if (scroll != null && scroll) {
+        let scrollQu = formViewScrolY(contW);
+//        queryQueryData = scrollQu.getElementsByClassName("viewData")[0];
+//        return queryQueryData;
+        return scrollQu.getElementsByClassName("viewData")[0];
+        
+/*
         let viewport = document.createElement('div');
         viewport.className = "viewport";
         let content = document.createElement('div');
@@ -29,6 +49,7 @@ function formWind(w, h, t, l, tit, scroll, cbClose) {
         let scrollVert = new scrollX(viewport, "scroll");
         scrollVert.init();
         return content;
+*/
     } else {
         return contW;
     }
@@ -115,8 +136,13 @@ function newElementFromString(st) {
 
 function createButtonBlue(tit, w) {
     var container = document.createElement('div')
-    container.innerHTML = '<div style="cursor:pointer;width:' + w + 'px;height:30px;background:#1DACE9;border-radius:4px;margin-left:15px;margin-top:10px;float:left;">'
-            +'<div style="text-align: center;margin-top:7px;color:#fff">'+ tit + '</div></div>';
+    if (w != null) {
+        container.innerHTML = '<div style="cursor:pointer;width:' + w + 'px;height:30px;background:#1DACE9;border-radius:4px;margin-left:15px;margin-top:10px;float:left;">'
+                +'<div style="text-align: center;margin-top:7px;color:#fff">'+ tit + '</div></div>';
+    } else {
+        container.innerHTML = '<div style="cursor:pointer;height:30px;background:#1DACE9;border-radius:4px;margin-left:15px;margin-top:10px;float:left;padding-left:7px;padding-right:7px">'
+                +'<div style="text-align: center;margin-top:7px;color:#fff">'+ tit + '</div></div>';
+    }
     return container.firstChild;
 }
 

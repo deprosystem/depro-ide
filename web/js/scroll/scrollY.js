@@ -48,7 +48,7 @@
 */
 
 function ScrollY(container, localScroll, addEl) {
-    this.nameEvent = "scroll";
+//    this.nameEvent = "scroll";
     this.viewport = container;
     this.addEl = addEl;
     this.isHide = false;

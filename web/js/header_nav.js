@@ -4,7 +4,7 @@ function editUX_UI() {
         ux_ui.innerHTML = "UX";
         plus_screen.style.display = "none";
         corners.style.display = "none";
-        document.documentElement.style.setProperty('--r_data', 450 + "px");
+        document.documentElement.style.setProperty('--r_data', 465 + "px");
         setTimeout(showTypeInsActive, 400);
         document.documentElement.style.setProperty('--w_ux_p', '21%');
         document.documentElement.style.setProperty('--w_ux_r', '24%');

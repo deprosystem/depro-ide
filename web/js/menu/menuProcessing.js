@@ -22,6 +22,7 @@ var isScreenChange = false;
 var isLayoutChange = false;
 var listNameScreen = [];
 var listAppParam, listValueAppParam;
+var listProjectForOpen;
 
 function openProject() {
     doServer("POST", "project/list", cbListProject);
@@ -166,7 +167,6 @@ function setCreateData(oper) {      //  oper = 1 - create, 0 - chang
         wind.appendChild(inpEl);
     }
 
-//    wind.innerHTML = str;
     wind.getElementsByTagName('input')[0].focus();
 
     wind.addEventListener("keyup", function(event){if (event.which == 13) {
@@ -404,21 +404,22 @@ function cbListProject(res) {
 }
 
 function setListProject(list) {
-    var ik = list.length;
-    var strList = "";
+    listProjectForOpen = list;
+    let ik = list.length;
+    let strList = "";
     listProjects.style.display = "block";
     listProjectsScr.innerHTML = "";
     let content = document.createElement('div');
     content.className = "content";
     listProjectsScr.appendChild(content);
-    for (var i = 0; i < ik; i++) {
-        content.appendChild(oneProject(list[i]));
+    for (let i = 0; i < ik; i++) {
+        content.appendChild(oneProject(list[i], i));
     }
     let scrollVert = new scrollX(listProjectsScr, "scroll");
     scrollVert.init();
 }
 
-function oneProject(p) {
+function oneProject(p, i) {
     let container = document.createElement('div')
     let ds = "";
     if (p.dateCreate !=0) {
@@ -448,7 +449,7 @@ function oneProject(p) {
     let imgProject = '<img class="imgProject" width=360 height=160 style="position:absolute;left:0px;top:0px;object-fit:contain;border-radius:4px 4px 0px 0px;' + urlImgProject + '>';
     let st = '<div class="projectView" style="cursor:pointer;" onclick="selectProject(' + p.projectId + ')">'
             +imgProject
-            +'<img onclick="projectMenu(event,' + p.projectId + ')" width="20" height="30" style="position:absolute;right:14px;top:14px;cursor:pointer" src="img/more-vertical.png">'
+            +'<img onclick="projectMenu(event,' + p.projectId + ','+ i + ')" width="20" height="30" style="position:absolute;right:14px;top:14px;cursor:pointer" src="img/more-vertical.png">'
             +'<div style="position:absolute;width:100%;height:78px;bottom:0px;border-radius:0px 0px 4px 4px;border-top:1px solid #1dace9"></div>'
             +'<div class="projectName">' + p.nameProject + '</div>'
             +'<div class="projectDate">' + ds + '</div>'
@@ -506,10 +507,10 @@ function cbImageProject(res, par) {
     }
 }
 
-function projectMenu(e, id) {
+function projectMenu(e, id, i) {
     let el = e.target;
     if (el.popup == null) {
-        let paramForClick = {elem:el,idProj:id};
+        let paramForClick = {elem:el,idProj:id,position:i};
         el.popup = popupMenu(el, 80, "Edit,Image,Delete", clickMenu, paramForClick);
     } else {
         el.popup.parentNode.removeChild(el.popup);
@@ -518,18 +519,34 @@ function projectMenu(e, id) {
     e.stopPropagation();
 }
 
-function clickMenu(i, el, id) {
+function clickMenu(i, param) {
     switch (i) {
         case 0:
             
             break;
         case 1:
-            sendImageProject(id, 'imageProject', el, "Project image");
+            sendImageProject(param.idProj, 'imageProject', param.elem, "Project image");
             break;
         case 2:
-            
+            let proj = listProjectForOpen[param.position];
+            deleteProjectId(proj);
             break;
     }
+}
+
+function deleteProjectId(project) {
+    let dat = {whereServer:project.host,schema:project.resurseInd,projectId:project.projectId};
+    if (project.where_server == "Third party API") {
+        
+    } else {
+        let param = JSON.stringify(dat);
+console.log("deleteProjectId param="+param);
+        doServerAlien("POST", project.host + "db/del_schema", cbDelSchema, param, dat);
+    }
+}
+
+function cbDelSchema(res, param) {
+    console.log("cbDelSchema ID="+param.schema+"<<");
 }
 
 function selectProject(id) {
@@ -562,7 +579,7 @@ function closeProject() {
 }
 
 function deleteProject() {
-    
+    deleteProjectId(currentProject);
 }
 
 function uploadImage() {
@@ -624,7 +641,8 @@ function generateProject(apk) {
         fileCreate.innerHTML = mes;
         windMenu.appendChild(fileCreate);
         let buttSave = createButtonBlue("Save", 80);
-        buttSave.addEventListener("click", function(){closeWindTimeout(buttSave);}, true);
+        buttSave.style.position = "relative";
+        buttSave.addEventListener("click", function(){setTimeout(function(){closeWindow(buttSave)}, 100);}, true);
         buttSave.style.marginTop = "25px";
         buttSave.className = "save-apk";
         windMenu.appendChild(buttSave);
@@ -632,15 +650,10 @@ function generateProject(apk) {
     }
 }
 
-function closeWindTimeout(buttSave) {
-    setTimeout(closeWind(buttSave), 500);
-}
-
 function validDeclare() {
     let strError = "";
     let ik = listScreen.length;
     let newLevelErrors = 0;
-//    listNameScreen.length = 0;
     if (ik == 0) {
         strError += "Нет описаных экранов<br>";
     } else {
@@ -660,16 +673,11 @@ function validDeclare() {
     }
     ik = listValueAppParam.length;
     if (ik == 0) {
-/*
-        strError += "baseUrl is not filled<br>";
-        newLevelErrors = 2;
-*/
         if (isMap()) {
             strError += "not filled geoApiKey for maps<br>";
             newLevelErrors = 2;
         }
     } else {
-//        let noUrl = true;
         let noKey = true;
         let noStartScr = true;
         let isParameterStartScr = false;
@@ -688,18 +696,6 @@ function validDeclare() {
                         }
                     }
                     break;
-/*
-                case "baseUrl":
-                    noUrl = false;
-                    if (vv != null || vv.length > 0) {
-                        if ( ! isUrlValid(vv)) {
-                            strError += "baseUrl is error";
-                        }
-                    } else {
-                        strError += "baseUrl is not filled";
-                    }
-                    break;
-*/
                 case "geoApiKey":
                     noKey = false;
                     if (vv == null || vv == "") {
@@ -710,12 +706,6 @@ function validDeclare() {
                     break;
             }
         }
-/*
-        if (noUrl) {
-            strError += "baseUrl is not filled<br>";
-            newLevelErrors = 2;
-        }
-*/
         if (noKey) {
             if (isMap()) {
                 strError += "not filled geoApiKey for maps<br>";
@@ -786,7 +776,8 @@ function isScreenDeclare(name) {
 function cbGenerateProject(res, wind) {
     let save = wind.getElementsByClassName("save-apk")[0];
     if (save != null) {
-        save.firstElementChild.innerHTML = '<a href="' + res + '" download style="text-decoration: none;color:#fff">Save</a>';
+        save.appendChild(newDOMelement('<a href="' + res + 
+                '" download style="text-decoration: none;color:#fff0;display:inline-block;width:100%;height:100%;position:absolute;top:0;left:0"> </a>'));
     }
 }
 

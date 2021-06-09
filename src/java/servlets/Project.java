@@ -7,10 +7,16 @@ import db.UserDB;
 import entity.DataServlet;
 import entity.DescrHost;
 import entity.ListScreen;
+import entity.ParamDel;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 //import entity.ScreenM;
 import projects.ProjectM;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +25,7 @@ import java.util.logging.Logger;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.tools.FileObject;
 import projects.ItemAppParam;
 import projects.ItemResurces;
 import projects.ItemStyle;
@@ -31,6 +38,7 @@ public class Project extends BaseServlet {
             ProjectDB projectDb = new ProjectDB(request);
             List<ProjectM> listProject;
             ProjectM pc;
+            String projectId;
             switch (ds.query) {
                 case "/project/create":
                     pc = null;
@@ -62,12 +70,9 @@ public class Project extends BaseServlet {
                         pc.screens = formScreens();
                         pc.resurseInd = lowerCaseRandom(15);
                         pc.host = "";
-//                        pc.whereServer = "Server IDE";
-//System.out.println("pc.resurseInd="+pc.resurseInd+"<< LL="+pc.resurseInd.length());
                         pc.dateCreate = new Date().getTime();
                         id = projectDb.createProjectId(pc);
                         pc.projectId = id;
-//                        createBaseRes(request.getServletContext().getRealPath("") + File.separator, pc.resurseInd);
                         createBaseRes(ds.patchOutsideProject, pc.resurseInd);
                         projectDb.setLastProject(String.valueOf(ds.userId), String.valueOf(id));
                         sendResult(response, gson.toJson(pc));
@@ -97,7 +102,7 @@ public class Project extends BaseServlet {
                     sendResult(response, gson.toJson(projectDb.getProjectById(idPr)));
                     break;
                 case "/project/change":
-                    String projectId = request.getHeader("projectId");
+                    projectId = request.getHeader("projectId");
                     String stReq = "";
                     try {
                         stReq = getStringRequest(request);
@@ -129,7 +134,6 @@ public class Project extends BaseServlet {
                     projectId = request.getHeader("projectId");
                     try {
                         String stDescr = getStringRequest(request);
-//System.out.println("stDescr="+stDescr+"<<");
                         DescrHost dh = gson.fromJson(stDescr, DescrHost.class);
                         projectDb.setHost(projectId, dh);
                         sendResult(response, dh.domain);
@@ -140,8 +144,67 @@ public class Project extends BaseServlet {
                     sendResultOk(response);
                     break;
                 case "/project/delete":
-                    
+                    ParamDel par = null;
+                    try {
+                        String param = getStringRequest(request);
+                        par = gson.fromJson(param, ParamDel.class);
+                    } catch (IOException e) {
+                        System.out.println(e);
+                        sendError(response, "delete project error " + e.toString());
+                        break;
+                    }
+                    if (par != null) {
+                        String basePath = ds.patchOutsideProject;
+                        String userProjPath = Constants.USERS_DATA + ds.userResurseInd + "/" + par.nameProject;
+                        String projectPath = Constants.PROJECTS_DATA + par.schema;
+                        deleteDir(basePath + projectPath);
+                        projectDb.deleteProjectId(par.projectId);
+                    }
                     sendResultOk(response);
+                    break;
+                case "/project/del_only":
+                    projectId = request.getHeader("projectId");
+                    projectDb.deleteProjectId(projectId);
+                    sendResultOk(response);
+                    break;
+                default:
+                    String[] ar = (" " + ds.query).split("/");
+                    String basePath = ds.patchOutsideProject;
+                    String userProjPath;
+                    String filename;
+                    if (ar[2].equals("get_apk")) {
+                        userProjPath = Constants.USERS_DATA + ar[3] + "/" + ar[4];
+                        filename = basePath + userProjPath + "/app/build/outputs/apk/debug/" + ar[5];
+                        File file = new File(filename);  
+                        response.setHeader("Accept-Ranges", "bytes");
+                        response.setContentType("application/octet-stream");
+                        response.setContentLength((int)file.length());
+                        response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+                        try {
+                            Files.copy(file.toPath(), response.getOutputStream());
+                        } catch (IOException e) {
+                            System.out.println(e);
+                            sendError(response, "Get export error " + e.toString());
+                        }
+                        deleteDir(basePath + userProjPath);
+                    } else {
+                        userProjPath = Constants.USERS_DATA + ar[3] + "/" + ar[4];
+                        filename = basePath + userProjPath;
+                        File file = new File(filename);  
+                        response.setHeader("Accept-Ranges", "bytes");
+                        response.setContentType("application/zip");
+                        response.setContentLength((int)file.length());
+                        response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+                        try {
+                            Files.copy(file.toPath(), response.getOutputStream());
+                        } catch (IOException e) {
+                            System.out.println(e);
+                            sendError(response, "Get export error " + e.toString());
+                        }
+                        String[] ff = filename.split("\\.");
+                        deleteDir(ff[0]);
+                        deleteFile(filename);
+                    }
                     break;
             }
     }

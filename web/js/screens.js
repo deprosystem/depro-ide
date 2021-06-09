@@ -138,8 +138,6 @@ function setSelectScreen(goto) {
         }
     }
     if (currentScreen != null) {
-//console.log("SSSS="+jsonNoViewParent(currentScreen.components));
-//console.log("LLLLLL="+jsonNoViewParent(currentScreen.layout.children));
         currentChildren = currentScreen.layout.children;
         clearViewEl(currentChildren);
         let listC = currentScreenView.getElementsByClassName("list_components");
@@ -193,7 +191,6 @@ function setScreenComponents() {
             for (let i = 0; i < ik; i++) {
                 currentComponentDescr = cc[i];
                 let componId = currentComponentDescr.componId;
-//console.log("setScreenComponents componId="+componId+"<<");
                 if (idComponentNumMax < componId) {
                     idComponentNumMax = componId;
                 }
@@ -217,6 +214,8 @@ function setScreenComponents() {
                         currentComponentView.className = "component_sel";
                         firstView = currentComponentView;
                         firstComp = currentComponent;
+                    } else {
+                        currentComponentView.className = "component";
                     }
                     if (currentComponent == null) {
 //                        error
@@ -224,12 +223,17 @@ function setScreenComponents() {
                         setValueComponent(currentComponentView, currentComponent, currentComponentDescr);
                     }
                 }
-                if (firstView != null) {
-                    currentComponentView = firstView;
-                    currentComponent = firstComp;
-                    currentComponentDescr = cc[0];
-                }
+
                 container_scr.scroll_y.resize(container_scr);
+            }
+            if (firstView != null) {
+                currentComponentView = firstView;
+                currentComponent = firstComp;
+                currentComponentDescr = cc[0];
+                uxFunction = null;
+                try {
+                    uxFunction = eval("new ux" + currentComponentDescr.type + "();");
+                } catch(e) { }
             }
         }
         idComponentNum = idComponentNumMax + 1;
@@ -552,7 +556,7 @@ function newComponent() {
     var str = '<div class="component_sel">'
             +'<div class="name_compon" style="float:left">' + parComp.name + '</div>'
             +'<div class="special_func" style="float:left;margin-top:3px;margin-left:20px;">' + uxFunction.getSpecialView() + '</div>'
-            +'<img onclick="del_compon(this)" style="float:right;cursor:pointer;margin-top:3px;margin-right:10px" width="18" height="18" src="img/close-o.png">'
+            +'<img onclick="delCmponent(this)" style="float:right;cursor:pointer;margin-top:3px;margin-right:10px" width="18" height="18" src="img/close-o.png">'
             +'<div class="component_param" style="padding: 5px;clear:both">' + uxFunction.getEditParam() + '</div>'
             +'</div>';
     var container = document.createElement('div')
@@ -622,8 +626,26 @@ function screenDelete() {
     container_scr.scroll_y.resize(container_scr);
 }
 
-function del_compon(el) {
-    
+function delCmponent(el) {
+    let comp = el.closest(".component_sel");
+    let cId = comp.componId;
+    let cc = currentScreen.components;
+    let ik = cc.length;
+    compI = -1;
+    for (let i = 0; i < ik; i++) {
+        if (cc[i].componId = cId) {
+            compI = i;
+            break;
+        }
+    }
+    if (compI > -1) {
+        compEl = getInfComponentById(cId);
+        if (compEl != null) {
+            compEl.parent.splice(compEl.ind, 1);
+            cc.splice(compI, 1);
+            setSelectScreen();
+        }
+    }
 }
 
 function setViewId(id) {

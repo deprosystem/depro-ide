@@ -70,7 +70,8 @@ function uxList() {
     }
     
     this.getHelpLink = function() {
-        return "https://docs.google.com/document/d/1iYRvK_JAz67laVPot_pCEUa0sM9Jp3hSJZMMG4qmtxQ/edit#heading=h.wr0jqzoad5ky";
+//        return "https://docs.google.com/document/d/1iYRvK_JAz67laVPot_pCEUa0sM9Jp3hSJZMMG4qmtxQ/edit#heading=h.wr0jqzoad5ky";
+        return "https://docs.google.com/document/d/1iYRvK_JAz67laVPot_pCEUa0sM9Jp3hSJZMMG4qmtxQ/edit#bookmark=id.4ysfqsv8dxu6";
     }
     
     this.isValid = function(compD, layout) {

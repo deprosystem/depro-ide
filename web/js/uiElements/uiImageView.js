@@ -123,6 +123,10 @@ function uiImageView() {
         cBord.style.marginLeft = "10px";
         contentAttributes.appendChild(cBord);
     }
+    
+    this.getHelpLink = function() {
+        return "https://docs.google.com/document/d/1iYRvK_JAz67laVPot_pCEUa0sM9Jp3hSJZMMG4qmtxQ/edit#bookmark=id.rx9nr2tpyie0";
+    }
 }
 
 function setImgViewSRC(e) {

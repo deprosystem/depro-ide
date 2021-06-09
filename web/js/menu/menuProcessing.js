@@ -23,6 +23,7 @@ var isLayoutChange = false;
 var listNameScreen = [];
 var listAppParam, listValueAppParam;
 var listProjectForOpen;
+var deleteProjectIdVar;
 
 function openProject() {
     doServer("POST", "project/list", cbListProject);
@@ -227,6 +228,9 @@ function cbCreateProjectDop() {
     ux_ui_w.style.display = "block";
     plus_screen.style.display = "block";
     corners.style.display = "block";
+    listTablesView.innerHTML = "";
+    listTables = null;
+    showModeUX();
     openMenu();
     project_name_bl.style.display = "block";
     project_name.innerHTML = currentProject.nameProject;
@@ -251,6 +255,16 @@ function cbCreateProjectDop() {
     setListScreen();
 }
 
+function showModeUX() {
+    if (show_data_inf.innerHTML != "Data") {
+        viewData();         // hide Data panel
+    }
+    if (ux_ui.innerHTML != "U I") {
+        editUX_UI();
+    }
+    
+}
+
 function clearRoot() {
     let cont_1 = createContour();
     root.innerHTML = "";
@@ -273,14 +287,9 @@ function setScreenLayout() {
     if (selectViewElement != null) {
         selectViewElement.style.backgroundColor = '#fff';
     }
-//    hideContourEl();
 }
 
 function modelClick(el) {
-//    hideContourEl();
-//    currentElement = el;
-//    setParamCompon();
-//    setPickElement(el);
     selectNavigatorEl(el);
     el.style.outline = "";
 }
@@ -535,18 +544,29 @@ function clickMenu(i, param) {
 }
 
 function deleteProjectId(project) {
-    let dat = {whereServer:project.host,schema:project.resurseInd,projectId:project.projectId};
+    deleteProjectIdVar = project.projectId;
+    let dat = {whereServer:project.host,schema:project.resurseInd,projectId:project.projectId,nameProject:project.nameProject};
     if (project.where_server == "Third party API") {
         
     } else {
         let param = JSON.stringify(dat);
-console.log("deleteProjectId param="+param);
-        doServerAlien("POST", project.host + "db/del_schema", cbDelSchema, param, dat);
+        if (project.host == null) {
+            doServer("POST", "project/del_only", cbDelProj);
+        } else {
+            doServerAlien("POST", project.host + "db/del_schema", cbDelSchema, param, dat);
+        }
     }
 }
 
 function cbDelSchema(res, param) {
-    console.log("cbDelSchema ID="+param.schema+"<<");
+    doServer("POST", "project/delete", cbDelProj, JSON.stringify(param));
+}
+
+function cbDelProj(res) {
+    if (deleteProjectIdVar == currentProject.projectId) {
+        currentProject = null;
+    }
+    openProject();
 }
 
 function selectProject(id) {
@@ -558,6 +578,8 @@ function selectProject(id) {
 function cbGetProject(res) {
     listTables = null;
     cbCreateProject(res, 2);
+    show_data.style.display = "block";
+    shutScreen.style.display = "none";
 }
 
 function cbGetTablesNoActiv(res) {
@@ -625,15 +647,17 @@ function generateProject(apk) {
     if (validDeclare()) {
         let title;
         let url;
-        let mes;
+        let mes, attent;
         if (apk != null && apk) {
             title = "Create APK";
             url = "export/apk";
             mes = "APK file generated";
+            attent = "APK creation takes 1 - 2 minutes";
         } else {
             title = "Create project";
             url = "export/android";
             mes = "Project generated";
+            attent = "";
         }
         let windMenu = formWind(250, 300, 40, 250, title);
         let fileCreate = document.createElement("div");
@@ -642,11 +666,10 @@ function generateProject(apk) {
         windMenu.appendChild(fileCreate);
         let buttSave = createButtonBlue("Save", 80);
         buttSave.style.position = "relative";
-        buttSave.addEventListener("click", function(){setTimeout(function(){closeWindow(buttSave)}, 100);}, true);
         buttSave.style.marginTop = "25px";
         buttSave.className = "save-apk";
         windMenu.appendChild(buttSave);
-        doServer("GET", url + "?projectId=" + currentProject.projectId, cbGenerateProject, null, windMenu, windMenu);
+        doServer("GET", url + "?projectId=" + currentProject.projectId, cbGenerateProject, null, windMenu, windMenu, null, attent);
     }
 }
 
@@ -775,10 +798,7 @@ function isScreenDeclare(name) {
 
 function cbGenerateProject(res, wind) {
     let save = wind.getElementsByClassName("save-apk")[0];
-    if (save != null) {
-        save.appendChild(newDOMelement('<a href="' + res + 
-                '" download style="text-decoration: none;color:#fff0;display:inline-block;width:100%;height:100%;position:absolute;top:0;left:0"> </a>'));
-    }
+    save.addEventListener("click", function(){downloadFile(res);closeWindow(save);}, true);
 }
 
 function setAppParameters() {
@@ -911,6 +931,17 @@ function saveAll() {
 function closeListProj() {
     listProjectsScr.innerHTML = "";
     listProjects.style.display = "none";
+    if(currentProject == null) {
+        showModeUX();
+        setBlanckToolBar()
+/*
+        shutScreen.style.display = "block";
+        shutScreen.innerHTML = '<div style="font-size:34px;margin-top:50px;margin-left:50px;">You have no projects</div>';
+        listMenu_UX[0].children[1].domElement.className = 'subMainMenuNo';
+*/
+    } else {
+        shutScreen.style.display = "none";
+    }
 }
 
 function changeUser() {

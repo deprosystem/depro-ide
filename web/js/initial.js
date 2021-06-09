@@ -29,11 +29,21 @@ function initialView(AuthResult) {
             listMenu_UX[0].children[1].domElement.className = 'subMainMenu';
             setListProject(ar.listProject);
         } else {
-            shutScreen.style.display = "block";
-            shutScreen.innerHTML = '<div style="font-size:34px;margin-top:50px;margin-left:50px;">You have no projects</div>';
-            listMenu_UX[0].children[1].domElement.className = 'subMainMenuNo';
+            setBlanckToolBar();
         }
     } 
+}
+
+function setBlanckToolBar() {
+    shutScreen.style.display = "block";
+    shutScreen.innerHTML = '<div style="font-size:34px;margin-top:50px;margin-left:50px;">You have no projects</div>';
+    project_name_bl.style.display = "none";
+    corners.style.display = "none";
+    plus_screen.style.display = "none";
+    ux_ui_w.style.display = "none";
+    show_data.style.display = "none";
+    type_insert.style.display = "none";
+    active.style.display = "none";
 }
     
 function eventFocusBlur() {

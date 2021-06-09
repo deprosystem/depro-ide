@@ -57,6 +57,10 @@ function uiEllipsis() {
             div.appendChild(formItemEllipsis(colS, diam));
         }
     }
+    
+    this.getHelpLink = function() {
+        return "https://docs.google.com/document/d/1iYRvK_JAz67laVPot_pCEUa0sM9Jp3hSJZMMG4qmtxQ/edit#bookmark=id.5db4na7yamp0";
+    }
 }
 
 function formItemEllipsis(color, diam) {

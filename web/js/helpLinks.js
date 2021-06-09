@@ -3,7 +3,7 @@ let strHelpUX = "https://docs.google.com/document/d/1iYRvK_JAz67laVPot_pCEUa0sM9
 let strHelpUI = "https://docs.google.com/document/d/1iYRvK_JAz67laVPot_pCEUa0sM9Jp3hSJZMMG4qmtxQ/edit#bookmark=id.pz9ydy7y0yf6";
 function helpDoc() {
     let adr;
-    if (ux_ui.innerHTML == "UI") {        // UX
+    if (ux_ui.innerHTML == "U I") {        // UX
         if (uxFunction != null) {
             adr = uxFunction.getHelpLink();
             if (adr == null || adr.length == 0) {
@@ -11,10 +11,23 @@ function helpDoc() {
             }
             window.open(adr);
         } else {
-            window.open(strHelp);
+            window.open(strHelpUX);
         }
     } else {
-        window.open(strHelp);
+        if (layoutParam.style.display != "none") {
+            let type = currentElement.android.type;
+            adr = "";
+            try {
+                uiFunction = eval("new ui" + type + "()");
+                adr = uiFunction.getHelpLink();
+            } catch(e) { }
+            if (adr == null || adr.length == 0) {
+                adr = strHelpUI;
+            }
+            window.open(adr);
+        } else {
+            window.open(strHelpUI);
+        }
     }
 }
 

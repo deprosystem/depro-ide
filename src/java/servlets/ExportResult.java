@@ -178,15 +178,21 @@ public class ExportResult extends BaseServlet {
                         System.out.println("Compil waitFor Error="+ ex);
                     }
 
-                    String resultFile = userPath + projectM.nameProject + "/app/build/outputs/apk/debug/app-debug.apk";
-                    System.out.println("resultFile="+resultFile);
+//                    String resultFile = userPath + projectM.nameProject + "/app/build/outputs/apk/debug/app-debug.apk";
+//                    String resultFile = userPath + projectM.nameProject + "/app-debug.apk";
+                    String resultFile = "project/get_apk/" + ds.userResurseInd + "/" + projectM.nameProject + "/app-debug.apk";
+//System.out.println("resultFile="+resultFile);
                     sendResult(response, resultFile);
                 } else {
                     String exportFileName = userPath + projectM.nameProject + ".zip";
                     zipRes(basePath + exportFileName, basePath + userProjPath, lengthBase);
+                    
 //                    sendResult(response, downloadExport_1 + exportFileName + downloadExport_2);
+/*
                     String resultFile = userPath + projectM.nameProject + "/app/build/outputs/apk/debug/app-debug.apk";
                     System.out.println("resultFile="+exportFileName);
+*/
+                    exportFileName = "project/get_project/" + ds.userResurseInd + "/" + projectM.nameProject + ".zip";
                     sendResult(response, exportFileName);
                 }
                 break;
@@ -252,6 +258,7 @@ public class ExportResult extends BaseServlet {
                 writer.write("    }\n");
                 writer.write("}\n");
                 writer.flush();
+                writer.close();
             }
         } catch (IOException ex) {
             System.out.println("ExportResult createAppParam error=" + ex);
@@ -1071,6 +1078,7 @@ public class ExportResult extends BaseServlet {
                     parSave.noToolMenu = false;
                     createEl(screen.layout, true, "\n", writer, parSave);
                     writer.flush();
+                    writer.close();
                 }
             }
         } catch(IOException ex){
@@ -1229,6 +1237,7 @@ public class ExportResult extends BaseServlet {
             writer.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
             createEl(p, true, "\n", writer, parSave);
             writer.flush();
+            writer.close();
         } catch(IOException ex){
             System.out.println("ExportResult createLayoutItem error=" + ex);
         } 
@@ -1243,6 +1252,7 @@ public class ExportResult extends BaseServlet {
                 writer.write("\n    android:layout_height=\"100dp\">");
                 writer.write("\n</RelativeLayout>");
                 writer.flush();
+                writer.close();
         } catch(IOException ex){
             System.out.println("ExportResult createItemLayoutBlank error=" + ex);
         } 
@@ -2122,6 +2132,7 @@ public class ExportResult extends BaseServlet {
                 }
                 writer.write("</resources>");
                 writer.flush();
+                writer.close();
             } catch (IOException ex) {
                 System.out.println("ExportResult createColors error=" + ex);
             }
@@ -2205,6 +2216,7 @@ public class ExportResult extends BaseServlet {
             }
             writer.write("</resources>");
             writer.flush();
+            writer.close();
         } catch (IOException ex) {
             System.out.println("ExportResult createDimens error=" + ex);
         }
@@ -2220,6 +2232,7 @@ public class ExportResult extends BaseServlet {
             }
             writer.write("</resources>");
             writer.flush();
+            writer.close();
         } catch (IOException ex) {
             System.out.println("ExportResult createDimens error=" + ex);
         }
@@ -2307,6 +2320,7 @@ public class ExportResult extends BaseServlet {
             }
             writer.write("\n</shape>");
             writer.flush();
+            writer.close();
         } catch (IOException ex) {
             System.out.println("ExportResult createColors error=" + ex);
         }

@@ -1,4 +1,5 @@
 function viewData() {
+    if (currentProject == null) return;
     let right_d = 100;
     if (ux_ui.innerHTML == "U I") {
         right_d = 150;

@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.nio.file.NoSuchFileException;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -48,7 +49,6 @@ public abstract class BaseServlet extends HttpServlet{
         
         ds.query = request.getRequestURI().substring(request.getContextPath().length());
         ds.patchOutsideProject = getPatchOutsideProject(request);
-//System.out.println("ds.patchOutsideProject="+ds.patchOutsideProject+"<<<");
 System.out.println("query="+ds.query);
         int need = needToLogin();
         if (need == 0) {
@@ -65,7 +65,6 @@ System.out.println("query="+ds.query);
                 tu = baseDb.getUserByToken(ds.token);
                 ds.userId = tu.userId;
                 ds.userResurseInd = tu.userResurseInd;
-//                ds.userId = baseDb.getUserId(ds.token);
                 if (need == 1) {
                     processRequest(request, response, ds);
                 } else {
@@ -120,7 +119,6 @@ System.out.println("query="+ds.query);
     
     public void sendResult(HttpServletResponse response, String result, int status) {
         response.setStatus (status);
-//        response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             out.print(result);
         } catch (IOException ex) {
@@ -256,6 +254,23 @@ System.out.println("query="+ds.query);
             if( ! dirF.mkdirs()) {                 
                 System.out.println("createDir Каталог " + dirF.getAbsolutePath() + " создвть не удалось.");
             }
+        }
+    }
+    
+    public void deleteDir(String dir) {
+        File dirF = new File(dir);
+        if( dirF.exists()) {
+            if(dirF.isDirectory()) {
+                clearFolder(dirF);
+            }
+            dirF.delete();
+        }
+    }
+    
+    public void deleteFile(String nf) {
+        File dirF = new File(nf);
+        if( dirF.exists() && ! dirF.isDirectory()) {
+            dirF.delete();
         }
     }
     

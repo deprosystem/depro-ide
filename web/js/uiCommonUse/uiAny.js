@@ -59,6 +59,28 @@ function getCompByViewId(ch, id) {
     return null;
 }
 
+function getInfComponentById(id) {     //      currentComponent
+    return getInfCompById(currentChildren, id);
+}
+
+function getInfCompById(ch, id) {
+    let ik = ch.length;
+    for (let i = 0; i < ik; i++) {
+        let chi = ch[i];
+        if (chi.componId == id) {
+            return {parent:ch,ind:i,el:chi};
+        } else {
+            if (chi.children != null && chi.children.length > 0) {
+                let res = getInfCompById(chi.children, id);
+                if (res != null) {
+                    return res;
+                }
+            }
+        }
+    }
+    return null;
+}
+
 function checkValidityLinks(ch, tab) {
     let ik = ch.length;
     let res = "";

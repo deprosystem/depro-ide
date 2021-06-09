@@ -1,6 +1,6 @@
 var AuthToken = '';
 
-function doServer(metod, url, callBack, data, paramCallBack, progress, cbError){
+function doServer(metod, url, callBack, data, paramCallBack, progress, cbError, txtProgress){
     var req = initRequest();
     let divProgress;
     req.open(metod, url, true);
@@ -34,10 +34,37 @@ console.log("AJAX="+req.responseText);
     };
     data=data||null;
     if (progress != null) {
-        divProgress = windProgr(progress);
+        divProgress = windProgr(progress, txtProgress);
         document.body.append(divProgress);
     }
     req.send(data);
+}
+
+function downloadFile(urlToSend) {
+    var req = new XMLHttpRequest();
+    req.open("GET", urlToSend, true);
+    req.responseType = "blob";
+    req.setRequestHeader('Auth-token', AuthToken);
+    req.onload = function (event) {
+        if (req.status == 200) {
+            let blob = req.response;
+            let fileName = req.getResponseHeader("Content-Disposition");
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            let fn = fileName.split("=");
+            fileName = fn[1];
+            link.download = fileName;
+            link.click();
+        } else {
+console.log("AJAX downloadFile="+req.responseText);
+            var mes = JSON.parse(req.responseText).message;
+            dialogError("Server error", "status=" + req.status + " " + mes);
+            if (cbError != null) {
+                cbError(req.responseText);
+            }
+        }
+    };
+    req.send();
 }
 
 function doServerAlien(metod, url, callBack, data, paramCallBack, progress, cbError){
@@ -81,7 +108,7 @@ console.log("AJAX="+req.responseText);
     req.send(data);
 }
 
-function windProgr(progress) {
+function windProgr(progress, txtProgress) {
     let xy = getCoordsEl(progress);
     let x = xy.left;
     let y = xy.top;
@@ -94,6 +121,9 @@ function windProgr(progress) {
     pr.className = "progress_center";
     dv.appendChild(pr);
     pr.src = "img/progress.png";
+    if (txtProgress != null && txtProgress.length > 0) {
+        dv.appendChild(newDOMelement('<div style="position:absolute;left:0;right:0;bottom:20px;height:15px;text-align:center;font-size:14px">' + txtProgress + '</div'));
+    }
     return dv;
 }
 

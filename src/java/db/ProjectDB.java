@@ -79,9 +79,7 @@ public class ProjectDB extends BaseDB {
                 + "', logo ='" + pc.logo + "', image ='" + pc.image + "' WHERE project_id = " + projectId;
         try (Connection connection = getDBConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(strUpd);
-        } catch (SQLException ex) {
-            System.out.println("changeProject error="+ex);
-        } catch (ClassNotFoundException ex) {
+        } catch (SQLException | ClassNotFoundException ex) {
             System.out.println("changeProject error="+ex);
         }
     }
@@ -94,6 +92,14 @@ public class ProjectDB extends BaseDB {
         } catch (SQLException ex) {
             System.out.println("changeProject error="+ex);
         } catch (ClassNotFoundException ex) {
+            System.out.println("changeProject error="+ex);
+        }
+    }
+    
+    public void deleteProjectId(String id) {
+        try (Connection connection = getDBConnection(); Statement statement = connection.createStatement()) {
+            statement.executeUpdate("DELETE FROM projects WHERE project_id = " + id);
+        } catch (SQLException | ClassNotFoundException ex) {
             System.out.println("changeProject error="+ex);
         }
     }

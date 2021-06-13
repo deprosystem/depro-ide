@@ -9,7 +9,6 @@ function setParamCompon() {
     layoutParam.style.display = 'block';
     paramCompon = currentElement.android;
     el_type.innerHTML = paramCompon.type;
-    
     setVisibility(paramCompon.visibility == null || paramCompon.visibility);
 
     if (paramCompon.viewId != undefined) {
@@ -158,6 +157,7 @@ function setParamCompon() {
             bg_img.src = "";
         }
     }
+
     setContent();
     scrLayoutAttr.scroll_y.resize(scrLayoutAttr);
     hideSize.style.display = "none";
@@ -192,7 +192,7 @@ function setParamCompon() {
 function setContent() {
     try {
         uiFunction = eval("new ui" + paramCompon.type + "();");
-        uiFunction.setContent(paramCompon)
+        uiFunction.setContent(paramCompon);
     } catch(e) { 
         contentAttributes.innerHTML = "";
     }

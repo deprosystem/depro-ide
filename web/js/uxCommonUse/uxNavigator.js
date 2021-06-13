@@ -28,3 +28,25 @@ function saveNavigator(dat) {
         }
     }
 }
+
+function isValidNavigator(listNav) {
+    let strRes = "";
+    let sep = "";
+    let ik = listNav.length;
+    for (let i = 0; i < ik; i++) {
+        let item = listNav[i];
+        if (item.handler == "start") {
+            let scr = item.param;
+            if (scr != null && scr != "") {
+                if (noScreen(scr)) {
+                    strRes += sep + "no screen " + scr;
+                    sep = ", ";
+                }
+            } else {
+                strRes += sep + "screen for viewId " + viewId + " is not described";
+                sep = ", ";
+            }
+        }
+    }
+    return strRes;
+}

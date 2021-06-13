@@ -203,11 +203,12 @@ function setSystemColor(el) {
 }
 
 function changeSystemColor(el) {
+    event.preventDefault();
     isSystemChange = true;
     changeColor = el;
     hideColorList.style.display = "block";
     hideDefaultColor.style.display = "block";
-    return false;
+//    return false;
 }
 
 function setPickerColor() {

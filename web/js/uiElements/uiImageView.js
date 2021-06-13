@@ -71,7 +71,6 @@ function uiImageView() {
         
         let rr = newDOMelement(radius1);
         contentAttributes.appendChild(rr);
-
         let nn = createNumber(40, 24, 0, 100, "changeCornersRadius");
         nn.style.float = "left";
         nn.style.clear = "both";
@@ -108,20 +107,32 @@ function uiImageView() {
             radiusRB.value = p.corners.rb;
             radiusBL.value = p.corners.bl;
         }
+
+        if (p.componParam.oval == null) {
+            p.componParam.oval = false;
+        }
         let oval = editCheckbox("Oval", p.componParam.oval, "changeOvalIMG");
         oval.style.marginTop = "5px";
         oval.style.clear = "both";
+
         contentAttributes.appendChild(oval);
 
         let w_bord = editNumberParam("With border", 50, 24, 0, 10, "wBordIMG");
         w_bord.style.marginLeft = "10px";
         w_bord.style.marginTop = "5px";
+        if (p.componParam.w_bord == null) {
+            p.componParam.w_bord = 0;
+        }
         setValueNumber(w_bord, p.componParam.w_bord);
         contentAttributes.appendChild(w_bord);
-
+        
+        if (p.componParam.borderColor == null) {
+            p.componParam.borderColor = 0;
+        }
         let cBord = editColorParam("Border color", findColorByIndex(p.componParam.borderColor), 'col_bord', setColorBordIMG);
         cBord.style.marginLeft = "10px";
         contentAttributes.appendChild(cBord);
+
     }
     
     this.getHelpLink = function() {

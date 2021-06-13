@@ -233,6 +233,7 @@ function cbCreateProjectDop() {
     showModeUX();
     openMenu();
     project_name_bl.style.display = "block";
+    show_data.style.display = "block";
     project_name.innerHTML = currentProject.nameProject;
     listScreen = JSON.parse(currentProject.screens);
     listColor = JSON.parse(currentProject.colors);
@@ -755,14 +756,15 @@ function validDeclare() {
             }
         }
     }
+    let divErr = currentScreenView.getElementsByClassName("error_screen")[0];
     if (strError != "") {
-        let divErr = currentScreenView.getElementsByClassName("error_screen")[0];
         divErr.style.backgroundColor = colorsEroor[newLevelErrors];
         var wind = formWind(500, 400, 35, 270, "Error in project");
         wind.style.paddingLeft = "4px";
         wind.innerHTML = strError;
         return false;
     } else {
+        divErr.style.backgroundColor = colorsEroor[0];
         return true;
     }
 }
@@ -798,7 +800,12 @@ function isScreenDeclare(name) {
 
 function cbGenerateProject(res, wind) {
     let save = wind.getElementsByClassName("save-apk")[0];
-    save.addEventListener("click", function(){downloadFile(res);closeWindow(save);}, true);
+    if (save != null) {
+        save.appendChild(newDOMelement('<a href="' + res + 
+                '" download style="text-decoration: none;color:#fff0;display:inline-block;width:100%;height:100%;position:absolute;top:0;left:0"> </a>'));
+    }
+    save.addEventListener("click", function(){closeWindow(save);}, true);
+//    save.addEventListener("click", function(){downloadFile(res);closeWindow(save);}, true);
 }
 
 function setAppParameters() {

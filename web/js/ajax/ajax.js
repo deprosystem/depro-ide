@@ -5,7 +5,7 @@ function doServer(metod, url, callBack, data, paramCallBack, progress, cbError, 
     let divProgress;
     req.open(metod, url, true);
     req.setRequestHeader('Auth-token', AuthToken);
-    if (currentProject != null) {
+    if (currentProject != undefined && currentProject != null) {
         req.setRequestHeader('projectId', currentProject.projectId);
         req.setRequestHeader('name_schema', currentProject.resurseInd);
     }
@@ -42,28 +42,36 @@ console.log("AJAX="+req.responseText);
 
 function downloadFile(urlToSend) {
     var req = new XMLHttpRequest();
-    req.open("GET", urlToSend, true);
-    req.responseType = "blob";
-    req.setRequestHeader('Auth-token', AuthToken);
-    req.onload = function (event) {
-        if (req.status == 200) {
-            let blob = req.response;
-            let fileName = req.getResponseHeader("Content-Disposition");
-            let link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            let fn = fileName.split("=");
-            fileName = fn[1];
-            link.download = fileName;
-            link.click();
-        } else {
-console.log("AJAX downloadFile="+req.responseText);
-            var mes = JSON.parse(req.responseText).message;
-            dialogError("Server error", "status=" + req.status + " " + mes);
-            if (cbError != null) {
-                cbError(req.responseText);
+    req.onreadystatechange = function() {
+        if(req.readyState == 4) { 
+            if (req.status == 200) {
+                let blob = req.response;
+                let fileName = req.getResponseHeader("Content-Disposition");
+                let link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                let fn = fileName.split("=");
+                fileName = fn[1];
+                link.download = fileName;
+                link.click();
+            } else {
+                let mes = "";
+                if (req.responseText != "") {
+                    mes = JSON.parse(req.responseText).message;
+                }
+                dialogError("Server error", "status=" + req.status + " " + mes);
+            }
+        }  else if(req.readyState == 2) {
+            if(req.status == 200) {
+                req.responseType = "blob";
+            } else {
+                req.responseType = "text";
             }
         }
     };
+    
+    
+    req.open("GET", urlToSend, true);
+    req.setRequestHeader('Auth-token', AuthToken);
     req.send();
 }
 

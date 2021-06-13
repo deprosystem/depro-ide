@@ -9,8 +9,8 @@ function setHostPanel() {
     hostDomain = currentProject.host;
     if (hostDescr == "Third party API") {
         addTab.innerHTML = "";
-        addTab.onclick = none;
-        openAdmin.onclick = none;
+        addTab.onclick = "";
+        openAdmin.onclick = "";
     } else {
         addTab.onclick = addTable;
         openAdmin.onclick = openAdminWind;
@@ -23,7 +23,7 @@ function setHostPanel() {
         descr_host.innerHTML = host;
         hostButt = "Change server description";
         par.onclick = changeHost;
-        if (hostDomain != null && hostDomain.length > 0  && hostDescr != "Third party APIF") {
+        if (hostDomain != null && hostDomain.length > 0  && hostDescr != "Third party API") {
             if (listTables == null) {
                 doServerAlien("GET", hostDomain + 'tables/list', cbGetTables);
             } else {
@@ -127,8 +127,8 @@ function sendDescrHost() {
 function cbCreateHost(res) {
     if (hostDescr == "Third party API") {
         addTab.innerHTML = "";
-        addTab.onclick = none;
-        openAdmin.onclick = none;
+        addTab.onclick = '';
+        openAdmin.onclick = '';
     } else {
         addTab.onclick = addTable;
         openAdmin.onclick = openAdminWind;

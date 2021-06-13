@@ -56,7 +56,7 @@ function moveEl(event) {
 function moveUp(e) {
     footer_inf.innerHTML = "";
     document.onmousemove = null;
-    document.onmousemove = null;
+   // document.onmousemove = null;
     document.onmouseup = null;
     let rect = currentElement.getBoundingClientRect();
     let dX = elementLeft - rect.left;
@@ -103,7 +103,7 @@ function moveUp(e) {
     }
     setParamCompon();
     viewCompon();
-    currentElement.style.right = "";
+//    currentElement.style.right = "";
 }
 
 function mouseUpEl(e) {

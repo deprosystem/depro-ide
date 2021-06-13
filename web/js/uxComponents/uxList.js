@@ -115,6 +115,16 @@ function uxList() {
                 err.error = 2;
             }
         }
+        
+        let nav = compD.navigator;
+        if (nav != null && nav.length > 0) {
+            let erNav = isValidNavigator(nav);
+            if (erNav != "") {
+                err.text += txtError(2, tab, "component " + compD.view.viewId + " error in Navigator " + erNav);
+                err.error = 2;
+            }
+        }
+        
         return err;
     }
 }

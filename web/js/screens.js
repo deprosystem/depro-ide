@@ -463,7 +463,9 @@ function plusCompon(el) {
                 }, true);
                 wind.appendChild(item);
             }
-            resizeScrol(wind);
+            let ss = wind.closest(".viewport");
+            ss.scroll_y.resize();
+//            resizeScrol(wind);
         }
     }
 }

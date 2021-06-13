@@ -180,7 +180,11 @@ public class ExportResult extends BaseServlet {
 
 //                    String resultFile = userPath + projectM.nameProject + "/app/build/outputs/apk/debug/app-debug.apk";
 //                    String resultFile = userPath + projectM.nameProject + "/app-debug.apk";
-                    String resultFile = "project/get_apk/" + ds.userResurseInd + "/" + projectM.nameProject + "/app-debug.apk";
+
+
+
+//                    String resultFile = "project/get_apk/" + ds.userResurseInd + "/" + projectM.nameProject + "/app-debug.apk";
+                    String resultFile = "download/get_apk/" + ds.userResurseInd + "/" + projectM.nameProject + "/app-debug.apk";
 //System.out.println("resultFile="+resultFile);
                     sendResult(response, resultFile);
                 } else {
@@ -192,7 +196,8 @@ public class ExportResult extends BaseServlet {
                     String resultFile = userPath + projectM.nameProject + "/app/build/outputs/apk/debug/app-debug.apk";
                     System.out.println("resultFile="+exportFileName);
 */
-                    exportFileName = "project/get_project/" + ds.userResurseInd + "/" + projectM.nameProject + ".zip";
+//                    exportFileName = "project/get_project/" + ds.userResurseInd + "/" + projectM.nameProject + ".zip";
+                    exportFileName = "download/get_project/" + ds.userResurseInd + "/" + projectM.nameProject + ".zip";
                     sendResult(response, exportFileName);
                 }
                 break;

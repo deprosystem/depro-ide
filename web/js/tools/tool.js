@@ -156,9 +156,7 @@ function checkElement(el) {
 }
 
 function closeWind(el) {
-    let wind = el.closest(".dataWindow");
-    wind.style.display = "none";
-//    el.parentElement.parentElement.style.display = "none";
+    el.parentElement.parentElement.style.display = "none";
 }
 
 function createContour() {

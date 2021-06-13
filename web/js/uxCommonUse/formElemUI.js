@@ -120,6 +120,7 @@ function formImg(item) {
     p.typeFull = {name: 'ImageView', typeBlock: 0};
     p.gravLayout = {h:4,v:4};
     p.gravity = {h:4,v:4};
+    p.componParam = {oval:false,w_bord:0,borderColor:0};
     currentElement.android = p;
     let typeEl = createDivImg();
     p.scaleType = 0;

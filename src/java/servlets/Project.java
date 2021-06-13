@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,6 +42,10 @@ public class Project extends BaseServlet {
             String projectId;
             switch (ds.query) {
                 case "/project/create":
+                    if (ds.userId == userExample) {
+                        sendError(response, "You are not allowed to create a project");
+                        break;
+                    }
                     pc = null;
                     try {
                         pc = gson.fromJson(getStringRequest(request), ProjectM.class);
@@ -81,6 +86,10 @@ public class Project extends BaseServlet {
 
                 case "/project/save":
                     pc = null;
+                    if (ds.userId == userExample) {
+                        sendResultOk(response);
+                        break;
+                    }
                     try {
                         pc = gson.fromJson(getStringRequest(request), ProjectM.class);
                     } catch (JsonSyntaxException | IOException e) {
@@ -102,6 +111,10 @@ public class Project extends BaseServlet {
                     sendResult(response, gson.toJson(projectDb.getProjectById(idPr)));
                     break;
                 case "/project/change":
+                    if (ds.userId == userExample) {
+                        sendError(response, "This project cannot be changed");
+                        break;
+                    }
                     projectId = request.getHeader("projectId");
                     String stReq = "";
                     try {
@@ -131,6 +144,10 @@ public class Project extends BaseServlet {
                     sendResult(response, projectDb.getQueryList(SQL.getParam));
                     break;
                 case "/project/sethost":
+                    if (ds.userId == userExample) {
+                        sendError(response, "This project cannot be changed");
+                        break;
+                    }
                     projectId = request.getHeader("projectId");
                     try {
                         String stDescr = getStringRequest(request);
@@ -144,6 +161,10 @@ public class Project extends BaseServlet {
                     sendResultOk(response);
                     break;
                 case "/project/delete":
+                    if (ds.userId == userExample) {
+                        sendError(response, "This project cannot be deleted");
+                        break;
+                    }
                     ParamDel par = null;
                     try {
                         String param = getStringRequest(request);
@@ -163,48 +184,13 @@ public class Project extends BaseServlet {
                     sendResultOk(response);
                     break;
                 case "/project/del_only":
+                    if (ds.userId == userExample) {
+                        sendError(response, "This project cannot be deleted");
+                        break;
+                    }
                     projectId = request.getHeader("projectId");
                     projectDb.deleteProjectId(projectId);
                     sendResultOk(response);
-                    break;
-                default:
-                    String[] ar = (" " + ds.query).split("/");
-                    String basePath = ds.patchOutsideProject;
-                    String userProjPath;
-                    String filename;
-                    if (ar[2].equals("get_apk")) {
-                        userProjPath = Constants.USERS_DATA + ar[3] + "/" + ar[4];
-                        filename = basePath + userProjPath + "/app/build/outputs/apk/debug/" + ar[5];
-                        File file = new File(filename);  
-                        response.setHeader("Accept-Ranges", "bytes");
-                        response.setContentType("application/octet-stream");
-                        response.setContentLength((int)file.length());
-                        response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
-                        try {
-                            Files.copy(file.toPath(), response.getOutputStream());
-                        } catch (IOException e) {
-                            System.out.println(e);
-                            sendError(response, "Get export error " + e.toString());
-                        }
-                        deleteDir(basePath + userProjPath);
-                    } else {
-                        userProjPath = Constants.USERS_DATA + ar[3] + "/" + ar[4];
-                        filename = basePath + userProjPath;
-                        File file = new File(filename);  
-                        response.setHeader("Accept-Ranges", "bytes");
-                        response.setContentType("application/zip");
-                        response.setContentLength((int)file.length());
-                        response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
-                        try {
-                            Files.copy(file.toPath(), response.getOutputStream());
-                        } catch (IOException e) {
-                            System.out.println(e);
-                            sendError(response, "Get export error " + e.toString());
-                        }
-                        String[] ff = filename.split("\\.");
-                        deleteDir(ff[0]);
-                        deleteFile(filename);
-                    }
                     break;
             }
     }
@@ -453,4 +439,8 @@ public class Project extends BaseServlet {
         item.itemValue = valueItem;
         return item;
     }   
+
+    private void getOutputStream() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

@@ -50,7 +50,7 @@ public class Project extends BaseServlet {
                     try {
                         pc = gson.fromJson(getStringRequest(request), ProjectM.class);
                         pc.userId = ds.userId;
-                        pc.namePackage = pc.nameProject + ".ide";
+                        pc.namePackage = pc.nameProject.toUpperCase() + ".ide";
                         if (pc.logo == null) {
                             pc.logo = "";
                         }
@@ -176,7 +176,7 @@ public class Project extends BaseServlet {
                     }
                     if (par != null) {
                         String basePath = ds.patchOutsideProject;
-                        String userProjPath = Constants.USERS_DATA + ds.userResurseInd + "/" + par.nameProject;
+//                        String userProjPath = Constants.USERS_DATA + ds.userResurseInd + "/" + par.nameProject;
                         String projectPath = Constants.PROJECTS_DATA + par.schema;
                         deleteDir(basePath + projectPath);
                         projectDb.deleteProjectId(par.projectId);

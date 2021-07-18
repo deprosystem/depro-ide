@@ -10,5 +10,6 @@ var metaTable = {titleForm:"Description Table", description:
     {name: "not_null", title:"Not NULL",type:TYPE_BOOLEAN,marg:25},
     {name: "index", title:"Index",type:TYPE_BOOLEAN,marg:15},
     {name: "unique", title:"Unique",type:TYPE_BOOLEAN,marg:15},
-    {name: "key", title:"Key",type:TYPE_BOOLEAN,marg:10}]
+//    {name: "key", title:"Key",type:TYPE_BOOLEAN,marg:10}
+]
 }

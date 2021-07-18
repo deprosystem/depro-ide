@@ -13,10 +13,10 @@ function validName(e) {
 function validNameLower(e) {
     let k = e.key;
     if ((k >= "a" && k <= "z") || k == "_" || (k >= "0" && k <= "9") || 
-            k == 'ArrowLeft' || k == 'ArrowRight' || k == 'Delete' || k == 'Backspace' 
+            k == 'ArrowLeft' || k == 'ArrowRight' || k == 'Delete' || k == 'Backspace' || k == 'Enter'
             || k == "Tab" || k == 'ArrowDown' || k == 'ArrowUp' || k == 'Shift' || k == 'Alt')  {
         let el = e.target;
-        if (el.value.length == 0 && k >= "0" && k <= "9") {
+        if (el.selectionStart == 0 && k >= "0" && k <= "9") {
             tooltipMessage(e.currentTarget, "The first character cannot be a digit");
             return false;
         } else {

@@ -99,5 +99,15 @@ public class UserDB extends BaseDB{
             System.out.println("setLastProject error="+ex);
         }
     }
+    
+    public String deleteUser(String id) {
+        try (Connection connection = getDBConnection(); Statement statement = connection.createStatement()) {
+            statement.executeUpdate("DELETE FROM users WHERE user_id = " + id);
+        } catch (SQLException | ClassNotFoundException ex) {
+            System.out.println("deleteUser error="+ex);
+            return "deleteUser error="+ex;
+        }
+        return "";
+    }
 
 }

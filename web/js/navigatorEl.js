@@ -176,7 +176,7 @@ function upNavigEl(e) {
         } else {
             pMoving(uiEl, uiElTarg);
             uiElTarg.after(uiEl);
-            uiEl.android.parent = targ.parentElement;
+            uiEl.android.parent = uiElTarg.parentElement;
             targ.after(downMouseElem.parentElement);
         }
     }

@@ -26,6 +26,7 @@ function popupMenu(target, w, menu, listener, param) {
             txtItem.addEventListener("click", function(){
                 listener(i, param);
                 dv.parentNode.removeChild(dv);
+                target.popup = null;
             }, true);
             dv.appendChild(item);
         }

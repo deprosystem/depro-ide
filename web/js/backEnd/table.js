@@ -46,7 +46,6 @@ function cbSaveTable(res) {
     }
     listTables.push(it);
     oneTableView(listTables.length - 1, listTablesView);
-//    listTablesView.append(oneTableView(listTables.length - 1));
 }
 
 function cbChangeTable(res) {
@@ -55,6 +54,24 @@ function cbChangeTable(res) {
     let viewEl = listTablesView.children[tablePosition];
     viewEl.getElementsByClassName("name_t")[0].innerHTML = it.name_table;
     viewEl.getElementsByClassName("title_t")[0].innerHTML = it.title_table;
+}
+
+function deleteTableAdm(i) {
+    event.stopPropagation();
+    tablePosition = i;
+    let item = listTables[i];
+    myAlert("The " + item.name_table + "table and all its data will be deleted permanently.<br />Proceed?", "Proceed", proceedDelTable);
+}
+
+function proceedDelTable() {
+    let item = listTables[tablePosition];
+    let t = {name_table:item.name_table,id_table:item.id_table};
+    doServerAlien("POST", hostDomain + "tables/del_tab", cbDelTable, JSON.stringify(t), tablePosition);
+}
+
+function cbDelTable(res, i) {
+    listTables.splice(i, 1);
+    listTablesView.children[i].remove();
 }
 
 function editTable(i) {
@@ -103,6 +120,7 @@ function oneTableForQuery(i, el) {
 function formTableForQuery(i) {
     let item = listTables[i];
     let itemForList = {id_table:item.id_table,name_table: item.name_table,title_table:item.title_table,fields_table:JSON.parse(item.fields_table)};
+    itemForList.fields_table.unshift({id_field:0, name:"id_" + item.name_table, type:"Bigserial", title:""});
     listTablesForQuery.push(itemForList);
     formBlockTable(item);
 
@@ -134,7 +152,9 @@ function formBlockTable(item) {
     let viewDataT = viewScroll.getElementsByClassName("viewData")[0];
 
     let fields = JSON.parse(item.fields_table);
+    fields.unshift({id_field:0, name:"id_" + item.name_table, type:"Bigserial", title:""});
     let ik = fields.length;
+//    oneFieldTables(item.id_table, {id_field:0, name:"id_" + item.name_table, type:"Bigserial", title:""}, viewDataT);
     for (let i = 0; i < ik; i++) {
         oneFieldTables(item.id_table, fields[i], viewDataT);
     }

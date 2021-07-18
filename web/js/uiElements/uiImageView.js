@@ -71,7 +71,7 @@ function uiImageView() {
         
         let rr = newDOMelement(radius1);
         contentAttributes.appendChild(rr);
-        let nn = createNumber(40, 24, 0, 100, "changeCornersRadius");
+        let nn = createNumber(40, 24, 0, 100, "changeCornersRadiusIMG");
         nn.style.float = "left";
         nn.style.clear = "both";
         nn.style.marginTop = "5px";
@@ -189,7 +189,7 @@ function setCornersIMG(el) {
     viewCompon();
 }
 
-function changeCornersRadius(el) {
+function changeCornersRadiusIMG(el) {
     cornersClear(null);
     var value = el.value;
     radiusLT.value = value;

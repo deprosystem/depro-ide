@@ -48,6 +48,21 @@ function uxMenuBottom() {
                     err.text += txtError(2, tab, "component " + comp.view.viewId + " menu item " + m + " has no name");
                     err.error = 2;
                 }
+                let scrIcon = men[m].icon;
+                if (scrIcon == null || scrIcon.length == 0) {
+                    err.text += txtError(2, tab, "component " + comp.view.viewId + " menu item " + m + " has no image");
+                    err.error = 2;
+                } else {
+                    let ii = scrIcon.lastIndexOf("/");
+                    let namIc = path.substring(ii + 1);
+                    namIc = namIc.substring(0, nam.indexOf('.'));
+console.log("namIc="+namIc+"<<");
+                    let ik = listImage.length;
+                    if (noIconInList(namIc)) {
+                        err.text += txtError(2, tab, "component " + comp.view.viewId + " menu item " + m + " no such image exists " + namIc);
+                        err.error = 2;
+                    }
+                }
                 let scrItem = men[m].screen;
                 if (scrItem == null || scrItem.length == 0) {
                     if (navL) {
@@ -70,6 +85,24 @@ function uxMenuBottom() {
         }
         return err;
     }
+}
+
+function noIconInList(scrIcon) {
+    if (listImage == null) {
+console.log("No listImage");
+        listImage = [];
+    }
+    for (let i = 0; i < ik; i++) {
+        let path = listImage[i];
+        let ii = path.lastIndexOf("/");
+        let nam = path.substring(ii + 1);
+        nam = nam.substring(0, nam.indexOf('.'));
+console.log("III="+i+" nam="+nam+"<<");
+        if (nam == scrIcon) {
+            return false;
+        }
+    }
+    return true;
 }
 
 function noHandler(nav, m) {

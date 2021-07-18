@@ -28,8 +28,17 @@ function oneScreenValid(scrD, ii) {
         } catch(e) { }
     }
     
+    let nav = scrD.navigator;
+    if (nav != null && nav.length > 0) {
+        let erNav = isValidNavigator(nav, scrD.screenName.toUpperCase());
+        if (erNav != "") {
+            newErrors += txtError(2, "&ensp;", "Error in Navigator " + erNav);
+            newLevelErrors = 2;
+        }
+    }
+    
     let noRes = checkValidityLinks(scrD.layout.children, "&ensp;");
-     if (noRes.txt != "") {
+    if (noRes.txt != "") {
         newErrors += txtError(1, "", noRes.txt);
         if (newLevelErrors < noRes.lev) {
             newLevelErrors = noRes.lev;

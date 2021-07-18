@@ -45,6 +45,7 @@ public abstract class BaseServlet extends HttpServlet{
         baseDb = new BaseDB(request);
         request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=UTF-8");
+//        response.setHeader("Access-Control-Allow-Origin", "*");
         DataServlet ds = new DataServlet();
         TokenUser tu;
         
@@ -373,4 +374,19 @@ System.out.println("query="+ds.query);
             throws ServletException, IOException {
         process(request, response);
     }
+/*
+    @Override
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response) {
+        response.setStatus (HttpServletResponse.SC_OK);
+System.out.println("Access-Control-Allow-Origin"+"*");
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST");
+        response.setHeader("Access-Control-Allow-Headers", "schemDB, auth-token, Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+        try (PrintWriter out = response.getWriter()) {
+            out.println("ok");
+        } catch (IOException ex) {
+            System.out.println("BaseServlet sendResult error" + ex);
+        }
+    }
+*/
 }

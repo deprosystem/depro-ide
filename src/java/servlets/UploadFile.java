@@ -3,7 +3,6 @@ package servlets;
 import db.ProjectDB;
 import entity.DataServlet;
 import entity.Profile;
-//import entity.UserM;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -33,10 +32,12 @@ public class UploadFile extends BaseServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response, DataServlet ds) {
         switch (ds.query) {
             case "/upload/image":
+
                 if (ds.userId == userExample) {
                     sendError(response, "You are not allowed to save images");
                     break;
                 }
+
                 String nameFile = "";
                 String[] parArNameFile = request.getParameterValues("nameFile");
                 if (parArNameFile != null) {

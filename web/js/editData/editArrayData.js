@@ -86,7 +86,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
         tableEdit.style.backgroundColor = "#fff";
         tabBody.appendChild(tableEdit);
         
-        maxIdField = 0;
+        maxIdField = 1;
         let isId = false;
         if (ikD > 0) {
             for (let j = 0; j < ikD; j++) {

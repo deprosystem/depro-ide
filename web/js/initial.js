@@ -1,4 +1,5 @@
 function initialView(AuthResult) {
+    debagStatus = window.location.hostname.startsWith("deb-") || window.location.hostname.indexOf("localhost") != -1;
     eventFocusBlur();
     listTables = null;
     var ar = JSON.parse(AuthResult);
@@ -19,6 +20,9 @@ function initialView(AuthResult) {
     };
     loginPanel.style.display = "none";
     formMenuEl_UX();
+    if (debagStatus) {
+        statusDebagView.style.display = "block";
+    }
     setLayoutDiv();
     let ins = new insertHtml();
 //    ins.get('m_bmPEbody', 'layout/layoutParam.html', m_bmStart);

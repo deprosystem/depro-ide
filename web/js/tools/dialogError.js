@@ -1,5 +1,6 @@
 function dialogError(title, message, cancel) {
     let windMenu = formWindCenter(400, 300, title);
+    windMenu.style.zIndex = "110";
     let divErr = document.createElement('div');
     divErr.style.cssText = "text-align:center;margin-top:16px";
     let imgErr = document.createElement('img');

@@ -34,7 +34,7 @@ function uxForm() {
         let err = {text:"",error:0};
         let nav = compD.navigator;
         if (nav != null && nav.length > 0) {
-            let erNav = isValidNavigator(nav);
+            let erNav = isValidNavigator(nav, compD.screenName.toUpperCase());
             if (erNav != "") {
                 err.text += txtError(2, tab, "component " + compD.view.viewId + " error in Navigator " + erNav);
                 err.error = 2;

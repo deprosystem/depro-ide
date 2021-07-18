@@ -20,7 +20,8 @@ listMenu_UX[2].children = new Array(
         {nameI : 'Set application parameters', func : setAppParameters, dependProject : true},
         {nameI : 'Upload image', func : uploadImage, dependProject : true},
         {nameI : 'Generate APK file', func : generateAPK, dependProject : true},
-        {nameI : 'Generate android project', func : generateProject, dependProject : true});
+//        {nameI : 'Generate android project', func : generateProject, dependProject : true}
+                );
 listMenu_UX[3] = {nameM : 'Edit'};
 listMenu_UX[3].children = new Array(
         {nameI : 'Copy', func : all, dependProject : true, dependScreen : true},
@@ -36,6 +37,9 @@ listMenu_UX[5].children = new Array(
         {nameI : 'Close', func : closeIDE});
         
 function formMenuEl_UX() {
+    if (debagStatus) {
+        listMenu_UX[2].children.push({nameI : 'Generate android project', func : generateProject, dependProject : true});
+    }
     var ik = listMenu_UX.length;
     var menuUL = newUl();
     menuMain.innerHTML = "";
@@ -50,20 +54,21 @@ function formMenuEl_UX() {
         var menuUlSub = newUl();
         menuLi.appendChild(menuUlSub);
         var jk = listMenu_UX[i].children.length;
-        if (jk > 0) {
-            for (var j = 0; j < jk; j++) {
-                var menuIJ = menuI.children[j];
-                var menuSubPunkt;
-                if (menuIJ.dependProject && projectId == 0 || menuIJ.dependScreen && screenId == 0) {
-                    menuSubPunkt = newSub(menuIJ.nameI, "subMainMenuNo");
-                } else {
-                    menuSubPunkt = newSub(menuIJ.nameI, "subMainMenu");
-                }
-                menuIJ.domElement = menuSubPunkt.firstChild;
-                menuUlSub.appendChild(menuSubPunkt);
+        for (var j = 0; j < jk; j++) {
+            var menuIJ = menuI.children[j];
+            var menuSubPunkt;
+            if (menuIJ.dependProject && projectId == 0 || menuIJ.dependScreen && screenId == 0 || menuIJ.dependDebag) {
+                menuSubPunkt = newSub(menuIJ.nameI, "subMainMenuNo");
+            } else {
+                menuSubPunkt = newSub(menuIJ.nameI, "subMainMenu");
             }
+            menuIJ.domElement = menuSubPunkt.firstChild;
+            menuUlSub.appendChild(menuSubPunkt);
         }
     }
+
+    listMenu_UX[0].children[2].domElement.className = 'subMainMenuNo';
+//    listMenu_UX[0].children[5].domElement.className = 'subMainMenuNo';
 }
 
 function newElM(name) {

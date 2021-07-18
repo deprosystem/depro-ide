@@ -16,6 +16,7 @@
         <script src="js/layoutIndex.js" charset="UTF-8"></script>
         <script src="js/ajax/ajax.js" ></script>
         <script src="js/header_nav.js"></script>
+        <script src="js/debagStatus.js"></script>
         <script src="js/helpLinks.js"></script>
         <script src="js/selectData.js"></script>
         <script src="js/uiCommonUse/uiAny.js" ></script>
@@ -51,6 +52,7 @@
         <script src="js/menu/menuIndex.js" ></script>
         <script src="js/menu/contMenuNav.js"></script>
         <script src="js/menu/popupMenu.js"></script>
+        <script src="js/uxCommonUse/formNavigator.js" ></script>
         <script src="js/uxCommonUse/uxNavigator.js" ></script>
         <script src="js/uxCommonUse/uxSeparators.js" ></script>
         <script src="js/uxCommonUse/model.js" ></script>
@@ -86,6 +88,8 @@
         <script src="js/tools/dialogError.js"></script>
         <script src="js/tools/valid.js" ></script>
         <script src="js/tools/stylePr.js"></script>
+        <script src="js/tools/myAlert.js"></script>
+        
         <script src="js/screenValid.js"></script>
         <script src="js/cookie.js"></script>
         <script src="js/initial.js"></script>
@@ -125,6 +129,10 @@
             <div id="corners" style="height: 100%; float: left; margin-left: 20px;display: none;">
                 <img width="15" height="14" onclick="undo()" style="float: left; margin-top: 9px;cursor: pointer;" src="img/corner-no_act-left.png">
                 <img width="15" height="14" onclick="restore()" style="float: left; margin-top: 9px;cursor: pointer;margin-left: 5px;" src="img/corner-no_act-right.png">
+            </div>
+            
+            <div id="statusDebagView" style="background-color:red;float: left;width:100px;height: 100%;display:none;margin-left: 100px">
+                <div style="color:white;text-align:center;margin-top: 9px">Status debag</div>
             </div>
                         
             <div onclick="viewData()" id="show_data">

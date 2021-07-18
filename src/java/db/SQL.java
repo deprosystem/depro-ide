@@ -13,10 +13,7 @@ public class SQL {
     public static String getScreenListForExport = "SELECT screen_name, screen_id, screen_comment, layout FROM screens WHERE project_id=";
     public static String getScreenById = "SELECT * FROM screens WHERE screen_id=";
     
-    
-    public static String getListUsers = "SELECT * FROM users";
+    public static String getListUsers = "SELECT * FROM users WHERE user_name != 'examples' AND user_name != 'jura' AND user_name != '_owner_system'";
     public static String getListProjectInUsers = "SELECT project_name, project_id, app_name, package, project_comment, resurse_ind, logo, host, where_server, date_create, image FROM projects WHERE user_id=";
-    
-//    public static String getListTab = "SELECT * FROM tables_descr WHERE id_project=";
 
 }

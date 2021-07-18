@@ -10,7 +10,9 @@ function navigatorCompon() {
     if (currentComponentDescr.type == "MenuBottom") {
         editDataWind(metaNavigatorMenuB, currentComponentDescr.navigator, saveNavigator);
     } else {
-        editDataWind(metaNavigator, currentComponentDescr.navigator, saveNavigator);
+        let nnn = new formNavigator();
+        nnn.init(currentComponentDescr.navigator);
+//        editDataWind(metaNavigator, currentComponentDescr.navigator, saveNavigator);
     }
 }
 
@@ -29,7 +31,7 @@ function saveNavigator(dat) {
     }
 }
 
-function isValidNavigator(listNav) {
+function isValidNavigator(listNav, myScreen) {
     let strRes = "";
     let sep = "";
     let ik = listNav.length;
@@ -38,12 +40,17 @@ function isValidNavigator(listNav) {
         if (item.handler == "start") {
             let scr = item.param;
             if (scr != null && scr != "") {
-                if (noScreen(scr)) {
-                    strRes += sep + "no screen " + scr;
+                if (myScreen != null && scr.toUpperCase() == myScreen) {
+                    strRes += sep + "Calls itself " + scr;
                     sep = ", ";
+                } else {
+                    if (noScreen(scr)) {
+                        strRes += sep + "no screen " + scr;
+                        sep = ", ";
+                    }
                 }
             } else {
-                strRes += sep + "screen for viewId " + viewId + " is not described";
+                strRes += sep + "screen for viewId " + item.viewId + " is not described";
                 sep = ", ";
             }
         }

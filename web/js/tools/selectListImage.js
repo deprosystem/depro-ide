@@ -28,7 +28,7 @@ function selectImage(par) {
         let path = listImage[i];
         let ii = path.lastIndexOf("/");
         let nam = path.substring(ii + 1);
-        nam = nam.substring(0, nam.indexOf('.'))
+        nam = nam.substring(0, nam.indexOf('.'));
         let item = createItemListImg(path, nam);
         item.addEventListener("click", function(event){setSelectImage(event, i, par)}, true);
         content.appendChild(item);

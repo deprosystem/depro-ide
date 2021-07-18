@@ -21,7 +21,6 @@ function formWind(w, h, t, l, tit, scroll, cbClose, footName, footListener) {
         let controll = createFooter(h_footerWind);
         bott = h_footerWind + 1;
         ww.appendChild(controll);
-//        addFooter(ww, controll);
         let buttonOk = createButtonBlue(footName);
         buttonOk.addEventListener("click", function(){footListener();closeWindow(ww);}, true);
         controll.appendChild(buttonOk);
@@ -35,21 +34,7 @@ function formWind(w, h, t, l, tit, scroll, cbClose, footName, footListener) {
     document.body.append(ww);
     if (scroll != null && scroll) {
         let scrollQu = formViewScrolY(contW);
-//        queryQueryData = scrollQu.getElementsByClassName("viewData")[0];
-//        return queryQueryData;
         return scrollQu.getElementsByClassName("viewData")[0];
-        
-/*
-        let viewport = document.createElement('div');
-        viewport.className = "viewport";
-        let content = document.createElement('div');
-        content.className = "content";
-        viewport.appendChild(content);
-        contW.appendChild(viewport);
-        let scrollVert = new scrollX(viewport, "scroll");
-        scrollVert.init();
-        return content;
-*/
     } else {
         return contW;
     }
@@ -93,25 +78,33 @@ function formWindCenter(w, h, tit) {
 }
 
 function createTitle(tit, cbClose) {
-    let cb = "";
+    let cb = "false";
     if (cbClose != null && cbClose != "") {
-        cb = cbClose + '(this);';
+        cb = cbClose + "(this)";
     }
     let container = document.createElement('div')
     var str = "<div class='titleWind' onmousedown='moveWind(event)'>"
                 +"<div style='float:left;height:100%;display:flex;flex-direction:row;align-items:center'><div class='titleWindName'>" + tit + "</div></div>"
-                +"<div style='float:right;height:100%;display:flex;flex-direction:row;align-items:center'><IMG SRC='img/x_blue.png' class='titleWindClose' onclick='" + cb + "closeDataWindow(event)'></div>"
+//                +"<div style='float:right;height:100%;display:flex;flex-direction:row;align-items:center'><IMG SRC='img/x_blue.png' class='titleWindClose' onclick='" + cb + "closeDataWindow(event)'></div>"
+                +"<div style='float:right;height:100%;display:flex;flex-direction:row;align-items:center'><IMG SRC='img/x_blue.png' class='titleWindClose' onclick='closeDataWindow(this, " + cb + ")'></div>"
             +"</div>";
     container.innerHTML = str;
     return container.firstChild;
 }
 
+function closeDataWindow(el, no) {
+    if ( ! no ) {
+        let el_1 = el.closest('.dataWindow');
+        el_1.remove();
+    }
+}
+
+/*
 function closeDataWindow(e) {
-//    let el = e.target.parentElement.parentElement;
     let el = e.target.closest('.dataWindow');
     el.parentNode.removeChild(el);
 }
-
+*/
 function closeWindow(el) {
     let el1 = parentWind(el);
     el1.parentNode.removeChild(el1);

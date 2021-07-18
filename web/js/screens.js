@@ -9,6 +9,7 @@ var currentChildren = [];
 var idScreenNum;
 var idComponentNum;
 var positionScreen = 0;
+var windTypeComponent;
 
 function plusScreen() {
     hideScreen();
@@ -443,6 +444,53 @@ function plusCompon(el) {
     if (el_1 != undefined) {
         list_cont = el_1[0];
         if (list_cont != null) {
+            if (windTypeComponent == null) {
+                windTypeComponent = formWind(650, 450, 40, 150, "Type component", true, "cbCloseWind");
+                let ik = components.length;
+                for (let i = 0; i < ik; i++) {
+                    let item = document.createElement("div");
+                    item.className = "itemList";
+                    if (i == 0) {
+                        item.style.borderTop = "1px solid #" + "fff";
+                    }
+                    let txtItem = document.createElement("div");
+                    txtItem.className = "itemListTxt";
+                    txtItem.style.cssText = "cursor:pointer;font-size:14px;width:100%;margin-top:7px;float:left;color:#555";
+                    txtItem.innerHTML = components[i];
+    //                txtItem.innerHTML = components[i].name;
+                    item.appendChild(txtItem);
+                    txtItem.addEventListener("click", function(){
+//                        closeWindow(windTypeComponent);
+                        cbCloseWind(windTypeComponent);
+                        selComponType(i);
+                    }, true);
+                    windTypeComponent.appendChild(item);
+                }
+                let ss = windTypeComponent.closest(".viewport");
+                ss.scroll_y.resize();
+            } else {
+                let el_1 = windTypeComponent.closest('.dataWindow');
+                el_1.style.display = "block";
+            }
+//            resizeScrol(wind);
+        }
+    }
+}
+
+function cbCloseWind(el) {
+    let el_1 = el.closest('.dataWindow');
+    el_1.style.display = "none";
+    return true;
+}
+
+/*
+function plusCompon(el) {
+    let parentPlus = el.parentElement;
+    let parent = parentPlus.parentElement;
+    var el_1 = parent.getElementsByClassName("list_components");
+    if (el_1 != undefined) {
+        list_cont = el_1[0];
+        if (list_cont != null) {
             let wind = formWind(250, 450, 40, 350, "Type component", true);
             var ik = components.length;
             for (let i = 0; i < ik; i++) {
@@ -469,7 +517,7 @@ function plusCompon(el) {
         }
     }
 }
-
+*/
 function plusComponName(name) {
     var ik = components.length;
     for (let i = 0; i < ik; i++) {

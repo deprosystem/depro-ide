@@ -9,39 +9,48 @@ function formCompon() {
     listComponent = new Array();
     listComponent[0] = {};
     listComponent[0].name = 'Layouts';
-    listComponent[0].children = new Array({name: 'LinearLayout', typeBlock: 1}, 
+    listComponent[0].children = new Array(//{name: 'LinearLayout', typeBlock: 1}, 
             {name: 'RelativeLayout', typeBlock: 2},
             {name: 'FrameLayout', typeBlock: 2});
     listComponent[1] = {};
-    listComponent[1].name = 'Text';
-    listComponent[1].children = new Array({name: 'TextView', typeBlock: 0}, 
-            {name: 'EditText', typeBlock: 0});
+    listComponent[1].name = 'Views';
+    listComponent[1].children = new Array(
+            {name: 'TextView', typeBlock: 0},
+            {name: 'ImageView', typeBlock: 0}
+                );
     listComponent[2] = {};
-    listComponent[2].name = 'Containers';
-    listComponent[2].children = new Array({name: 'CardView', typeBlock: 10},
-            {name: 'RecyclerView', typeBlock: 10},
-            {name: 'ScrollView', typeBlock: 10},
-            {name: 'HorizontalScrollView', typeBlock: 11}, 
-            {name: 'ViewPager', isBlock: false}, 
-            {name: 'Spinner', typeBlock: 10});
-    listComponent[3] = {};
-    listComponent[3].name = 'Widgets';
-    listComponent[3].children = new Array({name: 'ImageView', typeBlock: 0}, 
-            {name: 'VideoView', typeBlock: 0},
-            {name: 'Gallery', typeBlock: 0},
-            {name: 'Indicator', typeBlock: 0},
-            {name: 'Ellipsis', typeBlock: 0},
-            {name: 'Ratings', typeBlock: 0},
-            {name: 'Map', typeBlock: 0},
-            {name: 'SheetBottom', typeBlock: 2},
+    listComponent[2].name = 'Input';
+    listComponent[2].children = new Array(
+            {name: 'EditText', typeBlock: 0},
             {name: 'SeekBar', typeBlock: 0},
             {name: 'PlusMinus', typeBlock: 0},
-            {name: 'Calendar', typeBlock: 0});
+            {name: 'Calendar', typeBlock: 0}
+    );
+    listComponent[3] = {};
+    listComponent[3].name = 'Containers';
+    listComponent[3].children = new Array({name: 'CardView', typeBlock: 10},
+            {name: 'RecyclerView', typeBlock: 10},
+            {name: 'ScrollView', typeBlock: 10},
+//            {name: 'HorizontalScrollView', typeBlock: 11}, 
+            {name: 'ViewPager', isBlock: false}, 
+//            {name: 'Spinner', typeBlock: 10}
+                    );
     listComponent[4] = {};
-    listComponent[4].name = 'Progress';
-    listComponent[4].children = new Array({name: 'ProgressGroup', typeBlock: 2}, 
-            {name: 'ProgressCircle', typeBlock: 0},
-            {name: 'ProgressLine', typeBlock: 0});
+    listComponent[4].name = 'Widgets';
+    listComponent[4].children = new Array(
+//            {name: 'VideoView', typeBlock: 0},
+            {name: 'Gallery', typeBlock: 0},
+            {name: 'Map', typeBlock: 0},
+            {name: 'SheetBottom', typeBlock: 2});
+    listComponent[5] = {};
+    listComponent[5].name = 'Indicators';
+    listComponent[5].children = new Array(
+//            {name: 'ProgressGroup', typeBlock: 2}, 
+//            {name: 'ProgressCircle', typeBlock: 0},
+//            {name: 'ProgressLine', typeBlock: 0},
+            {name: 'Indicator', typeBlock: 0},
+            {name: 'Ellipsis', typeBlock: 0},
+            {name: 'Ratings', typeBlock: 0});
             
     var ik = listComponent.length;
     category.innerHTML = "";
@@ -81,7 +90,7 @@ function clickCategory2(i, j){
 
 function createDivText() {
     var container = document.createElement('div')
-    container.innerHTML = '<div class="text" style="position: absolute; white-space: pre; color: #808080;"></div>'
+    container.innerHTML = '<div class="text" style="position: absolute; white-space: pre-wrap; color: #808080;"></div>'
     return container.firstChild
 }
 

@@ -58,7 +58,7 @@ function selectBlockHoriz(titl, w, val, cb, min, max, step) {
     numb.className = "numb";
     numb.style.marginLeft = "8px";
     divSelList.appendChild(numb);
-    divSelList.appendChild(newDOMelement('<img width="10" height="10" onclick="clearSelectValueIMG(this);' 
+    divSelList.appendChild(newDOMelement('<img width="10" height="10" onclick="clearSelectValue(this);' 
             + cb + '(this);" style="margin-left: 7px;margin-top:7px;cursor: pointer;" src="img/del_red.png">'));
     return divRes;
 }
@@ -114,6 +114,7 @@ function clearSelectList(el) {
     let ch = par.children;
     let ik = ch.length - 1;
     let val = el.innerHTML;
+//console.log("clearSelectList parent="+par.className+"<< IK="+ik+"<< VAL="+val+"<<");
     for (let i = 0; i < ik; i++) {
         let item = ch[i];
         if (item.innerHTML == val) {

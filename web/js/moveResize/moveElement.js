@@ -9,33 +9,33 @@ var elClick = null;
 const deltaOfset = 3;
 
 function moveElement(event) {
-    x = event.pageX;
-    y = event.pageY;
-    var rectParent = currentElement.android.parent.getBoundingClientRect();
+    let x = event.pageX;
+    let y = event.pageY;
+    let rectParent = currentElement.android.parent.getBoundingClientRect();
     parentX = parseInt(rectParent.left);
     parentY = parseInt(rectParent.top);
     parentWpx = parseInt(rectParent.right - rectParent.left);
     parentHpx = parseInt(rectParent.bottom - rectParent.top);
-    var rect = currentElement.getBoundingClientRect();
-    elementTop = rect.top;
-    elementLeft = rect.left;
+    let rect = currentElement.getBoundingClientRect();
+    elementTop = parseInt(rect.top);
+    elementLeft = parseInt(rect.left);
     var x_block = rect.left - parentX;
     var y_block = rect.top - parentY;
     delta_x = x_block - x;
     delta_y = y_block - y;
-    currentElement.style.top = "";
+    currentElement.style.top = "0px";
     currentElement.style.marginTop = y_block + px;
-    currentElement.style.left = "";
+    currentElement.style.left = "0px";
     currentElement.style.width = rect.width + px;
     currentElement.style.right = "";
     currentElement.style.marginLeft = x_block + px;
     document.onmousemove = moveEl;
     document.onmouseup = moveUp;
-//    document.onmouseup = mouseUpEl;
     event.stopPropagation();
 }
 
 function moveEl(event) {
+//console.log("moveEl");
     var x = event.pageX;
     var y = event.pageY;
     var new_x = delta_x + x;
@@ -56,11 +56,10 @@ function moveEl(event) {
 function moveUp(e) {
     footer_inf.innerHTML = "";
     document.onmousemove = null;
-   // document.onmousemove = null;
     document.onmouseup = null;
     let rect = currentElement.getBoundingClientRect();
-    let dX = elementLeft - rect.left;
-    let dY = elementTop - rect.top;
+    let dX = elementLeft - parseInt(rect.left);
+    let dY = elementTop - parseInt(rect.top);
     if (dX < 0) {
         dX = - dX;
     }
@@ -69,12 +68,6 @@ function moveUp(e) {
     }
     if (dX < deltaOfset && dY < deltaOfset) {
         clickEl();
-/*
-        if (dX != 0 || dY != 0) {
-            setParamCompon();
-            viewCompon();
-        }
-*/
         return;
     }
 
@@ -151,6 +144,7 @@ function mouseUpEl(e) {
 }
 
 function clickEl() {
+console.log("clickEl contour="+currentElement.getElementsByClassName('contourEl')[0]);
     if (currentElement.getElementsByClassName('contourEl')[0] != null) {
         hideContourEl();
     } else {
@@ -225,6 +219,7 @@ function mouseUpNewEl(e) {
 }
 
 function resizeContour(e) {
+//console.log("resizeContour");
     var classN = e.target.className;
     let el = e.currentTarget;
     if (el.android != null) {

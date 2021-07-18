@@ -122,9 +122,9 @@ function windProgr(progress, txtProgress) {
     let y = xy.top;
     let h = xy.height;
     let w = xy.width;
-    
     let dv = document.createElement('div');
-    dv.style.cssText = "position:absolute;width:" + w + "px;height:" + h + "px;background:#fffc;outline:1px solid #1dace9;border-radius:8px;left:" + x + "px;top:" + y + "px;z-index:100";
+    dv.style.cssText = "position:absolute;width:" + w + "px;height:" + h + "px;background:#fffc;outline:1px solid #1dace9;border-radius:8px;left:" + x + "px;top:" 
+            + y + "px;z-index:100";
     let pr = document.createElement('img');
     pr.className = "progress_center";
     dv.appendChild(pr);

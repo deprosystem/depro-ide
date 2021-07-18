@@ -34,7 +34,6 @@ function setHostPanel() {
 }
 
 function cbGetTables(res) {
-//console.log("cbGetTables res="+res);
     listTables = JSON.parse(res);
     formListTables();
 }
@@ -57,9 +56,11 @@ function oneTableView(i, el) {
     el.appendChild(cont);
     let rect = cont.getBoundingClientRect();
     let rect_1 = name.getBoundingClientRect();
-    let descr = newDOMelement('<div class="title_t" style="font-size:12px;color:#555;margin-top:9px;height:12px;width:' + (rect.width - rect_1.width - 20) 
+    let descr = newDOMelement('<div class="title_t" style="font-size:12px;color:#555;margin-top:9px;height:12px;width:' + Math.round(rect.width - rect_1.width - 40) 
             + 'px;float:left;margin-left:10px;overflow:hidden">' + item.title_table + '</div>');
+    let del = newDOMelement('<img onclick="deleteTableAdm(' + i + ');" style="margin-top:11px;float:right;margin-right:7px;cursor:pointer;" width="10" height="10" src="img/del_red.png">');
     cont.appendChild(descr);    
+    cont.appendChild(del);
 }
 
 function descrHost() {
@@ -150,7 +151,13 @@ function cbSetHost(res) {
 }
 
 function openAdminWind() {
-    window.open(hostDomain + "?schema=" + currentProject.resurseInd, '_blank');
+    let hostNew;
+    if (debagStatus) {
+        hostNew = hostDomain.replace("apps", "deb-apps");
+    } else {
+        hostNew = hostDomain;
+    }
+    window.open(hostNew + "?schema=" + currentProject.resurseInd, '_blank');
 }
 
 function changeHostSel(el) {

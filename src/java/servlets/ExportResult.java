@@ -111,6 +111,7 @@ public class ExportResult extends BaseServlet {
                 createLayout(basePath + resPath, parSave);
                 createValue(basePath + resPath, parSave);
                 createDrawable(basePath + resPath, parSave);
+                createSwitch(realPath, )
                 
                 setFileAndroid(realPath + "/android_base/gradle_mod", basePath + userProjPath + "/app/build.gradle", arChange);
                 setFileAndroid(realPath + "/android_base/start_activity", basePath + javaPath + "/" + parSave.nameClassStart + ".java", arChange);
@@ -183,8 +184,8 @@ public class ExportResult extends BaseServlet {
 
 
 
-//                    String resultFile = "project/get_apk/" + ds.userResurseInd + "/" + projectM.nameProject + "/app-debug.apk";
                     String resultFile = "download/get_apk/" + ds.userResurseInd + "/" + projectM.nameProject + "/app-debug.apk";
+//                    String resultFile = "download/get_apk/" + ds.userResurseInd + "/" + projectM.nameProject + "/" + projectM.nameProject + "-debug.apk";
 //System.out.println("resultFile="+resultFile);
                     sendResult(response, resultFile);
                 } else {
@@ -725,9 +726,9 @@ public class ExportResult extends BaseServlet {
         res += sep + "backOk(R.id." + opt.enterId + ")";
         if (ik > 0) {
             for (int i = 0; i < ik; i++) {
-                if ( ! navigator.get(i).after) {
+//                if ( ! navigator.get(i).after) {
                     res += sep + formHandler(navigator, i, false);
-                }
+//                }
             }
         }
         res += ")";
@@ -741,7 +742,8 @@ public class ExportResult extends BaseServlet {
             String sep = "";
             for (int i = 0; i < ik; i++) {
                 Handler hh = navigator.get(i);
-                if ( ! hh.after && hh.viewId.equals("Execute at startup screen")) {
+                if ( hh.viewId.equals("Execute at startup screen")) {
+//                if ( ! hh.after && hh.viewId.equals("Execute at startup screen")) {
                     res += sep + formHandler(navigator, i, false);
                     sep = ",\n" + tab;
                 }
@@ -759,7 +761,8 @@ public class ExportResult extends BaseServlet {
             String sep = "";
             for (int i = 0; i < ik; i++) {
                 Handler hh = navigator.get(i);
-                if ( ! hh.after && ! hh.viewId.equals("Execute at startup screen")) {
+                if ( ! hh.viewId.equals("Execute at startup screen")) {
+//                if ( ! hh.after && ! hh.viewId.equals("Execute at startup screen")) {
                     res += sep + formHandler(navigator, i, false);
                     sep = ",\n" + tab;
                 }
@@ -807,8 +810,20 @@ public class ExportResult extends BaseServlet {
                 } else {
                     sep = "";
                 }
-                int i_1 = i + 1;
                 String stAfter = "";
+                if (hh.after != null && hh.after.size() > 0) {
+                    stAfter = ", after(";
+                    String sepAft = "";
+                    int ak = hh.after.size();
+                    for (int a = 0; a < ak; a++) {
+                        stAfter += sepAft + formHandler(hh.after, a, menu);
+                        sepAft = ",\n" + tab20;
+                    }
+                    stAfter += ")";
+                }
+/*
+                int i_1 = i + 1;
+
                 if (i_1 < ik) {
                     if (navigator.get(i_1).after) {
                         stAfter = ", after(";
@@ -825,6 +840,7 @@ public class ExportResult extends BaseServlet {
                         stAfter += ")";
                     }
                 }
+*/
                 String mustValid = "";
                 if (hh.param_1 != null && hh.param_1.length() > 0) {
                     mustValid = formMustValid(hh.param_1);
@@ -1869,6 +1885,37 @@ public class ExportResult extends BaseServlet {
                         if (p.componParam.colorSel != null) {
                             writer.write(tab + "app:colorSelect=\"" + findColorByIndex(p.componParam.colorSel, parSave.colors) + "\"");
                         }
+                    }
+                    break;
+                case Constants.SWITCH:
+                    if (p.componParam != null) {
+                        ComponParam cp = p.componParam;
+                        if (cp.st_1 != null && cp.st_1.length() > 0) {
+                            writer.write(tab + "android:text=\"" + cp.st_1 + "\"");
+                        }
+                        if (cp.color_1 != null) {
+                            writer.write(tab + "android:textColor=\"" + findColorByIndex(cp.color_1, parSave.colors) + "\"");
+                        }
+                        String sepStyle = "";
+                        String styleSw = "";
+                        if (cp.int_1 != null && cp.int_1 == 1) {
+                            styleSw = "bold";
+                            sepStyle = "|";
+                        }
+                        if (cp.int_2 != null && cp.int_2 == 1) {
+                            styleSw += sepStyle + "italic";
+                        }
+                        if (styleSw.length() > 0) {
+                            writer.write(tab + "android:textStyle=\"" + styleSw + "\"");
+                        }
+                        if (cp.int_3 != null && cp.int_3 != 14) {
+                            writer.write(tab + "android:textSize=\"" + cp.int_3 + "sp\"");
+                        }
+                        if (cp.st_2 != null && ! cp.st_2.equals("center")) {
+                            writer.write(tab + "android:gravity=\"" + cp.st_2 + "\"");
+                        }
+                        writer.write(tab + "android:thumb=\"@drawable/switch_thumb_" + p.int_1 + "sp\"");
+                        writer.write(tab + "app:track=\"@drawable/switch_track_" + p.int_1 + "sp\"");
                     }
                     break;
                 case Constants.ELLIPSIS:

@@ -261,6 +261,54 @@ function formListIdElemHandl(childEl) {
     return st;
 }
 
+function formSelectIdHandlTags(valueSel, tags) {
+    let st = formListIdHandlTags(currentChildren, tags);
+    return formSelectForEditData(st, valueSel);
+}
+
+function formListIdHandlTags(childEl, tags) {
+    let st = "";
+    let ik = childEl.length;
+    for (let i = 0; i <ik; i++) {
+        let item = childEl[i];
+        let vi = item.viewId;
+        if (tags != null && tags.length > 0) {
+            if (vi != null && vi != "" && tags.indexOf(item.type) > -1) {
+                st += "," + vi;
+            }
+        } else {
+            st += "," + vi;
+        }
+        let ch = item.children;
+        if (ch != null && ch.length > 0) {
+            st += formListIdHandlTags(ch, tags);
+        }
+    }
+    return st;
+}
+
+function formSelectIdHandlUx(valueSel) {
+    let st = formListIdHandlUX(currentChildren);
+    return formSelectForEditData(st, valueSel);
+}
+
+function formListIdHandlUX(childEl) {
+    let st = "";
+    let ik = childEl.length;
+    for (let i = 0; i <ik; i++) {
+        let item = childEl[i];
+        let vi = item.viewId;
+        if (vi != null && vi != "" && item.typeUxUi == "ux") {
+            st += "," + vi;
+        }
+        let ch = item.children;
+        if (ch != null && ch.length > 0) {
+            st += formListIdHandlUX(ch);
+        }
+    }
+    return st;
+}
+
 function formSelectStrValue(stOption, valueSel) {
     
 }

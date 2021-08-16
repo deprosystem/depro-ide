@@ -22,9 +22,9 @@ public class ProjectDB extends BaseDB {
     public long createProjectId(ProjectM pc) {
         long res = -1;
         try (Connection connection = getDBConnection(); Statement statement = connection.createStatement()) {
-            String str = "INSERT INTO projects (user_id, project_name, package, project_comment, app_name, resurse_ind, strings, app_param, color, style, drawable, dimens, screens, date_create) VALUES ("
+            String str = "INSERT INTO projects (user_id, project_name, package, project_comment, app_name, resurse_ind, strings, app_param, color, style, style_spec, drawable, dimens, screens, date_create) VALUES ("
                     + pc.userId + ",'" + pc.nameProject + "','" + pc.namePackage + "','" + pc.comment + "','" + pc.nameAPP + "','" + pc.resurseInd + "','" + pc.strings + "','" + pc.appParam + "','" + pc.colors + "','" 
-                    + pc.style + "','" + pc.drawable + "','" + pc.dimens + "','" + pc.screens + "'," + pc.dateCreate + ");";
+                    + pc.style + "','" + pc.style_spec + "','" + pc.drawable + "','" + pc.dimens + "','" + pc.screens + "'," + pc.dateCreate + ");";
             int updateCount = statement.executeUpdate(str, Statement.RETURN_GENERATED_KEYS);
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
               if (generatedKeys.next()) {
@@ -57,6 +57,10 @@ public class ProjectDB extends BaseDB {
         }
         if (pc.style != null) {
             strUpd += sep + "style = " + " '" + pc.style + "' ";
+            sep = ",";
+        }
+        if (pc.style_spec != null) {
+            strUpd += sep + "style_spec = " + " '" + pc.style_spec + "' ";
             sep = ",";
         }
         if (pc.screens != null) {
@@ -152,6 +156,7 @@ public class ProjectDB extends BaseDB {
                 pm.appParam = res.getString("app_param");
                 pm.dimens = res.getString("dimens");
                 pm.style = res.getString("style");
+                pm.style_spec = res.getString("style_spec");
                 pm.screens = res.getString("screens");
                 pm.drawable = res.getString("drawable");
                 pm.resurseInd = res.getString("resurse_ind");

@@ -2,6 +2,8 @@ var TYPE_String = 0, TYPE_StringAr = 1, TYPE_Image = 2, TYPE_Int = 3;
 var validEmpty = 1, validNumber = 2, validName = 3; validNameEmpty = 4 // validName - a-z,_,0-9   перша - літера
 var listEdit;
 var listDimens;
+var ListStyleSpec;
+var activeStyleSpecPos = -1;
 var listSaveElements;
 var currentProject;
 var currentScreen;
@@ -15,6 +17,7 @@ var isProjectChange = false;
 var isSystemChange = false;
 var isStringsChange = false;
 var isStylesChange = false;
+var isStylesSpecChange = false;
 var isDrawableChange = false;
 var isDimensChange = false;
 var isUX = true;
@@ -24,6 +27,7 @@ var listNameScreen = [];
 var listAppParam, listValueAppParam;
 var listProjectForOpen;
 var deleteProjectIdVar;
+var popupMenuParamProj;
 
 function openProject() {
     doServer("POST", "project/list", cbListProject);
@@ -50,6 +54,9 @@ function formJsonProject() {
     }
     if (isStylesChange) {
         par.style = JSON.stringify(listStyle);
+    }
+    if (isStylesSpecChange) {
+        par.style_spec = JSON.stringify(ListStyleSpec);
     }
     if (isDrawableChange) {
         par.drawable = JSON.stringify(listDrawable);
@@ -260,6 +267,14 @@ function cbCreateProjectDop() {
     listScreen = JSON.parse(currentProject.screens);
     listColor = JSON.parse(currentProject.colors);
     listDimens = JSON.parse(currentProject.dimens);
+    if (currentProject.style_spec != null) {
+        ListStyleSpec = JSON.parse(currentProject.style_spec);
+    } else {
+        ListStyleSpec = [{id:0,type:"switch",param:{color_1:12,color_2:3,color_3:0,color_4:6,color_5:0,color_6:3,color_7:7,
+                    int_1:0,int_2:0,int_3:14,int_4:30,int_5:24,st_1:"",st_2:"top",st_3:"Off"}}];
+        isStylesSpecChange = true;
+    }
+    activeStyleSpecPos = ListStyleSpec.length - 1;
     listValueAppParam = JSON.parse(currentProject.appParam);
     if (currentProject.style != null) {
         listStyle = JSON.parse(currentProject.style);
@@ -438,6 +453,7 @@ function cbListProject(res) {
 }
 
 function setListProject(list) {
+    popupMenuParamProj = null;
     listProjectForOpen = list;
     let ik = list.length;
     let strList = "";
@@ -495,7 +511,7 @@ function oneProject(p, i) {
 
 function sendImageProject(id, nameFile, el, title, accept) {
     let windMenu = formWind(350, 300, 40, 250, title);
-//    windMenu.closest(".dataWindow").style.zIndex = "101";
+    windMenu.closest(".dataWindow").style.zIndex = "101";
     if (accept == null) {
         accept = "image/*";
     }
@@ -553,15 +569,21 @@ function projectMenu(e, id, i) {
     let el = e.target;
     if (el.popup == null) {
         let paramForClick = {elem:el,idProj:id,position:i};
-        el.popup = popupMenu(el, 80, "Edit,Image,Delete", clickMenu, paramForClick);
+        if (popupMenuParamProj != null) {
+            document.body.removeChild(popupMenuParamProj);
+        }
+        popupMenuParamProj = popupMenu(el, 80, "Edit,Image,Delete", clickMenu, paramForClick);
+        el.popup = popupMenuParamProj;
     } else {
         document.body.removeChild(el.popup);
         el.popup = null;
+        popupMenuParamProj = null;
     }
     e.stopPropagation();
 }
 
 function clickMenu(i, param) {
+    popupMenuParamProj = null;
     switch (i) {
         case 0:
             
@@ -865,10 +887,9 @@ function cbGenerateProject(res, wind) {
     let save = wind.getElementsByClassName("save-apk")[0];
     if (save != null) {
         save.appendChild(newDOMelement('<a href="' + res + 
-                '" download style="text-decoration: none;color:#fff0;display:inline-block;width:100%;height:100%;position:absolute;top:0;left:0"> </a>'));
+                '" download="' + currentProject.nameProject + '_debug.apk" style="text-decoration: none;color:#fff0;display:inline-block;width:100%;height:100%;position:absolute;top:0;left:0"> </a>'));
     }
     save.addEventListener("click", function(){closeWindow(save);}, true);
-//    save.addEventListener("click", function(){downloadFile(res);closeWindow(save);}, true);
 }
 
 function setAppParameters() {
@@ -1001,6 +1022,9 @@ function saveAll() {
 function closeListProj() {
     listProjectsScr.innerHTML = "";
     listProjects.style.display = "none";
+    if (popupMenuParamProj != null) {
+        document.body.removeChild(popupMenuParamProj);
+    }
     if(currentProject == null) {
         showModeUX();
         setBlanckToolBar()

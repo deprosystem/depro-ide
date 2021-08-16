@@ -136,7 +136,10 @@ function changeSelectBlockNumb(el) {
 
 function setValueSelectBlock(el, val) {
     if (val == null || val == "") return;
-    let divSelList = el.getElementsByClassName("divSelList")[0];
+    let divSelList = el.querySelector(".divSelList");
+    if (divSelList == null && el.className == "divSelList") {
+        divSelList = el;
+    }
     let ch = divSelList.getElementsByClassName("el_marg_pad");
     let ik = ch.length;
     for (let i = 0; i < ik; i++) {

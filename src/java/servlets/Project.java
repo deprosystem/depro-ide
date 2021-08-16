@@ -1,5 +1,8 @@
 package servlets;
 
+import android.ItemSwitch;
+import android.ListSwitchParam;
+import android.SwitchParam;
 import com.google.gson.JsonSyntaxException;
 import db.ProjectDB;
 import db.SQL;
@@ -70,6 +73,7 @@ public class Project extends BaseServlet {
                         pc.colors = formColor();
                         pc.dimens = formDimens();
                         pc.style = formStyle();
+                        pc.style_spec = formStyleSpec();
                         pc.drawable = formDrawable();
                         pc.appParam = formAppParam();
                         pc.screens = formScreens();
@@ -243,6 +247,16 @@ public class Project extends BaseServlet {
         is.listItem = listItem;
         li.add(is);
         return gson.toJson(li);
+    }
+    
+    private String formStyleSpec() {
+        ListSwitchParam lsp = new ListSwitchParam();
+        ItemSwitch is = new ItemSwitch();
+        is.id = 0;
+        is.type = "switch";
+        is.param = new SwitchParam(0,0,14,30,24, "", "top", "Off", 12,0,3,6,3,0,7);
+        lsp.add(is);
+        return gson.toJson(lsp);
     }
     
     private String formDrawable() {

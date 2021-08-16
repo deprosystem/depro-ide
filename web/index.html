@@ -20,6 +20,7 @@
         <script src="js/helpLinks.js"></script>
         <script src="js/selectData.js"></script>
         <script src="js/uiCommonUse/uiAny.js" ></script>
+        <script src="js/uiCommonUse/uiMetaData.js" ></script>
         <script src="js/uiCommonUse/generalMenu.js" ></script>
         <script src="js/uiElements/uiToolBar.js" ></script>
         <script src="js/uiElements/uiMenuBottom.js" ></script>
@@ -40,6 +41,7 @@
         <script src="js/uiElements/uiCardView.js" ></script>
         <script src="js/uiElements/uiSheetBottom.js" ></script>
         <script src="js/uiElements/uiTags.js" ></script>
+        <script src="js/uiElements/uiSwitch.js" ></script>
         <script src="js/uiElements/uiPlusMinus.js" ></script>
         <script src="js/uiElements/uiRatings.js" ></script>
         <script src="js/uiElements/uiScrollPanel.js" ></script>
@@ -52,8 +54,9 @@
         <script src="js/menu/menuIndex.js" ></script>
         <script src="js/menu/contMenuNav.js"></script>
         <script src="js/menu/popupMenu.js"></script>
-        <script src="js/uxCommonUse/formNavigator.js" ></script>
-        <script src="js/uxCommonUse/uxNavigator.js" ></script>
+        <script src="js/uxNavigator/metaDataNavigator.js" ></script>
+        <script src="js/uxNavigator/formNavigator.js" ></script>
+        <script src="js/uxNavigator/uxNavigator.js" ></script>
         <script src="js/uxCommonUse/uxSeparators.js" ></script>
         <script src="js/uxCommonUse/model.js" ></script>
         <script src="js/uxCommonUse/formElemUI.js" ></script>
@@ -78,8 +81,10 @@
         <script src="js/editData/editArrayData.js" ></script>
         <script src="js/tools/scrollX.js"></script>
         <script src="js/tools/tool.js"></script>
+        <script src="js/tools/editForm.js" ></script>
         <script src="js/tools/uiEditParam.js"></script>
         <script src="js/tools/imgColor.js"></script>
+        <script src="js/tools/shakeAnimate.js"></script>
         <script src="js/tools/selectBlock.js"></script>
         <script src="js/tools/validEditField.js"></script>
         <script src="js/tools/inputNumber.js"></script>
@@ -412,8 +417,8 @@
 
         <div id="n_contextMenu">
           <div id="n_contextNameOb"></div>
-          <div id="n_contextActive" class="n_contextSub" onMouseover="n_ovRM(this)" onMouseout="n_outRM(this)" onclick='n_clElement(this)'>Зробити активним</div>
-          <div class="n_contextSub" onMouseover="n_ovRM(this)" onMouseout="n_outRM(this)" onclick='n_clActive(this)'>Активна ROOT</div>
+          <div id="n_contextActive" class="n_contextSub" onMouseover="n_ovRM(this)" onMouseout="n_outRM(this)" onclick='n_clElement(this)'>Make active</div>
+          <div class="n_contextSub" onMouseover="n_ovRM(this)" onMouseout="n_outRM(this)" onclick='n_clActive(this)'>Active ROOT</div>
           <hr size="1">
           <div class="n_contextSub" onMouseover="n_ovRM(this)" onMouseout="n_outRM(this)" onclick='n_clDelete(this)'>Delete</div>
         </div>

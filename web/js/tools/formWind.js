@@ -2,7 +2,16 @@ var currentWind;
 var delta_x_wind, delta_y_wind;
 var h_footerWind = 50;
 
-function formWind(w, h, t, l, tit, scroll, cbClose, footName, footListener) {
+function formWind(w, h, t, l, tit, scroll, cbClose, footName, footListener, colorFon) {
+    let panelFon;
+    if (colorFon != null) {
+        let backGr = "";
+        if (colorFon.length > 0) {
+            backGr = "background-color:" + colorFon + ";";
+        }
+        panelFon = newDOMelement('<div style="width:100%;height:100%;' + backGr + 'position:absolute;z-index:1"></div>');
+        document.body.append(panelFon);
+    }
     let ww = document.createElement('div');
     ww.className = "dataWindow";
     ww.style.width = w + 'px';
@@ -14,6 +23,14 @@ function formWind(w, h, t, l, tit, scroll, cbClose, footName, footListener) {
         ww.style.left = l + 'px';
     }
     ww.style.top = t + 'px';
+    if (colorFon != null) {
+        ww.panelFon = panelFon;
+        panelFon.addEventListener('click', () => {
+            event.stopPropagation();
+            shake(ww);
+        });
+    }
+    
     let titleW = createTitle(tit, cbClose);
     ww.appendChild(titleW);
     let bott = 0;
@@ -22,10 +39,10 @@ function formWind(w, h, t, l, tit, scroll, cbClose, footName, footListener) {
         bott = h_footerWind + 1;
         ww.appendChild(controll);
         let buttonOk = createButtonBlue(footName);
-        buttonOk.addEventListener("click", function(){footListener();closeWindow(ww);}, true);
+        buttonOk.addEventListener("click", function(){footListener();closeDataWindow(ww);}, true);
         controll.appendChild(buttonOk);
         let buttonCancel = createButtonWeite('Cancel', 70);
-        buttonCancel.addEventListener("click", function(event){closeWindow(ww);}, true);
+        buttonCancel.addEventListener("click", function(event){closeDataWindow(ww);}, true);
         controll.appendChild(buttonCancel);
     }
     let contW = document.createElement('div');
@@ -95,16 +112,13 @@ function createTitle(tit, cbClose) {
 function closeDataWindow(el, no) {
     if ( ! no ) {
         let el_1 = el.closest('.dataWindow');
+        if (el_1.panelFon != null) {
+            el_1.panelFon.remove();
+        }
         el_1.remove();
     }
 }
 
-/*
-function closeDataWindow(e) {
-    let el = e.target.closest('.dataWindow');
-    el.parentNode.removeChild(el);
-}
-*/
 function closeWindow(el) {
     let el1 = parentWind(el);
     el1.parentNode.removeChild(el1);

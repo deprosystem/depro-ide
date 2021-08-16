@@ -4,9 +4,9 @@ function createNumber(w, h, min, max, cb, stepN) {
     if (stepN != null) {
         step = stepN;
         let st = String(step);
-        fraction = st.length - st.indexOf(".") - 1;
-        if (fraction < 0) {
-            fraction = 0;
+        let ll = st.indexOf(".");
+        if (ll > -1) {
+            fraction = st.length - st.indexOf(".") - 1;
         }
     }
     let minP = -999999999;

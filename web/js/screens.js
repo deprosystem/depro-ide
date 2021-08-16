@@ -367,7 +367,9 @@ function navigatorScreen() {
     if (currentScreen.navigator == null) {
         currentScreen.navigator = [];
     }
-    editDataWind(metaNavigatorScreen, currentScreen.navigator, saveNavigator);
+    let nnn = new FormNavigator();
+    nnn.init(currentScreen.navigator);
+//    editDataWind(metaNavigatorScreen, currentScreen.navigator, saveNavigator);
 }
 
 function initDataScreen() {

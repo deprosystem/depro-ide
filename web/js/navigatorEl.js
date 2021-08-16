@@ -158,6 +158,7 @@ function upNavigEl(e) {
         overMouseElem.style.backgroundColor = "";
         overMouseElem.style.borderBottom = "";
         uiEl = downMouseElem.elementLink;
+        let parentUiEl = uiEl.android.parent;
         uiElTarg = e.target.elementLink;
         let targ = e.target.parentElement;
         if (e.shiftKey) {
@@ -178,6 +179,14 @@ function upNavigEl(e) {
             uiElTarg.after(uiEl);
             uiEl.android.parent = uiElTarg.parentElement;
             targ.after(downMouseElem.parentElement);
+        }
+        if (parentUiEl != uiEl.android.parent) {
+            let p = uiEl.android;
+            p.topMarg = "";
+            p.leftMarg = "";
+            currentElement = uiEl;
+            setParamCompon();
+            viewComponElem(uiEl);
         }
     }
     overMouseElem = null;

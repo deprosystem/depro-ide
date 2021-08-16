@@ -19,7 +19,7 @@ public class AndroidPar {
     public String text, src;
     public String elevCardShadow;
     public int radiusCard, colorCardShadow;
-    public Integer textSize, textColor;
+    public Integer textSize, textColor, int_1;
     public ComponParam componParam;
     public TabLayout tabLayout;
 // Параметры для конкретных элементов

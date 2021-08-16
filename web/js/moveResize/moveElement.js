@@ -9,6 +9,7 @@ var elClick = null;
 const deltaOfset = 3;
 
 function moveElement(event) {
+//console.log("moveElement viewId="+currentElement.android.viewId+"<<");
     let x = event.pageX;
     let y = event.pageY;
     let rectParent = currentElement.android.parent.getBoundingClientRect();
@@ -35,7 +36,6 @@ function moveElement(event) {
 }
 
 function moveEl(event) {
-//console.log("moveEl");
     var x = event.pageX;
     var y = event.pageY;
     var new_x = delta_x + x;
@@ -144,10 +144,21 @@ function mouseUpEl(e) {
 }
 
 function clickEl() {
-console.log("clickEl contour="+currentElement.getElementsByClassName('contourEl')[0]);
+/*
+let tt = event.target;
+if (tt.android != null) {
+console.log("clickEl="+tt.android.viewId+"<<");
+} else {
+console.log("clickEl NULL");
+}
+*/
     if (currentElement.getElementsByClassName('contourEl')[0] != null) {
         hideContourEl();
     } else {
+        let targ = event.target;
+        if (targ != null) {
+            currentElement = targ;
+        }
         setPickElement();
     }
 }
@@ -219,7 +230,6 @@ function mouseUpNewEl(e) {
 }
 
 function resizeContour(e) {
-//console.log("resizeContour");
     var classN = e.target.className;
     let el = e.currentTarget;
     if (el.android != null) {
@@ -235,6 +245,92 @@ function resizeContour(e) {
         }
     }
     status = statusOLD;
+/*
+if (e.target.android != null) {
+console.log("resizeContour classN="+classN+"<< target="+e.target.android.viewId+"<<");
+} else {
+console.log("e.target.android == null")
+}
+if (e.currentTarget.android != null) {
+console.log("resizeContour currentTarget="+e.currentTarget.android.viewId);
+} else {
+console.log("e.currentTarget.android == null")
+}
+if (currentElement != null && currentElement.android != null) {
+console.log("resizeContour currentElement="+currentElement.android.viewId+"<<");
+} else {
+console.log("currentElement == null");
+}
+*/
+
+    if (classN === 'active') {
+        status = statusNEW;
+        var x = e.pageX;
+        var y = e.pageY;
+        hideContourEl();
+        currentElement = createNewEl();
+        p = {typeUxUi: "ui",children:[]};
+        p.type = typeInsert;
+        p.typeFull = insertTypeFull;
+        p.gravLayout = {};
+        p.gravity = {};
+        currentElement.android = p;
+        addNewElement(ACTIVE, currentElement);
+        let rectParent = p.parent.getBoundingClientRect();
+        parentX = parseInt(rectParent.left) + window.pageXOffset;
+        parentY = parseInt(rectParent.top) + window.pageYOffset;
+        parentWpx = parseInt(rectParent.right - rectParent.left);
+        parentHpx = parseInt(rectParent.bottom - rectParent.top);
+        angleResizeX = parseInt((x - parentX) / MEASURE) * MEASURE;
+        angleResizeY = parseInt((y - parentY) / MEASURE) * MEASURE;
+        currentElement.style.marginTop = angleResizeY +'px';
+        currentElement.style.marginLeft = angleResizeX +'px';
+        currentElement.style.width = '0px';
+        currentElement.style.height = '0px';
+        appendContour();
+        
+        e.stopPropagation();
+        document.onmousemove = resizeNewAngle;
+        if (classN == 'active') {
+            document.onmouseup = mouseUpNewEl;
+        } else {
+            document.onmouseup = mouseUpEl;
+        }
+    } else if (classN.indexOf('contour') > -1) {
+        if (currentElement.getElementsByClassName('contourEl')[0] == null) {
+            currentElement = e.target.closest(".element");
+        }
+        
+        switch(classN) {
+            case 'contourRB':
+                angleResizeX = currentElement.offsetLeft;
+                angleResizeY = currentElement.offsetTop;
+                break;
+            case 'contourRT':
+                angleResizeX = currentElement.offsetLeft;
+                angleResizeY = currentElement.offsetTop + currentElement.clientHeight;
+                break;
+            case 'contourLT':
+                angleResizeX = currentElement.offsetLeft + currentElement.clientWidth;
+                angleResizeY = currentElement.offsetTop + currentElement.clientHeight;
+                break;
+            case 'contourLB':
+                angleResizeX = currentElement.offsetLeft + currentElement.clientWidth;
+                angleResizeY = currentElement.offsetTop;
+                break;
+        }
+        e.stopPropagation();
+        document.onmousemove = resizeNewAngle;
+        if (classN == 'active') {
+            document.onmouseup = mouseUpNewEl;
+        } else {
+            document.onmouseup = mouseUpEl;
+        }
+    } else {
+        document.onmouseup = clickEl;
+    }
+
+/*
 
     if (classN === 'active' || (classN.indexOf('contour') > -1)) {
         switch(classN) {
@@ -281,6 +377,8 @@ function resizeContour(e) {
                 angleResizeY = currentElement.offsetTop;
                 break;
         }
+let rect = currentElement.getBoundingClientRect();
+console.log("resizeContour viewId="+ currentElement.android.viewId + "<< angleResizeX="+angleResizeX+" angleResizeY="+angleResizeY+" rect.top="+rect.top);
         e.stopPropagation();
         document.onmousemove = resizeNewAngle;
         if (classN == 'active') {
@@ -289,8 +387,12 @@ function resizeContour(e) {
             document.onmouseup = mouseUpEl;
         }
     } else {
+        if (e.target != null) {
+            
+        }
         document.onmouseup = clickEl;
     }
+*/
 }
 
 function resizeNewAngle(e) {
@@ -306,10 +408,16 @@ function resizeNewAngle(e) {
         currentElement.style.width = ( -deltX) + px;
         currentElement.style.marginLeft = (angleResizeX + deltX) +px;
     }
+//console.log("resizeNewAngle deltY="+deltY+" YY="+y+" angleResizeY="+angleResizeY+" parentY="+parentY);
     if (deltY >= 0) {
         currentElement.style.height = deltY + px;
     } else {
         currentElement.style.height = ( -deltY) + px;
+        currentElement.style.top = "0px";
         currentElement.style.marginTop = (angleResizeY + deltY) +px;
     }
+/*
+let rect = currentElement.getBoundingClientRect();
+console.log("resizeNewAngle rect.top="+rect.top);
+*/
 }

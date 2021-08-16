@@ -10,5 +10,7 @@ public class ComponParam {
     public Boolean rangeDate, afterToday, tillToday, isHolidays, spaceZero, noEdit, oval, singleLine;
     public Boolean bool_1, bool_2, bool_3;
     public String id_1, id_2, id_3;
+    public String st_1, st_2, st_3;
     public Integer color_1, color_2, color_3;
+    public Integer int_0, int_1, int_2, int_3;
 }

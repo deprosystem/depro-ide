@@ -19,7 +19,7 @@ public class Constants {
     public static final String TOOL = "ToolBar", PANEL = "Panel", SCROLLPANEL = "ScrollView", FORM = "Form", ELLIPSIS = "Ellipsis",
             LIST = "List", PAGER = "Pager", TAB = "TabLayout", DRAWER = "Drawer", SCROLL = "ScrollPanel", CARD_VIEW = "CardView",
             MENU_B = "MenuBottom", MENU = "Menu", GALLERY = "Gallery", INDICATOR = "Indicator", IMAGEVIEW = "ImageView",
-            PLUS_MINUS = "PlusMinus", RATINGS = "Ratings",
+            PLUS_MINUS = "PlusMinus", RATINGS = "Ratings", SWITCH = "Switch",
             MAP = "Map", SHEET = "SheetBottom", TEXTVIEW = "TextView", CALENDAR = "Calendar", SEEKBAR = "SeekBar", TAGS = "Tags";
 /*
     public static String toolCompon = "com.dpcsa.compon.custom_components.ComponToolBar",
@@ -56,7 +56,8 @@ public class Constants {
         "com.dpcsa.compon.custom_components.TagsView",            // 17
         "com.dpcsa.compon.custom_components.PlusMinus",            // 18
         "com.dpcsa.compon.custom_components.Ratings",            // 19
-        "com.dpcsa.compon.custom_components.ElementMenu"            // 20
+        "com.dpcsa.compon.custom_components.ElementMenu",            // 20
+        "com.dpcsa.compon.custom_components.ComponSwitch"            // 21
     };
 
 }

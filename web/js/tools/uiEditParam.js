@@ -109,7 +109,20 @@ function editTextParam(title, w, val, cb) {
     }
     return newDOMelement(stHTML + title + stHTML_1 + w + stHTML_2 + cb + stHTML_3 + vv + stHTML_4);
 }
-
+/*
+function editTextValue(title, w, val, id, clazz) {
+    let stHTML = '<div style="float:left;"><div style="color: #2228;font-size: 10px;margin-left:4px">';
+    let stHTML_1 = '</div><input class="txt_inp input_style" style="width:'; 
+    let stHTML_2 = 'px" onkeyup="return ';
+    let stHTML_3 = '(this)" value="';
+    let stHTML_4 = '" type="text"/></div>';
+    let vv = val;
+    if (val == null) {
+        vv = "";
+    }
+    return newDOMelement(stHTML + title + stHTML_1 + w + stHTML_2 + cb + stHTML_3 + vv + stHTML_4);
+}
+*/
 function editCheck(title, varName, viewEl, cb) {
     val = currentElement.android.componParam[varName];
     valCh = "check-act";

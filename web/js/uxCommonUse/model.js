@@ -26,6 +26,7 @@ let pmTest = '<img onclick="formTestData(this)" width="18" height="18" style="ma
 
 function uxModelView(listenerV, listenerH, addType) {
     des = dataDescr(listenerV, listenerH, addType);
+//  currentProject.whereServer
     return uxModel1 + browser + uxModel2 + des + '</div><div class="severalDataTypes" style="height:40px;margin-top:5px;display:none;"></div>';
 }
 
@@ -122,6 +123,11 @@ function changeMethod(el) {
         switch (el.options[el.selectedIndex].value) {
             case "POST":
             case "GET":
+                hostDescr = currentProject.whereServer;
+                if (hostDescr == null) {
+                    myAlert("Choose your domain location");
+                    break;
+                }
                 if (hostDescr == "Third party API") {
                     pm.innerHTML = pmUrl + pmParamUrl + pmProgr;
                     setValueGetPost();

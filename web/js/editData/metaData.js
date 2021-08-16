@@ -7,7 +7,7 @@ var metaPager = {titleForm:"Данные для TabLayout", description:
     [{name: "title", title:"Text tab",len:15},
     {name: "screen", title:"Screen",len:15,valid:{latin:true}}]
     }
-
+/*
 var metaNavigator = {titleForm:"Navigator", description:
     [{name: "viewId", title:"Элемент",len:100,type:ID_SELECT_HANDL},
     {name: "handler", title:"Обработчик",len:100,type:TYPE_SELECT,select:handlers},
@@ -25,14 +25,14 @@ var metaNavigatorScreen = {titleForm:"Navigator", description:
     {name: "id", title:"id",len:100,type:ID_SELECT},
     {name: "after", title:"After",type:TYPE_BOOLEAN,marg:20}]
     }
-    
+*/
 var metaInitData = {titleForm:"Navigator", description:
     [{name: "typeSource", title:"Data source",len:80,type:TYPE_SELECT,select:typeSource},
     {name: "viewId", title:"Элемент",len:100,type:ID_SELECT},
     {name: "param", title:"Парам",len:15},
     {name: "idComp", title:"Component id",len:100,type:ID_SELECT}]
     }
-    
+/*
 var metaNavigatorMenuB = {titleForm:"Navigator", description:
     [{name: "viewId", title:"Элемент",len:4,type:TYPE_INT},
     {name: "handler", title:"Обработчик",len:100,type:TYPE_SELECT,select:handlers},
@@ -40,7 +40,7 @@ var metaNavigatorMenuB = {titleForm:"Navigator", description:
     {name: "id", title:"id",len:100,type:ID_SELECT},
     {name: "after", title:"After",type:TYPE_BOOLEAN,marg:20}]
     }
-    
+*/
 var metaMenu = {titleForm:"Menu", description:
     [{name: "icon", title:"Icon",len:20,type:TYPE_IMG,marg:5},
     {name: "title", title:"Title",len:20},

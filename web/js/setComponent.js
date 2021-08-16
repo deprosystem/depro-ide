@@ -23,6 +23,7 @@ function formCompon() {
     listComponent[2].children = new Array(
             {name: 'EditText', typeBlock: 0},
             {name: 'SeekBar', typeBlock: 0},
+            {name: 'Switch', typeBlock: 0},
             {name: 'PlusMinus', typeBlock: 0},
             {name: 'Calendar', typeBlock: 0}
     );
@@ -151,7 +152,7 @@ function setPickElement(el) {
 function hideContourEl() {
     if (currentElement != null) {
         let el = currentElement.getElementsByClassName('contourEl')[0];
-        if (el != undefined) {
+        if (el != undefined && el != null) {
             currentElement.removeChild(el);
             currentElement.style.outline = '';
         }

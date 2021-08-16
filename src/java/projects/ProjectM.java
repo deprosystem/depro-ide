@@ -12,7 +12,7 @@ public class ProjectM {
     public String host;
     public String whereServer;
     public String strings;
-    public String style;
+    public String style, style_spec;
     public String colors;
     public String dimens;
     public String drawable;

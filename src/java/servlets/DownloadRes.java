@@ -36,7 +36,8 @@ public class DownloadRes extends BaseServlet {
                             response.setHeader("Accept-Ranges", "bytes");
                             response.setContentType("application/octet-stream");
                             response.setContentLength((int)file.length());
-                            response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+//                            response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+                            response.setHeader("Content-Disposition", "attachment;");
                             try {
                                 Files.copy(file.toPath(), response.getOutputStream());
                             } catch (IOException e) {

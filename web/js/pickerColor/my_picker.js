@@ -53,7 +53,7 @@ function openPickerColor(colorInit, cb, el) {
     alphaGrad.style.cssText = styleAlpha1 + "#ffffff," + colorWithoutAlpha + styleAlpha2 + "#ffffff," + colorWithoutAlpha + ");";
     alpha_arrow.style.marginLeft = alphaPosition + px;
     if (notPicker) {
-        picker.init(pickerColorCallBack);
+        picker.init(pickerColorCallBack, el);
         notPicker = false;
     }
 }
@@ -91,7 +91,7 @@ function dragAlphaInd(event) {
     alpha_arrow.style.marginLeft = new_x + "px";
 }
 
-function pickerColorCallBack(colorInit) {
+function pickerColorCallBack(colorInit, el) {
     colorWithoutAlpha = rgb2hex(colorInit);
     pickerColor = colorWithoutAlpha + alphaHEX;
     out_color.style.backgroundColor = pickerColor;

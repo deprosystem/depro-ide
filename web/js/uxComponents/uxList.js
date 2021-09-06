@@ -77,8 +77,9 @@ function uxList() {
     this.isValid = function(compD, layout) {
         let tab = "&ensp;";
         let err = {text:"",error:0};
+        let viewId = compD.view.viewId;
 //        let mod = compD.model;
-        let errMod = isValidModel(compD.model, tab);
+        let errMod = isValidModel(compD.model, tab, viewId);
         if (errMod.error > err.error) {
             err.error = errMod.error;
             err.text += errMod.text;
@@ -87,7 +88,7 @@ function uxList() {
         if (no_d != null && no_d.length > 0) {
             let p = getCompByViewId(layout.children, no_d);
             if (p == null) {
-                err.text += txtError(2, tab, "component " + compD.view.viewId + " error view no data " + pr);
+                err.text += txtError(2, tab, "component " + viewId + " error view no data ");
                 err.error = 2;
             }
         }
@@ -95,13 +96,13 @@ function uxList() {
             switch (compD.view.selectedType) {
                 case "Value":
                     if (compD.view.selectedField == null || compD.view.view.selectedValue == null) {
-                        err.text += txtError(2, tab, "component " + compD.view.viewId + " error: there is no property Field or Value for the selected = Param.");
+                        err.text += txtError(2, tab, "component " + viewId + " error: there is no property Field or Value for the selected = Param.");
                         err.error = 2;
                     }
                     break; 
                 case "Param":
                     if (compD.view.selectedField == null) {
-                        err.text += txtError(2, tab, "component " + compD.view.viewId + " error: there is no property Field for the selected = Param.");
+                        err.text += txtError(2, tab, "component " + viewId + " error: there is no property Field for the selected = Param.");
                         err.error = 2;
                     }
                     break; 
@@ -120,11 +121,10 @@ function uxList() {
         if (nav != null && nav.length > 0) {
             let erNav = isValidNavigator(nav, compD.screenName.toUpperCase());
             if (erNav != "") {
-                err.text += txtError(2, tab, "component " + compD.view.viewId + " error in Navigator " + erNav);
+                err.text += txtError(2, tab, "component " + viewId + " error in Navigator " + erNav);
                 err.error = 2;
             }
         }
-        
         return err;
     }
 }

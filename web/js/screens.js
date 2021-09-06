@@ -1,4 +1,5 @@
-var components = ["ToolBar", "MenuBottom", "Menu", "List", "Pager", "TabLayout", "Drawer", "Map", "Panel", "Form", "ScrollPanel", "SheetBottom", "Tags", "PlusMinus"];
+var components = ["ToolBar", "MenuBottom", "Menu", "List", "Pager", "TabLayout", "Drawer", "Map", "Panel", "Form", "ScrollPanel", 
+    "SheetBottom", "Tags", "PlusMinus", "Total"];
 var list_cont;
 var uxFunction, uiFunction;
 
@@ -200,8 +201,9 @@ function setScreenComponents() {
                     uxFunction = eval("new ux" + currentComponentDescr.type + "();");
                 } catch(e) { }
                 if (uxFunction != null) {
-                    currentComponentView = newComponent();
+                    currentComponentView = newComponent(currentComponentDescr.view.viewId);
                     currentComponentView.addEventListener('click', selComponent, true);
+                    currentComponentView.addEventListener('focus', selComponent, true);
                     listComp.append(currentComponentView);
                     currentComponentView.componId = componId;
                     currentComponent = getComponentById(componId);
@@ -459,10 +461,8 @@ function plusCompon(el) {
                     txtItem.className = "itemListTxt";
                     txtItem.style.cssText = "cursor:pointer;font-size:14px;width:100%;margin-top:7px;float:left;color:#555";
                     txtItem.innerHTML = components[i];
-    //                txtItem.innerHTML = components[i].name;
                     item.appendChild(txtItem);
                     txtItem.addEventListener("click", function(){
-//                        closeWindow(windTypeComponent);
                         cbCloseWind(windTypeComponent);
                         selComponType(i);
                     }, true);
@@ -474,7 +474,6 @@ function plusCompon(el) {
                 let el_1 = windTypeComponent.closest('.dataWindow');
                 el_1.style.display = "block";
             }
-//            resizeScrol(wind);
         }
     }
 }
@@ -485,41 +484,6 @@ function cbCloseWind(el) {
     return true;
 }
 
-/*
-function plusCompon(el) {
-    let parentPlus = el.parentElement;
-    let parent = parentPlus.parentElement;
-    var el_1 = parent.getElementsByClassName("list_components");
-    if (el_1 != undefined) {
-        list_cont = el_1[0];
-        if (list_cont != null) {
-            let wind = formWind(250, 450, 40, 350, "Type component", true);
-            var ik = components.length;
-            for (let i = 0; i < ik; i++) {
-                let item = document.createElement("div");
-                item.className = "itemList";
-                if (i == 0) {
-                    item.style.borderTop = "1px solid #" + "fff";
-                }
-                let txtItem = document.createElement("div");
-                txtItem.className = "itemListTxt";
-                txtItem.style.cssText = "cursor:pointer;font-size:14px;width:100%;margin-top:7px;float:left;color:#555";
-                txtItem.innerHTML = components[i];
-//                txtItem.innerHTML = components[i].name;
-                item.appendChild(txtItem);
-                txtItem.addEventListener("click", function(){
-                    closeWindow(wind);
-                    selComponType(i);
-                }, true);
-                wind.appendChild(item);
-            }
-            let ss = wind.closest(".viewport");
-            ss.scroll_y.resize();
-//            resizeScrol(wind);
-        }
-    }
-}
-*/
 function plusComponName(name) {
     var ik = components.length;
     for (let i = 0; i < ik; i++) {
@@ -540,12 +504,12 @@ function selComponType(i) {
     } catch(e) { }
     if (uxFunction != null) {
         let viewId = setViewId(uxFunction.param.viewBaseId);
-        currentComponentView = newComponent();
+        currentComponentView = newComponent(viewId);
         currentComponentView.addEventListener('click', selComponent, true);
+        currentComponentView.addEventListener('focus', selComponent, true);
         list_cont.append(currentComponentView);
         currentComponentView.className = "component_sel";
         list_screens.scrollTop = list_screens.scrollHeight;
-//console.log("selComponType idComponentNum="+idComponentNum);
         currentComponentView.componId = idComponentNum;
         uxFunction.addComponent(idComponentNum, viewId);
         idComponentNum ++;
@@ -603,10 +567,11 @@ function jsonNoViewParent(el) {
 // ??????????????????????????????????? служебный
 
 
-function newComponent() {
+function newComponent(viewId) {
     let parComp = uxFunction.getParamComp();
     var str = '<div class="component_sel">'
             +'<div class="name_compon" style="float:left">' + parComp.name + '</div>'
+            +'<div class="name_compon" style="float:left;margin-left:10px;font-size:10px;margin-top:2px;">(' + viewId + ')</div>'
             +'<div class="special_func" style="float:left;margin-top:3px;margin-left:20px;">' + uxFunction.getSpecialView() + '</div>'
             +'<img onclick="delCmponent(this)" style="float:right;cursor:pointer;margin-top:3px;margin-right:10px" width="18" height="18" src="img/close-o.png">'
             +'<div class="component_param" style="padding: 5px;clear:both">' + uxFunction.getEditParam() + '</div>'
@@ -685,7 +650,7 @@ function delCmponent(el) {
     let ik = cc.length;
     compI = -1;
     for (let i = 0; i < ik; i++) {
-        if (cc[i].componId = cId) {
+        if (cc[i].componId == cId) {
             compI = i;
             break;
         }
@@ -703,22 +668,37 @@ function delCmponent(el) {
 function setViewId(id) {
     let cc = currentScreen.components;
     let ik = cc.length;
-    let count = 0;
+    let count = -1;
     for (let i = 0; i < ik; i++) {
-        let vi = cc[i].viewId;
-        if (vi != null && vi.includes(id)) {
-            let j = vi.indexOf("_");
+        let vi = cc[i].view.viewId;
+        if (vi != null) {
+            if (vi == id) {
+                if (count < 0) {
+                    count = 0;
+                }
+                continue;
+            }
+            let j = vi.lastIndexOf("_");
+            let vn;
             if (j > -1) {
-                let c = vi.substring(j);
-                c = parseInt(c);
+                vn = vi.substring(0, j);
+            } else {
+                vn = vi;
+            }
+            if (vn == id) {
+                let c = 0;
+                if (j > -1) {
+                    c = vi.substring(j + 1);
+                    c = parseInt(c);
+                }
                 if (count < c) {
                     count = c;
                 }
             }
         }
     }
-    if (count > 0) {
-        return id + "_" + count;
+    if (count > -1) {
+        return id + "_" + (count + 1);
     } else {
         return id;
     }

@@ -155,6 +155,10 @@ function checkElement(el) {
     return check;
 }
 
+function isCheckElement(el) {
+    return el.src.indexOf("check-sel") != -1;
+}
+
 function closeWind(el) {
     el.parentElement.parentElement.style.display = "none";
 }

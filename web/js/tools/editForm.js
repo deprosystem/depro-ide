@@ -1,4 +1,4 @@
-function EditForm(meta, data, domEl, after, cbEdit) {
+function EditForm(meta, data, domEl, after, cbEdit, marg) {
     if (meta == null || domEl == null || data == null) {
         return null;
     };
@@ -7,18 +7,34 @@ function EditForm(meta, data, domEl, after, cbEdit) {
     this.edMeta = meta;
     this.edDomEl = domEl;
     this.cb = cbEdit;
+    this.list;
     this.windDataStyle;
+    this.marg_L;
+    this.marg_T;
     let fonSel = "#deeaff";
     
     this.makeEditForm = function() {
         this.edDomEl.innerHTML = "";
         let ik = this.edMeta.length;
+        if (marg) {
+            this.marg_T = "";
+            this.marg_L = "";
+        } else {
+            this.marg_T = "margin-top:5px;";
+            this.marg_L = "margin-left:7px;";
+        }
         for (let i = 0; i < ik; i++) {
             let ff = this.oneField(i);
             if (ff != null) {
                 this.edDomEl.append(ff);
             }
+            if (marg) {
+                this.marg_L = "margin-left:10px;";
+            } else {
+                this.marg_L = "margin-left:7px;";
+            }
         }
+
     }
     
     this.oneField = function(i) {
@@ -26,8 +42,9 @@ function EditForm(meta, data, domEl, after, cbEdit) {
         let br = "";
         if (met.br) {
             br = "clear:both;"
+            this.marg_L = "";
         }
-        let res = newDOMelement('<div style="float:left;margin-left:7px;margin-top:5px;' + br + '"></div>');
+        let res = newDOMelement('<div style="float:left;' + this.marg_L + this.marg_T + br + '"></div>');
         res.append(newDOMelement('<div style="color: #2228;font-size: 10px;margin-left:4px">' + met.title + '</div>'));
         let inp;
         let vv = this.edData[met.name];
@@ -42,12 +59,12 @@ function EditForm(meta, data, domEl, after, cbEdit) {
                 inp.addEventListener('keyup', () => {this.clickTextUp(event)}, false);
                 res.append(inp);
                 break;
-            case "After":
+            case "Navig":
                 if (after) {
                     return null;
                 } else {
-                    res = newDOMelement('<div style="float:left;margin-left:7px;clear:both;margin-top:15px;width:60px;height:30px;background-color:#1DACE9;' 
-                            +'border-radius:4px;cursor:pointer;"><div style="text-align: center;margin-top:7px;color:#fff">After</div></div>');
+                    res = newDOMelement('<div style="float:left;margin-left:7px;clear:both;margin-top:15px;padding-left:10px;padding-right:10px;height:30px;background-color:#1DACE9;' 
+                            +'border-radius:4px;cursor:pointer;"><div style="text-align: center;margin-top:7px;color:#fff">' + met.title + '</div></div>');
                     res.addEventListener('click', () => {this.clickAfter(event, met)}, false);
                 }
                 break;
@@ -77,6 +94,9 @@ function EditForm(meta, data, domEl, after, cbEdit) {
                 inp.addEventListener("change", () => {this.changeSelId(inp, met)}, false);
                 res.append(inp);
                 break;
+            case "SelectTypeUX":
+            
+                break;
             case "Select":
                 inp = formSelectForEditData(met.value, vv);
                 inp.style.cssText = "width:100px;font-size:12px;color:#110000;";
@@ -97,15 +117,11 @@ function EditForm(meta, data, domEl, after, cbEdit) {
                 res.append(inp);
                 break;
             case "Choose":
-                switch (met.what) {
-                    case "switch":
-                        inp = newDOMelement('<div style="width:60px;height:28px;background-color:#1DACE9;float:left;' 
-                                +'border-radius:4px;cursor:pointer;"><div style="text-align: center;margin-top:5px;color:#fff">Choose</div></div>');
-                        inp.addEventListener('click', () => {this.clickChooseSwitch(inp, met)}, false);
-                        inp.nameField = met.name;
-                        res.append(inp);
-                        break;
-                }
+                inp = newDOMelement('<div style="width:60px;height:28px;background-color:#1DACE9;float:left;' 
+                        +'border-radius:4px;cursor:pointer;"><div style="text-align: center;margin-top:5px;color:#fff">Choose</div></div>');
+                inp.addEventListener('click', () => {this.cb.clickChoose(inp, met)}, false);
+                inp.nameField = met.name;
+                res.append(inp);
                 break;
             case "Check":
                 if (vv == "") {
@@ -134,7 +150,6 @@ function EditForm(meta, data, domEl, after, cbEdit) {
                 setValueSelectBlock(inp, String(vv));
                 inp.nameField = met.name;
                 inp.cb = this;
-//                inp.addEventListener("click", () => {this.clickLitera(inp, met)}, false);
                 res.append(inp);
                 break;
             case "Litera":
@@ -188,7 +203,6 @@ function EditForm(meta, data, domEl, after, cbEdit) {
             this.edData[el.nameField] = 1;
             el.style.backgroundColor = fonSel;
         }
-//console.log("clickLitera this.edData[el.nameField]="+this.edData[el.nameField]);
         if (this.cb != null) {
             this.cb.cbEdit(el.nameField);
         }
@@ -261,8 +275,6 @@ function EditForm(meta, data, domEl, after, cbEdit) {
                 }
             }
         } 
-//        let el = event.target;
-//        edData[el.nameField] = el.value;
     }
     
     this.formEditColor = function(name, vv) {
@@ -288,195 +300,12 @@ function EditForm(meta, data, domEl, after, cbEdit) {
     }
     
     this.clickAfter = function(event, met) {
+        let name = met.name;
         let nnn = new FormNavigator();
-        if (this.edData.after == null || ! this.edData.after) {
-            this.edData.after = [];
+        if (this.edData[name] == null || ! this.edData[name]) {
+            this.edData[name] = [];
         }
-        nnn.init(this.edData.after, true);
-    }
-    
-    this.clickChooseSwitch = function(el, met) {
-        let wind = formWind(250, 500, 40, -400, "Switch styles");
-        let windParent = wind.closest(".dataWindow")
-        let h_footer = 30;
-        let controll = createFooter(h_footer);
-        wind.style.bottom = (h_footer + 1) + "px";
-        windParent.appendChild(controll);
-        let addControl = newDOMelement('<IMG SRC="img/add_blue.png" style="margin-left:20px;float:left;width:20px;margin-top:5px;cursor:pointer">');
-        addControl.addEventListener("click", () => {this.addItemStyle()}, false);
-        controll.appendChild(addControl);
-        
-        let edit = newDOMelement('<IMG SRC="img/edit.png" style="margin-left:15px;float:left;width:20px;margin-top:5px;cursor:pointer">');
-        edit.addEventListener("click", () => {this.editItemStyle(met)}, false);
-        controll.appendChild(edit);
-        
-        let choose = newDOMelement('<IMG SRC="img/choose.png" style="margin-left:15px;float:left;width:20px;margin-top:5px;cursor:pointer">');
-        choose.addEventListener("click", () => {this.chooseItemStyle(el, windParent)}, false);
-        controll.appendChild(choose);
-        
-        let scrollQu = formViewScrolY(wind);
-        let windData = scrollQu.getElementsByClassName("viewData")[0];
-        windData.style.marginLeft = "5px";
-        this.windDataStyle = windData;
-        let ik = ListStyleSpec.length;
-        for (let i = 0; i < ik; i++) {
-            let item = ListStyleSpec[i];
-            let itemV = this.oneStyleSwitch(item, i);
-            if (activeStyleSpecPos == i) {
-                itemV.style.backgroundColor = "#f6faff";
-            }
-            windData.append(itemV);
-        }
-        let scr = windData.closest('.viewport');
-        scr.scroll_y.resize();
-    }
-    
-    this.oneStyleSwitch = function(item, pos) {
-//        let pc = item.param;
-        let res = newDOMelement('<div style="width:100%;height:40px;border-bottom:1px solid #1dace9;display:flex;align-items:center;"></div>');
-        res.positStyle = pos;
-        res.addEventListener("click", () => {this.clickItemStyle(res)}, false);
-        this.viewOneContent(res, item);
-        return res;
-    }
-    
-    this.viewOneContent = function(res, item) {
-        let pc = item.param;
-        let bold = "";
-        if (pc.int_1 == 1) {
-            bold = "font-weight:bold;";
-        }
-        let it = "";
-        if (pc.int_2 == 1) {
-            it = "font-style:italic;";
-        }
-        let fs = "font-size:" + (14 * MEASURE) + "px;";
-        if (pc.int_3 != null && pc.int_3 != "") {
-            fs = "font-size:" + (pc.int_3 * MEASURE) + "px;";
-        }
-        let txt = newDOMelement('<div class="text" style="' + bold + it + fs + 'color:' + findColorByIndex(pc.color_1) + '">' + "Switch_" + item.id + '</div>');
-        res.append(txt);
-        let hTr = pc.int_4 * MEASURE;
-        let hThumb = pc.int_5 * MEASURE;
-        let marg = 0;
-        let margHoriz = 0;
-        if (hThumb < hTr) {
-            marg = (hTr - hThumb) / 2;
-            margHoriz = marg;
-        } else {
-            marg = (hThumb - hTr) / 2;
-        }
-        let wTrack = 65 * MEASURE;
-        let right = wTrack - hThumb - margHoriz;
-//        let grav = "center";
-        let trackTopBoot = "", thumbTopBoot = "";
-        let grav = pc.st_2;
-        let top_bott = "";
-        if (grav == "top") {
-            grav = "start";
-            top_bott = "margin-top:" + marg + "px;";
-        } else if (grav == "bottom") {
-            grav = "end";
-            top_bott = "margin-bottom:" + marg + "px;";
-        }
-        if (hThumb < hTr) {
-            thumbTopBoot = top_bott;
-        } else {
-            trackTopBoot = top_bott;
-        }
-        let scOff = newDOMelement('<div style="position:relative;height:100%;margin-left:50px;"></div>');
-        res.append(scOff);
-        let showTr = findColorByIndex(pc.color_2);
-        let showThumb = findColorByIndex(pc.color_5);
-        let contTrack = newDOMelement('<div style="position: absolute;right:0;top:0;width:' + wTrack + 'px;bottom:0;display:flex;align-items:' + grav + '"></div>');
-        scOff.appendChild(contTrack);
-        let track = newDOMelement('<div style="width:' + wTrack + 'px;height:' + hTr + 'px;background-color:' + showTr
-                +';border-radius:' + (hTr / 2) + 'px;' + trackTopBoot + '"></div>');
-        let contThumb = newDOMelement('<div style="position: absolute;right:' + right + 'px;top:0;width:' + hThumb 
-                + 'px;bottom:0;display:flex;align-items:' + grav + '"></div>');
-        scOff.appendChild(contThumb);
-        let thumb = newDOMelement('<div style="float:left;width:' + hThumb + 'px;height:' + hThumb + 'px;background-color:' + showThumb 
-                +';border-radius:' + (hThumb / 2) + 'px;' + thumbTopBoot + '"></div>');
-        contThumb.appendChild(thumb);
-        contTrack.appendChild(track);
-        
-        let scOn = newDOMelement('<div style="position:relative;height:100%;margin-left:50px;"></div>');
-        res.append(scOn);
-        showTr = findColorByIndex(pc.color_3);
-        showThumb = findColorByIndex(pc.color_6);
-        right = margHoriz;
-        contTrack = newDOMelement('<div style="position: absolute;right:0;top:0;width:' + wTrack + 'px;bottom:0;display:flex;align-items:' + grav + '"></div>');
-        scOn.appendChild(contTrack);
-        track = newDOMelement('<div style="width:' + wTrack + 'px;height:' + hTr + 'px;background-color:' + showTr
-                +';border-radius:' + (hTr / 2) + 'px;' + trackTopBoot + '"></div>');
-        contThumb = newDOMelement('<div style="position: absolute;right:' + right + 'px;top:0;width:' + hThumb 
-                + 'px;bottom:0;display:flex;align-items:' + grav + '"></div>');
-        scOn.appendChild(contThumb);
-        thumb = newDOMelement('<div style="float:left;width:' + hThumb + 'px;height:' + hThumb + 'px;background-color:' + showThumb 
-                +';border-radius:' + (hThumb / 2) + 'px;' + thumbTopBoot + '"></div>');
-        contThumb.appendChild(thumb);
-        contTrack.appendChild(track);
-        
-        let scEnabled = newDOMelement('<div style="position:relative;height:100%;margin-left:50px;"></div>');
-        res.append(scEnabled);
-        showTr = findColorByIndex(pc.color_4);
-        showThumb = findColorByIndex(pc.color_7);
-        right = wTrack - hThumb - margHoriz;
-        contTrack = newDOMelement('<div style="position: absolute;right:0;top:0;width:' + wTrack + 'px;bottom:0;display:flex;align-items:' + grav + '"></div>');
-        scEnabled.appendChild(contTrack);
-        track = newDOMelement('<div style="width:' + wTrack + 'px;height:' + hTr + 'px;background-color:' + showTr
-                +';border-radius:' + (hTr / 2) + 'px;' + trackTopBoot + '"></div>');
-        contThumb = newDOMelement('<div style="position: absolute;right:' + right + 'px;top:0;width:' + hThumb 
-                + 'px;bottom:0;display:flex;align-items:' + grav + '"></div>');
-        scEnabled.appendChild(contThumb);
-        thumb = newDOMelement('<div style="float:left;width:' + hThumb + 'px;height:' + hThumb + 'px;background-color:' + showThumb 
-                +';border-radius:' + (hThumb / 2) + 'px;' + thumbTopBoot + '"></div>');
-        contThumb.appendChild(thumb);
-        contTrack.appendChild(track);
-    }
-    
-    this.addItemStyle = function() {
-        let item = JSON.parse(JSON.stringify(ListStyleSpec[activeStyleSpecPos]));
-        item.id = ListStyleSpec.length;
-        ListStyleSpec.push(item);
-        let ch = this.windDataStyle.children;
-        ch[activeStyleSpecPos].style.backgroundColor = "";
-        activeStyleSpecPos = ListStyleSpec.length - 1;
-        let itemV = this.oneStyleSwitch(item, activeStyleSpecPos);
-        itemV.style.backgroundColor = "#f6faff";
-        this.windDataStyle.append(itemV);
-        let scr = this.windDataStyle.closest('.viewport');
-        scr.scroll_y.resize();
-    }
-    
-    this.editItemStyle = function(met) {
-        let wind = formWind(370, 500, 100, -20, "Switch style options", null, null, null, null, "");
-        let dd = new EditForm(met.meta, ListStyleSpec[activeStyleSpecPos].param, wind, null, this);
-        dd.makeEditForm();
-    }
-    
-    this.chooseItemStyle = function(el, ww) {
-        closeDataWindow(ww);
-        let item = ListStyleSpec[activeStyleSpecPos]
-        this.edData[el.nameField] = item.id;
-        if (this.cb != null) {
-            this.cb.cbEdit(el.nameField);
-        }
-    }
-    
-    this.cbEdit = function() {
-        let item = ListStyleSpec[activeStyleSpecPos];
-        let ch = this.windDataStyle.children;
-        let res = ch[activeStyleSpecPos];
-        res.innerHTML = "";
-        this.viewOneContent(res, item);
-    }
-    
-    this.clickItemStyle = function(el) {
-        let ch = this.windDataStyle.children;
-        ch[activeStyleSpecPos].style.backgroundColor = "";
-        activeStyleSpecPos = el.positStyle;
-        ch[activeStyleSpecPos].style.backgroundColor = "#f6faff";
+        nnn.init(this.edData[name], met.after);
     }
 
     this.clickCheckbox = function(check, el) {
@@ -495,6 +324,8 @@ function EditForm(meta, data, domEl, after, cbEdit) {
         }    
         return check;
     }
+    
+    this.makeEditForm();
 }
 
 function setPikEditFormColor(el) {

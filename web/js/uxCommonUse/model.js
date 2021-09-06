@@ -1,9 +1,10 @@
+var selectMethodInModel = "";
 let uxModel1 = '<div class="model_view" style="height:40px;">'
         +'<div style="float:left;"><div style="color:#2228;font-size: 10px;margin-left:4px">Method</div>'
         +'<select class="model_method type_screen select_';
 
 let uxModel2 = '" onchange="changeMethod(this)" style="width:120px;"><option>GET</option><option>POST</option><option>TEST</option>'
-            +'<option>JASON</option><option>ARGUMENTS</option><option>PARAMETERS</option>'
+            +'<option>JASON</option><option>PARAMETERS</option>'
             +'<option>GLOBAL</option><option>ARGUMENTS</option><option>PROFILE</option><option>FIELD</option><option>GET_DB</option>'
             +'<option>POST_DB</option><option>INSERT_DB</option><option>DEL_DB</option><option>UPDATE_DB</option><option>NULL</option></select>'
         +'</div>'
@@ -46,7 +47,7 @@ function dataDescr(v, h, addType) {
             +'<img onclick="addDataType();" style="margin-top:6px;margin-left:5px;float:left;clear:both;cursor:pointer;" width="16" height="16" src="img/add_blue.png">'
         +'</div>'
     }
-    return '<div style="float:left;margin-left:10px;">'
+    return '<div class="data_descr" style="float:left;margin-left:10px;">'
         +'<div style="float:left;width:1px;height:26px;margin-top:13px;background-color:var(--c_separator)"></div>'
         +'<img onclick="editDataModel(this, 0)" width="20" height="20" src="img/edit_meta.png" style="margin-top:16px;float:left;margin-left:10px;cursor:pointer;" onmouseover="tooltipHelpOver(this,' + "'Data Description'" + ')">'
         +'<div style="float:left;">'
@@ -118,6 +119,7 @@ function changeMethod(el) {
     currentComponentDescr.model.method = el.selectedIndex;
     let el_1 = el.parentElement;
     let el_2 = el_1.parentElement.getElementsByClassName("param_method");
+    selectMethodInModel = "";
     if (el_2 != null) {
         let pm = el_2[0];
         switch (el.options[el.selectedIndex].value) {
@@ -138,6 +140,7 @@ function changeMethod(el) {
                 break;
             case "TEST":
                 pm.innerHTML = pmTest;
+                selectMethodInModel = "TEST";
                 break;
             case "PARAMETERS":
                 pm.innerHTML = pmParamUrl;
@@ -151,7 +154,7 @@ function changeMethod(el) {
     }
 }
 
-function isValidModel(mod, tab) {
+function isValidModel(mod, tab, viewId) {
     let err = {text:"",error:0};
     if (mod.method < 2) {
         let pr = mod.progr;
@@ -159,36 +162,38 @@ function isValidModel(mod, tab) {
             if (pr != "standard" && pr != "no") {
                 let p = getCompByViewId(layout.children, pr);
                 if (p == null) {
-                    err.text += txtError(2, tab, "component " + compD.view.viewId + " error in progress " + pr);
+                    err.text += txtError(2, tab, "component " + viewId + " error in progress " + pr);
                     err.error = 2;
                 }
             }
         }
         if (mod.url == null || mod.url == "") {
-            err.text += txtError(2, tab, "component " + compD.view.viewId + " URL not specified  " + pr);
+            err.text += txtError(2, tab, "component " + viewId + " URL not specified");
             err.error = 2;
         }
     }
     if (mod.method == 6 && (mod.param == null || mod.param == "") ) {
-            err.text += txtError(2, tab, "component " + compD.view.viewId + " parameters not specified  " + pr);
+            err.text += txtError(2, tab, "component " + viewId + " parameters not specified");
             err.error = 2;
     }
     return err;
 }
 
 function editDataModel(el, ind) {
-    if (hostDescr == "Third party API") {
-        let num;
-        let p = el.parentElement;
-        if (ind != null) {
-            num = 0;
+    if (selectMethodInModel == "TEST") {
+        editDataWind(metaModel, currentComponentDescr.model.data[0], cbSaveDataModel);
+    } else if (hostDescr == "Third party API") {
+            let num;
+            let p = el.parentElement;
+            if (ind != null) {
+                num = 0;
+            } else {
+                num = getNumDataTYpe(p) + 1;
+            }
+            editDataWind(metaModel, currentComponentDescr.model.data[num], cbSaveDataModel);
         } else {
-            num = getNumDataTYpe(p) + 1;
+            editQueryWind();
         }
-        editDataWind(metaModel, currentComponentDescr.model.data[num], cbSaveDataModel);
-    } else {
-        editQueryWind();
-    }
 }
 
 function getNumDataTYpe(el) {

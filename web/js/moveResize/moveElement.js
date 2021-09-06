@@ -170,7 +170,7 @@ function addNewElement(target, el) {
 
 function createNewEl() {
     var container = document.createElement('div');
-    onmousedown
+//  ??????    onmousedown
     container.innerHTML = '<div class="element" onmousedown="resizeContour(event)" style="position: absolute; outline: 2px solid #aaa; overflow: hidden"></div>'
     return container.firstChild;
 }

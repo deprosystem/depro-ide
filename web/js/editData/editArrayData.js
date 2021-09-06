@@ -368,7 +368,12 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
                 vv = "";
             }
         }
-        let selSel = formSelectViewId(vv);
+        let selSel;
+        if (met.type_view == null) {
+            selSel = formSelectViewId(vv);
+        } else {
+            selSel = formSelectViewId(vv, met.type_view);
+        }
         selSel.style.width = met.len + "px";
         selSel.style.border = "none";
         selSel.style.backgroundColor = "#0000";
@@ -662,7 +667,14 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
     }
     
     function closeWindEditData() {
-        let el = edDomEl.parentElement;
-        el.parentNode.removeChild(el);
+//        let el = edDomEl.parentElement;
+//        el.parentNode.removeChild(el);
+        
+        
+        let el_1 = edDomEl.closest('.dataWindow');
+        if (el_1.panelFon != null) {
+            el_1.panelFon.remove();
+        }
+        el_1.remove();
     }
 }

@@ -6,7 +6,10 @@ import android.ComponParam;
 import android.Corners;
 import android.Drawable;
 import android.ItemChange;
+import android.ItemSwitch;
+import android.ListSwitchParam;
 import android.SeekBarParam;
+import android.SwitchParam;
 import android.TabLayout;
 import com.google.gson.JsonSyntaxException;
 import db.ProjectDB;
@@ -83,6 +86,8 @@ public class ExportResult extends BaseServlet {
         parSave.styles = gson.fromJson(projectM.style, ListItemStyle.class);
         parSave.drawable = gson.fromJson(projectM.drawable, ListItemResurces.class);
         parSave.strings = gson.fromJson(projectM.strings, ListItemResurces.class);
+        parSave.switchSpec = gson.fromJson(projectM.style_spec, ListSwitchParam.class);
+        parSave.styleCheck = gson.fromJson(projectM.style_check, ListSwitchParam.class);
         parSave.addApp = new ArrayList();
         parSave.addPermish = new HashSet();
         String basePath = ds.patchOutsideProject;
@@ -111,7 +116,7 @@ public class ExportResult extends BaseServlet {
                 createLayout(basePath + resPath, parSave);
                 createValue(basePath + resPath, parSave);
                 createDrawable(basePath + resPath, parSave);
-                createSwitch(realPath, )
+                createSwitch(realPath + "/android_base/", basePath + resPath, parSave);
                 
                 setFileAndroid(realPath + "/android_base/gradle_mod", basePath + userProjPath + "/app/build.gradle", arChange);
                 setFileAndroid(realPath + "/android_base/start_activity", basePath + javaPath + "/" + parSave.nameClassStart + ".java", arChange);
@@ -583,7 +588,28 @@ public class ExportResult extends BaseServlet {
                             break;
                         case Constants.PLUS_MINUS:
                             navList = formNavigator(comp.navigator, tab20, ",\n" + tab16);
-                            declare.add(tab12 + ".plusMinus(R.id." + comp.view.viewId + ", R.id." + comp.view.plusId + ", R.id." + comp.view.minusId + navList + endComp);
+                            if (navList.length() == 0) {
+                                navList = ", null";
+                            }
+                            List<MenuItem> mult = comp.model.menuList.list;
+                            String multStr = ", null";
+                            String sepMult = ", ";
+                            if (ik > 0) {
+                                multStr = "";
+                                for (MenuItem mi : mult) {
+                                    String fRes = "";
+                                    if (mi.screen != null && mi.screen.length() > 0) {
+                                        fRes = mi.screen;
+                                    }
+                                    String stVi = "0";
+                                    if ( mi.id.trim().length() > 0) {
+                                        stVi = "R.id." + mi.id;
+                                    }
+                                    multStr += sepMult + "new Multiply(" + stVi + ", \"" + mi.title + "\", \"" + fRes + "\")";
+                                }
+                            } 
+                            declare.add(tab12 + ".plusMinus(R.id." + comp.view.viewId + ", R.id." + comp.view.plusId + ", R.id." + comp.view.minusId 
+                                    + navList + multStr + endComp);
                             break;
                     }
                 }
@@ -726,9 +752,7 @@ public class ExportResult extends BaseServlet {
         res += sep + "backOk(R.id." + opt.enterId + ")";
         if (ik > 0) {
             for (int i = 0; i < ik; i++) {
-//                if ( ! navigator.get(i).after) {
-                    res += sep + formHandler(navigator, i, false);
-//                }
+                res += sep + formHandler(navigator, i, false);
             }
         }
         res += ")";
@@ -743,7 +767,6 @@ public class ExportResult extends BaseServlet {
             for (int i = 0; i < ik; i++) {
                 Handler hh = navigator.get(i);
                 if ( hh.viewId.equals("Execute at startup screen")) {
-//                if ( ! hh.after && hh.viewId.equals("Execute at startup screen")) {
                     res += sep + formHandler(navigator, i, false);
                     sep = ",\n" + tab;
                 }
@@ -762,7 +785,6 @@ public class ExportResult extends BaseServlet {
             for (int i = 0; i < ik; i++) {
                 Handler hh = navigator.get(i);
                 if ( ! hh.viewId.equals("Execute at startup screen")) {
-//                if ( ! hh.after && ! hh.viewId.equals("Execute at startup screen")) {
                     res += sep + formHandler(navigator, i, false);
                     sep = ",\n" + tab;
                 }
@@ -800,6 +822,7 @@ public class ExportResult extends BaseServlet {
             com = ", ";
         }
         String comSh = "";
+        String stAfter;
         if (stId.length() > 0) {
             comSh = ", ";
         }
@@ -810,7 +833,7 @@ public class ExportResult extends BaseServlet {
                 } else {
                     sep = "";
                 }
-                String stAfter = "";
+                stAfter = "";
                 if (hh.after != null && hh.after.size() > 0) {
                     stAfter = ", after(";
                     String sepAft = "";
@@ -821,26 +844,6 @@ public class ExportResult extends BaseServlet {
                     }
                     stAfter += ")";
                 }
-/*
-                int i_1 = i + 1;
-
-                if (i_1 < ik) {
-                    if (navigator.get(i_1).after) {
-                        stAfter = ", after(";
-                        String sepAft = "";
-                        for (int j = i_1; j < ik; j++) {
-                            Handler hAfter = navigator.get(j);
-                            if (hAfter.after) {
-                                stAfter += sepAft + formHandler(navigator, j, menu);
-                                sepAft = ",\n" + tab20;
-                            } else {
-                                break;
-                            }
-                        }
-                        stAfter += ")";
-                    }
-                }
-*/
                 String mustValid = "";
                 if (hh.param_1 != null && hh.param_1.length() > 0) {
                     mustValid = formMustValid(hh.param_1);
@@ -856,6 +859,34 @@ public class ExportResult extends BaseServlet {
                 break;
             case "show":
                 res = "show(" + stId + comSh + "R.id." + hh.id + ")";
+                break;
+            case "checked":
+                if (hh.after != null && hh.nav_1 != null) {
+                    stAfter = null;
+                    if (hh.after != null && hh.after.size() > 0) {
+                        stAfter = ", after(";
+                        String sepAft = "";
+                        int ak = hh.after.size();
+                        for (int a = 0; a < ak; a++) {
+                            stAfter += sepAft + formHandler(hh.after, a, menu);
+                            sepAft = ",\n" + tab20;
+                        }
+                        stAfter += ")";
+                    }
+                    
+                    String stNav = null;
+                    if (hh.nav_1 != null && hh.nav_1.size() > 0) {
+                        stNav = ", after(";
+                        String sepAft = "";
+                        int ak = hh.nav_1.size();
+                        for (int a = 0; a < ak; a++) {
+                            stNav += sepAft + formHandler(hh.nav_1, a, menu);
+                            sepAft = ",\n" + tab20;
+                        }
+                        stNav += ")";
+                    }
+                    res = "checked(" + stId + stAfter + stNav + ")";
+                }
                 break;
             case "addRecord":
                 String vId = "0";
@@ -1465,9 +1496,11 @@ public class ExportResult extends BaseServlet {
                         writer.write(tab + "android:background=\""+ findColorByIndex(p.background, parSave.colors) + "\"");
                     }
                 } else {
+/*
                     if (first) {
                         writer.write(tab + "android:background=\"#ffffff\"");
                     }
+*/
                 }
             }
 
@@ -1628,7 +1661,9 @@ public class ExportResult extends BaseServlet {
                         writer.write(tab + "app:titleColor=\"" + findColorByIndex(p.textColor, parSave.colors) + "\"");
                         break;
                     default:
-                        writer.write(tab + "android:textColor=\"" + findColorByIndex(p.textColor, parSave.colors) + "\"");
+                        if (p.textColor != 12) {
+                            writer.write(tab + "android:textColor=\"" + findColorByIndex(p.textColor, parSave.colors) + "\"");
+                        }
                         break;
                 }
             }
@@ -1888,12 +1923,12 @@ public class ExportResult extends BaseServlet {
                     }
                     break;
                 case Constants.SWITCH:
-                    if (p.componParam != null) {
-                        ComponParam cp = p.componParam;
-                        if (cp.st_1 != null && cp.st_1.length() > 0) {
-                            writer.write(tab + "android:text=\"" + cp.st_1 + "\"");
+                    SwitchParam cp = getItemSwitch(p.int_1, parSave.switchSpec);
+                    if (cp != null) {
+                        if (p.st_1 != null && p.st_1.length() > 0) {
+                            writer.write(tab + "android:text=\"" + p.st_1 + "\"");
                         }
-                        if (cp.color_1 != null) {
+                        if (cp.color_1 != null && cp.color_1 != 12) {
                             writer.write(tab + "android:textColor=\"" + findColorByIndex(cp.color_1, parSave.colors) + "\"");
                         }
                         String sepStyle = "";
@@ -1914,8 +1949,78 @@ public class ExportResult extends BaseServlet {
                         if (cp.st_2 != null && ! cp.st_2.equals("center")) {
                             writer.write(tab + "android:gravity=\"" + cp.st_2 + "\"");
                         }
-                        writer.write(tab + "android:thumb=\"@drawable/switch_thumb_" + p.int_1 + "sp\"");
-                        writer.write(tab + "app:track=\"@drawable/switch_track_" + p.int_1 + "sp\"");
+                        if (p.st_3 != null && p.st_3.equals("On")) {
+                            writer.write(tab + "android:checked=\"true\"");
+                        }
+                        if (p.bool_1 != null && ! p.bool_1) {
+                            writer.write(tab + "android:enabled=\"false\"");
+                        }
+                        writer.write(tab + "android:thumb=\"@drawable/switch_thumb_" + p.int_1 + "\"");
+                        writer.write(tab + "app:track=\"@drawable/switch_track_" + p.int_1 + "\"");
+                    }
+                    break;
+                case Constants.CHECKBOX:
+                    cp = getItemSwitch(p.int_1, parSave.styleCheck);
+                    if (cp != null) {
+                        if (p.st_1 != null && p.st_1.length() > 0) {
+                            writer.write(tab + "android:text=\"" + p.st_1 + "\"");
+                        }
+                        if (cp.color_1 != null && cp.color_1 != 12) {
+                            writer.write(tab + "android:textColor=\"" + findColorByIndex(cp.color_1, parSave.colors) + "\"");
+                        }
+                        String sepStyle = "";
+                        String styleSw = "";
+                        if (cp.int_1 != null && cp.int_1 == 1) {
+                            styleSw = "bold";
+                            sepStyle = "|";
+                        }
+                        if (cp.int_2 != null && cp.int_2 == 1) {
+                            styleSw += sepStyle + "italic";
+                        }
+                        if (styleSw.length() > 0) {
+                            writer.write(tab + "android:textStyle=\"" + styleSw + "\"");
+                        }
+                        if (cp.int_3 != null && cp.int_3 != 14) {
+                            writer.write(tab + "android:textSize=\"" + cp.int_3 + "sp\"");
+                        }
+                        if (cp.bool_1 != null && cp.bool_1) {
+                            writer.write(tab + "android:layoutDirection=\"rtl\"");
+                        }
+                        String gravV = "", gravH = "", gravRes = "";
+                        if (cp.st_2 != null && ! cp.st_2.equals("top")) {
+                            gravV = cp.st_2;
+                        }
+                        if (cp.st_3 != null && ! cp.st_3.equals("left")) {
+                            gravH = cp.st_3;
+                        }
+                        if (gravV.equals("center") && gravH.equals("center")) {
+                            gravRes = "center";
+                        } else {
+                            if (gravV.equals("center")) {
+                                gravV = "center_vertical";
+                            }
+                            if (gravH.equals("center")) {
+                                gravH = "center_horizontal";
+                            }
+                            String sepGr = "";
+                            if (gravV.length() > 0 && gravH.length() > 0) {
+                                sepGr = "|";
+                            }
+                            gravRes = gravV + sepGr + gravH;
+                        }
+                        if (gravRes.length() > 0) {
+                            writer.write(tab + "android:gravity=\"" + gravRes + "\"");
+                        }
+                        
+                        if (p.st_3 != null && p.st_3.equals("On")) {
+                            writer.write(tab + "android:checked=\"true\"");
+                        }
+                        if (p.bool_1 != null && ! p.bool_1) {
+                            writer.write(tab + "android:enabled=\"false\"");
+                        }
+                        if (cp.color_2 != null || cp.color_3 != null) {
+                            writer.write(tab + "android:theme=\"@style/check_style_" + p.int_1 + "\"");
+                        }
                     }
                     break;
                 case Constants.ELLIPSIS:
@@ -1971,16 +2076,6 @@ public class ExportResult extends BaseServlet {
                             writer.write(tab + "app:fadedScreenColor=\"" + findColorByIndex(p.componParam.color_1, parSave.colors) + "\"");
                         }
                     }
-/*
-                    if (p.sheetParam != null) {
-                        if (p.sheetParam.noSwipe) {
-                            writer.write(tab + "app:noSwipeHide=\"true\"");
-                        }
-                        if (p.sheetParam.noBP) {
-                            writer.write(tab + "app:noBackPressedHide=\"true\"");
-                        }
-                    }
-*/
                     writer.write(tab + "app:viewId=\"@layout/view_" + parSave.currentScreen.toLowerCase() + "_" + p.viewId + "\"");
                     break;
                 case Constants.MENU_B:
@@ -2040,14 +2135,6 @@ public class ExportResult extends BaseServlet {
                         if (p.componParam.minV != null) {
                             writer.write(tab + "app:minValue=\"" + p.componParam.minV + "\"");
                         }
-/*
-                        if (p.componParam.minusId != null && p.componParam.minusId.length() > 0) {
-                            writer.write(tab + "app:minusViewId=\"@id/" + p.componParam.minusId + "\"");
-                        }
-                        if (p.componParam.plusId != null && p.componParam.plusId.length() > 0) {
-                            writer.write(tab + "app:plusViewId=\"@id/" + p.componParam.plusId + "\"");
-                        }
-*/
                         if (p.componParam.resultId != null && p.componParam.resultId.length() > 0) {
                             writer.write(tab + "app:viewMirror=\"@id/" + p.componParam.resultId + "\"");
                         }
@@ -2077,10 +2164,21 @@ public class ExportResult extends BaseServlet {
         return d + "dp";
     }
     
+    private SwitchParam getItemSwitch(int ind, ListSwitchParam lsp) {
+        int ik = lsp.size();
+        for (int i = 0; i < ik; i++) {
+            ItemSwitch item = lsp.get(i);
+            if (item.id == ind) {
+                item.isInLayouts = true;
+                return item.param;
+            }
+        }
+        return null;
+    }
+    
     private String dimens(String d) {
         return dimens(Integer.valueOf(d));
     }
-    
 
     private String findColorByIndex(int colorInd, ListItemResurces colors) {
         for (ItemResurces ir : colors) {
@@ -2231,6 +2329,24 @@ public class ExportResult extends BaseServlet {
                     writer.write("    </style>\n");
                 }
             }
+            ListSwitchParam lsp = parSave.styleCheck;
+            if (lsp != null) {
+                int ik = lsp.size();
+                for (int i = 0; i < ik; i++) {
+                    ItemSwitch item = lsp.get(i);
+                    if (item.isInLayouts) {
+                        SwitchParam sp = item.param;
+                        writer.write("<style name=\"check_style_" + item.id + "\">\n");
+                        if (sp.color_2 != null && sp.color_2 != 3) {
+                            writer.write("    <item name=\"colorControlNormal\">" + findColorByIndex(sp.color_2, parSave.colors) + "</item>\n");
+                        }
+                        if (sp.color_3 != null && sp.color_3 != 0) {
+                            writer.write("    <item name=\"colorControlActivated\">" + findColorByIndex(sp.color_3, parSave.colors) + "</item>\n");
+                        }
+                        writer.write("    </style>\n");
+                    }
+                }
+            }
             writer.write("</resources>");
             writer.flush();
             writer.close();
@@ -2297,6 +2413,44 @@ public class ExportResult extends BaseServlet {
         if (parSave.drawable != null && parSave.drawable.size() > 0) {
             for (ItemResurces ir : parSave.drawable) {
                 createOneDrawable(path, ir, parSave.colors);
+            }
+        }
+    }
+    
+    private void createSwitch(String prot, String resPath, ParamSave parSave) {
+        String path = resPath + "/drawable/";
+        ListItemResurces colors = parSave.colors;
+        ListSwitchParam lsp = parSave.switchSpec;
+        if (lsp == null) return;
+        int ik = lsp.size();
+        for (int i = 0; i < ik; i++) {
+            ItemSwitch item = lsp.get(i);
+            if (item.isInLayouts) {
+                SwitchParam sp = item.param;
+                int hTr = sp.int_4, diam = sp.int_5;
+                int radTh = diam / 2;
+                int radTr = hTr / 2;
+                String stroke = "";
+                if (radTh < radTr) {
+                    stroke = "<stroke android:width=\"" + dimens(radTr - radTh) + "\" android:color=\"#0000\" />";
+                }
+                ItemChange[] arChange = new ItemChange[] {
+                    new ItemChange("#colOn#", findColorByIndex(sp.color_6, colors)),
+                    new ItemChange("#colOff#", findColorByIndex(sp.color_5, colors)),
+                    new ItemChange("#col_enabl#", findColorByIndex(sp.color_7, colors)),
+                    new ItemChange("#radius#", dimens(radTr)),
+                    new ItemChange("#height#", dimens(hTr)),
+                    new ItemChange("#stroke#", stroke)
+                };
+                setFileAndroid(prot + "thumb", path + "switch_thumb_" + item.id + ".xml", arChange);
+                arChange = new ItemChange[] {
+                    new ItemChange("#colOn#", findColorByIndex(sp.color_3, colors)),
+                    new ItemChange("#colOff#", findColorByIndex(sp.color_2, colors)),
+                    new ItemChange("#col_enabl#", findColorByIndex(sp.color_4, colors)),
+                    new ItemChange("#radius#", dimens(radTr)),
+                    new ItemChange("#height#", dimens(hTr))
+                };
+                setFileAndroid(prot + "track", path + "switch_track_" + item.id + ".xml", arChange);
             }
         }
     }

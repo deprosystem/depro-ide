@@ -4,6 +4,8 @@ var listEdit;
 var listDimens;
 var ListStyleSpec;
 var activeStyleSpecPos = -1;
+var ListStyleCheck;
+var activeStyleCheckPos = -1;
 var listSaveElements;
 var currentProject;
 var currentScreen;
@@ -18,6 +20,7 @@ var isSystemChange = false;
 var isStringsChange = false;
 var isStylesChange = false;
 var isStylesSpecChange = false;
+var isStylesCheckChange = false;
 var isDrawableChange = false;
 var isDimensChange = false;
 var isUX = true;
@@ -57,6 +60,9 @@ function formJsonProject() {
     }
     if (isStylesSpecChange) {
         par.style_spec = JSON.stringify(ListStyleSpec);
+    }
+    if (isStylesCheckChange) {
+        par.style_check = JSON.stringify(ListStyleCheck);
     }
     if (isDrawableChange) {
         par.drawable = JSON.stringify(listDrawable);
@@ -275,6 +281,13 @@ function cbCreateProjectDop() {
         isStylesSpecChange = true;
     }
     activeStyleSpecPos = ListStyleSpec.length - 1;
+    if (currentProject.style_check != null) {
+        ListStyleCheck = JSON.parse(currentProject.style_check);
+    } else {
+        ListStyleCheck = [{id:0,type:"check",param:{color_1:12,color_2:12,color_3:1,int_1:0,int_2:0,int_3:14,st_2:"top"}}];
+        isStylesCheckChange = true;
+    }
+    activeStyleCheckPos = ListStyleCheck.length - 1;
     listValueAppParam = JSON.parse(currentProject.appParam);
     if (currentProject.style != null) {
         listStyle = JSON.parse(currentProject.style);

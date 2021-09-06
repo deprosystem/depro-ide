@@ -15,7 +15,6 @@ function uxMenuBottom() {
     }
     
     this.addComponent = function (componId, viewId) {
-//console.log("uxMenuBottom componId="+componId+"<<");
         let tt = this.param.name;
         currentComponent = {type: tt, componId: componId, viewId:viewId, typeUxUi: "ux", componParam:{type:1},
                 typeFull: {name: tt, typeBlock: 0}, gravLayout: {h: 3, v: 2}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}},
@@ -56,7 +55,6 @@ function uxMenuBottom() {
                     let ii = scrIcon.lastIndexOf("/");
                     let namIc = path.substring(ii + 1);
                     namIc = namIc.substring(0, nam.indexOf('.'));
-console.log("namIc="+namIc+"<<");
                     let ik = listImage.length;
                     if (noIconInList(namIc)) {
                         err.text += txtError(2, tab, "component " + comp.view.viewId + " menu item " + m + " no such image exists " + namIc);
@@ -89,7 +87,6 @@ console.log("namIc="+namIc+"<<");
 
 function noIconInList(scrIcon) {
     if (listImage == null) {
-console.log("No listImage");
         listImage = [];
     }
     for (let i = 0; i < ik; i++) {
@@ -97,7 +94,6 @@ console.log("No listImage");
         let ii = path.lastIndexOf("/");
         let nam = path.substring(ii + 1);
         nam = nam.substring(0, nam.indexOf('.'));
-console.log("III="+i+" nam="+nam+"<<");
         if (nam == scrIcon) {
             return false;
         }

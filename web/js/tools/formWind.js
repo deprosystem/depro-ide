@@ -39,7 +39,11 @@ function formWind(w, h, t, l, tit, scroll, cbClose, footName, footListener, colo
         bott = h_footerWind + 1;
         ww.appendChild(controll);
         let buttonOk = createButtonBlue(footName);
-        buttonOk.addEventListener("click", function(){footListener();closeDataWindow(ww);}, true);
+        if (footListener.cbWind != null) {
+            buttonOk.addEventListener("click", function(){footListener.cbWind();closeDataWindow(ww);}, false);
+        } else {
+            buttonOk.addEventListener("click", function(){footListener();closeDataWindow(ww);}, false);
+        }
         controll.appendChild(buttonOk);
         let buttonCancel = createButtonWeite('Cancel', 70);
         buttonCancel.addEventListener("click", function(event){closeDataWindow(ww);}, true);

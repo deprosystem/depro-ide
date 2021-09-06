@@ -1,5 +1,3 @@
-//    var uiCurrentComponent;
-
 function myComponentDescr(id) {      //      currentComponentDescr
     let ik = currentScreen.components.length;
     if (ik > 0) {
@@ -32,6 +30,18 @@ function getCompById(ch, id) {
                     return res;
                 }
             }
+        }
+    }
+    return null;
+}
+
+function getComponentByViewId(id) {
+    let ch = currentScreen.components;
+    let ik = ch.length;
+    for (let i = 0; i < ik; i++) {
+        let chi = ch[i];
+        if (chi.view.viewId == id) {
+            return chi;
         }
     }
     return null;
@@ -98,7 +108,6 @@ function checkValidityLinks(ch, tab) {
                     chi.componParam.srcContour == null || chi.componParam.srcContour == "") {
                 res += txtError(2, tab, vId + chi.type + " Item rating no images set");
                 letErr = 2;
-//                res += tab + vId + chi.type + " Item rating no images set <br>";
             }
         }
         if (chi.below != null && chi.below != "") {
@@ -108,7 +117,6 @@ function checkValidityLinks(ch, tab) {
                 if (letErr < 1) {
                     letErr = 1;
                 }
-//                res += tab + vId + chi.type + " below." + chi.below + " no resource<br>";
             }
         }
         if (chi.above != null && chi.above != "") {
@@ -118,7 +126,6 @@ function checkValidityLinks(ch, tab) {
                 if (letErr < 1) {
                     letErr = 1;
                 }
-//                res += tab + vId + chi.type + " above." + chi.above + " no resource<br>";
             }
         }
         if (chi.toRightOf != null && chi.toRightOf != "") {
@@ -128,7 +135,6 @@ function checkValidityLinks(ch, tab) {
                 if (letErr < 1) {
                     letErr = 1;
                 }
-//                res += tab + vId + chi.type + " toRightOf." + chi.toRightOf + " no resource<br>";
             }
         }
         if (chi.toLeftOf != null && chi.toLeftOf != "") {
@@ -138,7 +144,6 @@ function checkValidityLinks(ch, tab) {
                 if (letErr < 1) {
                     letErr = 1;
                 }
-//                res += tab + vId + chi.type + " toLeftOf." + chi.toLeftOf + " no resource<br>";
             }
         }
         chN = chi.children;
@@ -147,7 +152,13 @@ function checkValidityLinks(ch, tab) {
             if (chN.length > 1) {
                 tt += "&ensp;";
             }
-            res += checkValidityLinks(chN, tt);
+            let resEr_1 = checkValidityLinks(chN, tt);
+            if (resEr_1.lev > 0) {
+                res += txtError(1, tab, resEr_1.txt);
+                if (letErr < resEr_1.lev) {
+                    letErr = resEr_1.lev;
+                }
+            }
         }
     }
     let resErr = {lev:letErr,txt:res};

@@ -1,46 +1,20 @@
 var TYPE_TEXT = 0, TYPE_INT = 1, TYPE_FLOAT = 3, TYPE_BOOLEAN = 4, TYPE_SELECT = 5, TYPE_IMG = 6, ID_SELECT = 7, ID_SELECT_HANDL = 8, ID_SELECT_HANDL_SCR = 9;
 
-var handlers = "start,back,backOk,actual,assignValue,setValueParam,setVar,restoreVar,hide,show,addRecord,delRecord,dialUp,springScale";
+var handlers = "start,back,backOk,actual,assignValue,setValueParam,setVar,checked,restoreVar,hide,show,addRecord,delRecord,dialUp,springScale";
 var typeSource = "PARAM,SIZE,LOCALE,SYSTEM_TIME,GROUPP_PARAM,GLOBAL_VAR";
 
 var metaPager = {titleForm:"Данные для TabLayout", description:
     [{name: "title", title:"Text tab",len:15},
     {name: "screen", title:"Screen",len:15,valid:{latin:true}}]
     }
-/*
-var metaNavigator = {titleForm:"Navigator", description:
-    [{name: "viewId", title:"Элемент",len:100,type:ID_SELECT_HANDL},
-    {name: "handler", title:"Обработчик",len:100,type:TYPE_SELECT,select:handlers},
-    {name: "param", title:"Парам",len:15,valid:{latin:true}},
-    {name: "param_1", title:"Additions",len:17,valid:{latin:true}},
-    {name: "id", title:"id",len:100,type:ID_SELECT},
-    {name: "after", title:"After",type:TYPE_BOOLEAN,marg:20}]
-    }
-    
-var metaNavigatorScreen = {titleForm:"Navigator", description:
-    [{name: "viewId", title:"Элемент",len:150,type:ID_SELECT_HANDL_SCR},
-    {name: "handler", title:"Обработчик",len:100,type:TYPE_SELECT,select:handlers},
-    {name: "param", title:"Парам",len:15,valid:{latin:true}},
-    {name: "param_1", title:"Additions",len:17,valid:{latin:true}},
-    {name: "id", title:"id",len:100,type:ID_SELECT},
-    {name: "after", title:"After",type:TYPE_BOOLEAN,marg:20}]
-    }
-*/
+
 var metaInitData = {titleForm:"Navigator", description:
     [{name: "typeSource", title:"Data source",len:80,type:TYPE_SELECT,select:typeSource},
     {name: "viewId", title:"Элемент",len:100,type:ID_SELECT},
     {name: "param", title:"Парам",len:15},
     {name: "idComp", title:"Component id",len:100,type:ID_SELECT}]
     }
-/*
-var metaNavigatorMenuB = {titleForm:"Navigator", description:
-    [{name: "viewId", title:"Элемент",len:4,type:TYPE_INT},
-    {name: "handler", title:"Обработчик",len:100,type:TYPE_SELECT,select:handlers},
-    {name: "param", title:"Парам",len:15,valid:{latin:true}},
-    {name: "id", title:"id",len:100,type:ID_SELECT},
-    {name: "after", title:"After",type:TYPE_BOOLEAN,marg:20}]
-    }
-*/
+
 var metaMenu = {titleForm:"Menu", description:
     [{name: "icon", title:"Icon",len:20,type:TYPE_IMG,marg:5},
     {name: "title", title:"Title",len:20},
@@ -59,8 +33,8 @@ var metaModel = {titleForm:"Data formation", description:
     {name: "notShow", title:"not show",type:TYPE_BOOLEAN,marg:25}]
     }
     
-function editDataWind(meta, data, obrSave, dopEl, w, h, l) {
-    let ww = 400, hh = 300, ll = 550;
+function editDataWind(meta, data, obrSave, dopEl, w, h, l, t, colorFon) {
+    let ww = 400, hh = 300, ll = 550, tt = 50;
     if (w != null) {
         ww = w;
     }
@@ -70,7 +44,10 @@ function editDataWind(meta, data, obrSave, dopEl, w, h, l) {
     if (l != null) {
         ll = l;
     }
-    let windMenu = formWind(ww, hh, 40, ll, meta.titleForm);
+    if (t != null) {
+        tt = t;
+    }
+    let windMenu = formWind(ww, hh, tt, ll, meta.titleForm, null, null, null, null, colorFon);
     let editDat = new EditData(meta.description, data, windMenu, obrSave, dopEl);
     windMenu.parentElement.style.width = (editDat.getWidthW() + 10) + "px";
     if (dopEl != null) {

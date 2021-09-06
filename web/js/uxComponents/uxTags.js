@@ -80,11 +80,6 @@ function createViewForTagsH(el) {
                     let p = currentElement.android;
                     p.viewElement = currentElement;
                     p.leftMarg = margLeft;
-/*
-                    if (i == ik) {
-                        p.rightMarg = 10;
-                    }
-*/
                     toRightOf = item.name;
                     p.gravLayout.v = CENTER;
                     margLeft = 6;

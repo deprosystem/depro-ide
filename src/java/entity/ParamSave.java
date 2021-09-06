@@ -1,5 +1,6 @@
 package entity;
 
+import android.ListSwitchParam;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +22,7 @@ public class ParamSave {
     public ListScreen sreens;
     public ListItemResurces colors, drawable, strings;
     public List<ItemStyle> styles;
+    public ListSwitchParam switchSpec, styleCheck;
     
     public List<ItemResurces> getListString() {
         if (listString == null) {

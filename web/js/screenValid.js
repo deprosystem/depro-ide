@@ -36,7 +36,7 @@ function oneScreenValid(scrD, ii) {
             newLevelErrors = 2;
         }
     }
-    
+
     let noRes = checkValidityLinks(scrD.layout.children, "&ensp;");
     if (noRes.txt != "") {
         newErrors += txtError(1, "", noRes.txt);
@@ -44,6 +44,7 @@ function oneScreenValid(scrD, ii) {
             newLevelErrors = noRes.lev;
         }
     }
+
     if (scrD.levelErrors != newLevelErrors) {
         let divErr = currentScreenView.getElementsByClassName("error_screen")[0];
         divErr.style.backgroundColor = colorsEroor[newLevelErrors];

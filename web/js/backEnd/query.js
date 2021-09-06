@@ -10,10 +10,7 @@ var footerQuery;
 var queryTables, queryFields, queryFieldsData, queryQueryData, queryOrder;
 var queryFieldsOrderView;
 var errorQuery;
-
-
-var qqqQQQ;
-
+//var qqqQQQ;
 
 function editQueryWind() {
     let hFooter = 150;
@@ -47,7 +44,7 @@ function editQueryWind() {
     controll.appendChild(buttonCancel);
     
     let windMenu = newDOMelement('<div style="position:absolute;top:0;left:0;right:0;bottom:50px"></div>');
-    qqqQQQ = windMenu;
+//    qqqQQQ = windMenu;
     wind.appendChild(windMenu);
     let titleEl = newDOMelement(title);
     let addTab = newDOMelement('<img style="margin-top:4px;margin-left:25px;float:left;cursor:pointer;" width="16" height="16" src="img/add_blue.png">');
@@ -440,7 +437,7 @@ function saveQuery() {
                         itemData = {name:it.name_field,type:it.type_field};
                         data.push(itemData);
                     }
-//                    fields += sepF + name_table + "." + it.name_field;
+
                     sepF = ", ";
                 }
             }

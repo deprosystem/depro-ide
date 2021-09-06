@@ -74,6 +74,7 @@ public class Project extends BaseServlet {
                         pc.dimens = formDimens();
                         pc.style = formStyle();
                         pc.style_spec = formStyleSpec();
+                        pc.style_check = formStyleCheck();
                         pc.drawable = formDrawable();
                         pc.appParam = formAppParam();
                         pc.screens = formScreens();
@@ -254,11 +255,21 @@ public class Project extends BaseServlet {
         ItemSwitch is = new ItemSwitch();
         is.id = 0;
         is.type = "switch";
-        is.param = new SwitchParam(0,0,14,30,24, "", "top", "Off", 12,0,3,6,3,0,7);
+        is.param = new SwitchParam(0,0,14,30,24, "", "top", "Off", 12,0,3,6,3,0,7,false);
         lsp.add(is);
         return gson.toJson(lsp);
     }
     
+    private String formStyleCheck() {
+        ListSwitchParam lsp = new ListSwitchParam();
+        ItemSwitch is = new ItemSwitch();
+        is.id = 0;
+        is.type = "check";
+        is.param = new SwitchParam(0,0,14,30,24, "", "top", "Off", 12,0,3,6,3,0,7,false);
+        lsp.add(is);
+        return gson.toJson(lsp);
+    }
+
     private String formDrawable() {
         List<ItemResurces> li = new ArrayList();
         return gson.toJson(li);

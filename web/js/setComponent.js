@@ -24,6 +24,7 @@ function formCompon() {
             {name: 'EditText', typeBlock: 0},
             {name: 'SeekBar', typeBlock: 0},
             {name: 'Switch', typeBlock: 0},
+            {name: 'CheckBox', typeBlock: 0},
             {name: 'PlusMinus', typeBlock: 0},
             {name: 'Calendar', typeBlock: 0}
     );
@@ -709,6 +710,7 @@ function relativeL(el, p, pLL, pTT, pRR, pBB, margR) {
         }
     } else if (p.width == WRAP) {
         let wWpx;
+        let wwSave = el.style.width;
         el.style.width = "";
         el.style.left = "0px";
         el.style.right = "0px";
@@ -739,6 +741,11 @@ function relativeL(el, p, pLL, pTT, pRR, pBB, margR) {
                 break;
             case "RelativeLayout" :
                 el.style.width = maxChildWidth(el) + px;
+                break;
+            case "Switch":
+            case "CheckBox":
+                el.style.width = wwSave;
+                el.style.right = "";
                 break;
             default:
                 el.style.width = maxChildWidth(el) + px;

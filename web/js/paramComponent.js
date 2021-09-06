@@ -4,6 +4,7 @@ var selectGravityL;
 var listImg;
 var fonSel = "#deeaff";
 var fonNo = "#0000";
+var componentMatchingElem = null;
 
 function setParamCompon() {
     layoutParam.style.display = 'block';
@@ -16,7 +17,11 @@ function setParamCompon() {
     } else {
         el_id_input.value = '';
     }
-    el_id_input.onkeydown = keydown_el_id;
+//    el_id_input.onkeydown = keydown_el_id;
+    el_id_input.addEventListener('keydown', function(event){keydown_el_id(event)}, false);
+    el_id_input.onkeyup = keyUp_el_id;
+    el_id_input.onblur = blur_el_id;
+    el_id_input.onfocus = focus_el_id;
     if (paramCompon.gravLayout != null) {
         if (paramCompon.gravLayout.h != null) {
             var child_h = gravLayoutH.children;
@@ -198,7 +203,32 @@ function setContent() {
     }
 }
 
-function keydown_el_id(e) {
+function keydown_el_id(event) {
+    let k = event.key;
+    if (k == "ArrowRight" || k == "ArrowLeft" || k == "Tab" 
+        || k == "Home" || k == "End" || k == "Backspace" || k == "Delete" || k == 'Shift') {
+        return true;
+    }
+    let targ = event.target;
+    if ( ! ((k >= "a" && k <= "z") || (k >= "A" && k <= "Z") || k == "_" || (k >= "0" && k <= "9")))  {
+        event.preventDefault();
+        tooltipMessage(targ, "English letters only, _ and numbers");
+    } else {
+        if (targ.value.length == 0) { 
+            if (k >= "0" && k <= "9") {
+                event.preventDefault();
+                tooltipMessage(targ, "The first character cannot be a digit");
+            }
+        } else {
+            if (targ.selectionStart == 0 && k >= "0" && k <= "9") {
+                event.preventDefault();
+                tooltipMessage(targ, "The first character cannot be a digit");
+            }
+        }
+    }
+    
+    
+/*
     if (e.keyCode == 13) {
         paramCompon.viewId = el_id_input.value;
         var item_name = paramCompon.itemNav.getElementsByClassName('item-name')[0];
@@ -206,6 +236,54 @@ function keydown_el_id(e) {
             item_name.innerHTML = paramCompon.viewId + ': ' + paramCompon.type;
         } else {
             item_name.innerHTML = paramCompon.type;
+        }
+    }
+*/
+}
+
+function keyUp_el_id(e) {
+    paramCompon.viewId = el_id_input.value;
+    var item_name = paramCompon.itemNav.getElementsByClassName('item-name')[0];
+    if (paramCompon.viewId != null && paramCompon.viewId != '') {
+        item_name.innerHTML = paramCompon.viewId + ': ' + paramCompon.type;
+    } else {
+        item_name.innerHTML = paramCompon.type;
+    }
+}
+
+function focus_el_id(e) {
+    componentMatchingElem = null;
+    let oldViewId = el_id_input.value;
+    if (oldViewId == null || oldViewId.length == 0) return;
+    let comps = currentScreen.components;
+    let ik = comps.length;
+    if (ik > 0) {
+        for (let i = 0; i < ik; i++) {
+            item = comps[i];
+            if (oldViewId == item.view.viewId) {
+                componentMatchingElem = item;
+                break;
+            }
+        }
+    }
+}
+
+function blur_el_id(e) {
+    if (componentMatchingElem != null) {
+        let id = el_id_input.value;
+        if (id == null || id == "") {
+            tooltipMessage(el_id_input, "Component cannot have an empty id");
+            el_id_input.value = componentMatchingElem.view.viewId;
+            paramCompon.viewId = el_id_input.value;
+            var item_name = paramCompon.itemNav.getElementsByClassName('item-name')[0];
+            if (paramCompon.viewId != null && paramCompon.viewId != '') {
+                item_name.innerHTML = paramCompon.viewId + ': ' + paramCompon.type;
+            } else {
+                item_name.innerHTML = paramCompon.type;
+            }
+        } else {
+            componentMatchingElem.view.viewId = id;
+            componentMatchingElem = null;
         }
     }
 }

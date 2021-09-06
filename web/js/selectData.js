@@ -1,4 +1,5 @@
 var uxElem = "List,Drawer,Map,Menu,MenuBottom,Pager,Panel,ScrollPanel,SheetBottom,TabLayout,ToolBar";
+
 function createSelectTagFromString(list, num, on) {
     ll = list.split(",");
     return createSelectTag(ll, num, on);
@@ -196,16 +197,19 @@ function formSelectForEditData(stOption, valueSel) {
     return container.firstChild;
 }
 
-function formSelectViewId(valueSel) {
-    let st = formListIdElem(currentChildren);
+function formSelectViewId(valueSel, type) {
+    let st = formListIdElem(currentChildren, type);
     return formSelectForEditData(" " + st, valueSel);
 }
 
-function formListIdElem(childEl) {
+function formListIdElem(childEl, type) {
     let st = "";
     let ik = childEl.length;
     for (let i = 0; i <ik; i++) {
         let item = childEl[i];
+        if (type != null && item.type != type ) {
+            continue;
+        }
         let vi = item.viewId;
         if (vi != null && vi != "") {
             st += "," + vi;

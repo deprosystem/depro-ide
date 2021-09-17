@@ -90,12 +90,15 @@ public class ExportResult extends BaseServlet {
         parSave.styleCheck = gson.fromJson(projectM.style_check, ListSwitchParam.class);
         parSave.addApp = new ArrayList();
         parSave.addPermish = new HashSet();
+        parSave.isCamera = false;
         String basePath = ds.patchOutsideProject;
         String realPath = request.getServletContext().getRealPath("");
         String userPath = Constants.USERS_DATA + ds.userResurseInd + "/";
         String userProjPath = Constants.USERS_DATA + ds.userResurseInd + "/" + projectM.nameProject;
         String projectPath = Constants.PROJECTS_DATA + projectM.resurseInd;
         String resPath = userProjPath + "/app/src/main/res";
+        parSave.realPath = realPath;
+        parSave.resPath = resPath;
         String pack = projectM.namePackage.replaceAll("\\.", "/");
         String javaPath = userProjPath + "/app/src/main/java/" + pack;
         int lengthBase = (basePath + userPath).length();
@@ -105,7 +108,7 @@ public class ExportResult extends BaseServlet {
             case "/export/apk":
             case "/export/android":
                 createBaseProject(realPath, basePath,  userProjPath, basePath + projectPath);
-                createDepro(basePath + javaPath, projectM, parSave);
+                createDepro(realPath, basePath + javaPath, projectM, parSave);
                 createAppParam(basePath + javaPath, projectM, parSave);
                 arChange = new ItemChange[] {
                     new ItemChange("#pack#", projectM.namePackage),
@@ -117,7 +120,11 @@ public class ExportResult extends BaseServlet {
                 createValue(basePath + resPath, parSave);
                 createDrawable(basePath + resPath, parSave);
                 createSwitch(realPath + "/android_base/", basePath + resPath, parSave);
-                
+                if (parSave.isCamera) {
+                    setFileAndroid(realPath + "/android_base/my_file_provider", basePath + javaPath + "/MyFileProvider.java", arChange);
+                    formDir(basePath + resPath + "/xml");
+                    copyFile(realPath + "/android_base/file_paths_xml", basePath + resPath + "/xml/file_paths.xml");
+                }
                 setFileAndroid(realPath + "/android_base/gradle_mod", basePath + userProjPath + "/app/build.gradle", arChange);
                 setFileAndroid(realPath + "/android_base/start_activity", basePath + javaPath + "/" + parSave.nameClassStart + ".java", arChange);
                 setManifestAndroid(realPath + "/android_base/manifest", basePath + userProjPath + "/app/src/main/AndroidManifest.xml", arChange, parSave);
@@ -277,7 +284,7 @@ public class ExportResult extends BaseServlet {
         
     }
     
-    private void createDepro(String path, ProjectM pr, ParamSave parSave) {
+    private void createDepro(String realPath, String path, ProjectM pr, ParamSave parSave) {
         formDir(path);
         ItemResurces iRes;
         List<ItemResurces> listString = parSave.getListString();
@@ -591,25 +598,75 @@ public class ExportResult extends BaseServlet {
                             if (navList.length() == 0) {
                                 navList = ", null";
                             }
-                            List<MenuItem> mult = comp.model.menuList.list;
                             String multStr = ", null";
-                            String sepMult = ", ";
-                            if (ik > 0) {
-                                multStr = "";
-                                for (MenuItem mi : mult) {
-                                    String fRes = "";
-                                    if (mi.screen != null && mi.screen.length() > 0) {
-                                        fRes = mi.screen;
+                            if (comp.model.menuList != null && comp.model.menuList.list != null) {
+                                List<MenuItem> mult = comp.model.menuList.list;
+                                String sepMult = ", ";
+                                if (ik > 0) {
+                                    multStr = "";
+                                    for (MenuItem mi : mult) {
+                                        String fRes = "";
+                                        if (mi.screen != null && mi.screen.length() > 0) {
+                                            fRes = mi.screen;
+                                        }
+                                        String stVi = "0";
+                                        if ( mi.id.trim().length() > 0) {
+                                            stVi = "R.id." + mi.id;
+                                        }
+                                        multStr += sepMult + "new Multiply(" + stVi + ", \"" + mi.title + "\", \"" + fRes + "\")";
                                     }
-                                    String stVi = "0";
-                                    if ( mi.id.trim().length() > 0) {
-                                        stVi = "R.id." + mi.id;
-                                    }
-                                    multStr += sepMult + "new Multiply(" + stVi + ", \"" + mi.title + "\", \"" + fRes + "\")";
-                                }
-                            } 
+                                } 
+                            }
                             declare.add(tab12 + ".plusMinus(R.id." + comp.view.viewId + ", R.id." + comp.view.plusId + ", R.id." + comp.view.minusId 
                                     + navList + multStr + endComp);
+                            break;
+                        case Constants.TOTAL:
+                            String nf = "";
+                            String[] listNF = comp.view.selectedField.split(",");
+                            for (String stNF : listNF) {
+                                nf += ", \"" + stNF + "\"";
+                            }
+                            if (nf.length() == 0) {
+                                nf = ", null";
+                            } else {
+                                importD.add(Constants.importMultiply);
+                            }
+                            String evV = ", 0";
+                            if (comp.view.plusId != null && comp.view.plusId.length() != 0) {
+                                evV = ", R.id." + comp.view.plusId ;
+                            }
+                            declare.add(tab12 + ".componentTotal(R.id." + comp.view.viewId + ", R.id." + comp.view.tabLayout 
+                                    + evV + ", null" + nf + endComp);
+                            break;
+                        case Constants.PHOTO:
+                            String[] phList;
+                            String phStr = comp.view.tabLayout;
+                            String phId = "";
+                            if (phStr != null && phStr.length() > 0) {
+                                phList = phStr.split(",");
+                                ik = phList.length;
+                                if (ik == 1) {
+                                    phId = ", R.id." + phStr;
+                                } else {
+                                    phId = ", new int[] {";
+                                    sep = "";
+                                    for (int k = 0; k < ik; k++) {
+                                        phId += sep + "R.id." + phList[k];
+                                        sep = ", ";
+                                    }
+                                    phId += "}";
+                                }
+                            }
+                            String idStrPerm = ", 0";
+                            if (comp.view.selectedField != null && comp.view.selectedField.length() > 0) {
+                                idStrPerm = ", " + formStringId(scName + "_" + cViewId, comp.view.selectedField, parSave.listString);;
+                            }
+                            String phParam = "";
+                            if (comp.view.param != null && comp.view.param.length() > 0) {
+                                phParam = ", \"" + comp.view.param + "\"";
+                            }
+                            declare.add(tab12 + ".componentPhoto(R.id." + comp.view.title + phId + idStrPerm + phParam + endComp);
+                            addCameraPermishen(realPath + "/android_base/provider", parSave);
                             break;
                     }
                 }
@@ -2224,6 +2281,27 @@ public class ExportResult extends BaseServlet {
         createStyles(path, parSave);
     }
     
+    private void addCameraPermishen(String pathIn, ParamSave parSave) {
+        if (parSave.isCamera) {
+            return;
+        }
+        try {
+            FileReader reader = new FileReader(pathIn);
+            Scanner scan = new Scanner(reader);
+            while (scan.hasNextLine()) {
+                String line = scan.nextLine();
+                parSave.addApp.add(line + "\n");
+            }
+            reader.close();
+            parSave.addPermish.add("<uses-permission android:name=\"android.permission.CAMERA\"/>");
+            parSave.addPermish.add("<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />");
+            parSave.addPermish.add("<uses-permission android:name=\"com.google.android.providers.gsf.permission.READ_GSERVICES\"/>");
+            parSave.isCamera = true;
+        } catch (IOException ex) {
+            System.out.println("addCameraPermishen error=" + ex);
+        }
+    }
+    
     public void setManifestAndroid(String pathIn, String pathOut, ItemChange[] arCh, ParamSave parSave) {
         try {
             FileReader reader = new FileReader(pathIn);
@@ -2265,7 +2343,7 @@ public class ExportResult extends BaseServlet {
             writer.close();
             reader.close();
         } catch (IOException ex) {
-            Logger.getLogger(BaseServlet.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("setManifestAndroid error=" + ex);
         }
     }
     

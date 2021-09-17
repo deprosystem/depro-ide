@@ -35,7 +35,7 @@ public abstract class BaseServlet extends HttpServlet{
     public Gson gson = new Gson();
     public BaseDB baseDb;
     public boolean isSerwer;
-    public long userExample = 54;
+    public long userExample = 154;
     
     protected abstract void processRequest(HttpServletRequest request, 
             HttpServletResponse response, DataServlet ds);
@@ -374,19 +374,4 @@ System.out.println("query="+ds.query);
             throws ServletException, IOException {
         process(request, response);
     }
-/*
-    @Override
-    protected void doOptions(HttpServletRequest request, HttpServletResponse response) {
-        response.setStatus (HttpServletResponse.SC_OK);
-System.out.println("Access-Control-Allow-Origin"+"*");
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "GET, POST");
-        response.setHeader("Access-Control-Allow-Headers", "schemDB, auth-token, Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        try (PrintWriter out = response.getWriter()) {
-            out.println("ok");
-        } catch (IOException ex) {
-            System.out.println("BaseServlet sendResult error" + ex);
-        }
-    }
-*/
 }

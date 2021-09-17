@@ -1,6 +1,6 @@
 var TYPE_TEXT = 0, TYPE_INT = 1, TYPE_FLOAT = 3, TYPE_BOOLEAN = 4, TYPE_SELECT = 5, TYPE_IMG = 6, ID_SELECT = 7, ID_SELECT_HANDL = 8, ID_SELECT_HANDL_SCR = 9;
 
-var handlers = "start,back,backOk,actual,assignValue,setValueParam,setVar,checked,restoreVar,hide,show,addRecord,delRecord,dialUp,springScale";
+var handlers = "start,back,backOk,send,actual,assignValue,setValueParam,setVar,checked,restoreVar,hide,show,addRecord,delRecord,dialUp,springScale";
 var typeSource = "PARAM,SIZE,LOCALE,SYSTEM_TIME,GROUPP_PARAM,GLOBAL_VAR";
 
 var metaPager = {titleForm:"Данные для TabLayout", description:

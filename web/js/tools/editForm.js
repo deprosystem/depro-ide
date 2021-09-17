@@ -9,6 +9,7 @@ function EditForm(meta, data, domEl, after, cbEdit, marg) {
     this.cb = cbEdit;
     this.list;
     this.windDataStyle;
+    this.contWind;
     this.marg_L;
     this.marg_T;
     let fonSel = "#deeaff";
@@ -42,7 +43,7 @@ function EditForm(meta, data, domEl, after, cbEdit, marg) {
         let br = "";
         if (met.br) {
             br = "clear:both;"
-            this.marg_L = "";
+//            this.marg_L = "";
         }
         let res = newDOMelement('<div style="float:left;' + this.marg_L + this.marg_T + br + '"></div>');
         res.append(newDOMelement('<div style="color: #2228;font-size: 10px;margin-left:4px">' + met.title + '</div>'));
@@ -68,6 +69,11 @@ function EditForm(meta, data, domEl, after, cbEdit, marg) {
                     res.addEventListener('click', () => {this.clickAfter(event, met)}, false);
                 }
                 break;
+            case "Send":
+                res = newDOMelement('<div style="float:left;margin-left:7px;clear:both;margin-top:15px;padding-left:10px;padding-right:10px;height:30px;background-color:#1DACE9;' 
+                        +'border-radius:4px;cursor:pointer;"><div style="text-align: center;margin-top:7px;color:#fff">' + met.title + '</div></div>');
+                res.addEventListener('click', () => {this.clickSend(event, met)}, false);
+                break;
             case "Label":
                 let fs = "";
                 if (met.fontS != null) {
@@ -79,11 +85,11 @@ function EditForm(meta, data, domEl, after, cbEdit, marg) {
                 res = newDOMelement('<div style="float: left;clear:both;height:1px;border-bottom:1px solid #1DACEf;width:100%;margin-top:3px;margin-bottom:3px"></div>');
                 break;
             case "SelectId":
-                inp = formSelectIdHandlTags(vv, met.tags);
-                inp.style.cssText = "width:100px;font-size:12px;color:#110000;";
-                inp.className = 'select_' + browser;
+                inp = newDOMelement('<select class = "select_' + browser + '">');
                 inp.nameField = met.name;
-                inp.addEventListener("change", () => {this.changeSelId(inp, met)}, false);
+                inp.addEventListener('focus', () => {this.focusSelId(inp, met.tags, vv)}, true);
+                inp.addEventListener('change', () => {this.changeSelId(inp, met)}, true);
+                inp.innerHTML = newOptionsTypeUI(met.tags, vv);
                 res.append(inp);
                 break;
             case "SelectIdUX":
@@ -96,6 +102,13 @@ function EditForm(meta, data, domEl, after, cbEdit, marg) {
                 break;
             case "SelectTypeUX":
             
+                break;
+            case "MultiCheck":
+                if (met.src != null && met.src != "") {
+                    inp = newDOMelement('<img width="20" height="20" src="' + met.src + '" style="margin-top:4px;margin-left:5px;cursor:pointer;">');
+                    inp.addEventListener("click", () => {this.clickMultiCheck(inp, met)}, false);
+                }
+                res.append(inp);
                 break;
             case "Select":
                 inp = formSelectForEditData(met.value, vv);
@@ -173,6 +186,59 @@ function EditForm(meta, data, domEl, after, cbEdit, marg) {
         return res;
     }
     
+    this.clickMultiCheck = function(inp, met) {
+        let str = formListIdElem(currentChildren, met.tags).substring(1);
+        let ls = str.split(",");
+        let ik = ls.length;
+        let selF = this.edData[met.name].split(",");
+        this.contWind = formWind(240, 400, 40, 350, met.title, true, null, "Save", this, "");
+        this.contWind.nameField = met.name;
+        for (let i = 0; i < ik; i++) {
+            let itemV = this.oneRowMultiCheck(i, ls[i], selF);
+            this.contWind.append(itemV);
+        }
+    }
+    
+    this.oneRowMultiCheck = function(i, item, selF) {
+        let res = newDOMelement('<div style="height:24px;width:100%;display:flex;align-items:center;font-size:14px;"></div>');
+        let name = newDOMelement('<div class="name" style="width:120px;margin-left:3px;">' + item + '</div>');
+        let selField = newDOMelement('<img class="sel_img" style="width:18px;cursor:pointer;height:18px;" src="img/check-act.png">');
+        selField.addEventListener('click', () => {this.selectRowMultiCheck(selField)}, false);
+        let jk = selF.length;
+        for (let j = 0; j < jk; j++) {
+            if (item == selF[j]) {
+                checkElement(selField);
+                break;
+            }
+        }
+        res.append(name);
+        res.append(selField);
+        return res;
+    }
+    
+    this.cbWind = function() {
+        let ch = this.contWind.children;
+        let ik = ch.length;
+        let res = "";
+        let sep = "";
+        for (let i = 0; i < ik; i++) {
+            let item = ch[i];
+            if (isCheckElement(item.querySelector(".sel_img"))) {
+                res += sep + item.querySelector(".name").innerHTML;
+                sep = ",";
+            }
+        }
+        let nn = this.contWind.nameField;
+        this.edData[nn] = res;
+        if (this.cb != null) {
+            this.cb.cbEdit(nn);
+        }
+    }
+    
+    this.selectRowMultiCheck = function(el) {
+        checkElement(el);
+    }
+    
     this.selectBlock = function(met, cb) {
         let divSelList = document.createElement('div');
         divSelList.style.float = "left";
@@ -193,6 +259,10 @@ function EditForm(meta, data, domEl, after, cbEdit, marg) {
         if (this.cb != null) {
             this.cb.cbEdit(el.nameField);
         }
+    }
+    
+    this.focusSelId = function(el, tags, vv) {
+        el.innerHTML = newOptionsTypeUI(tags, vv);
     }
     
     this.clickLitera = function (el) {
@@ -306,6 +376,12 @@ function EditForm(meta, data, domEl, after, cbEdit, marg) {
             this.edData[name] = [];
         }
         nnn.init(this.edData[name], met.after);
+    }
+    
+    this.clickSend = function(event, met) {
+        let name = met.name;
+        let crud = new CRUD(this.edData, name);
+        this.edData
     }
 
     this.clickCheckbox = function(check, el) {

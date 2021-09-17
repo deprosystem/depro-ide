@@ -81,6 +81,7 @@ public class Project extends BaseServlet {
                         pc.resurseInd = lowerCaseRandom(15);
                         pc.host = "";
                         pc.dateCreate = new Date().getTime();
+                        pc.whereServer = "Server IDE";
                         id = projectDb.createProjectId(pc);
                         pc.projectId = id;
                         createBaseRes(ds.patchOutsideProject, pc.resurseInd);

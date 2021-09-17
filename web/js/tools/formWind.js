@@ -30,13 +30,15 @@ function formWind(w, h, t, l, tit, scroll, cbClose, footName, footListener, colo
             shake(ww);
         });
     }
-    
-    let titleW = createTitle(tit, cbClose);
-    ww.appendChild(titleW);
+    if (tit != null && tit.length > 0) {
+        let titleW = createTitle(tit, cbClose);
+        ww.appendChild(titleW);
+    }
     let bott = 0;
     if (footName != null && footListener != null) {
         let controll = createFooter(h_footerWind);
-        bott = h_footerWind + 1;
+        bott = h_footerWind;
+//        bott = h_footerWind + 1;
         ww.appendChild(controll);
         let buttonOk = createButtonBlue(footName);
         if (footListener.cbWind != null) {

@@ -16,11 +16,18 @@ function doServer(metod, url, callBack, data, paramCallBack, progress, cbError, 
         }
         if (req.readyState == 4) {
             if (req.status == 200) {
+                if (callBack.cbDoServer == null) {
+                    callBack(req.responseText, paramCallBack);
+                } else {
+                    callBack.cbDoServer(req.responseText, paramCallBack);
+                }
+/*
                 if (paramCallBack != null) {
                     callBack(req.responseText, paramCallBack);
                 } else {
                     callBack(req.responseText);
                 }
+*/
             } else {
 console.log("AJAX="+req.responseText);
                 var mes = JSON.parse(req.responseText).message;
@@ -92,11 +99,22 @@ function doServerAlien(metod, url, callBack, data, paramCallBack, progress, cbEr
         }
         if (req.readyState == 4) {
             if (req.status == 200) {
-                if (paramCallBack != null) {
+                if (callBack.cbDoServer == null) {
                     callBack(req.responseText, paramCallBack);
+                } else {
+                    callBack.cbDoServer(req.responseText, paramCallBack);
+                }
+/*
+                if (paramCallBack != null) {
+                    if (callBack.cbDoServer == null) {
+                        callBack(req.responseText, paramCallBack);
+                    } else {
+                        callBack.cbDoServer(req.responseText, paramCallBack);
+                    }
                 } else {
                     callBack(req.responseText);
                 }
+*/
             } else {
 console.log("AJAX="+req.responseText);
                 var mes = JSON.parse(req.responseText).message;

@@ -19,7 +19,7 @@ public class Constants {
     public static final String TOOL = "ToolBar", PANEL = "Panel", SCROLLPANEL = "ScrollView", FORM = "Form", ELLIPSIS = "Ellipsis",
             LIST = "List", PAGER = "Pager", TAB = "TabLayout", DRAWER = "Drawer", SCROLL = "ScrollPanel", CARD_VIEW = "CardView",
             MENU_B = "MenuBottom", MENU = "Menu", GALLERY = "Gallery", INDICATOR = "Indicator", IMAGEVIEW = "ImageView",
-            PLUS_MINUS = "PlusMinus", RATINGS = "Ratings", SWITCH = "Switch", CHECKBOX = "CheckBox",
+            PLUS_MINUS = "PlusMinus", RATINGS = "Ratings", SWITCH = "Switch", CHECKBOX = "CheckBox", TOTAL = "Total", PHOTO = "Photo",
             MAP = "Map", SHEET = "SheetBottom", TEXTVIEW = "TextView", CALENDAR = "Calendar", SEEKBAR = "SeekBar", TAGS = "Tags";
 /*
     public static String toolCompon = "com.dpcsa.compon.custom_components.ComponToolBar",
@@ -28,6 +28,8 @@ public class Constants {
 */
     public static String importMenu = "import com.dpcsa.compon.interfaces_classes.Menu;\n";
     public static String importParamMap = "import com.dpcsa.compon.param.ParamMap;\n";
+    public static String importMultiply = "import com.dpcsa.compon.interfaces_classes.Multiply;\n";
+    
     public static String[] animate = {"No", "LR", "RL", "BT", "TB"};
     public static String[] scaleType = {"centerCrop", "center"};
     public static String roundedType = "com.makeramen.roundedimageview.RoundedImageView";
@@ -59,7 +61,7 @@ public class Constants {
         "com.dpcsa.compon.custom_components.ElementMenu",            // 20
         "com.dpcsa.compon.custom_components.ComponSwitch",            // 21
         "com.dpcsa.compon.custom_components.ComponCheckBox",            // 22
-        "RelativeLayout"                                                // 23
+        "RelativeLayout"                                                // 23   TOTAL
     };
 
 }

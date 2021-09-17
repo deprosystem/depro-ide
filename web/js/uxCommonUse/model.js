@@ -125,11 +125,13 @@ function changeMethod(el) {
         switch (el.options[el.selectedIndex].value) {
             case "POST":
             case "GET":
+/*
                 hostDescr = currentProject.whereServer;
                 if (hostDescr == null) {
                     myAlert("Choose your domain location");
                     break;
                 }
+*/
                 if (hostDescr == "Third party API") {
                     pm.innerHTML = pmUrl + pmParamUrl + pmProgr;
                     setValueGetPost();

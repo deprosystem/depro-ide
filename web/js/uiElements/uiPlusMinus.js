@@ -74,18 +74,7 @@ function uiPlusMinus() {
         let spacBl = selectBlock("letterSpacing", "-0.05,-0.02,0.0,0.02,0.05,0.07,0.1", "setLetterTV", -0.05, 0.5, 0.01);
         setValueSelectBlock(spacBl, p.letterSpac);
         uiParamTextView.appendChild(spacBl);
-/*
-        let sss = selectListID("Minus id", 80, currentChildren, p.componParam.minusId, changePL_minus);
-        sss.style.clear = "both";
-        sss.style.marginLeft = "0px";
-        sss.style.marginTop = "5px";
-        contentAttributes.appendChild(sss);
-        
-        sss = selectListID("Plus id", 80, currentChildren, p.componParam.plusId, changePL_plus);
-        sss.style.marginTop = "5px";
-        sss.style.marginLeft = "10px";
-        contentAttributes.appendChild(sss);
-*/
+
         let sss = selectListID("Result id", 80, currentChildren, p.componParam.resultId, changePM_result);
         sss.style.marginTop = "5px";
         sss.style.clear = "both";

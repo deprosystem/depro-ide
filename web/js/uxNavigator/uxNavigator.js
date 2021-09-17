@@ -9,18 +9,9 @@ function navigatorCompon() {
     }
     let nnn = new FormNavigator();
     nnn.init(currentComponentDescr.navigator);
-/*
-    if (currentComponentDescr.type == "MenuBottom") {
-        editDataWind(metaNavigatorMenuB, currentComponentDescr.navigator, saveNavigator);
-    } else {
-        let nnn = new FormNavigator();
-        nnn.init(currentComponentDescr.navigator);
-    }
-*/
 }
 
 function saveNavigator(dat) {
-//console.log("saveNavigator DAT="+JSON.stringify(dat));
     let ik = dat.length;
     for (let i = 0; i < ik; i++) {
         let item = dat[i];
@@ -32,7 +23,6 @@ function saveNavigator(dat) {
                 }
             }
         }
-//console.log("saveNavigator item.handler="+item.handler+"<< item.after="+item.after);
         if (item.after != null && item.after.length > 0) {
             saveNavigator(item.after);
         }

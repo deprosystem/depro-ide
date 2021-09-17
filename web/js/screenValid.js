@@ -18,7 +18,7 @@ function oneScreenValid(scrD, ii) {
         let compD = arrComp[i];
         try {
             uxFunction = eval("new ux" + compD.type + "();");
-            let errComp = uxFunction.isValid(compD, scrD.layout);
+            let errComp = uxFunction.isValid(compD, scrD);
             if (errComp.text != "") {
                 newErrors += errComp.text;
                 if (newLevelErrors < errComp.error) {

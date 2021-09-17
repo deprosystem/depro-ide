@@ -74,7 +74,8 @@ function uxList() {
         return "https://docs.google.com/document/d/1iYRvK_JAz67laVPot_pCEUa0sM9Jp3hSJZMMG4qmtxQ/edit#bookmark=id.4ysfqsv8dxu6";
     }
     
-    this.isValid = function(compD, layout) {
+    this.isValid = function(compD, screen) {
+        let layout = screen.layout
         let tab = "&ensp;";
         let err = {text:"",error:0};
         let viewId = compD.view.viewId;

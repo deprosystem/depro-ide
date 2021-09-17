@@ -8,11 +8,11 @@ import projects.ItemResurces;
 import projects.ItemStyle;
 
 public class ParamSave {
-    public String nameAPP, nameScreenStart, nameClassStart;
+    public String nameAPP, nameScreenStart, nameClassStart, realPath, resPath;
     public String currentScreen, path;
     public String toolId, menuId, scrollId;
     public String pathLayoutItem;
-    public boolean noToolMenu, noDrawer, noFragmContainer;
+    public boolean noToolMenu, noDrawer, noFragmContainer, isCamera;
     public Screen currentScreenObj;
     public int typeScreen;
     public List<String> arrayString;

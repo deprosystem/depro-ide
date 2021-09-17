@@ -35,12 +35,20 @@ function getCompById(ch, id) {
     return null;
 }
 
-function getComponentByViewId(id) {
-    let ch = currentScreen.components;
+function getComponentByViewId(id, screen) {
+//console.log("getComponentByViewId ID="+id+"<<");
+    let ch;
+    if (screen != null) {
+        ch = screen.components
+    } else {
+        ch = currentScreen.components;
+    }
     let ik = ch.length;
     for (let i = 0; i < ik; i++) {
         let chi = ch[i];
+//console.log("       III=" + i + " ID="+chi.view.viewId+"<<");
         if (chi.view.viewId == id) {
+//console.log("       III=" + i + " !!!!!! +++++");
             return chi;
         }
     }

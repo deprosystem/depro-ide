@@ -120,6 +120,7 @@ function uiImageView() {
         let w_bord = editNumberParam("With border", 50, 24, 0, 10, "wBordIMG");
         w_bord.style.marginLeft = "10px";
         w_bord.style.marginTop = "5px";
+        w_bord.className += " w_bord";
         if (p.componParam.w_bord == null) {
             p.componParam.w_bord = 0;
         }
@@ -133,6 +134,13 @@ function uiImageView() {
         cBord.style.marginLeft = "10px";
         contentAttributes.appendChild(cBord);
 
+        if (p.componParam.blur == null) {
+            p.componParam.blur = 0;
+        }
+        let blurBl = selectBlock("Blur", "0,10,20,30,40", "setBlurImg", 0, 50);
+        blurBl.className = "inputBlock blurBl";
+        setValueSelectBlock(blurBl, p.componParam.blur);
+        contentAttributes.appendChild(blurBl);
     }
     
     this.getHelpLink = function() {
@@ -197,6 +205,7 @@ function changeCornersRadiusIMG(el) {
     radiusRB.value = value;
     radiusBL.value = value;
     currentElement.android.corners = {"lt" : value, "tr" : value, "rb" : value, "bl" : value};
+    setBlurValue("0");
     viewCompon();
 }
 
@@ -215,6 +224,7 @@ function changeRadiusIMG(el) {
             currentElement.android.corners.bl = el.value;
             break;
     }
+    setBlurValue("0");
     viewCompon();
 }
 
@@ -237,7 +247,31 @@ function changeOvalIMG(vv) {
 
 function wBordIMG(el) {
     currentElement.android.componParam.w_bord = el.value;
+    setBlurValue("0");
     viewCompon();
+}
+
+function setBordValue(vv) {
+    let w_bord = contentAttributes.querySelector(".w_bord");
+    currentElement.android.componParam.w_bord = vv;
+    setValueNumber(w_bord, vv);
+}
+
+function setBlurImg(vv) {
+    let res = vv;
+    if (vv.tagName == "INPUT") {
+        res = vv.value;
+    }
+    currentElement.android.componParam.blur = res;
+    cornersAllClearIMG();
+    setBordValue("0");
+    viewCompon();
+}
+
+function setBlurValue(vv) {
+    let blurBl = contentAttributes.querySelector(".blurBl");
+    setValueSelectBlock(blurBl, vv);
+    currentElement.android.componParam.blur = vv;
 }
 
 function setColorBordIMG(id, color) {

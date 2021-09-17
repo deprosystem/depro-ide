@@ -44,7 +44,6 @@ function editQueryWind() {
     controll.appendChild(buttonCancel);
     
     let windMenu = newDOMelement('<div style="position:absolute;top:0;left:0;right:0;bottom:50px"></div>');
-//    qqqQQQ = windMenu;
     wind.appendChild(windMenu);
     let titleEl = newDOMelement(title);
     let addTab = newDOMelement('<img style="margin-top:4px;margin-left:25px;float:left;cursor:pointer;" width="16" height="16" src="img/add_blue.png">');
@@ -568,7 +567,6 @@ function saveQuery() {
     currentComponentDescr.model.param = strParam;
     let original = JSON.stringify(origin_query);
     let nam = currentScreen.screenName + "_" + currentComponent.viewId;
-//console.log("SQL="+SQL+"<<");
     let dat = {id_query:qu,name_query:nam,type_query:0,origin_query:original,sql_query:SQL,param_query:strParam};
     doServerAlien("POST", hostDomain + "query/create", cbQueryCreate, JSON.stringify(dat));
 }

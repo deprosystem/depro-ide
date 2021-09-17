@@ -1,16 +1,5 @@
 function uxTotal() {
     this.param = {name: "Total", viewBaseId: "total", onlyOne: false};
-/*
-    this.editParam = '<div>'
-            +'<div style="margin-left:2px;font-size:10px;color:#2228">Assign a List</div>'
-            +'<div class="select_list"></div>'
-        +'</div>';
-    
-    let meta = [
-        {name: "view.tabLayout", title:"Assign a List",type:"SelectIdUX",br:true}
-//        {name: "color_3", title:"CCCCCCC ccc",type:"Color"}
-    ];
-*/
 
     this.contWind;
 
@@ -30,9 +19,10 @@ function uxTotal() {
         let tt = this.param.name;
         currentComponent = {type: tt, componId: componId, viewId:viewId, typeUxUi: "ux", componParam:{type:23},
                 typeFull: {name: tt, typeBlock: 2}, gravLayout: {h: 3, v: BOTTOM}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
-            width:MATCH,height:40,itemNav:{},viewElement: null,children:[]};
+            width:MATCH,height:40,leftMarg:20,rightMarg:20,itemNav:{},viewElement: null,children:[]};
         currentComponentDescr = {type:tt, componId: componId,view:{viewId: viewId,tabLayout:"",selectedField:"",plusId:""}};
                     // в tabLayout viewId списка по которому считается сумма, в selectedField - строка с перечнем полей, по которым подводятся итоги
+                    // в plusId - id элемента PlusMinus
     }
     
     this.setValue = function(componParam) {
@@ -112,18 +102,20 @@ function uxTotal() {
         return "https://docs.google.com/document/d/1iYRvK_JAz67laVPot_pCEUa0sM9Jp3hSJZMMG4qmtxQ/edit#bookmark=id.pid6y1q4zo3z";
     }
     
-    this.isValid = function(compD) {
+    this.isValid = function(compD, screen) {
+//console.log("uxTotal isValid");
         let tab = "&ensp;";
         let err = {text:"",error:0};
         let listId = compD.view.tabLayout;
         let viewId = compD.view.viewId;
         if (listId == null || listId.length == 0) {
-            err.text += txtError(2, tab, "component " + viewId + " no list specified");
+            err.text += txtError(2, tab, "component " + viewId + " no list specified 1");
             err.error = 2;
         } else {
-            let compList = getComponentByViewId(listId);
+            let compList = getComponentByViewId(listId, screen);
+//console.log("isValid compList="+compList);
             if (compList == null) {
-                err.text += txtError(2, tab, "component " + viewId + " no list specified");
+                err.text += txtError(2, tab, "component " + viewId + " no list specified 2");
                 err.error = 2;
             } else {
                 let listField = compList.model.data[0];
@@ -137,6 +129,7 @@ function uxTotal() {
             err.text += txtError(2, tab, "component " + viewId + " No fields for totals");
             err.error = 2;
         }
+//console.log("uxTotal isValid ----------------");
         return err;
     }
     
@@ -194,45 +187,30 @@ function uxTotal() {
             let item_n = viewEl.android.itemNav;    // очистить иерархию
             let item_compon = item_n.getElementsByClassName('item-compon')[0];
             item_compon.innerHTML = "";
-            
-            
-            let listView = listV.children[num];
-            listView.innerHTML = "";        // Очистить в прототипе экрана
-            listView.android.children.length = 0;   // очистить элементы в андроид
-            listView.android.height = WRAP;
-            let item_n = listView.android.itemNav;
-            
-            let item_compon = item_n.getElementsByClassName('item-compon')[0];
-            item_compon.innerHTML = "";
-            let height = 120;
-            let toRightOf = "";
-
-            setActive(listView);
-            let imgId = formImgFirst(120, 120, data);
-            if (imgId > -1) {
-                toRightOf = data[imgId].name;
-            }
-            let topM = 16;
-            let estimatedHeight = topM;
-            let namePrev = "";
+            setActive(viewEl);
+            ik = datL.length;
+            let rightN = "";
             for (let i = 0; i < ik; i++) {
-                let item = data[i];
-                if (item.notShow) continue;
-                if (imgId != i) {
-                    formElement(item, toRightOf, namePrev, topM);
-                    currentElement.android.viewElement = currentElement;
-                    namePrev = item.name;
-                    topM = 10;
-                    estimatedHeight += 22;
+                let nam = datL[i];
+                currentElement = createNewEl();
+                p = {type:"TextView",typeUxUi:"ui",width:WRAP,height:WRAP,typeFull:{name: 'TextView', typeBlock: 0},gravLayout:{h:4,v:4},gravity:{h:4,v:4},
+                    text:nam,viewId:nam,textSize:14,letterSpac:'0.0',textColor:12,rightMarg:12,componParam:{typeValidTV:"no"}};
+                if (rightN == "") {
+                    p.gravLayout.h = 2;
+                } else {
+                    p.toLeftOf = rightN;
                 }
+                rightN = nam;
+                currentElement.android = p;
+                let typeEl = createDivText();
+                currentElement.appendChild(typeEl);
+                addNewElement(ACTIVE, currentElement);
+                addNavigatorEl(currentElement);
+                ACTIVE.android.children.push(currentElement.android);
+                currentElement.android.viewElement = currentElement;
             }
-            let Divider = formDivider();
-            if (height < estimatedHeight) {
-                height = estimatedHeight;
-            }
-            Divider.android.viewElement = Divider;
-            listView.android.height = height;
-            showElemChilds(listV);
+            viewEl.android.height = WRAP;
+            showElemChilds(viewEl);
         } else {
             myAlert("You have removed the item corresponding to the component");
         }

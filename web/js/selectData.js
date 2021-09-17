@@ -207,16 +207,15 @@ function formListIdElem(childEl, type) {
     let ik = childEl.length;
     for (let i = 0; i <ik; i++) {
         let item = childEl[i];
-        if (type != null && item.type != type ) {
-            continue;
-        }
-        let vi = item.viewId;
-        if (vi != null && vi != "") {
-            st += "," + vi;
+        if (item.type == type || type == null) {
+            let vi = item.viewId;
+            if (vi != null && vi != "") {
+                st += "," + vi;
+            }
         }
         let ch = item.children;
         if (ch != null && ch.length > 0) {
-            st += formListIdElem(ch);
+            st += formListIdElem(ch, type);
         }
     }
     return st;
@@ -276,12 +275,14 @@ function formListIdHandlTags(childEl, tags) {
     for (let i = 0; i <ik; i++) {
         let item = childEl[i];
         let vi = item.viewId;
-        if (tags != null && tags.length > 0) {
-            if (vi != null && vi != "" && tags.indexOf(item.type) > -1) {
+        if (vi != null && vi != "") {
+            if (tags != null && tags.length > 0) { 
+                if (tags == item.type) {
+                    st += "," + vi;
+                }
+            } else {
                 st += "," + vi;
             }
-        } else {
-            st += "," + vi;
         }
         let ch = item.children;
         if (ch != null && ch.length > 0) {

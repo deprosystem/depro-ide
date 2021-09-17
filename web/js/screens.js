@@ -1,5 +1,5 @@
 var components = ["ToolBar", "MenuBottom", "Menu", "List", "Pager", "TabLayout", "Drawer", "Map", "Panel", "Form", "ScrollPanel", 
-    "SheetBottom", "Tags", "PlusMinus", "Total"];
+    "SheetBottom", "Tags", "PlusMinus", "Total", "Photo"];
 var list_cont;
 var uxFunction, uiFunction;
 
@@ -220,11 +220,14 @@ function setScreenComponents() {
                     } else {
                         currentComponentView.className = "component";
                     }
+                    setValueComponent(currentComponentView, currentComponent, currentComponentDescr);
+/*
                     if (currentComponent == null) {
 //                        error
                     } else {
                         setValueComponent(currentComponentView, currentComponent, currentComponentDescr);
                     }
+*/
                 }
 
                 container_scr.scroll_y.resize(container_scr);
@@ -514,7 +517,9 @@ function selComponType(i) {
         uxFunction.addComponent(idComponentNum, viewId);
         idComponentNum ++;
         currentScreen.components.push(currentComponentDescr);
-        currentChildren.push(currentComponent);
+        if (currentComponent != null) {
+            currentChildren.push(currentComponent);
+        }
         setValueComponent(currentComponentView, currentComponent, currentComponentDescr);
         setScreenView();
         container_scr.scroll_y.resize(container_scr);
@@ -538,7 +543,8 @@ function selComponentAll(el) {
     currentComponentDescr = getComponentDescrById(id);
     currentComponent = getComponentById(id);
     try {
-        uxFunction = eval("new ux" + currentComponent.type + "();");
+//        uxFunction = eval("new ux" + currentComponent.type + "();");
+        uxFunction = eval("new ux" + currentComponentDescr.type + "();");
     } catch(e) {
         uxFunction = null;
     }
@@ -659,9 +665,9 @@ function delCmponent(el) {
         compEl = getInfComponentById(cId);
         if (compEl != null) {
             compEl.parent.splice(compEl.ind, 1);
-            cc.splice(compI, 1);
-            setSelectScreen();
         }
+        cc.splice(compI, 1);
+        setSelectScreen();
     }
 }
 

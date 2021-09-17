@@ -359,115 +359,135 @@ function viewComponElem(el) {
             }
         }
     }
+
     if (p.parent != null) {
         relativeL(el, p, parL, parT, parR, parB, margR);
     }
-    
+
     let ik;
-    if (p.toLeftOf != null && p.toLeftOf != "") {
-        let leftOf = -1;
-        let rectEl;
-        let parentV = el.parentElement;
-        let child = parentV.children;
-        ik = child.length;
-        let elem;
-        for (let i = 0; i < ik; i++) {
-            elem = child[i];
-            if (elem.android != null && elem.android.viewId == p.toLeftOf) {
-                rectEl = elem.getBoundingClientRect();
-                leftOf = parseInt(rectParentEl.right - rectEl.left);
-                break;
-            }
-        }
-        if (leftOf > -1) {
-            let leftMargElem = 0;
-            if (elem.android.leftMarg != null && elem.android.leftMarg != "") {
-                leftMargElem = parseInt(elem.android.leftMarg) * MEASURE;
-            }
-            el.style.left = "";
-            el.style.right = (leftOf + leftMargElem + RR) + px;
-        }
-    }
-    
-    if (p.toRightOf != null && p.toRightOf != "") {
-        let rightOf = -1;
-        let rectEl;
-        let parentV = el.parentElement;
-        let child = parentV.children;
-        ik = child.length;
-        let elem;
-        for (let i = 0; i < ik; i++) {
-            elem = child[i];
-            if (elem.android != null && elem.android.viewId == p.toRightOf) {
-                rectEl = elem.getBoundingClientRect();
-                rightOf = parseInt(rectEl.right) - parentX;
-                break;
-            }
-        }
-        if (rightOf > -1) {
-            el.style.marginLeft = (rightOf + LL) + px;
-        }
-    }
-
-    if (p.below != null && p.below != "") {
-        let below = -1;
-        let parentV = el.parentElement;
-        if (parentV != null) {
+    if (p.gravLayout.h == null || p.gravLayout.h == "" || p.gravLayout.h == NONE) {
+        if (p.toLeftOf != null && p.toLeftOf != "") {
+            let leftOf = -1;
+            let rectEl;
+            let parentV = el.parentElement;
             let child = parentV.children;
-            let ik = child.length;
+            ik = child.length;
             let elem;
             for (let i = 0; i < ik; i++) {
                 elem = child[i];
-                if (elem.android != null && elem.android.viewId == p.below) {
-                    let rectEl = elem.getBoundingClientRect();
-                    below = parseInt(rectEl.bottom) - parentY;
+                if (elem.android != null && elem.android.viewId == p.toLeftOf) {
+                    rectEl = elem.getBoundingClientRect();
+                    leftOf = parseInt(rectParentEl.right - rectEl.left);
                     break;
                 }
             }
-            if (below > -1) {
-                let botMargElem = 0;
-                if (elem.android.bottomMarg != null) {
-                    botMargElem = parseInt(elem.android.bottomMarg) * MEASURE;
+            if (leftOf > -1) {
+                let leftMargElem = 0;
+                if (elem.android.leftMarg != null && elem.android.leftMarg != "") {
+                    leftMargElem = parseInt(elem.android.leftMarg) * MEASURE;
                 }
-                if (p.height == MATCH) {
-                    el.style.top = (below + botMargElem + TT) + px;
-                } else {
-                    el.style.marginTop = (below + botMargElem + TT) + px;
+                if (p.width != MATCH) {
+                    el.style.left = "";
                 }
+                el.style.right = (leftOf + leftMargElem + RR) + px;
             }
         }
-    }
     
-    if (p.above != null && p.above != "") {
-        let above = -1;
-
-        let parentV = el.parentElement;
-        if (parentV != null) {
+        if (p.toRightOf != null && p.toRightOf != "") {
+            let rightOf = -1;
+            let rectEl;
+            let parentV = el.parentElement;
             let child = parentV.children;
-            let ik = child.length;
+            ik = child.length;
             let elem;
             for (let i = 0; i < ik; i++) {
                 elem = child[i];
-                if (elem.android != null && elem.android.viewId == p.above) {
-                    let rectEl = elem.getBoundingClientRect();
-                    above = parseInt(rectParentEl.bottom - rectEl.top);
+                if (elem.android != null && elem.android.viewId == p.toRightOf) {
+                    rectEl = elem.getBoundingClientRect();
+                    rightOf = parseInt(rectEl.right) - parentX;
                     break;
                 }
             }
-            let topMargElem = 0;
-            if (above > -1) {
-                if (elem.android.topMarg != null && elem.android.topMarg != "") {
-                    topMargElem = parseInt(elem.android.topMarg) * MEASURE;
+            if (rightOf > -1) {
+                el.style.marginLeft = (rightOf + LL) + px;
+            }
+        }
+    }
+
+    if (p.gravLayout.v == null || p.gravLayout.v == "" || p.gravLayout.v == NONE) {
+        if (p.below != null && p.below != "") {
+            let below = -1;
+            let parentV = el.parentElement;
+            if (parentV != null) {
+                let child = parentV.children;
+                let ik = child.length;
+                let elem;
+                for (let i = 0; i < ik; i++) {
+                    elem = child[i];
+                    if (elem.android != null && elem.android.viewId == p.below) {
+                        let rectEl = elem.getBoundingClientRect();
+                        below = parseInt(rectEl.bottom) - parentY;
+                        break;
+                    }
                 }
-                if (p.height == MATCH) {
+                if (below > -1) {
+                    let botMargElem = 0;
+                    if (elem.android.bottomMarg != null) {
+                        botMargElem = parseInt(elem.android.bottomMarg) * MEASURE;
+                    }
+                    if (p.height == MATCH) {
+                        el.style.top = (below + botMargElem + TT) + px;
+                    } else {
+                        el.style.marginTop = (below + botMargElem + TT) + px;
+                    }
+                }
+            }
+        }
+
+        if (p.above != null && p.above != "") {
+            let above = -1;
+            let parentV = el.parentElement;
+            if (parentV != null) {
+                let child = parentV.children;
+                let ik = child.length;
+                let elem;
+                for (let i = 0; i < ik; i++) {
+                    elem = child[i];
+                    if (elem.android != null) {
+                        if (elem.android.visibility == null) {
+                            elem.android.visibility = true;
+                        }
+                        if (elem.android.viewId == p.above && elem.android.visibility ) {
+                            let rectEl = elem.getBoundingClientRect();
+                            above = parseInt(rectParentEl.bottom - rectEl.top);
+                            break;
+                        }
+                    }
+                }
+                let topMargElem = 0;
+                if (above > -1) {
+                    if (elem.android.topMarg != null && elem.android.topMarg != "") {
+                        topMargElem = parseInt(elem.android.topMarg) * MEASURE;
+                    }
+                    if (p.height != MATCH) {
+                        el.style.top = "";
+                    }
                     el.style.bottom = (above + topMargElem + BB) + px;
-                } else {
-                    el.style.marginBottom = (above + topMargElem + BB) + px;
+/*
+                    if (p.height == MATCH) {
+                        el.style.bottom = (above + topMargElem + BB) + px;
+                    } else {
+                        if (p.height == WRAP) {
+                            el.style.top = "";
+                        }
+                        el.style.bottom = (above + topMargElem + BB) + px;
+                    }
+*/
                 }
             }
         }
     }
-    
+
     var hH = parseInt(el.style.height);
     var wW = parseInt(el.style.width);
     let contentEl;
@@ -537,6 +557,11 @@ function viewComponElem(el) {
                 imgEl.style.border = p.componParam.w_bord + "px solid " + findColorByIndex(p.componParam.borderColor);
             } else {
                 imgEl.style.border = "";
+            }
+            if (p.componParam != null && p.componParam.blur != null && p.componParam.blur != 0) {
+                imgEl.style.filter = 'blur(' + p.componParam.blur + 'px)';
+            } else {
+                imgEl.style.filter = '';
             }
             break;
         case "CardView":

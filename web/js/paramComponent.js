@@ -365,8 +365,10 @@ function gravLayoutHorisontal(el, val) {
         p.gravLayout.h = val;
         el.style.backgroundColor = fonSel;
     }
+/*
     p.toRightOf = "";
     p.toLeftOf = "";
+*/
     viewCompon();
 }
 
@@ -554,26 +556,50 @@ function changeScaleType(el) {
 }
 
 function setAbove() {
-    let st = selectAbove.options[selectAbove.selectedIndex].value;
-    currentElement.android.above = st;
+    let st = selectAbove.options[selectAbove.selectedIndex].value
+    let p = currentElement.android;
+    p.above = st;
+    if (st.trim() != "") {
+        if (p.gravLayout.v == 3) {
+            p.gravLayout.v = 4;
+        }
+    }
     viewCompon();
 }
 
 function setBelow() {
     let st = selectBelow.options[selectBelow.selectedIndex].value;
-    currentElement.android.below = st;
+    let p = currentElement.android;
+    p.below = st;
+    if (st.trim() != "") {
+        if (p.gravLayout.v == 3) {
+            p.gravLayout.v = 4;
+        }
+    }
     viewCompon();
 }
 
 function setToRightOf(el) {
     let st = el.options[el.selectedIndex].value;
-    currentElement.android.toRightOf = st;
+    let p = currentElement.android;
+    p.toRightOf = st;
+    if (st.trim() != "") {
+        if (p.gravLayout.h == 3) {
+            p.gravLayout.h = 4;
+        }
+    }
     viewCompon();
 }
 
 function setToLeftOf(el) {
     let st = el.options[el.selectedIndex].value;
-    currentElement.android.toLeftOf = st;
+    let p = currentElement.android;
+    p.toLeftOf = st;
+    if (st.trim() != "") {
+        if (p.gravLayout.h == 3) {
+            p.gravLayout.h = 4;
+        }
+    }
     viewCompon();
 }
 

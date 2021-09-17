@@ -25,3 +25,22 @@ function newOptionsTypeUX(type, vv) {
     }
     return st;
 }
+
+function newOptionsTypeUI(type, vv) {
+    let st = formListIdElem(currentChildren, type);
+    return formOptionsSelUI(" " + st, vv);
+}
+
+function formOptionsSelUI(stOption, valueSel) {
+    let ll = stOption.split(",");
+    let ik = ll.length;
+    let st = '';
+    for (let i = 0; i < ik; i++) {
+        let sel = "";
+        if (valueSel == ll[i]) {
+            sel = "selected";
+        }
+        st += '<option ' + sel + '>' + ll[i] + '</option>'
+    }
+    return st;
+}

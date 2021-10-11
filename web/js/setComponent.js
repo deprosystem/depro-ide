@@ -558,8 +558,8 @@ function viewComponElem(el) {
             } else {
                 imgEl.style.border = "";
             }
-            if (p.componParam != null && p.componParam.blur != null && p.componParam.blur != 0) {
-                imgEl.style.filter = 'blur(' + p.componParam.blur + 'px)';
+            if (p.componParam != null && p.componParam.int_0 != null && p.componParam.int_0 != 0) {
+                imgEl.style.filter = 'blur(' + p.componParam.int_0 + 'px)';
             } else {
                 imgEl.style.filter = '';
             }

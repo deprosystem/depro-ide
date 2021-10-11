@@ -171,14 +171,24 @@ function formIndicator(item) {
 function formTxt(item) {
     currentElement = createNewEl();
     p = {typeUxUi: "ui"};
-    p.type = "TextView";
+    let typeEl;
+    if (item.edit != null && item.edit) {
+        p.type = "EditText";
+        p.typeFull = {name: 'EditText', typeBlock: 0};
+        typeEl = createDivEditText(currentElement);
+    } else {
+        p.type = "TextView";
+        p.typeFull = {name: 'TextView', typeBlock: 0};
+        typeEl = createDivText();
+    }
     p.width = MATCH;
     p.height = WRAP;
-    p.typeFull = {name: 'TextView', typeBlock: 0};
+//    p.typeFull = {name: 'TextView', typeBlock: 0};
     p.gravLayout = {h:4,v:4};
     p.gravity = {h:4,v:4};
     currentElement.android = p;
-    typeEl = createDivText();
+    
+//    typeEl = createDivText();
     p.text = item.name;
     p.viewId = item.name;
     p.textSize = 14;

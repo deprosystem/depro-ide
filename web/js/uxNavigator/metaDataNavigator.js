@@ -8,7 +8,7 @@ var listMetaHandlers = [
                     {name: "param", title:"Global variable name",len:150,type:"Text",valid:{latin:true},br:true},
                     {name: "param_1", title:"Variable list",len:200,type:"Text",valid:{list_var:true},br:true}]},
         {handl:"backOk", meta:[{name: "param", title:"Return parameter list",len:150,type:"Text",valid:{latin:true},br:true}]},
-        {handl:"send", meta:[{name: "param", title:"Send",type:"Send"},
+        {handl:"send", meta:[{name: "param", title:"Model",type:"Send"},
                     {name: "after", title:"After",type:"Navig",after:true}]},
         {handl:"springScale", meta:[{name: "id", title:"Element for animation",len:150,type:"SelectId"}]},
         {handl:"hide", meta:[{name: "id", title:"The element that is hidden",len:150,type:"SelectId"}]},

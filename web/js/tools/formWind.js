@@ -52,7 +52,7 @@ function formWind(w, h, t, l, tit, scroll, cbClose, footName, footListener, colo
         controll.appendChild(buttonCancel);
     }
     let contW = document.createElement('div');
-    contW.style.cssText = "position:absolute;right:0px;bottom:" + bott + "px;left:0px;top:49px;";
+    contW.style.cssText = "position:absolute;right:0px;bottom:" + bott + "px;left:0px;top:48px;";
     ww.appendChild(contW);
     document.body.append(ww);
     if (scroll != null && scroll) {
@@ -203,11 +203,8 @@ function clearMoveWind(e) {
 function formViewScrolY(wraperScroll) {
     let viewport = document.createElement('div');
     viewport.className = "viewport";
-//    viewport.style.left = "3px";
     viewport.style.top = "0px";
     wraperScroll.appendChild(viewport);
-//    queryFields.appendChild(viewport);
-    
     let content = document.createElement('div');
     content.className = "content";
     viewport.appendChild(content);

@@ -6,20 +6,18 @@ var wTableInQuery = 197;
 var wOperQuery = 32;
 var wraperQuery;
 var selectQueryEl;
-var footerQuery;
+var footerQuery, noRequest;
 var queryTables, queryFields, queryFieldsData, queryQueryData, queryOrder;
 var queryFieldsOrderView;
 var errorQuery;
-//var qqqQQQ;
 
 function editQueryWind() {
     let hFooter = 150;
-//    let hTitleQuery = 24;
     let hTitleQuery_2 = hTitleQuery + 2;
     selectQueryEl = null;
     wFieldQuery = 180;
     listTablesForQuery.length = 0;
-    let title = '<div style="height:' + hTitleQuery + 'px;border-bottom:1px solid #1dace9;border-top:1px solid #1dace9">'
+    let title = '<div style="height:' + hTitleQuery + 'px;border-bottom:1px solid #1dace9;">'
             +'<div style="width:' + wFieldQuery + 'px;text-align:center;margin-top:3px;float:left;font-size:14px;">Fields</div>'
             +'<div style="height:100%;width:1px;background-color:#1dace9;float:left"></div>'
             +'<div style="text-align:center;margin-top:3px;float:left;margin-left:30px;font-size:14px;">Tables</div>'
@@ -28,9 +26,14 @@ function editQueryWind() {
             +'<div style="margin-top:3px;float:left;margin-left:' + wFieldQuery + 'px;font-size:14px;">Where</div>'
             +'</div>';
     let footer = '<div style="position:absolute;;border-top:1px solid #1dace9;left:0;bottom:0;right:0;height:' + hFooter +'px"></div>';
+    let fieldsTit = '<div style="position:absolute;border-right:1px solid #1dace9;left:0;top:' + (hTitleQuery + 1) + 'px;width:' + wFieldQuery + 'px;height:' + (hTitleQuery + 1) 
+            +'px;border-bottom:1px solid #1dace9;background-color:#f3f8ff;">'
+            +'<div style="margin-top:4px;float:left;margin-left:5px;">Fields name</div>'
+            +'<div style="margin-top:4px;float:right;margin-right:10px;">Edit</div>'
+            +'</div>';
 //    let fields = '<div style="position:absolute;;border-right:1px solid #1dace9;left:0;top:' + hTitleQuery_2 + 'px;width:' + wFieldQuery + 'px;bottom:' + hFooter +'px"></div>';
-    let fields = '<div style="position:absolute;;border-right:1px solid #1dace9;left:0;top:' + hTitleQuery_2 + 'px;width:' + wFieldQuery + 'px;bottom:' + (hFooter + 1) +'px"></div>';
-    let tables = '<div style="position:absolute;;top:' + hTitleQuery_2 + 'px;left:' + (wFieldQuery + 1) + 'px;bottom:' + (hFooter + 1) +'px;right:0"></div>';
+    let fields = '<div class="fields_q" style="position:absolute;border-right:1px solid #1dace9;left:0;top:' + (hTitleQuery * 2 + 2) + 'px;width:' + wFieldQuery + 'px;bottom:' + (hFooter + 1) +'px"></div>';
+    let tables = '<div class="tables_q" style="position:absolute;;top:' + hTitleQuery_2 + 'px;left:' + (wFieldQuery + 1) + 'px;bottom:' + (hFooter + 1) +'px;right:0"></div>';
     
     let wind = formWind(800, 590, 40, 250, "Forming a request");
     
@@ -43,13 +46,22 @@ function editQueryWind() {
     buttonCancel.addEventListener("click", function(event){closeWindow(wind);}, true);
     controll.appendChild(buttonCancel);
     
-    let windMenu = newDOMelement('<div style="position:absolute;top:0;left:0;right:0;bottom:50px"></div>');
+    let windMenu = newDOMelement('<div class="windMenu_q" style="position:absolute;top:0;left:0;right:0;bottom:50px"></div>');
     wind.appendChild(windMenu);
     let titleEl = newDOMelement(title);
     let addTab = newDOMelement('<img style="margin-top:4px;margin-left:25px;float:left;cursor:pointer;" width="16" height="16" src="img/add_blue.png">');
     let order = newDOMelement('<img style="margin-top:6px;margin-right:15px;float:right;cursor:pointer;" width="12" height="12" src="img/sort-2.png">');
     titleEl.appendChild(addTab);
     titleEl.appendChild(order);
+    titleEl.append(newDOMelement('<div style="margin-top:4px;float:right;margin-right:7px;">Order</div>'));
+    let checkQ = "check-act";
+    if (currentComponentDescr.model.bool_1 != null && currentComponentDescr.model.bool_1) {
+        checkQ = "check-sel_1";
+    }
+    noRequest = newDOMelement('<img class="checkNoQ" style="width:18px;cursor:pointer;height:18px;float:right;margin-right:10px;margin-top:3px;" src="img/' + checkQ + '.png">');
+    noRequest.addEventListener("click", function(){checkElement(noRequest)}, false);
+    titleEl.append(noRequest);
+    titleEl.append(newDOMelement('<div style="margin-top:4px;float:right;margin-right:7px;">No data request</div>'));
     windMenu.appendChild(titleEl);
     
     let footerEl = newDOMelement(footer);
@@ -67,6 +79,7 @@ function editQueryWind() {
     let scrollQu = formViewScrolY(wraperQuery);
     queryQueryData = scrollQu.getElementsByClassName("viewData")[0];
     
+    windMenu.append(newDOMelement(fieldsTit));
     queryFields = newDOMelement(fields);
     windMenu.appendChild(queryFields);
     queryTables = newDOMelement(tables);
@@ -110,7 +123,7 @@ function editQueryWind() {
            doServerAlien("GET", hostDomain + 'tables/list', cbGetListTablesQuery);
         }
     }
-    
+
 //console.log("WWWWW="+wind.innerHTML);
 }
 
@@ -411,6 +424,7 @@ function saveQuery() {
             cf = 2;
             fields += sepF + aliasForF + "*";
             sepF = ", ";
+/*
             if (listField != null) {
                 let zk = listField.length;
                 for (z = 0; z < zk; z++) {
@@ -421,6 +435,7 @@ function saveQuery() {
                     }
                 }
             }
+*/
         }
         let lF = [];
         if (cf == 1) {
@@ -432,11 +447,13 @@ function saveQuery() {
                 if (it.getElementsByTagName('img')[0].src.indexOf("act") < 0) {
                     lF.push(it.idField);
                     fields += sepF + it.name_field;
+                    
+/*
                     if (it.type_field != "Serial") {
                         itemData = {name:it.name_field,type:it.type_field};
                         data.push(itemData);
                     }
-
+*/
                     sepF = ", ";
                 }
             }
@@ -444,9 +461,28 @@ function saveQuery() {
         resOneTab = {id_table:viewTabI.id_table,fullness:cf,listFields:lF};
         res.push(resOneTab);
     }
+    
+    let fieldsQQ = queryFieldsData.children;
+    ik = fieldsQQ.length;
+    let listFields = [];
+    for (let i = 0; i < ik; i++) {
+        let item = fieldsQQ[i];
+        if (item.type_field.indexOf("erial") == -1) {
+            let imgCheck = item.querySelector("IMG");
+            let ed = false;
+            if (imgCheck != null && imgCheck.src.indexOf("check-sel") > -1) {
+                ed = true;
+            }
+            itemData = {name:item.name_field,type:item.type_field,edit:ed};
+            data.push(itemData);
+        }
+    }
+    
     let SQL = "SELECT " + fields + " FROM " + tables;
     let qu;
     currentComponentDescr.model.data[0] = data;
+    currentComponentDescr.model.bool_1 = noRequest.src.indexOf("check-sel") > -1;
+//console.log("currentComponentDescr.model.bool_1="+currentComponentDescr.model.bool_1);
     let url = currentComponentDescr.model.url;
     if (url != null && url != "") {
         url = "" + url;
@@ -461,18 +497,14 @@ function saveQuery() {
     }
 // Query
 
-//console.log("qqqQQQ="+qqqQQQ.innerHTML);
-
     let queryChild = queryQueryData.children;
     ik = queryChild.length;
     let where_query = "";
     let strParam = "";
     let sepStrPar = "";
     let queryForSave = [];
-//console.log("saveQuery ik="+ik);
     for (let i = 0; i < ik; i++) {
         let itemQ = queryChild[i];
-//console.log("saveQuery CLAS itemQ="+itemQ.className+"<< INER="+itemQ.innerHTML);
         let childQ = itemQ.children;
         let onlyTab = itemQ.getElementsByClassName("table");
         let jk = onlyTab.length;
@@ -532,7 +564,7 @@ function saveQuery() {
 
     let fieldsC = queryFieldsData.children;
     ik = fieldsC.length;
-    let listFields = [];
+//    let listFields = [];
     for (let i = 0; i < ik; i++) {
         let ffI = fieldsC[i];
         let nameFfI = ffI.querySelector(".name").innerHTML;
@@ -567,7 +599,7 @@ function saveQuery() {
     currentComponentDescr.model.param = strParam;
     let original = JSON.stringify(origin_query);
     let nam = currentScreen.screenName + "_" + currentComponent.viewId;
-    let dat = {id_query:qu,name_query:nam,type_query:0,origin_query:original,sql_query:SQL,param_query:strParam};
+    let dat = {id_query:qu,name_query:nam,type_query:"SELECT",origin_query:original,sql_query:SQL,param_query:strParam};
     doServerAlien("POST", hostDomain + "query/create", cbQueryCreate, JSON.stringify(dat));
 }
 
@@ -676,6 +708,29 @@ function cbQueryValue(res) {
         ik = ord.length;
         for (let i = 0; i < ik; i++) {
             queryOrder.push(ord[i]);
+        }
+    }
+
+    let dataEd = currentComponentDescr.model.data[0];
+    let fk = dataEd.length;
+    if (dataEd != null) {
+        let fieldsQQ = queryFieldsData.children;
+        ik = fieldsQQ.length;
+        for (let i = 0; i < ik; i++) {
+            let item = fieldsQQ[i];
+            if (item.type_field.indexOf("erial") == -1) {
+                let imgCheck = item.querySelector("IMG");
+                imgCheck.src = "img/check-act.png";
+                for (f = 0; f < fk; f++) {
+                    let itemF = dataEd[f];
+                    if (itemF.name == item.name_field) {
+                        if (itemF.edit) {
+                            imgCheck.src = "img/check-sel_1.png";
+                        }
+                        break;
+                    }
+                }
+            }
         }
     }
 }

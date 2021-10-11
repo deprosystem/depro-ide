@@ -22,6 +22,15 @@ function setParamCompon() {
     el_id_input.onkeyup = keyUp_el_id;
     el_id_input.onblur = blur_el_id;
     el_id_input.onfocus = focus_el_id;
+    
+    if (paramCompon.alias == null) {
+        alias_input.value = "";
+    } else {
+        alias_input.value = paramCompon.alias;
+    }
+    alias_input.addEventListener('keydown', function(event){keydown_el_id(event)}, false);
+    alias_input.onkeyup = keyUp_alias;
+    
     if (paramCompon.gravLayout != null) {
         if (paramCompon.gravLayout.h != null) {
             var child_h = gravLayoutH.children;
@@ -226,19 +235,6 @@ function keydown_el_id(event) {
             }
         }
     }
-    
-    
-/*
-    if (e.keyCode == 13) {
-        paramCompon.viewId = el_id_input.value;
-        var item_name = paramCompon.itemNav.getElementsByClassName('item-name')[0];
-        if (paramCompon.viewId != null && paramCompon.viewId != '') {
-            item_name.innerHTML = paramCompon.viewId + ': ' + paramCompon.type;
-        } else {
-            item_name.innerHTML = paramCompon.type;
-        }
-    }
-*/
 }
 
 function keyUp_el_id(e) {
@@ -249,6 +245,10 @@ function keyUp_el_id(e) {
     } else {
         item_name.innerHTML = paramCompon.type;
     }
+}
+
+function keyUp_alias(e) {
+    paramCompon.alias = alias_input.value;
 }
 
 function focus_el_id(e) {

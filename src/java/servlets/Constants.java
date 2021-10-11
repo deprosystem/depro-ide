@@ -33,6 +33,7 @@ public class Constants {
     public static String[] animate = {"No", "LR", "RL", "BT", "TB"};
     public static String[] scaleType = {"centerCrop", "center"};
     public static String roundedType = "com.makeramen.roundedimageview.RoundedImageView";
+    public static String componImage = "com.dpcsa.compon.custom_components.ComponImageView";
     public static String cardViewType = "androidx.cardview.widget.CardView";
     public static String TextValid = "com.dpcsa.compon.custom_components.ComponTextValid";
     public static String TextCompon = "com.dpcsa.compon.custom_components.ComponTextView";

@@ -61,6 +61,7 @@ import projects.Model;
 import projects.Navigator;
 import projects.Options;
 import projects.Param;
+import projects.ParamSend;
 import projects.ProjectM;
 
 @WebServlet(name = "ExportResult", urlPatterns = {"/export/*"})
@@ -173,11 +174,14 @@ public class ExportResult extends BaseServlet {
                         System.out.println("Compile Process Error="+ ex + "\n");
                         return;
                     }
-
+                    boolean isOk = false;
                     try ( BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream())) ) {
                         String line;
                         while ((line = br.readLine()) != null) {
                             if (line != null) {
+                                if (line.indexOf("BUILD SUCCESSFUL") > -1) {
+                                    isOk = true;
+                                }
                                 System.out.println(line);
                             }
                         }
@@ -195,11 +199,14 @@ public class ExportResult extends BaseServlet {
 //                    String resultFile = userPath + projectM.nameProject + "/app-debug.apk";
 
 
-
-                    String resultFile = "download/get_apk/" + ds.userResurseInd + "/" + projectM.nameProject + "/app-debug.apk";
+                    if (isOk) {
+                        String resultFile = "download/get_apk/" + ds.userResurseInd + "/" + projectM.nameProject + "/app-debug.apk";
 //                    String resultFile = "download/get_apk/" + ds.userResurseInd + "/" + projectM.nameProject + "/" + projectM.nameProject + "-debug.apk";
 //System.out.println("resultFile="+resultFile);
-                    sendResult(response, resultFile);
+                        sendResult(response, resultFile);
+                    } else {
+                        sendError(response, "Build error. Information about the error was sent to the support team. You will be contacted within 24 hours.");
+                    }
                 } else {
                     String exportFileName = userPath + projectM.nameProject + ".zip";
                     zipRes(basePath + exportFileName, basePath + userProjPath, lengthBase);
@@ -719,6 +726,9 @@ public class ExportResult extends BaseServlet {
     
     private String formModel(Component comp) {
         Model m = comp.model;
+        if (m.bool_1 != null && m.bool_1) {
+            return "null,";
+        }
         String res = "model(";
         String stPar;
         switch (m.method) {
@@ -957,6 +967,45 @@ public class ExportResult extends BaseServlet {
                 break;
             case "springScale":
                 res = "springScale(" + parId+ ", 3, 1000)";
+                break;
+            case "send":
+                vId = "0";
+                if (stId.length() > 0) {
+                    vId = stId;
+                }
+                String ppPar;
+                ParamSend parSend = gson.fromJson(hh.param, ParamSend.class);
+                stAfter = ", after()";
+                if (hh.after != null && hh.after.size() > 0) {
+                    stAfter = ", after(";
+                    String sepAft = "";
+                    int ak = hh.after.size();
+                    for (int a = 0; a < ak; a++) {
+                        stAfter += sepAft + formHandler(hh.after, a, menu);
+                        sepAft = ",\n" + tab20;
+                    }
+                    stAfter += ")";
+                }
+                String mValid = "";
+                if (parSend.queryFilds.valid != null && parSend.queryFilds.valid.length() > 0) {
+                    String en = "false";
+                    if (hh.check != null && hh.check) {
+                        en = "true";
+                    }
+                    mValid = ",\n" + tab20 + en;
+                    String[] arValid = parSend.queryFilds.valid.split(",");
+                    for (String stValid : arValid) {
+                        mValid += ", R.id." + stValid;
+                    }
+                }
+                
+                res = "handler(" + vId + ", VH.CLICK_SEND, model(POST, \"" + parSend.url + "\", \"" + parSend.queryFilds.fields + "\")" 
+                        + "\n" + tab20 + stAfter + mValid + ")";
+//System.out.println("res="+res+"<<");
+                
+//                handler(R.id.done, VH.CLICK_SEND, model(POST, Api.EDIT_PROF,
+//                                "surname,name,second_name,phone,photo,email"),
+//                                after(setProfile()))
                 break;
             case "delRecord":
                 vId = "0";
@@ -1491,6 +1540,9 @@ public class ExportResult extends BaseServlet {
                 if (p.corners != null || (p.componParam != null && p.componParam.oval != null && p.componParam.oval)) {
                     typeEl = Constants.roundedType;
                 }
+                if (p.componParam != null && p.componParam.int_0 != null && p.componParam.int_0 > 0) {     // BLUR
+                    typeEl = Constants.componImage;
+                }
                 break;
         }
         try {
@@ -1741,6 +1793,10 @@ public class ExportResult extends BaseServlet {
                 writer.write(tab + "android:visibility=\"gone\"");
             }
             
+            if (p.alias != null && p.alias.length() > 0) {
+                writer.write(tab + "app:alias=\"" + p.alias + "\"");
+            }
+            
             switch (p.type) {
                 case Constants.TOOL:
                     if (p.imgBack != null && p.imgBack.length() > 0) {
@@ -1793,6 +1849,9 @@ public class ExportResult extends BaseServlet {
                         if (p.componParam.w_bord != null && p.componParam.w_bord > 0 && p.componParam.borderColor != null) {
                             writer.write(tab + "app:riv_border_width=\"" + p.componParam.w_bord + "dp\"");
                             writer.write(tab + "app:riv_border_color=\"" + findColorByIndex(p.componParam.borderColor, parSave.colors) + "\"");
+                        }
+                        if (p.componParam.int_0 != null && p.componParam.int_0 > 0) {
+                            writer.write(tab + "app:blur=\"" + p.componParam.int_0 + "\"");
                         }
                     }
                     break;

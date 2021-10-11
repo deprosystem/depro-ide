@@ -134,12 +134,12 @@ function uiImageView() {
         cBord.style.marginLeft = "10px";
         contentAttributes.appendChild(cBord);
 
-        if (p.componParam.blur == null) {
-            p.componParam.blur = 0;
+        if (p.componParam.int_0 == null) {
+            p.componParam.int_0 = 0;
         }
         let blurBl = selectBlock("Blur", "0,10,20,30,40", "setBlurImg", 0, 50);
         blurBl.className = "inputBlock blurBl";
-        setValueSelectBlock(blurBl, p.componParam.blur);
+        setValueSelectBlock(blurBl, p.componParam.int_0);
         contentAttributes.appendChild(blurBl);
     }
     
@@ -262,7 +262,7 @@ function setBlurImg(vv) {
     if (vv.tagName == "INPUT") {
         res = vv.value;
     }
-    currentElement.android.componParam.blur = res;
+    currentElement.android.componParam.int_0 = res;
     cornersAllClearIMG();
     setBordValue("0");
     viewCompon();
@@ -271,7 +271,7 @@ function setBlurImg(vv) {
 function setBlurValue(vv) {
     let blurBl = contentAttributes.querySelector(".blurBl");
     setValueSelectBlock(blurBl, vv);
-    currentElement.android.componParam.blur = vv;
+    currentElement.android.componParam.int_0 = vv;
 }
 
 function setColorBordIMG(id, color) {

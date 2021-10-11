@@ -39,7 +39,7 @@ console.log("AJAX="+req.responseText);
             }
         }
     };
-    data=data||null;
+//    data=data||null;
     if (progress != null) {
         divProgress = windProgr(progress, txtProgress);
         document.body.append(divProgress);
@@ -126,7 +126,7 @@ console.log("AJAX="+req.responseText);
             }
         }
     };
-    data=data||null;
+//    data=data||null;
     if (progress != null) {
         divProgress = windProgr(progress);
         document.body.append(divProgress);

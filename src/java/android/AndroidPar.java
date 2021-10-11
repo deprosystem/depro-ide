@@ -4,7 +4,7 @@ import java.util.List;
 
 public class AndroidPar {
     public String id;
-    public String viewId;
+    public String viewId, alias;
     public int componId;
     public String type, orientataion;
     public int typeBlock;

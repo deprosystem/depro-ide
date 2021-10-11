@@ -60,13 +60,13 @@ function ScrollY(container, localScroll, addEl) {
     this.parentViewport = this.viewport.parentElement;
     container.scroll_y = this;
     this.content = this.viewport.querySelector('.content');
+    this.scrollerHeightMin = 25;
+    this.step = 20;
+    this.pressed = false;
     this.viewportHeight = this.viewport.offsetHeight;
     this.contentHeight = this.content.scrollHeight;
     this.max = this.viewport.clientHeight - this.contentHeight;
     this.ratio = this.viewportHeight / this.contentHeight;
-    this.scrollerHeightMin = 25;
-    this.step = 20;
-    this.pressed = false;
     this.baseHeight = parseInt(this.ratio * this.viewportHeight);
     const fn = ScrollY.prototype;
 
@@ -101,6 +101,14 @@ function ScrollY(container, localScroll, addEl) {
 
         this.scroller = scroller;
         this.scrollbar = scrollbar;
+        
+        
+        this.viewportHeight = this.viewport.offsetHeight;
+        this.contentHeight = this.content.scrollHeight;
+        this.max = this.viewport.clientHeight - this.contentHeight;
+        this.ratio = this.viewportHeight / this.contentHeight;
+        this.baseHeight = parseInt(this.ratio * this.viewportHeight);
+        
         this.scrollerHeight = parseInt(this.ratio * this.viewportHeight);
         this.scrollerHeight = (this.scrollerHeight < this.scrollerHeightMin) ? this.scrollerHeightMin : this.scrollerHeight;
         if (this.isHide) {
@@ -144,10 +152,12 @@ function ScrollY(container, localScroll, addEl) {
         this.contentHeight = this.content.scrollHeight;
         this.max = this.viewport.clientHeight - this.contentHeight;
         this.ratio = this.viewportHeight / this.contentHeight;
+        this.baseHeight = parseInt(this.ratio * this.viewportHeight);
 
         this.scrollerHeight = parseInt(this.ratio * this.viewportHeight);
         this.scrollerHeight = (this.scrollerHeight < this.scrollerHeightMin) ? this.scrollerHeightMin : this.scrollerHeight;
         this.scroller.style.height = this.scrollerHeight + 'px';
+        
         if (this.isHide) {
             if (this.baseHeight == this.scrollerHeight) {
                 this.scrollbar.style.display = "none";

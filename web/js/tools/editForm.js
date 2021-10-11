@@ -381,7 +381,6 @@ function EditForm(meta, data, domEl, after, cbEdit, marg) {
     this.clickSend = function(event, met) {
         let name = met.name;
         let crud = new CRUD(this.edData, name);
-        this.edData
     }
 
     this.clickCheckbox = function(check, el) {

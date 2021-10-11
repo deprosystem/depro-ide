@@ -36,10 +36,14 @@ function uiEditText() {
         p.text = "";
         p.textSize = 14;
         p.letterSpac = '0.0';
+        p.componParam = {typeValidTV:"no"};
         return createDivEditText(currentElement);
     }
     
     this.setContent = function(p) {
+        if (p.componParam == null) {
+            p.componParam = {typeValidTV:"no",errorId:"",errorTxt:""};
+        }
         contentAttributes.innerHTML = uiParamView;
         let txHint = contentAttributes.getElementsByClassName("hint_edit")[0];
         if (p.hint != null) {
@@ -68,6 +72,26 @@ function uiEditText() {
         setValueSelectBlock(spacBl, p.letterSpac);
         uiParamTextView.appendChild(spacBl);
         setTextViewAttr(p);
+
+        let typeValid = dropDownList("Validation type", "no,filled,email", 65, "changeValidTypeTV", p.componParam.typeValidTV);
+        typeValid.style.clear = "both";
+        typeValid.style.marginLeft = "";
+        contentAttributes.appendChild(typeValid);
+        let errorV = document.createElement('div');
+        errorV.className = "errorV";
+        errorV.style.cssText = "float:left;height:40px;";
+        if (p.componParam.typeValidTV != "no") {
+            errorV.style.display = "block";
+        } else {
+            errorV.style.display = "none";
+        }
+        let sss = selectListID("error ID", 80, currentChildren, p.componParam.errorId, changeErrorIdTV, "TextView");
+        errorV.appendChild(sss);
+        let txtErr = editTextParam("Error message text ", 120, p.componParam.errorTxt, "changeErrotTxtTV");
+        txtErr.style.marginLeft = "10px";
+        errorV.appendChild(txtErr);
+        contentAttributes.appendChild(errorV);
+
     }
     
     this.viewElementUI = function(p, el) {

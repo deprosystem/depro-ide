@@ -306,6 +306,8 @@ function oneFieldView(idTab, item, el) {
             + hItemListFieldsTable + 'px;overflow: hidden;border-bottom:1px solid #aaf;clear:both"></div>');
     cont.idTable = idTab;
     cont.idField = item.id_field;
+    cont.name_field = item.name;
+    cont.type_field = item.type;
     let name = newDOMelement('<div class="name" style="font-size:14px;color:#000;margin-top:2px;float:left;margin-left:3px">' + item.name + '</div>');
     cont.appendChild(name);
     el.appendChild(cont);
@@ -313,6 +315,9 @@ function oneFieldView(idTab, item, el) {
     let rect_1 = name.getBoundingClientRect();
     let descr = newDOMelement('<div style="font-size:10px;color:#555;margin-top:6px;height:11px;width:' + (rect.width - rect_1.width - 20) 
             + 'px;float:left;margin-left:5px;overflow:hidden">' + item.title);
+    let selField = newDOMelement('<img style="width:18px;cursor:pointer;height:18px;float:right;margin-right:2px;margin-top:3px;" src="img/check-sel_1.png">');
+    selField.addEventListener("click", function(){checkElement(selField)}, false);
+    cont.append(selField);
     cont.appendChild(descr);
 }
 

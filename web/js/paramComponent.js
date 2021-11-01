@@ -617,12 +617,13 @@ function setVisibility(check) {
             vv = currentElement.oldDisplay;
         }
         currentElement.style.display = vv;
-        showElemChilds(currentElement);
+//        showElemChilds(currentElement);
     } else {
         visibility.src = "img/check-act.png";
         currentElement.oldDisplay = currentElement.style.display;
         currentElement.style.display = "none";
     }
+    showElemChilds(currentElement.android.parent);
 }
 
 function setImgBG(e) {

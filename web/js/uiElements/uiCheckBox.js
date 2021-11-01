@@ -40,6 +40,7 @@ function uiCheckBox() {
         if (this.data == null) {
             this.data = p;
         }
+        contentAttributes.innerHTML = "";
         let dd = new EditForm(meta, p, contentAttributes, null, this);
     }
     

@@ -59,8 +59,8 @@ function uxPlusMinus() {
 function formCalculations(el) {
     let metaCalc = {titleForm:"Calculations", description:
         [{name: "id", title:"Element for result",len:100,type:ID_SELECT,type_view:"TextView"},
-        {name: "title", title:"Field multiplier",len:15,valid:{name_low:true}},
-        {name: "screen", title:"Field result",len:15,valid:{name_low:true}}]
+        {name: "title", title:"Field multiplier",len:15,valid:"name_low"},
+        {name: "screen", title:"Field result",len:15,valid:"name_low"}]
         };
     editDataWind(metaCalc, currentComponentDescr.model.menuList.list, cbSaveCalcul, null, 350, 250, 200, 50, "");
 }

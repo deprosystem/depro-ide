@@ -1,5 +1,5 @@
 var components = ["ToolBar", "MenuBottom", "Menu", "List", "Pager", "TabLayout", "Drawer", "Map", "Panel", "Form", "ScrollPanel", 
-    "SheetBottom", "Tags", "PlusMinus", "Total", "Photo"];
+    "SheetBottom", "Spinner", "Tags", "PlusMinus", "Total", "Photo"];
 var list_cont;
 var uxFunction, uiFunction;
 

@@ -8,25 +8,29 @@ function tooltipMessage(target, message) {
 }
 
 function tooltipMessageOver(target, message) {
-    let maxW = 400;
-    let xy = getCoordsEl(target);
-    let x = xy.left + 5;
-    let y = xy.top;
-    let dv = document.createElement('div');
-    if (y > 30) {
-        y -= 30;
-    } else {
-        y += 20;
+    let sW = window.screen.width;
+
+    let tooltipElem = document.createElement('div');
+    tooltipElem.className = 'tooltip';
+    tooltipElem.innerHTML = message;
+    document.body.append(tooltipElem);
+
+    let coords = target.getBoundingClientRect();
+    let left = coords.left + (target.offsetWidth - tooltipElem.offsetWidth) / 2;
+    let right = left + tooltipElem.offsetWidth;
+    if (right > sW) {
+        left = left + sW - right - 40;
     }
-    let wD = document.documentElement.clientWidth;
-    if ((wD - x) < maxW) {
-        x = wD - maxW - 20;
+    if (left < 0) left = 0;
+
+    let top = coords.top - tooltipElem.offsetHeight - 5;
+    if (top < 0) { // если подсказка не помещается сверху, то отображать её снизу
+      top = coords.top + target.offsetHeight + 5;
     }
-    dv.style.cssText = "position:absolute;max-width:" + maxW + "px;padding:5px;background:var(--c_content);border:1px solid #ffc700;border-radius:8px;left:" + x + "px;top:" + y + "px;z-index:100";
-    dv.innerHTML = message;
-    document.body.append(dv);
-    windTooltip = dv;
-    return dv;
+
+    tooltipElem.style.left = left + 'px';
+    tooltipElem.style.top = top + 'px';
+    return tooltipElem;
 }
 
 function tooltipErrorScreen(target, message) {
@@ -81,6 +85,7 @@ function tooltipHelpOver(target, message) {
 
 function getCoordsEl(elem) { 
     var box = elem.getBoundingClientRect();
+//console.log("pageXOffset="+pageXOffset+" CLASS="+elem.className+"<<");
     return {
       top: box.top + pageYOffset,
       left: box.left + pageXOffset,

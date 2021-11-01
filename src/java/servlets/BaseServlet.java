@@ -35,7 +35,7 @@ public abstract class BaseServlet extends HttpServlet{
     public Gson gson = new Gson();
     public BaseDB baseDb;
     public boolean isSerwer;
-    public long userExample = 154;
+    public long userExample = 54;
     
     protected abstract void processRequest(HttpServletRequest request, 
             HttpServletResponse response, DataServlet ds);
@@ -95,11 +95,15 @@ System.out.println("query="+ds.query);
         String st = request.getServletContext().getRealPath("");
         if (st.indexOf(File.separator) != 0) {
             isSerwer = false;
-            return st + File.separator;
+            if ( ! st.endsWith(File.separator)) {
+                st += File.separator;
+            }
+            return st;
         } else {
             isSerwer = true;
-            int i = st.lastIndexOf(File.separator) + 1;
-            return st.substring(0, i);
+            return Constants.BASEPATH;
+//            int i = st.lastIndexOf(File.separator) + 1;
+//            return st.substring(0, i);
         }
     }
     

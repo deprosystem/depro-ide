@@ -43,6 +43,19 @@ function createNumber(w, h, min, max, cb, stepN) {
     return divN;
 }
 
+function editNumber(title, w, cb) {
+    let div = newDOMelement('<div style="margin-top: 3px;float: left;margin-left:10px;width:' + w + 'px;"></div>');
+    let tit = newDOMelement('<div class="text_style_ui">' + title + '</div>');
+    let cbInp = "";
+    if (cb != null && cb != "") {
+        cbInp = ' oninput="' + cb + '(this)" ';
+    }
+    let inp = newDOMelement('<input size="1"' + cbInp + 'onkeydown="return validNumber(event)" style="float:left;border:1px solid #bbd4ef;outline: none;border-radius:5px;height:24px;width:100%">');
+    div.append(tit);
+    div.append(inp);
+    return div;
+}
+
 function setValueNumber(el, val) {
     let inp = el.getElementsByTagName("input")[0];
     inp.value = val;

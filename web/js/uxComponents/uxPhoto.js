@@ -3,7 +3,7 @@ function uxPhoto() {
         {name: "title", title:"Camera shutter",len:150,type:"SelectId"},
         {name: "tabLayout", title:"Where to show photos",len:150,type:"MultiCheck",source:"UI",tags:"ImageView",src:"img/edit_meta.png"},
         {name: "selectedField", title:"Text to select the source of images",len:150,type:"Text"},
-        {name: "param", title:"Parameter",len:80,type:"Text",valid:{list_var:true}}
+        {name: "param", title:"Parameter",len:80,type:"Text",valid:"list_var"}
     ];
     
     this.param = {name: "Photo", viewBaseId: "photo", onlyOne: false};
@@ -30,6 +30,7 @@ function uxPhoto() {
     
     this.setValue = function(componParam) {
         componParam.style.height = "40px";
+        currentComponentDescr.view.innerHTML = "";
         let dd = new EditForm(meta, currentComponentDescr.view, componParam, null, this, true);
     }
     

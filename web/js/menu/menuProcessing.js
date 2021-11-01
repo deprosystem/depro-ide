@@ -1041,11 +1041,6 @@ function closeListProj() {
     if(currentProject == null) {
         showModeUX();
         setBlanckToolBar()
-/*
-        shutScreen.style.display = "block";
-        shutScreen.innerHTML = '<div style="font-size:34px;margin-top:50px;margin-left:50px;">You have no projects</div>';
-        listMenu_UX[0].children[1].domElement.className = 'subMainMenuNo';
-*/
     } else {
         shutScreen.style.display = "none";
     }

@@ -27,6 +27,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
     edData = data;
     let ikD = edData.length
     let maxIdField;
+    let idPrimaryInput;
     
     formEditTab();
     
@@ -40,7 +41,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
         edDomEl.appendChild(tabContainer);
         hDopEl = 0;
         if (dopEl != null) {
-            tabContainer.appendChild(dopEl);
+            tabContainer.append(dopEl);
             hDopEl = dopEl.clientHeight;
         }
         tabHeader = document.createElement('div');
@@ -107,13 +108,16 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
                 tr.addEventListener("mouseout", function(event){mouseoutTr(event)}, true);
                 td = createCellNum(j);
                 tr.appendChild(td);
-                
                 for (let i = 0; i < ikM; i++) {
                     td = createTD(i, item);
                     tr.appendChild(td);
                 }
-                td = createDel();
-                tr.appendChild(td);
+                if (item.system) {
+                    td = createDelBlanck();
+                } else {
+                    td = createDel();
+                }
+                tr.append(td);
                 tableEdit.appendChild(tr);
                 if (isId) {
                     maxIdField ++;
@@ -162,9 +166,15 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
         hoverTr(event, "");
     }
     
+    function createDelBlanck() {
+        let td = document.createElement('td');
+        let dv = newDOMelement('<div style="width:21px;height:16px;"></div');
+        td.appendChild(dv);
+        return td;
+    }
+    
     function createDel() {
         let td = document.createElement('td');
-//        td.style.border = "1px solid black";
         let dv = document.createElement('img');
         dv.style.cssText = "width:16px;height:16px;margin-left:5px;cursor:pointer";
         dv.src = "img/close-o.png";
@@ -230,10 +240,17 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
         if (met.type == null) {
             met.type = TYPE_TEXT;
         }
+        let isSyst = false;
+        if (item != null && item.system) {
+            isSyst = true;
+        }
         let inp;
         switch (met.type) {
             case TYPE_BOOLEAN:
                 inp = document.createElement('input');
+                if (isSyst) {
+                    inp.readonly = "true";
+                }
                 inp.type = "checkbox";
                 inp.name = met.name;
                 if (item != null) {
@@ -252,8 +269,21 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
                 td.appendChild(inp);
                 break;
             case TYPE_SELECT:
-                if (met.select != null && met.select.length > 0) {
-                    td.appendChild(setSelect(met, item));
+                if (isSyst) {
+                    let vv;
+                    if (item != null) {
+                        let nameV = met.name;
+                        vv = item[nameV];
+                        if (vv == null) {
+                            vv = "";
+                        }
+                    }
+                    inp = newDOMelement('<div style="width:' + met.len + 'px;background-color:#0000;margin-left:5px">' + vv + '</div>');
+                    td.append(inp);
+                } else {
+                    if (met.select != null && met.select.length > 0) {
+                        td.append(setSelect(met, item));
+                    }
                 }
                 break;
             case ID_SELECT:
@@ -301,11 +331,18 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
                 td.appendChild(divImg);
                 break;
             default:
+                let readOnl = "";
+                if (isSyst) {
+                    readOnl = " readonly";
+                }
+                inp = newDOMelement('<input type="text" name="' + met.name + '" size="' + met.len + '" style="margin-left:3px;margin-right:3px;border:none"' + readOnl +  '>');
+/*
                 inp = document.createElement('input');
                 inp.type = "text";
                 inp.name = met.name;
                 inp.size = met.len;
                 inp.style.cssText = "margin-left:3px;margin-right:3px;border:none";
+*/
                 if (item != null) {
                     let nameV = met.name;
                     let vv = item[nameV];
@@ -325,8 +362,14 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
                     default:
                         inp.addEventListener('keydown', function(event){clickText(event, met.valid)}, false);
                 }
-                inp.addEventListener('focus', function(event){focusInput(event)}, false);
-                inp.addEventListener('blur', function(event){blurInput(event)}, false);
+                if (! isSyst) {
+                    inp.addEventListener('focus', function(event){focusInput(event)}, false);
+                    inp.addEventListener('blur', function(event){blurInput(event)}, false);
+                } else {
+                    if (met.name == "name") {
+                        idPrimaryInput = inp;
+                    }
+                }
                 inp.style.backgroundColor = "#0000";
                 td.appendChild(inp);
         }
@@ -471,6 +514,31 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
             }
         }
         if (valid != null) {
+            switch (valid) {
+                case "latin":
+                    let kUp = event.key.toUpperCase();
+                    if ( ! ((kUp >= "A" && kUp <= "Z") || kUp == "_" || (kUp >= "0" && kUp <= "9")))  {
+                        event.preventDefault();
+                        tooltip(event.target, "Только английские буквы, _ и цифры");
+                    }
+                    break
+                case "name_low":
+                    let targ = event.target;
+//                        let k = event.key;
+                    if ( ! ((k >= "a" && k <= "z") || k == "_" || (k >= "0" && k <= "9")))  {
+                        event.preventDefault();
+                        tooltip(targ, "Только английские буквы, _ и цифры");
+                    } else {
+                        if (targ.value.length == 0 && k >= "0" && k <= "9") {
+                            event.preventDefault();
+                            tooltip(targ, "The first character cannot be a digit");
+                        }
+                    }
+                    break
+            }
+        }
+/*
+        if (valid != null) {
             if (valid.latin != null && valid.latin) {
                 let kUp = event.key.toUpperCase();
                 if ( ! ((kUp >= "A" && kUp <= "Z") || kUp == "_" || (kUp >= "0" && kUp <= "9")))  {
@@ -493,6 +561,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
                 }
             }
         }
+*/
     }
     
     function clickNumbet(event) {
@@ -524,21 +593,21 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
             if (k == 173) {
                 if (event.target.selectionStart > 0) {
                     event.preventDefault();
-                    tooltipMessage(event.target, "Минус не в начале");
+                    tooltipMessage(event.target, "Minus not at the beginning");
                     return false;
                 }
             } else if (z == ".") {
                 let vv = event.target.value;
                 if (vv.indexOf(".") > -1) {
                     event.preventDefault();
-                    tooltipMessage(event.target, "Точка уже есть");
+                    tooltipMessage(event.target, "The point is already there");
                     return false;
                 }
             }
             return true;
         } else {
             event.preventDefault();
-            tooltipMessage(event.target, "Только цифры");
+            tooltipMessage(event.target, "Only numbers");
             return false;
         }
     }

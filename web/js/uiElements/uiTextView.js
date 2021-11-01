@@ -1,7 +1,7 @@
 function uiTextView() {
     
     let uiParamView = 
-        '<div id="uiParamTextView" style="float:left;margin-top:12px;width:100%;">'
+        '<div id="uiParamTextView" style="float:left;width:100%;">'
             +'<div class="text_style_ui" style="float: left;">Value</div>'
             +'<textarea id="text_text_value" style="margin-top: 5px; float:left;clear:both;width:100%;border:1px solid #C5DCFA;box-sizing: border-box;border-radius: 8px;"\n\
                 onKeyUp="inputTextValue(event, this)" rows="3" cols="27"></textarea>'
@@ -83,12 +83,12 @@ function uiTextView() {
         ellipsize.style.clear = "both";
         ellipsize.style.marginLeft = "";
         contentAttributes.appendChild(ellipsize);
-        
+/*
         let single = editCheckbox("Single Line", p.componParam.singleLine, "changeSingleLineTV");
         single.style.marginTop = "5px";
         single.style.marginLeft = "10px";
         contentAttributes.appendChild(single);
-        
+*/
         let maxLine = editNumberParam("maxLines", 50, 24, 0, 20, "maxLineTV");
         maxLine.style.marginLeft = "10px";
         maxLine.style.marginTop = "5px";
@@ -304,11 +304,11 @@ function grammarTV(el) {
 function grammarSpaceIfZero(vv) {
     currentElement.android.componParam.spaceZero = vv;
 }
-
+/*
 function changeSingleLineTV(vv) {
     currentElement.android.componParam.singleLine = vv;
 }
-
+*/
 function maxLineTV(el) {
     currentElement.android.componParam.maxLine = el.value;
 }

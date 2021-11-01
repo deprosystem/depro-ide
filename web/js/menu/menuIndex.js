@@ -6,7 +6,7 @@ listMenu_UX[0].children = new Array(
         {nameI : 'Create', func : createProject}, 
         {nameI : 'Open project', func : openProject},
         {nameI : 'Take from templates', func : fromTemplates},
-        {nameI : 'Change project', func : changeProject, dependProject : true},
+        {nameI : 'Edit project', func : changeProject, dependProject : true},
         {nameI : 'Save project', func : saveProject, dependProject : true},
         {nameI : 'Place in templates', func : inTemplates, dependProject : true},
         {nameI : 'Close project', func : closeProject, dependProject : true},

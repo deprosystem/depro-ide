@@ -31,6 +31,7 @@ function ListView(adapter, container, selColor) {
 */
     this.editItem = function (met) {
         let wind = adapter.chooseEditForm();
+        wind.innerHTML = "";
         new EditForm(met.meta, this.list[adapter.getSelectItemPos()].param, wind, null, this);
     }
     

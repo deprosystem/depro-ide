@@ -126,15 +126,15 @@ function FormNavigator() {
         let tagSelIdHand = hh.querySelector(".sel_id");
         tagSelIdHand.addEventListener('change', () => {
             this.changeIdHand(i, tagSelIdHand);
-        });
+        }, false);
         let del = hh.querySelector(".delRec");
         del.addEventListener('click', () => {
             this.delRecord(i);
-        });
+        }, false);
         let tagSelTypeHand = hh.querySelector(".sel_type");
         tagSelTypeHand.addEventListener('change', () => {
             this.changeTypeHand(i, tagSelTypeHand);
-        });
+        }, false);
         return hh;
     }
     
@@ -162,6 +162,11 @@ function FormNavigator() {
     }
     
     this.selHand = function(i) {
+        if (this.selectRow == i + 1) return;
+        this.selHandFull(i);
+    }
+    
+    this.selHandFull = function(i) {
         let ch = this.dataView.children;
         let rowI;
         if (this.selectRow > -1) {
@@ -181,6 +186,8 @@ function FormNavigator() {
             }
         }
         if (selJ > -1) {
+            this.dataHand[i].innerHTML = "";
+            this.paramView.innerHTML = "";
             let dd = new EditForm(listMetaHandlers[selJ].meta, this.dataHand[i], this.paramView, this.after);
 //            dd.makeEditForm(dd);
         } else {
@@ -196,6 +203,7 @@ function FormNavigator() {
     this.changeTypeHand = function(i, el) {
         let val = el.options[el.selectedIndex].value;
         this.dataHand[i].handler = val;
+        this.selHandFull(i);
     }
     
     this.titleHandView = function() {

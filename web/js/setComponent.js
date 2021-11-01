@@ -224,8 +224,11 @@ function showElemChilds(el) {
 }
         
 function viewComponElem(el) {
-    setLayoutChange();
     let p = el.android;
+    if (p.visibility != null && ! p.visibility) {
+        return;
+    }
+    setLayoutChange();
     let rectParentEl = p.parent.getBoundingClientRect();
     let parentX = parseInt(rectParentEl.left);
     let parentY = parseInt(rectParentEl.top);
@@ -363,7 +366,6 @@ function viewComponElem(el) {
     if (p.parent != null) {
         relativeL(el, p, parL, parT, parR, parB, margR);
     }
-
     let ik;
     if (p.gravLayout.h == null || p.gravLayout.h == "" || p.gravLayout.h == NONE) {
         if (p.toLeftOf != null && p.toLeftOf != "") {
@@ -492,12 +494,13 @@ function viewComponElem(el) {
     var wW = parseInt(el.style.width);
     let contentEl;
     let pc;
+    let line;
     switch(p.type) {
         case "TextView":
             viewTextView(el, p, hH, wW);
             break;
         case "PlusMinus":
-            let line = el.getElementsByClassName("line")[0]
+            line = el.getElementsByClassName("line")[0]
             if (p.componParam != null && p.componParam.noEdit != null && p.componParam.noEdit) {
                 if (line != null) {
                     line.style.display = "none";
@@ -511,7 +514,23 @@ function viewComponElem(el) {
             }
             break;
         case "EditText":
-            viewEditText(el, p, hH, wW);
+            line = el.getElementsByClassName("line")[0]
+            if (p.componParam != null) {
+                if (p.componParam.bool_2 == null) {
+                    p.componParam.bool_2 = true;
+                }
+                if (p.componParam.bool_2) {
+                    if (line != null) {
+                        line.style.display = "block";
+                    }
+                    viewEditText(el, p, hH, wW);
+                } else {
+                    if (line != null) {
+                        line.style.display = "none";
+                    }
+                    viewTextView(el, p, hH, wW);
+                }
+            }
             break;
         case "ImageView":
             contentEl = el.getElementsByClassName("image")[0];
@@ -581,7 +600,7 @@ function viewComponElem(el) {
 
             break;
     }
-    
+
 //    el.style.id = p.id;
     if (p.type != "SeekBar") {
         setBackgoundEl(el, p);
@@ -725,6 +744,7 @@ function relativeL(el, p, pLL, pTT, pRR, pBB, margR) {
     let pParent = p.parent.android;
     let contentEl;
     let rectParent;
+    let line;
     if (p.width == MATCH) {
         el.style.width = "";
         el.style.left = "0px";
@@ -741,7 +761,7 @@ function relativeL(el, p, pLL, pTT, pRR, pBB, margR) {
         el.style.right = "0px";
         switch(p.type) {
             case "PlusMinus":
-                let line = el.getElementsByClassName("line")[0]
+                line = el.getElementsByClassName("line")[0]
                 if (p.componParam != null && p.componParam.noEdit != null && p.componParam.noEdit) {
                     if (line != null) {
                         line.style.display = "none";
@@ -755,7 +775,24 @@ function relativeL(el, p, pLL, pTT, pRR, pBB, margR) {
                 }
                 break;
             case "EditText" :
-                wrapEditTextW(el, p);
+//                wrapEditTextW(el, p);
+                line = el.getElementsByClassName("line")[0]
+                if (p.componParam != null) {
+                    if (p.componParam.bool_2 == null) {
+                        p.componParam.bool_2 = true;
+                    }
+                    if (p.componParam.bool_2) {
+                        if (line != null) {
+                            line.style.display = "block";
+                        }
+                        wrapEditTextW(el, p);
+                    } else {
+                        if (line != null) {
+                            line.style.display = "none";
+                        }
+                        wrapTextViewW(el, p, pLL, pTT);
+                    }
+                }
                 break;
             case "TextView" :
                 wrapTextViewW(el, p, pLL, pTT);
@@ -790,7 +827,7 @@ function relativeL(el, p, pLL, pTT, pRR, pBB, margR) {
         } else if (p.height == WRAP) {
             switch(p.type) {
                 case "PlusMinus":
-                    let line = el.getElementsByClassName("line")[0]
+                    line = el.getElementsByClassName("line")[0]
                     if (p.componParam != null && p.componParam.noEdit != null && p.componParam.noEdit) {
                         if (line != null) {
                             line.style.display = "none";
@@ -804,7 +841,24 @@ function relativeL(el, p, pLL, pTT, pRR, pBB, margR) {
                     }
                     break;
                 case "EditText" :
-                    wrapEditTextH(el, p);
+//                    wrapEditTextH(el, p);
+                    line = el.getElementsByClassName("line")[0]
+                    if (p.componParam != null) {
+                        if (p.componParam.bool_2 == null) {
+                            p.componParam.bool_2 = true;
+                        }
+                        if (p.componParam.bool_2) {
+                            if (line != null) {
+                                line.style.display = "block";
+                            }
+                            wrapEditTextH(el, p);
+                        } else {
+                            if (line != null) {
+                                line.style.display = "none";
+                            }
+                            wrapTextViewH(el, p);
+                        }
+                    }
                     break;
                 case "TextView" :
                     wrapTextViewH(el, p);
@@ -904,16 +958,17 @@ function relativeL(el, p, pLL, pTT, pRR, pBB, margR) {
 
 function wrapTextViewH(el, p) {
     let contentEl = el.getElementsByClassName("text")[0];
-    rectParent = contentEl.getBoundingClientRect();
-    if (p.componParam != null && p.componParam.typeValidTV != null && p.componParam.typeValidTV != "no") {
-        el.style.height = standartHeightEditText(p.textSize) * MEASURE + px;
-    } else {
-        el.style.height = parseInt(p.textSize) * MEASURE + px;
-        contentEl.style.top = "0";
-        contentEl.style.marginTop = "0";
-        contentEl.style.marginLeft = "0";
-//        el.style.height = (rectParent.bottom - rectParent.top) + px;
+    let tS = parseInt(p.textSize);
+    let standH = tS;
+    if (p.componParam != null && p.componParam.lines != null && p.componParam.lines > 1 
+            && (p.componParam.st_2 == null || p.componParam.st_2 != "text")) {
+        let plusH = (p.componParam.lines - 1) * 1.3 * p.textSize;
+        standH = standH + plusH;
     }
+    el.style.height = standH * MEASURE + px;
+    contentEl.style.top = "0";
+    contentEl.style.marginTop = "0";
+    contentEl.style.marginLeft = "0";
 }
 
 function wrapTextViewW(el, p, pLL, pTT) {
@@ -951,7 +1006,14 @@ function wrapEditTextH(el, p) {
     } else {
         h = p.textSize;
     }
-    el.style.height = standartHeightEditText(h) * MEASURE + px;
+    let standH = standartHeightEditText(h);
+    if (p.componParam != null && p.componParam.lines != null && p.componParam.lines > 1 
+            && (p.componParam.st_2 == null || p.componParam.st_2 != "text")
+            && (p.componParam.st_13 == null || p.componParam.st_13.length == 0)) {
+        let plusH = (p.componParam.lines - 1) * 1.3 * p.textSize;
+        standH = standH + plusH;
+    }
+    el.style.height = standH * MEASURE + px;
 }
 
 function wrapEditTextW(el, p) {
@@ -1044,6 +1106,9 @@ function maxChildWidth(el) {
         if (elem.android == null) {
             continue;
         }
+        if (elem.android.visibility != null && ! elem.android.visibility) {
+            continue;
+        }
         rectEl = elem.getBoundingClientRect();
         
         elL = elem.style.marginLeft;
@@ -1080,6 +1145,9 @@ function maxChildHeight(el) {
     for (let i = 0; i < ik; i++) {
         elem = child[i];
         if (elem.android == null) {
+            continue;
+        }
+        if (elem.android.visibility != null && ! elem.android.visibility) {
             continue;
         }
         rectEl = elem.getBoundingClientRect();

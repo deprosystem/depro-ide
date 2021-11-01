@@ -17,6 +17,7 @@ let htmlTable = '<div style="height:40px;margin-left:20px">'
 
 function addTable() {
     fieldsTable = [];
+//    fieldsTable = [{id_field:0, name:"id_", type:"Bigserial", title:"Primary key", key:true, system:"primary"}];
     tableId = -1;
     descrTable = newDOMelement(htmlTable);
     editDataWind(metaTable, fieldsTable, cbAddTable, descrTable, 500, 500, 300);

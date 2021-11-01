@@ -211,4 +211,4 @@ li:hover ul {display: block;}
 .colorErrorL1 {color:#d90}
 .colorErrorL2 {color:#f00}
 
-.tooltip {position: fixed;padding:4px;border: 1px solid #1dace9;border-radius:5px;text-align: center;background: #d5f0ff;box-shadow: 3px 3px 3px rgba(0, 0, 0, .3);}
+.tooltip {position: fixed;padding:4px;border: 1px solid #ffc700;border-radius:5px;text-align: center;background:var(--c_content);box-shadow: 3px 3px 3px rgba(0, 0, 0, .3);}

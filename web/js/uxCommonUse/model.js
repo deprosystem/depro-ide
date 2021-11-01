@@ -4,7 +4,7 @@ let uxModel1 = '<div class="model_view" style="height:40px;">'
         +'<select class="model_method type_screen select_';
 
 let uxModel2 = '" onchange="changeMethod(this)" style="width:120px;"><option>GET</option><option>POST</option><option>TEST</option>'
-            +'<option>JASON</option><option>PARAMETERS</option>'
+            +'<option>JSON</option><option>PARAMETERS</option>'
             +'<option>GLOBAL</option><option>ARGUMENTS</option><option>PROFILE</option><option>FIELD</option><option>GET_DB</option>'
             +'<option>POST_DB</option><option>INSERT_DB</option><option>DEL_DB</option><option>UPDATE_DB</option><option>NULL</option></select>'
         +'</div>'
@@ -12,6 +12,9 @@ let uxModel2 = '" onchange="changeMethod(this)" style="width:120px;"><option>GET
 
 let pmUrl = '<div style="display:inline-block;"><div style="color:#2228;font-size:10px;margin-left:4px">URL</div>'
             +'<input class="url input_style" onkeyup="return clickUpURL(event)" style="color:#000a" type="text" size="20" value=""/>'
+            +'</div>';
+let pmJson = '<div style="display:inline-block;"><div style="color:#2228;font-size:10px;margin-left:4px">Text JSON</div>'
+            +'<input class="url input_style" onkeyup="return clickUpURL(event)" style="color:#000a" type="text" size="60" value=""/>'
             +'</div>';
 let pmParamUrl = '<div style="display:inline-block;margin-left:10px"><div style="color: #2228;font-size: 10px;margin-left:4px">URL Parameters</div>'
             +'<input class="param input_style" onchange="changeUrlParam(this.value)" style="color:#000a" type="text" size="15" value=""/>'
@@ -125,13 +128,6 @@ function changeMethod(el) {
         switch (el.options[el.selectedIndex].value) {
             case "POST":
             case "GET":
-/*
-                hostDescr = currentProject.whereServer;
-                if (hostDescr == null) {
-                    myAlert("Choose your domain location");
-                    break;
-                }
-*/
                 if (hostDescr == "Third party API") {
                     pm.innerHTML = pmUrl + pmParamUrl + pmProgr;
                     setValueGetPost();
@@ -149,6 +145,9 @@ function changeMethod(el) {
                 break;
             case "GLOBAL":
                 pm.innerHTML = pmParameters;
+                break;
+            case "JSON":
+                pm.innerHTML = pmJson;
                 break;
             default:
                 pm.innerHTML = "";
@@ -170,7 +169,11 @@ function isValidModel(mod, tab, viewId) {
             }
         }
         if (mod.url == null || mod.url == "") {
-            err.text += txtError(2, tab, "component " + viewId + " URL not specified");
+            if (hostDescr == "Third party API") {
+                err.text += txtError(2, tab, "component " + viewId + " URL not specified");
+            } else {
+                err.text += txtError(2, tab, "component " + viewId + " Request not formed");
+            }
             err.error = 2;
         }
     }
@@ -276,18 +279,21 @@ function changeUrlParam(v) {
 function formTestData(el) {
     let dat = currentComponentDescr.model.data[0];
     if (dat == null || dat.length == 0) {
-        tooltipMessage(el, "Нужно описать данные");
+        tooltipMessage(el, "You need to describe the data");
     } else {
         if (currentComponentDescr.model.test == null) {
-            currentComponentDescr.model.test = [];
+            currentComponentDescr.model.test = "[]";
         }
         let md = {titleForm:"Entering test data", description:formMetaDataModel(dat)};
-        editDataWind(md, currentComponentDescr.model.test, cbSaveTestDat);
+        let test = JSON.parse(currentComponentDescr.model.test);
+        editDataWind(md, test, cbSaveTestDat);
+//        editDataWind(md, currentComponentDescr.model.test, cbSaveTestDat);
     }
 }
 
-function cbSaveTestDat() {
-    currentComponentDescr.model.testData = JSON.stringify(currentComponentDescr.model.test);
+function cbSaveTestDat(dat) {
+//    currentComponentDescr.model.test = JSON.stringify(currentComponentDescr.model.test);
+    currentComponentDescr.model.test = JSON.stringify(dat);
 }
 
 function addDataType(addData) {

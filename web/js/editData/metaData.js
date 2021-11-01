@@ -5,7 +5,7 @@ var typeSource = "PARAM,SIZE,LOCALE,SYSTEM_TIME,GROUPP_PARAM,GLOBAL_VAR";
 
 var metaPager = {titleForm:"Данные для TabLayout", description:
     [{name: "title", title:"Text tab",len:15},
-    {name: "screen", title:"Screen",len:15,valid:{latin:true}}]
+    {name: "screen", title:"Screen",len:15,valid:"latin"}]
     }
 
 var metaInitData = {titleForm:"Navigator", description:
@@ -18,14 +18,14 @@ var metaInitData = {titleForm:"Navigator", description:
 var metaMenu = {titleForm:"Menu", description:
     [{name: "icon", title:"Icon",len:20,type:TYPE_IMG,marg:5},
     {name: "title", title:"Title",len:20},
-    {name: "screen", title:"Screen",len:8,valid:{latin:true}},
+    {name: "screen", title:"Screen",len:8,valid:"latin"},
     {name: "start", title:"Start",type:TYPE_BOOLEAN,marg:15},
     {name: "divider", title:"Divider",type:TYPE_BOOLEAN,marg:20},
-    {name: "badge", title:"Badge",len:12,valid:{latin:true}}]
+    {name: "badge", title:"Badge",len:12,valid:"latin"}]
     }
     
 var metaModel = {titleForm:"Data formation", description:
-    [{name: "name", title:"Name",len:20,valid:{latin:true}},
+    [{name: "name", title:"Name",len:20,valid:"latin"},
     {name: "type", title:"Type",len:70,type:TYPE_SELECT,select:"Text,Img,Int,Float,Time,Gallery,Boolean"},
     {name: "length", title:"Length",len:5,type:TYPE_INT},
     {name: "format", title:"Format",len:12},

@@ -17,7 +17,7 @@ public class ParamSave {
     public int typeScreen;
     public List<String> arrayString;
     public List<String> addApp;
-    public Set<String> addPermish;
+    public Set<String> addPermish, styleTxtInpt;
     public List<ItemResurces> listString;
     public ListScreen sreens;
     public ListItemResurces colors, drawable, strings;

@@ -15,7 +15,7 @@ function EditForm(meta, data, domEl, after, cbEdit, marg) {
     let fonSel = "#deeaff";
     
     this.makeEditForm = function() {
-        this.edDomEl.innerHTML = "";
+//        this.edDomEl.innerHTML = "";
         let ik = this.edMeta.length;
         if (marg) {
             this.marg_T = "";
@@ -29,13 +29,23 @@ function EditForm(meta, data, domEl, after, cbEdit, marg) {
             if (ff != null) {
                 this.edDomEl.append(ff);
             }
-            if (marg) {
-                this.marg_L = "margin-left:10px;";
+            let met = this.edMeta[i];
+            if (met.type == "Line" ) {
+                if (marg) {
+                    this.marg_T = "";
+                    this.marg_L = "";
+                } else {
+                    this.marg_T = "margin-top:5px;";
+                    this.marg_L = "margin-left:7px;";
+                }
             } else {
-                this.marg_L = "margin-left:7px;";
+                if (marg) {
+                    this.marg_L = "margin-left:10px;";
+                } else {
+                    this.marg_L = "margin-left:7px;";
+                }
             }
         }
-
     }
     
     this.oneField = function(i) {
@@ -43,15 +53,27 @@ function EditForm(meta, data, domEl, after, cbEdit, marg) {
         let br = "";
         if (met.br) {
             br = "clear:both;"
+            if (marg) {
+                this.marg_T = "";
+                this.marg_L = "";
+            } else {
+                this.marg_T = "margin-top:5px;";
+                this.marg_L = "margin-left:7px;";
+            }
 //            this.marg_L = "";
         }
-        let res = newDOMelement('<div style="float:left;' + this.marg_L + this.marg_T + br + '"></div>');
+        let clazz = "";
+        if (met.clazz != null && met.clazz.length > 0) {
+            clazz = ' class="' + met.clazz + '"';
+        }
+        let res = newDOMelement('<div' + clazz + ' style="float:left;' + this.marg_L + this.marg_T + br + '"></div>');
         res.append(newDOMelement('<div style="color: #2228;font-size: 10px;margin-left:4px">' + met.title + '</div>'));
         let inp;
         let vv = this.edData[met.name];
         if (vv == null) {
             vv = "";
         }
+        
         switch (met.type) {
             case "Text":
                 inp = newDOMelement('<input class="input_style" style="width:' + met.len + 'px;" value="' + vv + '"/>');
@@ -144,7 +166,7 @@ function EditForm(meta, data, domEl, after, cbEdit, marg) {
                 if (vv) {
                     valCh = "check-sel_1";
                 }
-                inp = newDOMelement('<img style="cursor:pointer;margin-top:5px;margin-left:14px" width="16" height="16" src="img/' + valCh + '.png">');
+                inp = newDOMelement('<img style="cursor:pointer;margin-top:5px;margin-left:8px" width="16" height="16" src="img/' + valCh + '.png">');
                 inp.nameField = met.name;
                 inp.addEventListener("click", () => {this.clickCheckbox(this.checkEditCheckbox(inp), inp)}, false);
                 res.append(inp);
@@ -181,6 +203,9 @@ function EditForm(meta, data, domEl, after, cbEdit, marg) {
                 inp.nameField = met.name;
                 inp.addEventListener("click", () => {this.clickLitera(inp)}, false);
                 res.append(inp);
+                break;
+            case "Number":
+                
                 break;
         }
         return res;
@@ -302,47 +327,85 @@ function EditForm(meta, data, domEl, after, cbEdit, marg) {
         let targ;
         let kUp;
         let firstCh;
+        let kC;
         if (valid != null) {
-            if (valid.latin != null && valid.latin) {
-                kUp = event.key.toUpperCase();
-                if ( ! ((kUp >= "A" && kUp <= "Z") || kUp == "_" || (kUp >= "0" && kUp <= "9")))  {
-                    event.preventDefault();
-                    tooltipMessage(event.target, "Только английские буквы, _ и цифры");
-                }
-            } else {
-                if (valid.name_low != null && valid.name_low) {
+            switch (valid) {
+                case "latin":
+                    kUp = event.key.toUpperCase();
+                    if ( ! ((kUp >= "A" && kUp <= "Z") || kUp == "_" || (kUp >= "0" && kUp <= "9")))  {
+                        event.preventDefault();
+                        tooltipMessage(event.target, "English letters only, _ and numbers");
+                    }
+                    break;
+                case "name_low":
                     targ = event.target;
                     if ( ! ((k >= "a" && k <= "z") || k == "_" || (k >= "0" && k <= "9")))  {
                         event.preventDefault();
-                        tooltipMessage(targ, "Только английские буквы, _ и цифры");
+                        tooltipMessage(targ, "English small letters only, _ and numbers");
                     } else {
                         if (targ.value.length == 0 && k >= "0" && k <= "9") {
                             event.preventDefault();
                             tooltipMessage(targ, "The first character cannot be a digit");
                         }
                     }
-                } else {
-                    if (valid.list_var != null && valid.list_var) {
-                        targ = event.target;
-                        kUp = event.key.toUpperCase();
-                        if ( ! ((kUp >= "A" && kUp <= "Z") || kUp == "_" || kUp == "," || (kUp >= "0" && kUp <= "9")))  {
-                            event.preventDefault();
-                            tooltipMessage(targ, "Только английские буквы, _ и цифры");
+                    break;
+                case "list_var":
+                    targ = event.target;
+                    kUp = event.key.toUpperCase();
+                    if ( ! ((kUp >= "A" && kUp <= "Z") || kUp == "_" || kUp == "," || (kUp >= "0" && kUp <= "9")))  {
+                        event.preventDefault();
+                        tooltipMessage(targ, "Только английские буквы, _ и цифры");
+                    } else {
+                        if (targ.value.length == 0 ) {
+                            if ((k >= "0" && k <= "9") || k == ',') {
+                                event.preventDefault();
+                                tooltipMessage(targ, "The first character cannot be a digit");
+                            }
                         } else {
-                            if (targ.value.length == 0 ) {
-                                if ((k >= "0" && k <= "9") || k == ',') {
-                                    event.preventDefault();
-                                    tooltipMessage(targ, "The first character cannot be a digit");
-                                }
-                            } else {
-                                if ( targ.selectionStart == 0 && ((k >= "0" && k <= "9") || k == ',')) {
-                                    event.preventDefault();
-                                    tooltipMessage(targ, "The first character cannot be a digit");
-                                }
+                            if ( targ.selectionStart == 0 && ((k >= "0" && k <= "9") || k == ',')) {
+                                event.preventDefault();
+                                tooltipMessage(targ, "The first character cannot be a digit");
                             }
                         }
                     }
-                }
+                    break;
+                case "number":
+                    kC = event.keyCode;
+                    if (kC < 48 || kC > 57) {
+                        event.preventDefault();
+                        tooltipMessage(event.currentTarget, "Only numbers");
+                    }
+                    break;
+                case "float":
+                    kC = event.keyCode;
+                    if ((kC > 47 && kC < 58) || kC == 173 || k == ".") {
+                        if (kC == 173) {
+                            if (event.target.selectionStart > 0) {
+                                event.preventDefault();
+                                tooltipMessage(event.target, "Minus not at the beginning");
+                                return false;
+                            }
+                        } else if (k == ".") {
+                            let vv = event.target.value;
+                            if (vv.indexOf(".") > -1) {
+                                event.preventDefault();
+                                tooltipMessage(event.target, "The point is already there");
+                                return false;
+                            }
+                        }
+                        return true;
+                    } else {
+                        event.preventDefault();
+                        tooltipMessage(event.target, "Only numbers");
+                        return false;
+                    }
+                    break;
+                case "password":
+                    if ("aA0@".indexOf(k) == -1) {
+                        event.preventDefault();
+                        tooltipMessage(event.currentTarget, "Only a A 0 @");
+                    }
+                    break;
             }
         } 
     }

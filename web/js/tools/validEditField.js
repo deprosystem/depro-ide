@@ -35,7 +35,7 @@ function validNumber(event) {
     } else {
         if (k < 48 || k > 57) {
             event.preventDefault();
-            tooltipMessage(event.target, "Только цифры");
+            tooltipMessage(event.currentTarget, "Only numbers");
         }
     }
 //    return false;

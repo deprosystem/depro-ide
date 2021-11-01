@@ -6,12 +6,13 @@ public class Constants {
     public static String NAME_IDE = "DeProIDE";
     
     public static String BaseURL;
+    public static String BASEPATH = "/usr/local/";
     public static int MATCH = -1, WRAP = -2;
     public static int[] standartDimens = {2, 4, 8, 12, 14, 16, 18, 20, 24, 28, 32, 40, 56};
     public static final int TOP = 0, CENTER = 1, BOTTOM = 2, ABSOLUTE = 3, NONE = 4;
     public static final int LEFT = 0, RIGHT = 2;
     public static int[] ANGLES = {0, 90, 45, 0, 315};
-    public final static int GET = 0, POST = 1, TEST = 2, JASON = 3, PARAMETERS = 4, GLOBAL = 5, ARGUMENTS = 6, PROFILE = 7, FIELD = 8, 
+    public final static int GET = 0, POST = 1, TEST = 2, JSON = 3, PARAMETERS = 4, GLOBAL = 5, ARGUMENTS = 6, PROFILE = 7, FIELD = 8, 
             GET_DB = 9, POST_DB = 10, INSERT_DB = 11, DEL_DB = 12, UPDATE_DB = 13, NULL = 14;
     
     public static String PROJECTS_DATA = "projectdataIDE/", 
@@ -20,7 +21,9 @@ public class Constants {
             LIST = "List", PAGER = "Pager", TAB = "TabLayout", DRAWER = "Drawer", SCROLL = "ScrollPanel", CARD_VIEW = "CardView",
             MENU_B = "MenuBottom", MENU = "Menu", GALLERY = "Gallery", INDICATOR = "Indicator", IMAGEVIEW = "ImageView",
             PLUS_MINUS = "PlusMinus", RATINGS = "Ratings", SWITCH = "Switch", CHECKBOX = "CheckBox", TOTAL = "Total", PHOTO = "Photo",
-            MAP = "Map", SHEET = "SheetBottom", TEXTVIEW = "TextView", CALENDAR = "Calendar", SEEKBAR = "SeekBar", TAGS = "Tags";
+            MAP = "Map", SHEET = "SheetBottom", TEXTVIEW = "TextView", EDITTEXT = "EditText", CALENDAR = "Calendar", SEEKBAR = "SeekBar", 
+            TAGS = "Tags", SPINNER = "Spinner";
+    public static String txtInp = "_txt_inp_";
 /*
     public static String toolCompon = "com.dpcsa.compon.custom_components.ComponToolBar",
             listCompon = "androidx.recyclerview.widget.RecyclerView",
@@ -38,6 +41,9 @@ public class Constants {
     public static String TextValid = "com.dpcsa.compon.custom_components.ComponTextValid";
     public static String TextCompon = "com.dpcsa.compon.custom_components.ComponTextView";
     public static String TextGrammar = "com.dpcsa.compon.custom_components.TextViewNumberGrammar";
+    public static String EditCompon = "com.dpcsa.compon.custom_components.ComponEditText";
+    public static String EditMask = "com.dpcsa.compon.custom_components.EditTextMask";
+    public static String InputLayout = "com.google.android.material.textfield.TextInputLayout";
     public static String[] componType = {
         "com.dpcsa.compon.custom_components.ComponToolBar", // 0
         "com.dpcsa.compon.custom_components.ComponMenuB", // 1
@@ -63,6 +69,7 @@ public class Constants {
         "com.dpcsa.compon.custom_components.ComponSwitch",            // 21
         "com.dpcsa.compon.custom_components.ComponCheckBox",            // 22
         "RelativeLayout"                                                // 23   TOTAL
+            
     };
 
 }

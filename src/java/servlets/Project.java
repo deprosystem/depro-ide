@@ -43,6 +43,10 @@ public class Project extends BaseServlet {
             List<ProjectM> listProject;
             ProjectM pc;
             String projectId;
+            String realPath = request.getServletContext().getRealPath("");
+            if ( ! realPath.endsWith(File.separator)) {
+                realPath += File.separator;
+            }
             switch (ds.query) {
                 case "/project/create":
                     if (ds.userId == userExample) {
@@ -84,7 +88,7 @@ public class Project extends BaseServlet {
                         pc.whereServer = "Server IDE";
                         id = projectDb.createProjectId(pc);
                         pc.projectId = id;
-                        createBaseRes(ds.patchOutsideProject, pc.resurseInd);
+                        createBaseRes(ds.patchOutsideProject, pc.resurseInd, realPath);
                         projectDb.setLastProject(String.valueOf(ds.userId), String.valueOf(id));
                         sendResult(response, gson.toJson(pc));
                     }
@@ -206,15 +210,10 @@ public class Project extends BaseServlet {
         return 2;
     }
     
-    private void createBaseRes(String basePath, String resurseInd) {
+    private void createBaseRes(String basePath, String resurseInd, String realPath) {
         String projectPath = basePath + Constants.PROJECTS_DATA + resurseInd + "/res";
         formDir(projectPath);
-        String mipmapPath;
-        if (isSerwer) {
-            mipmapPath = basePath + Constants.NAME_IDE + "/mipmap/res";
-        } else {
-            mipmapPath = basePath + "mipmap/res";
-        }
+        String mipmapPath = realPath + "mipmap/res";
         copyDir(mipmapPath, projectPath);
         
     }
@@ -453,6 +452,7 @@ public class Project extends BaseServlet {
         li.add(resurseItem(18, "white_50", "#ffffff88"));
         li.add(resurseItem(19, "white", "#ffffff"));
         li.add(resurseItem(20, "white_20", "#ffffff32"));
+        li.add(resurseItem(21, "defoult_text", "#808080"));
 
         return gson.toJson(li);
         

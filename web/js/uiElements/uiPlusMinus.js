@@ -78,7 +78,7 @@ function uiPlusMinus() {
         let sss = selectListID("Result id", 80, currentChildren, p.componParam.resultId, changePM_result);
         sss.style.marginTop = "5px";
         sss.style.clear = "both";
-        sss.style.marginLeft = "0px";
+        sss.style.marginLeft = "0";
         contentAttributes.appendChild(sss);
         
         let v_min = editNumberParam("Min", 50, 24, -1000, 1000, "pmMinV");
@@ -101,7 +101,7 @@ function uiPlusMinus() {
         
         let ed_r = editCheckbox("No edit", p.componParam.noEdit, "PMnoEdit");
         ed_r.style.marginTop = "5px";
-        sss.style.marginLeft = "10px";
+        ed_r.style.marginLeft = "10px";
         contentAttributes.appendChild(ed_r);
         
         setTextViewAttr(p);

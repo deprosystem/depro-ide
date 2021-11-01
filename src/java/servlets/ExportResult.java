@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -91,6 +92,7 @@ public class ExportResult extends BaseServlet {
         parSave.styleCheck = gson.fromJson(projectM.style_check, ListSwitchParam.class);
         parSave.addApp = new ArrayList();
         parSave.addPermish = new HashSet();
+        parSave.styleTxtInpt = new HashSet();
         parSave.isCamera = false;
         String basePath = ds.patchOutsideProject;
         String realPath = request.getServletContext().getRealPath("");
@@ -131,6 +133,10 @@ public class ExportResult extends BaseServlet {
                 setManifestAndroid(realPath + "/android_base/manifest", basePath + userProjPath + "/app/src/main/AndroidManifest.xml", arChange, parSave);
                 setFileAndroid(realPath + "/android_base/my_app", basePath + javaPath + "/MyApp.java", arChange);
                 copyFile(realPath + "/android_base/gradle_proj", basePath + userProjPath + "/build.gradle");
+                
+                copyFile(realPath + "/android_base/gradle-wrapper.properties", basePath + userProjPath + "/gradle/wrapper/gradle-wrapper.properties");
+                copyFile(realPath + "/android_base/gradle-wrapper.jar", basePath + userProjPath + "/gradle/wrapper/gradle-wrapper.jar");
+                
                 copyFile(realPath + "/android_base/compon-release.aar", basePath + userProjPath + "/app/libs/compon-release.aar");
                 copyFile(realPath + "/android_base/gradle_prop", basePath + userProjPath + "/gradle.properties");
                 copyFile(realPath + "/android_base/git_ignor", basePath + userProjPath + "/.gitignore");
@@ -151,23 +157,21 @@ public class ExportResult extends BaseServlet {
                     } catch (FileNotFoundException | UnsupportedEncodingException ex) {
                         System.out.println("Error form local.properties " + ex);
                     }
-                    
                     List<String> progr = new ArrayList();
                     if (isSerwer) {
-                        progr.add("/opt/gradle/gradle-5.5/bin/gradle");
+                        progr.add("/opt/gradle/gradle-6.7.1/bin/gradle");
+//                        progr.add("/opt/gradle/gradle-5.5/bin/gradle");
                     } else {
-                        progr.add("gradle.bat");
+//                        progr.add("gradle.bat");
+                        progr.add("C:\\Users\\jura\\.gradle\\wrapper\\dists\\gradle-6.7.1-all\\2moa8rlfac5eqlcfgk98k0deb\\gradle-6.7.1\\bin\\gradle.bat");
                     }
                     progr.add("build");
-                    
                     String pathProject = basePath + userProjPath;
                     ProcessBuilder builder;
                     Process process;
-// System.out.println("pathProject="+pathProject+"<< progr="+progr.get(0)+"<<");
 
                     builder = new ProcessBuilder(progr);
                     builder = builder.directory(new File(pathProject));
-
                     try {
                         process = builder.start();
                     } catch (IOException ex) {
@@ -188,21 +192,15 @@ public class ExportResult extends BaseServlet {
                     } catch (IOException | NullPointerException ex) {
                         System.out.println("Compil WRITE Error="+ ex);
                     }
-
                     try {
                         process.waitFor();
                     } catch (InterruptedException ex) {
                         System.out.println("Compil waitFor Error="+ ex);
                     }
 
-//                    String resultFile = userPath + projectM.nameProject + "/app/build/outputs/apk/debug/app-debug.apk";
-//                    String resultFile = userPath + projectM.nameProject + "/app-debug.apk";
-
-
                     if (isOk) {
                         String resultFile = "download/get_apk/" + ds.userResurseInd + "/" + projectM.nameProject + "/app-debug.apk";
-//                    String resultFile = "download/get_apk/" + ds.userResurseInd + "/" + projectM.nameProject + "/" + projectM.nameProject + "-debug.apk";
-//System.out.println("resultFile="+resultFile);
+
                         sendResult(response, resultFile);
                     } else {
                         sendError(response, "Build error. Information about the error was sent to the support team. You will be contacted within 24 hours.");
@@ -210,13 +208,7 @@ public class ExportResult extends BaseServlet {
                 } else {
                     String exportFileName = userPath + projectM.nameProject + ".zip";
                     zipRes(basePath + exportFileName, basePath + userProjPath, lengthBase);
-                    
-//                    sendResult(response, downloadExport_1 + exportFileName + downloadExport_2);
-/*
-                    String resultFile = userPath + projectM.nameProject + "/app/build/outputs/apk/debug/app-debug.apk";
-                    System.out.println("resultFile="+exportFileName);
-*/
-//                    exportFileName = "project/get_project/" + ds.userResurseInd + "/" + projectM.nameProject + ".zip";
+
                     exportFileName = "download/get_project/" + ds.userResurseInd + "/" + projectM.nameProject + ".zip";
                     sendResult(response, exportFileName);
                 }
@@ -228,7 +220,9 @@ public class ExportResult extends BaseServlet {
         String userRes = basePath + userPath + "/app/src/main/res";
         formDir(basePath + userPath);
         formDir(basePath + userPath + "/app/libs");
+        formDir(basePath + userPath + "/gradle/wrapper");
         formDir(userRes);
+        formDir(userRes + "/drawable");
         String mipmap = userRes + "/mipmap";
         File file = new File(mipmap);
         if ( ! file.exists()) {
@@ -327,7 +321,6 @@ public class ExportResult extends BaseServlet {
             declare.add(st + "\n\n");
             declare.add("    @Override\n");
             declare.add("    public void declare() {\n\n");
-
             for (int i = 0; i < ik; i++) {
                 Screen sc = parSave.sreens.get(i);
                 String scName = sc.screenName.toLowerCase();
@@ -460,6 +453,13 @@ public class ExportResult extends BaseServlet {
                                 declare.add(tab12 + ".component(TC.PAGER_F, view(R.id." + cViewId + ",\n");
                                 declare.add(tab16 + formViewPager(compTab, scName, parSave) + endComp);
                             }
+                            break;
+                        case Constants.SPINNER:
+                            declare.add(tab12 + ".component(TC.SPINNER, " + formModel(comp)
+                                    + "\n" + tab16 + formViewSpinner(comp, scName) + endComp);
+                            
+                            
+//                        view(R.id.spinner, R.layout.item_spin_drop, R.layout.item_spin_hider))
                             break;
                         case Constants.DRAWER:
                             declare.add(tab12 + ".drawer(R.id." + cViewId + ", R.id.container_fragm, R.id.left_drawer, null, " 
@@ -609,7 +609,7 @@ public class ExportResult extends BaseServlet {
                             if (comp.model.menuList != null && comp.model.menuList.list != null) {
                                 List<MenuItem> mult = comp.model.menuList.list;
                                 String sepMult = ", ";
-                                if (ik > 0) {
+//                                if (ik > 0) {
                                     multStr = "";
                                     for (MenuItem mi : mult) {
                                         String fRes = "";
@@ -622,7 +622,7 @@ public class ExportResult extends BaseServlet {
                                         }
                                         multStr += sepMult + "new Multiply(" + stVi + ", \"" + mi.title + "\", \"" + fRes + "\")";
                                     }
-                                } 
+//                                } 
                             }
                             declare.add(tab12 + ".plusMinus(R.id." + comp.view.viewId + ", R.id." + comp.view.plusId + ", R.id." + comp.view.minusId 
                                     + navList + multStr + endComp);
@@ -651,13 +651,13 @@ public class ExportResult extends BaseServlet {
                             String phId = "";
                             if (phStr != null && phStr.length() > 0) {
                                 phList = phStr.split(",");
-                                ik = phList.length;
-                                if (ik == 1) {
+                                int ikPh = phList.length;
+                                if (ikPh == 1) {
                                     phId = ", R.id." + phStr;
                                 } else {
                                     phId = ", new int[] {";
                                     sep = "";
-                                    for (int k = 0; k < ik; k++) {
+                                    for (int k = 0; k < ikPh; k++) {
                                         phId += sep + "R.id." + phList[k];
                                         sep = ", ";
                                     }
@@ -666,7 +666,7 @@ public class ExportResult extends BaseServlet {
                             }
                             String idStrPerm = ", 0";
                             if (comp.view.selectedField != null && comp.view.selectedField.length() > 0) {
-                                idStrPerm = ", " + formStringId(scName + "_" + cViewId, comp.view.selectedField, parSave.listString);;
+                                idStrPerm = ", " + formStringId(scName + "_" + cViewId, comp.view.selectedField, parSave.listString);
                             }
                             String phParam = "";
                             if (comp.view.param != null && comp.view.param.length() > 0) {
@@ -733,7 +733,7 @@ public class ExportResult extends BaseServlet {
         String stPar;
         switch (m.method) {
             case Constants.TEST:
-                res += "JSON, " + gson.toJson(comp.model.testData) + "),";
+                res += "JSON, " + gson.toJson(comp.model.test) + "),";
                 break;
             case Constants.POST:
                 res += "POST, ";
@@ -1115,6 +1115,11 @@ public class ExportResult extends BaseServlet {
         return "view(R.id." + comp.view.viewId + ft + stItems + ")" + visib + span + sel;
     }
     
+    private String formViewSpinner(Component comp, String name) {
+        String vI = comp.view.viewId;
+        return "view(R.id." + vI + ", R.layout.item_" + name + "_" + vI + "_drop, R.layout.item_" + name + "_" + vI + "_header)";
+    }
+    
     private String formViewPager(Component comp, String name, ParamSave parSave) {
         String res = "", arrSt = "";
         List<MenuItem> list = comp.model.menuList.list;
@@ -1180,6 +1185,14 @@ public class ExportResult extends BaseServlet {
         return "R.string." + name;
     }
     
+    private String formStringXML(String name, String value, List<ItemResurces> listString) {
+        ItemResurces iRes = new ItemResurces();
+        iRes.itemName = name;
+        iRes.itemValue = value;
+        listString.add(iRes);
+        return "@string/" + name;
+    }
+    
     public String firstUpperCase(String word){
         if(word == null || word.isEmpty()) return "";//или return word;
         return word.substring(0, 1).toUpperCase() + word.substring(1);
@@ -1234,7 +1247,7 @@ public class ExportResult extends BaseServlet {
                 try ( BufferedWriter writer = new BufferedWriter(new OutputStreamWriter( new FileOutputStream(path + "/" + type_screen + screen.screenName.toLowerCase() + ".xml"), "UTF8"))) {
                     writer.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
                     parSave.noToolMenu = false;
-                    createEl(screen.layout, true, "\n", writer, parSave);
+                    createEl(screen.layout, true, "\n", writer, parSave, null);
                     writer.flush();
                     writer.close();
                 }
@@ -1246,43 +1259,60 @@ public class ExportResult extends BaseServlet {
         }
     }
     
-    private void createEl(AndroidPar elScreen, boolean first, String tab0, BufferedWriter writer, ParamSave parSave) {
-        String typeEl = createOneElement(elScreen, first, tab0, writer, parSave);
+    private void createEl(AndroidPar elScreen, boolean first, String tab0, BufferedWriter writer, ParamSave parSave, List<AndroidPar> parent) {
+        String typeEl = createOneElement(elScreen, first, tab0, writer, parSave, parent);
         String tab = tab0 + "    ";
         try {
             int ik;
             switch (elScreen.type) {
-                case Constants.LIST :
+                case Constants.LIST:
                     writer.write(tab0 + "/>");
                     ik = elScreen.children.size();
                     if (ik == 0) {
                         createItemLayoutBlank(parSave.pathLayoutItem + elScreen.viewId + "_0.xml", parSave);
                     } else {
                         for (int i = 0; i < ik; i++) {
-                            createItemLayout(elScreen.children.get(i), parSave.pathLayoutItem + elScreen.viewId + "_" + i + ".xml", parSave);
+                            createItemLayout(elScreen.children.get(i), parSave.pathLayoutItem + elScreen.viewId + "_" + i + ".xml", parSave, elScreen.children);
                         }
                     }
                     break;
-                case Constants.SHEET :
+                case Constants.SPINNER:
+                    writer.write(tab0 + "/>");
+                    ik = elScreen.children.size();
+                    if (ik == 0) {
+                        createItemLayoutBlank(parSave.pathLayoutItem + elScreen.viewId + "_0.xml", parSave);
+                    } else {
+                        for (int i = 0; i < ik; i++) {
+                            String hd;
+                            if (i == 0) {
+                                hd = "_drop";
+                            } else {
+                                hd = "_header";
+                            }
+                            createItemLayout(elScreen.children.get(i), parSave.pathLayoutItem + elScreen.viewId + hd+ ".xml", parSave, elScreen.children);
+                        }
+                    }
+                    break;
+                case Constants.SHEET:
                     writer.write(tab0 + "/>");
                     ik = elScreen.children.size();
                     if (ik == 0) {
                         createItemLayoutBlank(parSave.path + "/view_" + parSave.currentScreen.toLowerCase() + "_" + elScreen.viewId + ".xml", parSave);
                     } else {
                         for (int i = 0; i < ik; i++) {
-                            createItemLayout(elScreen.children.get(i), parSave.path + "/view_" + parSave.currentScreen.toLowerCase() + "_" + elScreen.viewId + ".xml", parSave);
+                            createItemLayout(elScreen.children.get(i), parSave.path + "/view_" + parSave.currentScreen.toLowerCase() + "_" + elScreen.viewId + ".xml", parSave, elScreen.children);
                         }
                     }
                     break;
 
-                case Constants.TAGS :
+                case Constants.TAGS:
                     writer.write(tab0 + "/>");
                     ik = elScreen.children.size();
                     if (ik == 0) {
                         createItemLayoutBlank(parSave.pathLayoutItem + elScreen.viewId + "_0.xml", parSave);
                     } else {
                         for (int i = 0; i < ik; i++) {
-                            createItemLayout(elScreen.children.get(i), parSave.pathLayoutItem + elScreen.viewId + "_" + i + ".xml", parSave);
+                            createItemLayout(elScreen.children.get(i), parSave.pathLayoutItem + elScreen.viewId + "_" + i + ".xml", parSave, elScreen.children);
                         }
                     }
                     break;
@@ -1319,7 +1349,7 @@ public class ExportResult extends BaseServlet {
                                                     }
                                                 }
                                             }
-                                            createDrawer(ap, apTool, apMenu, tab0, writer, parSave);
+                                            createDrawer(ap, apTool, apMenu, tab0, writer, parSave, elScreen.children);
                                             parSave.noToolMenu = true;
                                             parSave.noDrawer = true;
                                             parSave.noFragmContainer = true;
@@ -1337,7 +1367,7 @@ public class ExportResult extends BaseServlet {
                             CreateRelativeForScroll(writer, parSave);
                         }
                         elScreen.children.forEach((es) -> {
-                            createEl(es, false, tab, writer, parSave);
+                            createEl(es, false, tab, writer, parSave, elScreen.children);
                         });
                         if (parSave.typeScreen == 0 && first) {
                             if (parSave.menuId.length() > 0) {
@@ -1350,7 +1380,12 @@ public class ExportResult extends BaseServlet {
                         writer.write(tab0 + "</" + typeEl + ">");
                     } else {
                         if (typeEl.length() > 0) {
-                            writer.write(tab0 + "/>");
+                            if (elScreen.type.equals(Constants.EDITTEXT) && elScreen.componParam != null && elScreen.componParam.bool_1 != null && elScreen.componParam.bool_1) {
+                                writer.write("/>");
+                                writer.write(tab + "</" + Constants.InputLayout + ">\n");
+                            } else {
+                                writer.write(tab + "/>\n");
+                            }
                         }
                     }
             }
@@ -1390,14 +1425,14 @@ public class ExportResult extends BaseServlet {
         }
     }
 
-    private void createItemLayout(AndroidPar p, String path, ParamSave parSave) {
+    private void createItemLayout(AndroidPar p, String path, ParamSave parSave, List<AndroidPar> parent) {
         try ( BufferedWriter writer = new BufferedWriter(new OutputStreamWriter( new FileOutputStream(path), "UTF8"))) {    
             writer.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
-            createEl(p, true, "\n", writer, parSave);
+            createEl(p, true, "\n", writer, parSave, parent);
             writer.flush();
             writer.close();
         } catch(IOException ex){
-            System.out.println("ExportResult createLayoutItem error=" + ex);
+            System.out.println("ExportResult createItemLayout error=" + ex);
         } 
     }
     
@@ -1416,7 +1451,7 @@ public class ExportResult extends BaseServlet {
         } 
     }
     
-    private void createDrawer(AndroidPar elScreen, AndroidPar tool, AndroidPar men, String tab0, BufferedWriter writer, ParamSave parSave) {
+    private void createDrawer(AndroidPar elScreen, AndroidPar tool, AndroidPar men, String tab0, BufferedWriter writer, ParamSave parSave, List<AndroidPar> parent) {
         String tab1 = tab0 + "    ", tab2 = tab1 + "    ", tab3 = tab2 + "    ";
         try {
             writer.write(tab0 + "<" + Constants.componType[6]);
@@ -1428,11 +1463,11 @@ public class ExportResult extends BaseServlet {
             writer.write(tab2 + "android:layout_width=\"match_parent\"");
             writer.write(tab2 + "android:layout_height=\"match_parent\">");
             if (tool != null) {
-                createOneElement(tool, false, tab2, writer, parSave);
+                createOneElement(tool, false, tab2, writer, parSave, parent);
                 writer.write(tab3 + "/>");
             }
             if (men != null) {
-                createOneElement(men, false, tab2, writer, parSave);
+                createOneElement(men, false, tab2, writer, parSave, parent);
                 writer.write(tab3 + "/>");
             }
             
@@ -1500,7 +1535,8 @@ public class ExportResult extends BaseServlet {
         }
     }
     
-    private String createOneElement(AndroidPar p, boolean first, String tab0, BufferedWriter writer, ParamSave parSave) {
+    private String createOneElement(AndroidPar p, boolean first, String tab0, BufferedWriter writer, ParamSave parSave, List<AndroidPar> parent) {
+        boolean isInputLayout = false;
         String typeEl = p.type;
         if ((parSave.noToolMenu && (typeEl.equals(Constants.TOOL) || typeEl.equals(Constants.MENU_B)) || 
                 (parSave.noDrawer && typeEl.equals(Constants.DRAWER)))) {
@@ -1524,6 +1560,21 @@ public class ExportResult extends BaseServlet {
                     }
                     if (p.componParam.grammar != null && p.componParam.grammar.length() > 0) {
                         typeEl = Constants.TextGrammar;
+                    }
+                }
+                break;
+            case Constants.EDITTEXT:
+                if (p.componParam != null) {
+                    if (p.componParam.bool_1 != null && p.componParam.bool_1) {
+                        typeEl = Constants.InputLayout;
+                        isInputLayout = true;
+                    } else {
+                        if (p.componParam.st_13 != null && p.componParam.st_13.length() > 0) {
+//                        if (p.componParam.typeValidTV != null && p.componParam.typeValidTV.equals("mask")) {
+                            typeEl = Constants.EditMask;
+                        } else {
+                            typeEl = Constants.EditCompon;
+                        }
                     }
                 }
                 break;
@@ -1558,9 +1609,125 @@ public class ExportResult extends BaseServlet {
                 if (typeEl.equals(Constants.SCROLLPANEL)) {
                     parSave.scrollId = p.viewId;
                 } else {
-                    writer.write(tab + "android:id=\"@+id/" + p.viewId + "\"");
+                    if (isInputLayout) {
+                        writer.write(tab + "android:id=\"@+id/" + Constants.txtInp + p.viewId + "\"");
+                        if (p.width == Constants.MATCH) {
+                            writer.write(tab + "android:layout_width=\"match_parent\"");
+                        } else {
+                            writer.write(tab + "android:layout_width=\"wrap_content\"");
+                        }
+                        if (p.height == Constants.MATCH) {
+                            writer.write(tab + "android:layout_height=\"match_parent\"");
+                        } else {
+                            writer.write(tab + "android:layout_height=\"wrap_content\"");
+                        }
+                    } else {
+                        writer.write(tab + "android:id=\"@+id/" + p.viewId + "\"");
+                    }
                 }
             }
+            
+            if ( ! first) {
+                if (p.gravLayout.h == Constants.CENTER && p.gravLayout.v == Constants.CENTER) {
+                    writer.write(tab + "android:layout_centerInParent=\"true\"");
+                } else {
+                    switch(p.gravLayout.h) {
+                        case Constants.LEFT:
+                            writer.write(tab + "android:layout_alignParentLeft=\"true\"");
+                            break;
+                        case Constants.RIGHT:
+                            writer.write(tab + "android:layout_alignParentRight=\"true\"");
+                            break;
+                        case Constants.CENTER:
+                            writer.write(tab + "android:layout_centerHorizontal=\"true\"");
+                            break;
+                        case Constants.ABSOLUTE:
+                            if (p.left != null && p.left != 0) {
+                                writer.write(tab + "android:layout_marginLeft=\"" + dimens(p.left) + "\"");
+                            }
+                            break;
+                    }
+                    switch(p.gravLayout.v) {
+                        case Constants.TOP:
+                            if (p.below == null || p.below.length() == 0) {
+                                writer.write(tab + "android:layout_alignParentTop=\"true\"");
+                            }
+                            break;
+                        case Constants.BOTTOM:
+                            if (p.above == null || p.above.length() == 0) {
+                                writer.write(tab + "android:layout_alignParentBottom=\"true\"");
+                            }
+                            break;
+                        case Constants.CENTER:
+                            writer.write(tab + "android:layout_centerVertical=\"true\"");
+                            break;
+                        case Constants.ABSOLUTE:
+                            if (p.top != null) {
+                                writer.write(tab + "android:layout_marginTop=\"" + dimens(p.top) + "\"");
+                            }
+                            break;
+                    }
+                }
+            }
+            if ( ! first) {
+                if (p.toLeftOf != null && p.toLeftOf.length() > 0) {
+                    writer.write(tab + "android:layout_toLeftOf=\"@id/" + getTxtInpt(p.toLeftOf, parent) + p.toLeftOf + "\"");
+                }
+
+                if (p.toRightOf != null && p.toRightOf.length() > 0) {
+                    writer.write(tab + "android:layout_toRightOf=\"@id/" + getTxtInpt(p.toRightOf, parent) + p.toRightOf + "\"");
+                }
+
+                if (p.below != null && p.below.length() > 0) {
+                    writer.write(tab + "android:layout_below=\"@id/" + getTxtInpt(p.below, parent) + p.below + "\"");
+                }
+                if (p.above != null && p.above.length() > 0) {
+                    writer.write(tab + "android:layout_above=\"@id/" + getTxtInpt(p.above, parent) + p.above + "\"");
+                }
+            }
+            if (p.margin != null && p.margin.length() > 0 && ! p.margin.equals("0")) {
+                writer.write(tab + "android:layout_margin=\"" + dimens(p.margin) + "\"");
+            }
+            if (p.leftMarg != null && p.leftMarg.length() != 0 && ! p.leftMarg.equals("0")) {
+                writer.write(tab + "android:layout_marginLeft=\"" + dimens(p.leftMarg) + "\"");
+            }
+            if (p.topMarg != null && p.topMarg.length() > 0 && ! p.topMarg.equals("0")) {
+                writer.write(tab + "android:layout_marginTop=\"" + dimens(p.topMarg) + "\"");
+            }
+            if (p.rightMarg != null && p.rightMarg.length() > 0 && ! p.rightMarg.equals("0")) {
+                writer.write(tab + "android:layout_marginRight=\"" + dimens(p.rightMarg) + "\"");
+            }
+            if (p.bottomMarg != null && p.bottomMarg.length() > 0 && ! p.bottomMarg.equals("0")) {
+                writer.write(tab + "android:layout_marginBottom=\"" + dimens(p.bottomMarg) + "\"");
+            }
+            if (p.visibility != null && ! p.visibility) {
+                writer.write(tab + "android:visibility=\"gone\"");
+            }
+            
+            if (isInputLayout) {
+//                if (p.componParam.color_2 != 21) {
+                String styleTxtInpt = "txtInpt_12_" + p.componParam.color_2;
+                parSave.styleTxtInpt.add(styleTxtInpt);
+//                writer.write(tab + "android:textColorHint=\"" + findColorByIndex(p.componParam.color_2, parSave.colors) + "\"");
+                writer.write(tab + "app:hintTextAppearance=\"@style/" + styleTxtInpt + "\"");
+//                }
+
+                
+                
+                
+                writer.write(">");
+                String tab_1 = tab + "    ";
+                if (p.componParam.st_13 != null && p.componParam.st_13.length() > 0) {
+//                if (p.componParam.typeValidTV != null && p.componParam.typeValidTV.equals("mask")) {
+                    writer.write(tab + "<" + Constants.EditMask);
+                } else {
+                    writer.write(tab + "<" + Constants.EditCompon);
+                }
+                tab += "    ";
+                writer.write(tab + "android:id=\"@+id/" + p.viewId + "\"");
+
+            }
+            
             String w, h;
             if (p.width == Constants.MATCH) {
                 w = "match_parent";
@@ -1605,56 +1772,9 @@ public class ExportResult extends BaseServlet {
                         writer.write(tab + "android:background=\""+ findColorByIndex(p.background, parSave.colors) + "\"");
                     }
                 } else {
-/*
-                    if (first) {
-                        writer.write(tab + "android:background=\"#ffffff\"");
-                    }
-*/
                 }
             }
 
-            if ( ! first) {
-                if (p.gravLayout.h == Constants.CENTER && p.gravLayout.v == Constants.CENTER) {
-                    writer.write(tab + "android:layout_centerInParent=\"true\"");
-                } else {
-                    switch(p.gravLayout.h) {
-                        case Constants.LEFT:
-                            writer.write(tab + "android:layout_alignParentLeft=\"true\"");
-                            break;
-                        case Constants.RIGHT:
-                            writer.write(tab + "android:layout_alignParentRight=\"true\"");
-                            break;
-                        case Constants.CENTER:
-                            writer.write(tab + "android:layout_centerHorizontal=\"true\"");
-                            break;
-                        case Constants.ABSOLUTE:
-                            if (p.left != null && p.left != 0) {
-                                writer.write(tab + "android:layout_marginLeft=\"" + dimens(p.left) + "\"");
-                            }
-                            break;
-                    }
-                    switch(p.gravLayout.v) {
-                        case Constants.TOP:
-                            if (p.below == null || p.below.length() == 0) {
-                                writer.write(tab + "android:layout_alignParentTop=\"true\"");
-                            }
-                            break;
-                        case Constants.BOTTOM:
-                            if (p.above == null || p.above.length() == 0) {
-                                writer.write(tab + "android:layout_alignParentBottom=\"true\"");
-                            }
-                            break;
-                        case Constants.CENTER:
-                            writer.write(tab + "android:layout_centerVertical=\"true\"");
-                            break;
-                        case Constants.ABSOLUTE:
-                            if (p.top != null) {
-                                writer.write(tab + "android:layout_marginTop=\"" + dimens(p.top) + "\"");
-                            }
-                            break;
-                    }
-                }
-            }
             if (p.gravity != null) {
                 if (p.gravity.h == Constants.CENTER && p.gravity.v == Constants.CENTER) {
                     writer.write(tab + "android:gravity=\"center\"");
@@ -1700,39 +1820,7 @@ public class ExportResult extends BaseServlet {
                     }
                 }
             }
-            
-            if ( ! first) {
-                if (p.toLeftOf != null && p.toLeftOf.length() > 0) {
-                    writer.write(tab + "android:layout_toLeftOf=\"@id/" + p.toLeftOf + "\"");
-                }
-
-                if (p.toRightOf != null && p.toRightOf.length() > 0) {
-                    writer.write(tab + "android:layout_toRightOf=\"@id/" + p.toRightOf + "\"");
-                }
-
-                if (p.below != null && p.below.length() > 0) {
-                    writer.write(tab + "android:layout_below=\"@id/" + p.below + "\"");
-                }
-                if (p.above != null && p.above.length() > 0) {
-                    writer.write(tab + "android:layout_above=\"@id/" + p.above + "\"");
-                }
-            }
-            if (p.margin != null && p.margin.length() > 0 && ! p.margin.equals("0")) {
-                writer.write(tab + "android:layout_margin=\"" + dimens(p.margin) + "\"");
-            }
-            if (p.leftMarg != null && p.leftMarg.length() != 0 && ! p.leftMarg.equals("0")) {
-                writer.write(tab + "android:layout_marginLeft=\"" + dimens(p.leftMarg) + "\"");
-            }
-            if (p.topMarg != null && p.topMarg.length() > 0 && ! p.topMarg.equals("0")) {
-                writer.write(tab + "android:layout_marginTop=\"" + dimens(p.topMarg) + "\"");
-            }
-            if (p.rightMarg != null && p.rightMarg.length() > 0 && ! p.rightMarg.equals("0")) {
-                writer.write(tab + "android:layout_marginRight=\"" + dimens(p.rightMarg) + "\"");
-            }
-            if (p.bottomMarg != null && p.bottomMarg.length() > 0 && ! p.bottomMarg.equals("0")) {
-                writer.write(tab + "android:layout_marginBottom=\"" + dimens(p.bottomMarg) + "\"");
-            }
-        
+       
             if (p.padding != null && p.padding.length() > 0 && ! p.padding.equals("0")) {
                 writer.write(tab + "android:padding=\"" + dimens(p.padding) + "\"");
             }
@@ -1748,9 +1836,11 @@ public class ExportResult extends BaseServlet {
             if (p.bottomPad != null && p.bottomPad.length() > 0 && ! p.bottomPad.equals("0")) {
                 writer.write(tab + "android:paddingBottom=\"" + dimens(p.bottomPad) + "\"");
             }
+            
+            
             if (p.text != null && p.text.length() > 0) {
                 if (p.formResourse != null && p.formResourse) {
-                        writer.write(tab + "android:text=\"" + p.text + "\"");
+                    writer.write(tab + "android:text=\"" + p.text + "\"");
                 }
             }
 
@@ -1760,7 +1850,9 @@ public class ExportResult extends BaseServlet {
                         writer.write(tab + "app:titleSize=\"" + dimens(p.textSize) + "\"");
                         break;
                     default:
-                        writer.write(tab + "android:textSize=\"" + dimens(p.textSize) + "\"");
+                        if (p.textSize != 14) {
+                            writer.write(tab + "android:textSize=\"" + dimens(p.textSize) + "\"");
+                        }
                         break;
                 }
             }
@@ -1789,11 +1881,8 @@ public class ExportResult extends BaseServlet {
                 }
                 writer.write(tab + "android:scaleType=\"" + Constants.scaleType[iS] + "\"");
             }
-            if (p.visibility != null && ! p.visibility) {
-                writer.write(tab + "android:visibility=\"gone\"");
-            }
             
-            if (p.alias != null && p.alias.length() > 0) {
+            if (p.alias != null && p.alias.length() > 0 && ! isInputLayout) {
                 writer.write(tab + "app:alias=\"" + p.alias + "\"");
             }
             
@@ -1903,6 +1992,97 @@ public class ExportResult extends BaseServlet {
                         }
                     }
                     break;
+                case Constants.EDITTEXT:
+                    if (isInputLayout) {
+                        
+                    } else {
+                        if (p.componParam.errorId != null && p.componParam.errorId.length() > 0) {
+                            writer.write(tab + "app:idError=\"@id/" + p.componParam.errorId + "\"");
+                        }
+                    }
+                    if (p.componParam.bool_2 == null) {
+                        p.componParam.bool_2 = true;
+                    }
+                    if ( ! p.componParam.bool_2) {
+                        writer.write(tab + "android:background=\"#0000\"");
+                    }
+                    if (p.componParam.color_1 != null && p.componParam.color_1 != 3) {
+                        String styleEdit = "editStyle_21_" + p.componParam.color_1;
+                        parSave.styleTxtInpt.add(styleEdit);
+                        writer.write(tab + "android:theme=\"@style/" + styleEdit + "\"");
+                    }
+                    if (p.componParam.st_1 != null) {
+                        writer.write(tab + "android:hint=\"" + p.componParam.st_1 + "\"");
+                    }
+                    if (p.componParam.st_2 != null && ! p.componParam.st_2.equals("none")) {
+                        writer.write(tab + "android:inputType=\"" + p.componParam.st_2 + "\"");
+                    }
+                    if (p.componParam.st_3 != null && ! p.componParam.st_3.equals("none")) {
+                        writer.write(tab + "android:imeOptions=\"" + p.componParam.st_3 + "\"");
+                    }
+                    if (p.componParam.st_4 != null && p.componParam.st_4.length() > 0) {
+                        writer.write(tab + "android:maxLength=\"" + p.componParam.st_4 + "\"");
+                    }
+                    if (p.componParam.errorTxt != null && p.componParam.errorTxt.length() > 0) {
+                        writer.write(tab + "app:textError=\"" + formStringXML(parSave.currentScreen + "_" + p.viewId + "_error", p.componParam.errorTxt, parSave.listString) + "\"");
+                    }
+                    boolean noRestrict = true;
+                    if (p.componParam.st_13 != null && p.componParam.st_13.length() > 0) {
+                        writer.write(tab + "app:mask=\"" + p.componParam.st_13 + "\"");
+                        writer.write(tab + "android:maxLines=\"1\"");
+                        noRestrict = false;
+                    }
+                    if (p.componParam.bool_4 != null && p.componParam.bool_4 && noRestrict) {
+                        writer.write(tab + "app:typeValidate=\"email\"");
+                        writer.write(tab + "android:maxLines=\"1\"");
+                        noRestrict = false;
+                    }
+                    if (p.componParam.bool_5 != null && p.componParam.bool_5 && noRestrict) {
+                        writer.write(tab + "app:isPassword=\"true\"");
+                        if (p.componParam.st_9 != null && p.componParam.st_9.length() > 0) {
+                            writer.write(tab + "app:validPassword=\"" + p.componParam.st_9 + "\"");
+                        }
+                        if (p.componParam.st_10 != null && p.componParam.st_10.length() > 0) {
+                            writer.write(tab + "app:idShowPassword=\"@id/" + p.componParam.st_9 + "\"");
+                        }
+                        if (p.componParam.st_11 != null && p.componParam.st_11.length() > 0) {
+                            writer.write(tab + "app:idHidePassword=\"@id/" + p.componParam.st_11 + "\"");
+                        }
+                        if (p.componParam.st_12 != null && p.componParam.st_12.length() > 0) {
+                            writer.write(tab + "app:equalsId=\"@id/" + p.componParam.st_12 + "\"");
+                        }
+                        writer.write(tab + "android:maxLines=\"1\"");
+                        noRestrict = false;
+                    }
+                    if (p.componParam.st_6 != null && p.componParam.st_6.length() > 0) {
+                        writer.write(tab + "app:minLength=\"" + p.componParam.st_6 + "\"");
+                    }
+                    if (noRestrict) {
+                        if (p.componParam.lines != null && p.componParam.lines > 1) {
+                            writer.write(tab + "android:lines=\"" + p.componParam.lines + "\"");
+                        } else {
+                            if (p.componParam.maxLine != null && p.componParam.maxLine > 1) {
+                                writer.write(tab + "android:maxLines=\"" + p.componParam.maxLine + "\"");
+                            }
+                        }
+                        if (p.componParam.st_5 != null && p.componParam.st_5.length() > 0) {
+                            writer.write(tab + "app:fieldLength=\"" + p.componParam.st_5 + "\"");
+                            noRestrict = false;
+                        }
+                        if (p.componParam.st_7 != null && p.componParam.st_7.length() > 0) {
+                            writer.write(tab + "app:minValue=\"" + p.componParam.st_7 + "\"");
+                        }
+                        if (p.componParam.st_8 != null && p.componParam.st_8.length() > 0) {
+                            writer.write(tab + "app:maxValue=\"" + p.componParam.st_8 + "\"");
+                        }
+                    }
+                    if (p.componParam.bool_3 != null && p.componParam.bool_3 && noRestrict) {
+                        writer.write(tab + "app:typeValidate=\"filled\"");
+                        noRestrict = false;
+                    }
+
+                    break;
+                    
                 case Constants.CALENDAR:
                     if (p.componParam.heightMonth != null) {
                         writer.write(tab + "app:heightMonth=\"" + p.componParam.heightMonth + "dp\"");
@@ -2270,6 +2450,26 @@ public class ExportResult extends BaseServlet {
         }
         return typeEl;
     }
+    
+    private String getTxtInpt(String id, List<AndroidPar> parent) {
+        if (id == null || id.length() == 0) {
+            return "";
+        }
+        if (parent != null) {
+            for (AndroidPar ap : parent) {
+                if (ap.viewId != null && ap.viewId.length() > 0) {
+                    if (ap.viewId.equals(id) && ap.type.equals(Constants.EDITTEXT)) {
+                        if (ap.componParam != null && ap.componParam.bool_1 != null && ap.componParam.bool_1) {
+                            return Constants.txtInp;
+                        } else {
+                            return "";
+                        }
+                    }
+                }
+            }
+        }
+        return "";
+    }
 
     private String dimens(int d) {
         for (int i : Constants.standartDimens) {
@@ -2483,6 +2683,43 @@ public class ExportResult extends BaseServlet {
                         writer.write("    </style>\n");
                     }
                 }
+            }
+            Set<String> stInpt = parSave.styleTxtInpt;
+            int color;
+            for (String stT : stInpt) {
+                writer.write("    <style name=\"" + stT + "\">\n");
+                String[] arSt = stT.split("_");
+                switch (arSt[0]) {
+                    case "editStyle":
+                        int colorNorm = Integer.valueOf(arSt[1]);
+                        color = Integer.valueOf(arSt[2]);
+                        writer.write("        <item name=\"colorControlNormal\">" + findColorByIndex(colorNorm, parSave.colors) + "</item>\n");
+                        writer.write("        <item name=\"colorControlActivated\">" + findColorByIndex(color, parSave.colors) + "</item>\n");
+/*
+                        if (colorNorm != 21) {
+                            writer.write("        <item name=\"android:colorControlNormal\">" + findColorByIndex(colorNorm, parSave.colors) + "</item>\n");
+                        }
+                        if ( color != 3) {
+                            writer.write("        <item name=\"android:colorControlActivated\">" + findColorByIndex(color, parSave.colors) + "</item>\n");
+                        }
+*/
+                        break;
+                    case "txtInpt":
+                        String size = arSt[1];
+                        color = Integer.valueOf(arSt[2]);
+                        writer.write("        <item name=\"android:textSize\">" + size + "sp</item>\n");
+                        writer.write("        <item name=\"android:textColor\">" + findColorByIndex(color, parSave.colors) + "</item>\n");
+/*
+                        if ( ! size.equals("12")) {
+                            writer.write("        <item name=\"android:textSize\">" + size + "</item>\n");
+                        }
+                        if ( color != 21) {
+                            writer.write("        <item name=\"android:textColor\">" + findColorByIndex(color, parSave.colors) + "</item>\n");
+                        }
+*/
+                        break;
+                }
+                writer.write("    </style>\n");
             }
             writer.write("</resources>");
             writer.flush();

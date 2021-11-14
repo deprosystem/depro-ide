@@ -190,6 +190,17 @@ function editImage(title, value, cb) {
     return newDOMelement(stHtml + title + stHtml_1 + cb + stHtml_2 + value + stHtml_3);
 }
 
+function editImageNoBorder(title, value, cb) {
+    if (value == null) {
+        value = "";
+    }
+    let stHtml = '<div style="float:left;"><div style="font-size:10px;color:#2228">' 
+    let stHtml_1 = '</div><img onclick="';
+    let stHtml_2 = '()" class="imageV" style="margin-left:7px;margin-top:2ps;cursor:pointer" width="24" height="24" src="';
+    let stHtml_3 = '"></div>';
+    return newDOMelement(stHtml + title + stHtml_1 + cb + stHtml_2 + value + stHtml_3);
+}
+
 function setImgListSel(el, cb) {
     selectListImageEl(el, cb);
 }

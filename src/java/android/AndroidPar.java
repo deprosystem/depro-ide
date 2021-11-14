@@ -6,7 +6,7 @@ public class AndroidPar {
     public String id;
     public String viewId, alias;
     public int componId;
-    public String type, orientataion;
+    public String type, orientataion, typeUxUi;
     public int typeBlock;
     public int width, height;
     public Integer background;

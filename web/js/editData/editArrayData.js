@@ -149,14 +149,23 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
             tit[i].style.width = cellW + 'px';
         }
         widthTabl = tableEdit.clientWidth + 17;
-//        tabBody.style.width = widthTabl + 'px';
-//        tabTool.style.width = tableEdit.clientWidth + 'px';
         countRows = tableEditRows.length;
     }
     
     this.getWidthW = function() {
         return widthTabl;
     };
+    
+    this.getCellXY = function(i, j) {
+        let rows = tabBody.getElementsByTagName('tr');
+        if (rows.length > 0) {
+            let row = rows[i];
+            let cells = row.getElementsByTagName('td');
+            return cells[j];
+        } else {
+            return null;
+        }
+    }
     
     function mouseoverTr(event) {
         hoverTr(event, "#f3f7ff");
@@ -209,17 +218,10 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
     function hoverTr(event, color) {
         let tr = event.currentTarget;
         let act = document.activeElement;
-//        tr.style.background = color;
         let cells = tr.getElementsByTagName("td");
         let ik = cells.length - 1;
         for (let i = 1; i < ik; i++) {
             cells[i].style.backgroundColor = color;
-/*
-            let first = cells[i].firstElementChild;
-            if (first != act) {
-                first.style.background = color;
-            }
-*/
         }
     }
     
@@ -288,6 +290,9 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
                 break;
             case ID_SELECT:
                 td.appendChild(setSelectId(met, item));
+                break;
+            case FIELDS_SELECT:
+                td.appendChild(setSelectFields(met, item));
                 break;
             case ID_SELECT_HANDL:
                 td.appendChild(setSelectIdHandl(met, item));
@@ -417,6 +422,22 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
         } else {
             selSel = formSelectViewId(vv, met.type_view);
         }
+        selSel.style.width = met.len + "px";
+        selSel.style.border = "none";
+        selSel.style.backgroundColor = "#0000";
+        return selSel;
+    }
+    
+    function setSelectFields(met, item) {
+        let vv;
+        if (item != null) {
+            let nameV = met.name;
+            vv = item[nameV];
+            if (vv == null) {
+                vv = "";
+            }
+        }
+        let selSel = formSelectFields(vv);
         selSel.style.width = met.len + "px";
         selSel.style.border = "none";
         selSel.style.backgroundColor = "#0000";

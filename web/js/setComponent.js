@@ -23,6 +23,7 @@ function formCompon() {
     listComponent[2].children = new Array(
             {name: 'EditText', typeBlock: 0},
             {name: 'SeekBar', typeBlock: 0},
+            {name: 'Spinner', typeBlock: 0},
             {name: 'Switch', typeBlock: 0},
             {name: 'CheckBox', typeBlock: 0},
             {name: 'PlusMinus', typeBlock: 0},
@@ -91,8 +92,9 @@ function clickCategory2(i, j){
 }
 
 function createDivText() {
+//let z = p.asdf;
     var container = document.createElement('div')
-    container.innerHTML = '<div class="text" style="position: absolute; white-space: pre-wrap; color: #808080;"></div>'
+    container.innerHTML = '<div class="text" style="position: absolute; white-space: pre-wrap; color: #808080;"></div>';
     return container.firstChild
 }
 

@@ -23,7 +23,7 @@ function CRUD(dat, name) {
     this.init = function() {
         this.data = dat;
         this.hostDomainQ = currentProject.host;
-        let hostDescr = currentProject.whereServer;
+        hostDescr = currentProject.whereServer;
         if (this.hostDomainQ == null || this.hostDomainQ.length == 0  || hostDescr == "Third party API") {
             myAlert("Domain not set");
             return;

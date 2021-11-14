@@ -360,7 +360,9 @@ function setScreenElements(el, children, tab) {
         try {
             uiFunction = eval("new ui" + p.type + "()");
             uiFunction.setElementUI(p, newEl, el);
-        } catch(e) { }
+        } catch(e) { 
+//console.log("setScreenElements catch="+e+"<<");
+        }
         viewComponElem(newEl);
         addNavigatorEl(newEl);
         

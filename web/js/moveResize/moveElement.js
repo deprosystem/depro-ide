@@ -212,6 +212,7 @@ function mouseUpNewEl(e) {
             uiFunction = eval("new ui" + p.type + "()");
             typeEl = uiFunction.newElementUI(p);
         } catch(e) {
+console.log("mouseUpNewEl catch="+e+"<<");
         }
         if (typeEl != null) {
             currentElement.appendChild(typeEl);

@@ -48,7 +48,6 @@ function uiSwitch() {
         }
         contentAttributes.innerHTML = "";
         let dd = new EditForm(meta, p, contentAttributes, null, this);
-//        dd.makeEditForm();
     }
     
     this.cbEdit = function(fieldName) {

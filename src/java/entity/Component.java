@@ -1,5 +1,6 @@
 package entity;
 
+import java.util.List;
 import projects.Model;
 import projects.Navigator;
 import projects.Options;
@@ -13,5 +14,6 @@ public class Component {
     public View view;
     public Param param;
     public Navigator navigator;
+    public List<ItemVisibility> visiManager;
     public Options options;
 }

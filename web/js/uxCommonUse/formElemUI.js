@@ -53,6 +53,24 @@ function formElement(item, toRightOf, namePrev, topM, leftM) {
             }
             currentElement = curr;
             break;
+        case "Select":
+            if (item.edit != null && item.edit) {
+                txtView = formSpinner(item);
+                p = txtView.android;
+            } else {
+                txtView = formTxt(item);
+                p = txtView.android;
+            }
+            break;
+        case "Check":
+            if (item.edit != null && item.edit) {
+                txtView = formCheck(item);
+                p = txtView.android;
+            } else {
+                txtView = formTxt(item);
+                p = txtView.android;
+            }
+            break;
     }
     currentElement.android.viewElement = currentElement;
     if (namePrev != "") {
@@ -201,4 +219,124 @@ function formTxt(item) {
     addNavigatorEl(currentElement);
     ACTIVE.android.children.push(currentElement.android);
     return currentElement;
+}
+
+function formSpinner(item) {
+    currentElement = createNewEl();
+    let p = {viewId:item.name,typeUxUi:"ui",type:"Spinner",typeFull:{name: 'Spinner', typeBlock: 0},width:MATCH,height:24,gravLayout:{h:4,v:4},gravity:{h:4,v:4},
+        rightMarg:12,textColor:12,children:[],componParam:{type:24}};
+    currentElement.android = p;
+    let typeEl = createDivText();
+    typeEl.innerHTML = item.name;
+    currentElement.append(typeEl);
+    addNewElement(ACTIVE, currentElement);
+    addNavigatorEl(currentElement);
+    ACTIVE.android.children.push(currentElement.android);
+    
+    let px24 = 24 * DENSITY + "px";
+    let img = newDOMelement('<img src="img/android_arrow_down.png" style="width:' + px24 + ';height:' + px24 + ';position:absolute;right:0">');
+    currentElement.append(img);
+    return currentElement;
+}
+
+function formCheck(item) {
+    let wCheck = +(24 * MEASURE).toFixed(1);
+    let wCheck_2 = wCheck * 2 + 5;
+    let p = {viewId:item.name,type:"CheckBox",typeUxUi:"ui",componParam:{type:22,int_1:ListStyleCheck[activeStyleCheckPos].id,color_2:3,color_3:0},
+        typeFull:{name:"CheckBox",typeBlock:0},gravLayout:{h:3,v:1},gravity:{h:4,v:4},width:MATCH,height:WRAP,gravLayout:{h:4,v:4},gravity:{h:4,v:4},
+        rightMarg:12,textColor:12,children:[]};
+    let pc = getParamCheck(p.componParam.int_1);
+    if (pc == null) return;
+    if (p.st_3 == null || p.st_3 == "") {
+        p.st_3 = "Off";
+    }
+    if (p.bool_1 == null) {
+        p.bool_1 = true;
+    }
+    if (p.int_1 == null) {
+        p.int_1 = ListStyleCheck[activeStyleCheckPos].id;
+    }
+    let grav = pc.st_2;
+    if (grav == "top") {
+        grav = "start";
+    } else if (grav == "bottom") {
+        grav = "end";
+    }
+    let grav_h = pc.st_3;
+    if (grav_h == null) {
+        grav_h = "left";
+    }
+    if (grav_h == "left") {
+        grav_h = "start";
+    } else if (grav_h == "right") {
+        grav_h = "end";
+    }
+    let container = newDOMelement('<div class="_switch" style="position: absolute;left:0;top:0;right:0;bottom:0"></div>');
+    let containerTxt, containerCheck;
+
+    if (pc.bool_1 != null && pc.bool_1) {
+        containerTxt = newDOMelement('<div style="position: absolute;left:0;top:0;right:' + (wCheck + 6) + 'px;bottom:0;display:flex;align-items:' + grav 
+                + ';justify-content:' + grav_h + '"></div>');
+        containerCheck = newDOMelement('<div style="position: absolute;right:3px;top:0;width:' + wCheck + 'px;bottom:0;display:flex;align-items:' + grav + '"></div>');
+    } else {
+        containerTxt = newDOMelement('<div style="position: absolute;right:0;top:0;left:' + (wCheck + 6) + 'px;bottom:0;display:flex;align-items:' + grav 
+                + ';justify-content:' + grav_h + '"></div>');
+        containerCheck = newDOMelement('<div style="position: absolute;left:3px;top:0;width:' + wCheck + 'px;bottom:0;display:flex;align-items:' + grav + '"></div>');
+    }
+
+    container.appendChild(containerTxt);
+    container.appendChild(containerCheck);
+    let vv = "";
+    if (p.st_1 != null) {
+        vv = p.st_1;
+    }
+    let bold = "";
+    if (pc.int_1 == 1) {
+        bold = "font-weight:bold;";
+    }
+    let it = "";
+    if (pc.int_2 == 1) {
+        it = "font-style:italic;";
+    }
+    let fs = "font-size:" + (14 * MEASURE) + "px;";
+    if (pc.int_3 != null && pc.int_3 != "") {
+        fs = "font-size:" + (pc.int_3 * MEASURE) + "px;";
+    }
+    let txt = newDOMelement('<div class="text" style="' + bold + it + fs + 'color:' + findColorByIndex(pc.color_1) + '">' + vv + '</div>');
+    containerTxt.appendChild(txt);
+
+    let w4 = wCheck - 4;
+    let checkV;
+    if (p.st_3 != null && p.st_3 == "Off") {
+        checkV = newDOMelement('<div style="width:' + w4 + 'px;height:' + w4 + 'px;border-radius:2px;border:2px solid ' + findColorByIndex(pc.color_2) + '"></div>');
+    } else {
+        checkV = newDOMelement('<div style="width:' + wCheck + 'px;height:' + wCheck + 'px;border-radius:2px;background-color:' + findColorByIndex(pc.color_3) + '"></div>');
+        checkV.append(newDOMelement('<IMG SRC="img/check_icon.png" style="width:12px;height:12px;margin-top:1px;margin-left:1px">'));
+    }
+    containerCheck.append(checkV);
+//        return container;
+    
+    
+    
+    
+    
+    
+    
+    currentElement = container;
+    currentElement.android = p;
+    addNewElement(ACTIVE, currentElement);
+    addNavigatorEl(currentElement);
+    ACTIVE.android.children.push(currentElement.android);
+    return currentElement;
+}
+
+function getParamCheck(id) {
+    let ik = ListStyleCheck.length;
+    for (let i = 0; i < ik; i++) {
+        let item = ListStyleCheck[i];
+        if (item.id == id) {
+            return item.param;
+        }
+    }
+    return null;
 }

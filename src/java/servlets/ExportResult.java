@@ -15,6 +15,7 @@ import com.google.gson.JsonSyntaxException;
 import db.ProjectDB;
 import entity.Component;
 import entity.DataServlet;
+import entity.ItemVisibility;
 import entity.ListAppParam;
 import entity.ListComponent;
 import entity.ListItemResurces;
@@ -431,8 +432,24 @@ public class ExportResult extends BaseServlet {
                             } else {
                                 navList = formNavigator(comp.navigator, tab20, ",\n" + tab16);
                             }
+                            String visiManager = formVisibility(comp);
+/*
+                            if (comp.visiManager != null && comp.visiManager.size() > 0) {
+                                visiManager = "\n" + tab16 + ".visibilityManager(";
+                                String sepVis = "";
+                                for (ItemVisibility iv : comp.visiManager) {
+                                    if (iv.type.equals("show")) {
+                                        visiManager += sepVis + "visibility(R.id." + iv.view + ", \"" + iv.field + "\")" ;
+                                    } else {
+                                        visiManager += sepVis + "enabled(R.id." + iv.view + ", \"" + iv.field + "\")" ;
+                                    }
+                                    sepVis = ",";
+                                }
+                                visiManager += ")";
+                            }
+*/
                             declare.add(tab12 + ".list(" + formModel(comp)
-                                    + "\n" + tab16 + formView(comp, scName) + navList + endComp);
+                                    + "\n" + tab16 + formView(comp, scName) + visiManager + navList + endComp);
                             break;
                         case Constants.SCROLL:
                         case Constants.PANEL:
@@ -704,6 +721,30 @@ public class ExportResult extends BaseServlet {
         } catch (IOException ex) {
             System.out.println("ExportResult createDimens error=" + ex);
         }
+    }
+    
+    private String formVisibility(Component comp) {
+        String visiManager = "";
+        if (comp.visiManager != null && comp.visiManager.size() > 0) {
+            visiManager = "\n" + tab16 + ".visibilityManager(";
+            String sepVis = "";
+            for (ItemVisibility iv : comp.visiManager) {
+                switch (iv.type) {
+                    case "show":
+                        visiManager += sepVis + "visibility(R.id." + iv.view + ", \"" + iv.field + "\")" ;
+                        break;
+                    case "enabled":
+                        visiManager += sepVis + "enabled(R.id." + iv.view + ", \"" + iv.field + "\")" ;
+                        break;
+                    case "hide":
+                        visiManager += sepVis + "gone(R.id." + iv.view + ", \"" + iv.field + "\")" ;
+                        break;
+                }
+                sepVis = ",";
+            }
+            visiManager += ")";
+        }
+        return visiManager;
     }
     
     private boolean noDrawer(ListComponent components) {
@@ -1062,6 +1103,7 @@ public class ExportResult extends BaseServlet {
         if (comp.view.spanC > 1) {
             span = ".spanCount(" + comp.view.spanC + ")";
         }
+/*
         String visib = "";
         if (comp.view.visibility != null && comp.view.visibility.length() > 0) {
             visib = ".visibilityManager(";
@@ -1073,6 +1115,7 @@ public class ExportResult extends BaseServlet {
             }
             visib += ")";
         }
+*/
         String sel = "";
         if (comp.view.selectedType != null) {
             switch (comp.view.selectedType) {
@@ -1112,7 +1155,8 @@ public class ExportResult extends BaseServlet {
         } else {
             stItems = ", R.layout.item_" + name + "_" + comp.view.viewId + "_0";
         }
-        return "view(R.id." + comp.view.viewId + ft + stItems + ")" + visib + span + sel;
+        return "view(R.id." + comp.view.viewId + ft + stItems + ")" + span + sel;
+//        return "view(R.id." + comp.view.viewId + ft + stItems + ")" + visib + span + sel;
     }
     
     private String formViewSpinner(Component comp, String name) {
@@ -1277,6 +1321,9 @@ public class ExportResult extends BaseServlet {
                     }
                     break;
                 case Constants.SPINNER:
+                    if (elScreen.typeUxUi.equals("ui")) {
+                        break;
+                    }
                     writer.write(tab0 + "/>");
                     ik = elScreen.children.size();
                     if (ik == 0) {
@@ -1588,12 +1635,16 @@ public class ExportResult extends BaseServlet {
                 typeEl = Constants.cardViewType;
                 break;
             case Constants.IMAGEVIEW:
+                typeEl = Constants.componImage;
+/*
                 if (p.corners != null || (p.componParam != null && p.componParam.oval != null && p.componParam.oval)) {
                     typeEl = Constants.roundedType;
                 }
+
                 if (p.componParam != null && p.componParam.int_0 != null && p.componParam.int_0 > 0) {     // BLUR
                     typeEl = Constants.componImage;
                 }
+*/
                 break;
         }
         try {
@@ -1916,6 +1967,25 @@ public class ExportResult extends BaseServlet {
                             }
                             if (lt == tr && lt == rb && lt == bl) {
                                 if (lt > 0) {
+                                    writer.write(tab + "app:corners=\"" + lt + "dp\"");
+                                }
+                            } else {
+                                if (lt > 0) {
+                                    writer.write(tab + "app:corner_lt=\"" + lt + "dp\"");
+                                }
+                                if (tr > 0) {
+                                    writer.write(tab + "app:corner_rt=\"" + tr + "dp\"");
+                                }
+                                if (rb > 0) {
+                                    writer.write(tab + "app:corner_rb=\"" + rb + "dp\"");
+                                }
+                                if (bl > 0) {
+                                    writer.write(tab + "app:corner_lb=\"" + bl + "dp\"");
+                                }
+                            }
+/*
+                            if (lt == tr && lt == rb && lt == bl) {
+                                if (lt > 0) {
                                     writer.write(tab + "app:riv_corner_radius=\"" + lt + "dp\"");
                                 }
                             } else {
@@ -1932,6 +2002,7 @@ public class ExportResult extends BaseServlet {
                                     writer.write(tab + "app:riv_corner_radius_bottom_left=\"" + bl + "dp\"");
                                 }
                             }
+*/
                         }
                     }
                     if (p.componParam != null) {
@@ -2282,28 +2353,35 @@ public class ExportResult extends BaseServlet {
                         if (cp.bool_1 != null && cp.bool_1) {
                             writer.write(tab + "android:layoutDirection=\"rtl\"");
                         }
+                        
+                        
                         String gravV = "", gravH = "", gravRes = "";
-                        if (cp.st_2 != null && ! cp.st_2.equals("top")) {
-                            gravV = cp.st_2;
-                        }
-                        if (cp.st_3 != null && ! cp.st_3.equals("left")) {
-                            gravH = cp.st_3;
-                        }
-                        if (gravV.equals("center") && gravH.equals("center")) {
-                            gravRes = "center";
-                        } else {
-                            if (gravV.equals("center")) {
-                                gravV = "center_vertical";
+                        if (cp.st_2 != null) {
+                            switch (cp.st_2) {
+                                case "center":
+                                    gravV = "center_vertical";
+                                    break;
+                                case "bottom":
+                                    gravV = "bottom";
+                                    break;
                             }
-                            if (gravH.equals("center")) {
-                                gravH = "center_horizontal";
-                            }
-                            String sepGr = "";
-                            if (gravV.length() > 0 && gravH.length() > 0) {
-                                sepGr = "|";
-                            }
-                            gravRes = gravV + sepGr + gravH;
                         }
+                        if (cp.st_3 != null) {
+                            switch (cp.st_3) {
+                                case "center":
+                                    gravH = "center_horizontal";
+                                    break;
+                                case "right":
+                                    gravH = "right";
+                                    break;
+                            }
+                        }
+                        String sepGr = "";
+                        if (gravV.length() > 0 && gravH.length() > 0) {
+                            sepGr = "|";
+                        }
+                        gravRes = gravV + sepGr + gravH;
+                        
                         if (gravRes.length() > 0) {
                             writer.write(tab + "android:gravity=\"" + gravRes + "\"");
                         }
@@ -2418,6 +2496,17 @@ public class ExportResult extends BaseServlet {
                     }
                     if (p.elevCardShadow != null && p.elevCardShadow.length() > 0) {
                         writer.write(tab + "app:cardElevation=\"" + Integer.valueOf(p.elevCardShadow) + "dp\"");
+                    }
+                    break;
+                case Constants.SPINNER:
+                    if (p.typeUxUi.equals("ui")) {
+                        if (p.componParam.st_1 != null && p.componParam.st_1.length() > 0) {
+                            writer.write(tab + "app:listItems=\"" + p.componParam.st_1.replaceAll("\n", "") + "\"");
+                        }
+                        if (p.componParam.st_2 != null && p.componParam.st_2.length() > 0) {
+                            writer.write(tab + "app:imageId=\"@drawable/" + nameFromUrl(p.componParam.st_2) + "\"");
+                        }
+                        writer.write(tab0 + "/>");
                     }
                     break;
                 case Constants.PLUS_MINUS:
@@ -2674,10 +2763,10 @@ public class ExportResult extends BaseServlet {
                     if (item.isInLayouts) {
                         SwitchParam sp = item.param;
                         writer.write("<style name=\"check_style_" + item.id + "\">\n");
-                        if (sp.color_2 != null && sp.color_2 != 3) {
+                        if (sp.color_2 != null) {
                             writer.write("    <item name=\"colorControlNormal\">" + findColorByIndex(sp.color_2, parSave.colors) + "</item>\n");
                         }
-                        if (sp.color_3 != null && sp.color_3 != 0) {
+                        if (sp.color_3 != null && sp.color_3 != 3) {
                             writer.write("    <item name=\"colorControlActivated\">" + findColorByIndex(sp.color_3, parSave.colors) + "</item>\n");
                         }
                         writer.write("    </style>\n");
@@ -2695,14 +2784,6 @@ public class ExportResult extends BaseServlet {
                         color = Integer.valueOf(arSt[2]);
                         writer.write("        <item name=\"colorControlNormal\">" + findColorByIndex(colorNorm, parSave.colors) + "</item>\n");
                         writer.write("        <item name=\"colorControlActivated\">" + findColorByIndex(color, parSave.colors) + "</item>\n");
-/*
-                        if (colorNorm != 21) {
-                            writer.write("        <item name=\"android:colorControlNormal\">" + findColorByIndex(colorNorm, parSave.colors) + "</item>\n");
-                        }
-                        if ( color != 3) {
-                            writer.write("        <item name=\"android:colorControlActivated\">" + findColorByIndex(color, parSave.colors) + "</item>\n");
-                        }
-*/
                         break;
                     case "txtInpt":
                         String size = arSt[1];

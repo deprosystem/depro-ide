@@ -67,7 +67,7 @@ function TableObj(selF, tabF) {
         let item = listTables[i];
         this.tableName = item.name_table;
         this.selectTable = {id_table:item.id_table,name_table: item.name_table,title_table:item.title_table,fields_table:JSON.parse(item.fields_table)};
-        this.selectTable.fields_table.unshift({id_field:0, name:"id_" + item.name_table, type:"Bigserial", title:""});
+//        this.selectTable.fields_table.unshift({id_field:0, name:"id_" + item.name_table, type:"Bigserial", title:""});
         this.tableId = item.id_table;
         this.fieldsTable.innerHTML = "";
         this.selectFields.innerHTML = "";
@@ -89,7 +89,7 @@ function TableObj(selF, tabF) {
         this.scrollT = viewScroll.scroll_y;
 
         let fields = JSON.parse(item.fields_table);
-        fields.unshift({id_field:0, name:"id_" + item.name_table, type:"Bigserial", title:""});
+//        fields.unshift({id_field:0, name:"id_" + item.name_table, type:"Bigserial", title:""});
         let ik = fields.length;
         for (let i = 0; i < ik; i++) {
             this.oneFieldTables(item.id_table, fields[i], this.viewData);

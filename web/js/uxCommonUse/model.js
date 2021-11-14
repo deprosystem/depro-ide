@@ -1,4 +1,4 @@
-var selectMethodInModel = "";
+//var selectMethodInModel = "";
 let uxModel1 = '<div class="model_view" style="height:40px;">'
         +'<div style="float:left;"><div style="color:#2228;font-size: 10px;margin-left:4px">Method</div>'
         +'<select class="model_method type_screen select_';
@@ -91,6 +91,7 @@ function setValueModel(componParam) {
     let met = componParam.getElementsByClassName("model_method");
     let model = currentComponentDescr.model;
     let descrMet = model.method;
+    hostDescr = currentProject.whereServer;
     if (met != null) {
         if (descrMet != null) {
             met = met[0];
@@ -122,9 +123,10 @@ function changeMethod(el) {
     currentComponentDescr.model.method = el.selectedIndex;
     let el_1 = el.parentElement;
     let el_2 = el_1.parentElement.getElementsByClassName("param_method");
-    selectMethodInModel = "";
+//    selectMethodInModel = "";
     if (el_2 != null) {
         let pm = el_2[0];
+//        selectMethodInModel = el.options[el.selectedIndex].value;
         switch (el.options[el.selectedIndex].value) {
             case "POST":
             case "GET":
@@ -138,7 +140,7 @@ function changeMethod(el) {
                 break;
             case "TEST":
                 pm.innerHTML = pmTest;
-                selectMethodInModel = "TEST";
+//                selectMethodInModel = "TEST";
                 break;
             case "PARAMETERS":
                 pm.innerHTML = pmParamUrl;
@@ -185,6 +187,9 @@ function isValidModel(mod, tab, viewId) {
 }
 
 function editDataModel(el, ind) {
+    let mv = el.closest(".model_view");
+    let sel = mv.querySelector(".model_method");
+    selectMethodInModel = sel.options[sel.selectedIndex].value;
     if (selectMethodInModel == "TEST") {
         editDataWind(metaModel, currentComponentDescr.model.data[0], cbSaveDataModel);
     } else if (hostDescr == "Third party API") {

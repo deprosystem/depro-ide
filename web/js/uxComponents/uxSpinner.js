@@ -14,15 +14,16 @@ function uxSpinner() {
     }
     
     this.getCreateListener = function () {
-        return {vert:"createViewForSpinner", horiz:""};
+        return {vert:"", horiz:"createViewForSpinner"};
     }
     
     this.addComponent = function (componId, viewId) {
         let tt = this.param.name;
-        let head = {type:"RelativeLayout",typeFull:{name:"RelativeLayout",typeBlock:2},viewId:"__T_head",typeUxUi: "ui",gravLayout:{h:4,v:4},gravity:{h:4,v:4},width: -1,height:10,children:[]};
+        let head = {type:"RelativeLayout",typeFull:{name:"RelativeLayout",typeBlock:2},viewId:"__T_head",typeUxUi: "ui",gravLayout:{h:4,v:4},
+            gravity:{h:4,v:4},width: -1,height:10,children:[]};
         let drop = {type:"RelativeLayout",typeFull:{name:"RelativeLayout",typeBlock:2},viewId:"__T_drop",below:"__T_head",typeUxUi: "ui",
             visibility:false,gravLayout:{h:4,v:4},gravity:{h:4,v:4},width: -1,height:10,children:[]};
-        currentComponent = {type: tt, componId: componId, viewId:viewId, typeUxUi: "ux", componParam:{},
+        currentComponent = {type: tt, componId: componId, viewId:viewId, typeUxUi: "ux", componParam:{type:24},
                 typeFull: {name: tt, typeBlock: 10}, gravLayout: {h: 3, v: 1}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
             width:200,height:-2,itemNav:{},viewElement: null,children:[head,drop]};
         currentComponentDescr = {type:tt, componId: componId,model:{method:0,data:[[]],progr:"standard"},view:{viewId: viewId}};
@@ -52,6 +53,7 @@ function uxSpinner() {
 function createViewForSpinner(el, ind) {
     data = currentComponentDescr.model.data[0];
     let listV = currentComponent.viewElement;
+console.log("TTT="+currentComponent.type+"<< VVVV="+currentComponent.viewId+"<<");
     if (listV != null) {
         let ik = data.length;
         if (ik > 0) {
@@ -74,7 +76,7 @@ function createHeaderSpinner(data, listView) {
     let toRightOf = "";
     setActive(listView);
     let topM = 5;
-    let estimatedHeight = topM;
+//    let estimatedHeight = topM;
     let namePrev = "";
     let p;
     let ik = data.length;

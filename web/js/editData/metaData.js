@@ -1,4 +1,5 @@
-var TYPE_TEXT = 0, TYPE_INT = 1, TYPE_FLOAT = 3, TYPE_BOOLEAN = 4, TYPE_SELECT = 5, TYPE_IMG = 6, ID_SELECT = 7, ID_SELECT_HANDL = 8, ID_SELECT_HANDL_SCR = 9;
+var TYPE_TEXT = 0, TYPE_INT = 1, TYPE_FLOAT = 3, TYPE_BOOLEAN = 4, TYPE_SELECT = 5, TYPE_IMG = 6, ID_SELECT = 7, ID_SELECT_HANDL = 8, ID_SELECT_HANDL_SCR = 9, 
+        FIELDS_SELECT = 10;
 
 var handlers = "start,back,backOk,send,actual,assignValue,setValueParam,setVar,checked,restoreVar,hide,show,addRecord,delRecord,dialUp,springScale";
 var typeSource = "PARAM,SIZE,LOCALE,SYSTEM_TIME,GROUPP_PARAM,GLOBAL_VAR";
@@ -32,7 +33,13 @@ var metaModel = {titleForm:"Data formation", description:
     {name: "visibility", title:"Visibility",len:12},
     {name: "notShow", title:"not show",type:TYPE_BOOLEAN,marg:25}]
     }
-    
+
+var metaVisiManager = {titleForm:"Visibility manager", description:
+    [{name: "view", title:"View",len:100,type:ID_SELECT},
+    {name: "field", title:"Field",len:100,type:FIELDS_SELECT},
+    {name: "type", title:"Show-hide",len:70,type:TYPE_SELECT,select:"show,hide,enabled"}]
+    }
+
 function editDataWind(meta, data, obrSave, dopEl, w, h, l, t, colorFon) {
     let ww = 400, hh = 300, ll = 550, tt = 50;
     if (w != null) {
@@ -53,6 +60,29 @@ function editDataWind(meta, data, obrSave, dopEl, w, h, l, t, colorFon) {
     if (dopEl != null) {
         windMenu.parentElement.style.height = (dopEl.clientHeight + hh) + "px";
     }
+}
+
+function editDataDop(meta, data, obrSave, dopEl, w, h, l, t, colorFon) {
+    let ww = 400, hh = 300, ll = 550, tt = 50;
+    if (w != null) {
+        ww = w;
+    }
+    if (h != null) {
+        hh = h;
+    }
+    if (l != null) {
+        ll = l;
+    }
+    if (t != null) {
+        tt = t;
+    }
+    let windMenu = formWind(ww, hh, tt, ll, meta.titleForm, null, null, null, null, colorFon);
+    let editDat = new EditData(meta.description, data, windMenu, obrSave, dopEl);
+    windMenu.parentElement.style.width = (editDat.getWidthW() + 10) + "px";
+    if (dopEl != null) {
+        windMenu.parentElement.style.height = (dopEl.clientHeight + hh) + "px";
+    }
+    return editDat;
 }
 
 function formMetaDataModel(dat) {

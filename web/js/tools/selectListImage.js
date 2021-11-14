@@ -2,6 +2,7 @@ var listImage;
 function selectListImage(e, func, param) {
     let el = e.target;
     let par = {"el":el,"func":func,"param":param};
+//console.log("CCC="+par.el.className+"<< NNNN="+par.param+"<<");
     if (listImage == null) {
         doServer("GET", 'images/list', cbGetListImg, null, par);
     } else {
@@ -49,7 +50,11 @@ function createItemListImg(path, nam) {
 function setSelectImage(e, i, par) {
     let el = e.target;
     closeWindow(el);
-    par.func(i, par.param);
+    if (par.func.callBackEditF == null) {
+        par.func(i, par.param);
+    } else {
+        par.func.callBackEditF(i, par);
+    }
 }
 
 function selectListImageEl(el, cb) {

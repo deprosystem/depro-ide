@@ -226,9 +226,24 @@ function setValueView(componParam) {
     allParamCascade.appendChild(ff);
     let mm = opt.getElementsByClassName("check_cascade")[0];
     showCascadeParam(currentComponentDescr.options.isCascade, mm, allParamCascade);
-    
+/*
     let visib = editTextParam("Visibility manager", 150, view.visibility, "changeVisibilityList");
     cp.appendChild(visib);
+*/
+    let vm = editImageNoBorder("Visibility manager", "img/eye.png", "visiManager");
+    vm.style.marginLeft = "10px";
+    cp.append(vm);
+}
+
+function visiManager() {
+    if (currentComponentDescr.visiManager == null) {
+        currentComponentDescr.visiManager = [];
+    }
+    editDataWind(metaVisiManager, currentComponentDescr.visiManager, cbSaveVisiManager);
+}
+
+function cbSaveVisiManager() {
+    
 }
 
 function changeNoData(el) {
@@ -509,7 +524,8 @@ function changeNameGlobVar(el) {
 function changeListGlobVar(el) {
     currentComponentDescr.options.listVar = el.value;
 }
-
+/*
 function changeVisibilityList(el) {
     currentComponentDescr.view.visibility = el.value;
 }
+*/

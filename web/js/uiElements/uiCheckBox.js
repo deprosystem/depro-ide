@@ -17,7 +17,7 @@ function uiCheckBox() {
     ]
     
     let meta = [
-        {name: "st_1", title:"Value",rows:2,type:"Textarea",br:true},
+        {name: "st_1", title:"Text",rows:2,type:"Textarea",br:true},
         {name: "int_1", title:"Style switch",type:"Choose",what:"switch",meta:metaCheckBox,br:true},
         {name: "st_3", title:"Checked",type:"Select",value:"Off,On"},
         {name: "bool_1", title:"Enabled",type:"Check"}

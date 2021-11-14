@@ -15,7 +15,6 @@ function EditForm(meta, data, domEl, after, cbEdit, marg) {
     let fonSel = "#deeaff";
     
     this.makeEditForm = function() {
-//        this.edDomEl.innerHTML = "";
         let ik = this.edMeta.length;
         if (marg) {
             this.marg_T = "";
@@ -207,8 +206,25 @@ function EditForm(meta, data, domEl, after, cbEdit, marg) {
             case "Number":
                 
                 break;
+            case "Img":
+                inp = newDOMelement('<img class="imageV" style="border:2px solid #bdf;border-radius:4px;background:#fff;cursor:pointer;" width="24" height="24" src="' 
+                        + vv + '">');
+                inp.addEventListener("click", () => {selectListImage(event, this, met.name)}, false);
+                res.append(inp);
+                break;
         }
         return res;
+    }
+    
+    this.callBackEditF = function(i, par) {
+        let nn = listImage[i];
+        let inp = par.el;
+        let name = par.param;
+        inp.src = nn;
+        this.edData[name] = nn;
+        if (this.cb != null) {
+            this.cb.cbEdit(name);
+        }
     }
     
     this.clickMultiCheck = function(inp, met) {

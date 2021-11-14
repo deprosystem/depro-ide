@@ -99,7 +99,7 @@ function createItemEl(el) {
     var pm = item.getElementsByClassName('plus-minus')[0];
     var item_name = item.getElementsByClassName('item-name')[0];
     var p = el.android;
-    if (p.viewId != null) {
+    if (p.viewId != null && p.viewId.length > 0) {
         item_name.innerHTML = p.viewId + ': ' + p.type;
     } else {
         item_name.innerHTML = p.type;

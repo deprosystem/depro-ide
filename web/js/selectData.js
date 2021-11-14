@@ -202,6 +202,17 @@ function formSelectViewId(valueSel, type) {
     return formSelectForEditData(" " + st, valueSel);
 }
 
+function formSelectFields(vv) {
+    let dat = currentComponentDescr.model.data[0];
+    st = "";
+    let ik = dat.length;
+    for (let i = 0; i < ik; i++) {
+        let item = dat[i];
+        st += "," + item.name;
+    }
+    return formSelectForEditData(" " + st, vv);
+}
+
 function formListIdElem(childEl, type) {
     let st = "";
     let ik = childEl.length;

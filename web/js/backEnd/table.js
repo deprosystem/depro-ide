@@ -5,10 +5,12 @@ var tableId;
 var tablePosition;
 var hItemListFieldsTable = 24;
 var listTablesForQuery = [];
+var editDataTable;
+var idTableField;
 
 let htmlTable = '<div style="height:40px;margin-left:20px">'
         +'<div style="float:left;margin-left:10px"><div style="color: #2228;font-size: 10px;margin-left:4px">Name table</div>'
-        +'<input class="name_t input_style" onkeydown="return validNameLower(event)" value="" type="text" size="30"/>'
+        +'<input class="name_t input_style" onkeyup="setFieldId(this)" onkeydown="return validNameLower(event)" value="" type="text" size="30"/>'
         +'</div>'
         +'<div style="float:left;margin-left:10px"><div style="color: #2228;font-size: 10px;margin-left:4px">Description</div>'
         +'<input class="descr_t input_style" value="" type="text" size="60"/>'
@@ -17,10 +19,12 @@ let htmlTable = '<div style="height:40px;margin-left:20px">'
 
 function addTable() {
     fieldsTable = [];
-//    fieldsTable = [{id_field:0, name:"id_", type:"Bigserial", title:"Primary key", key:true, system:"primary"}];
+    fieldsTable = [{id_field:0, name:"id_", type:"Bigserial", title:"Primary key", key:true, system:"primary"}];
     tableId = -1;
     descrTable = newDOMelement(htmlTable);
-    editDataWind(metaTable, fieldsTable, cbAddTable, descrTable, 500, 500, 300);
+    editDataTable = editDataDop(metaTable, fieldsTable, cbAddTable, descrTable, 500, 500, 300);
+    let td = editDataTable.getCellXY(0, 1);
+    idTableField = td.querySelector("INPUT");
 }
 
 function cbAddTable(dat) {
@@ -31,12 +35,19 @@ function cbAddTable(dat) {
         if (hostDomain != null && hostDomain.length > 0) {
             let ff = JSON.stringify(dat);
             let t = {id_table:tableId,name_table:nn,title_table:dd,fields_table:ff,schema:currentProject.resurseInd};
+console.log("FFF="+ff+"<< DD="+t+"<<");
             if (tableId == -1) {
                 doServerAlien("POST", hostDomain + "tables/descr", cbSaveTable, JSON.stringify(t));
             } else {
                 doServerAlien("POST", hostDomain + "tables/descr", cbChangeTable, JSON.stringify(t));
             }
         }
+    }
+}
+
+function setFieldId(el) {
+    if (tableId == -1) {
+        idTableField.value = "id_" + el.value;
     }
 }
 
@@ -121,7 +132,7 @@ function oneTableForQuery(i, el) {
 function formTableForQuery(i) {
     let item = listTables[i];
     let itemForList = {id_table:item.id_table,name_table: item.name_table,title_table:item.title_table,fields_table:JSON.parse(item.fields_table)};
-    itemForList.fields_table.unshift({id_field:0, name:"id_" + item.name_table, type:"Bigserial", title:""});
+//    itemForList.fields_table.unshift({id_field:0, name:"id_" + item.name_table, type:"Bigserial", title:""});
     listTablesForQuery.push(itemForList);
     formBlockTable(item);
 
@@ -153,7 +164,7 @@ function formBlockTable(item) {
     let viewDataT = viewScroll.getElementsByClassName("viewData")[0];
 
     let fields = JSON.parse(item.fields_table);
-    fields.unshift({id_field:0, name:"id_" + item.name_table, type:"Bigserial", title:""});
+//    fields.unshift({id_field:0, name:"id_" + item.name_table, type:"Bigserial", title:""});
     let ik = fields.length;
 //    oneFieldTables(item.id_table, {id_field:0, name:"id_" + item.name_table, type:"Bigserial", title:""}, viewDataT);
     for (let i = 0; i < ik; i++) {

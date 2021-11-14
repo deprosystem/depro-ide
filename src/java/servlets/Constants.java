@@ -68,8 +68,8 @@ public class Constants {
         "com.dpcsa.compon.custom_components.ElementMenu",            // 20
         "com.dpcsa.compon.custom_components.ComponSwitch",            // 21
         "com.dpcsa.compon.custom_components.ComponCheckBox",            // 22
-        "RelativeLayout"                                                // 23   TOTAL
-            
+        "RelativeLayout",                                                // 23   TOTAL
+        "com.dpcsa.compon.custom_components.ComponSpinner",            // 24
     };
 
 }

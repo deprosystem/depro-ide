@@ -1,4 +1,4 @@
-var typeFieldDescr = "Text,Img,Serial,Bigserial,Int,Long,Float,Double,Date,Time,Timestamp,TimestampZ,Boolean,Gallery,Select,Check,Switch";
+var typeFieldDescr = "Text,Img,Gallery,Serial,Bigserial,Int,Long,Float,Double,Date,Time,Timestamp,TimestampZ,Select,Boolean,Check,Switch";
 
 var metaTable = {titleForm:"Description Table", description:
     [{name: "name", title:"Name",len:15,valid:"name_low"},

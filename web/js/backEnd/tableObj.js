@@ -284,6 +284,6 @@ function TableObj(selF, tabF) {
                 }
             }
         }
-        return {id_table:this.tableId,name_tble:this.tableName,fullness:cf,listFields:lF};
+        return {id_table:this.tableId,name_table:this.tableName,fullness:cf,listFields:lF};
     }
 }

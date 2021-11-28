@@ -201,7 +201,7 @@ function setCorners(el) {
         let p = currentElement.android;
         let h = p.height;
         if (h > 0) {
-            value = h/2;
+            value = parseInt(h/2 + 0.5);
         } else {
             value = 0;
         }

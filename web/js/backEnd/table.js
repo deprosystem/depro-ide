@@ -7,6 +7,7 @@ var hItemListFieldsTable = 24;
 var listTablesForQuery = [];
 var editDataTable;
 var idTableField;
+var USER_TABLE_NAME = "user";
 
 let htmlTable = '<div style="height:40px;margin-left:20px">'
         +'<div style="float:left;margin-left:10px"><div style="color: #2228;font-size: 10px;margin-left:4px">Name table</div>'
@@ -17,31 +18,80 @@ let htmlTable = '<div style="height:40px;margin-left:20px">'
         +'</div>'
     +'</div>';
 
-function addTable() {
+function addTable(usr) {
     fieldsTable = [];
-    fieldsTable = [{id_field:0, name:"id_", type:"Bigserial", title:"Primary key", key:true, system:"primary"}];
-    tableId = -1;
     descrTable = newDOMelement(htmlTable);
+    if (usr) {
+        fieldsTable = [{id_field:0, name:"id_user", type:"Bigserial", title:"Primary key", key:true, system:"primary"},
+        {id_field:1, name:"login", type:"Text", title:"Login", system:"primary"},
+//        {id_field:2, name:"email", type:"Text", title:"Email", system:"primary"},
+//        {id_field:3, name:"phone", type:"Text", title:"Phone", system:"primary"},
+        {id_field:2, name:"password", type:"Text", title:"Password", system:"primary"}];
+        let nt = descrTable.querySelector(".name_t");
+        nt.setAttribute('disabled','disabled');
+        nt.value = 'user'
+        nt.onkeyup = "";
+        let dt = descrTable.querySelector(".descr_t");
+        dt.setAttribute('disabled','disabled');
+        dt.value = "User data table. You can add your own fields";
+    } else {
+        fieldsTable = [{id_field:0, name:"id_", type:"Bigserial", title:"Primary key", key:true, system:"primary"}];
+    }
+    tableId = -1;
     editDataTable = editDataDop(metaTable, fieldsTable, cbAddTable, descrTable, 500, 500, 300);
     let td = editDataTable.getCellXY(0, 1);
     idTableField = td.querySelector("INPUT");
 }
+/*
+function addTableUser() {
+    fieldsTable = [{id_field:0, name:"id_user", type:"Bigserial", title:"Primary key", key:true, system:"primary"},
+        {id_field:1, name:"login", type:"Text", title:"Login", system:"primary"},
+        {id_field:2, name:"email", type:"Text", title:"Email", system:"primary"},
+        {id_field:3, name:"phone", type:"Text", title:"Phone", system:"primary"},
+        {id_field:4, name:"password", type:"Text", title:"Password", system:"primary"}];
+    let wind = formWind(500, 500, 50, 300, metaTable.titleForm);
+    
+
+}
+*/
 
 function cbAddTable(dat) {
     let nn = descrTable.getElementsByClassName("name_t")[0].value;
     let dd = descrTable.getElementsByClassName("descr_t")[0].value;
     if (nn != null && nn != "") {
+        if (nn == USER_TABLE_NAME) {
+//            myAlert('The table cannot be named "user"');
+//            return false;
+        }
+        let ik = dat.length;
+        let ln = "";
+        let sep = "";
+        for (let i = 0; i < ik; i++) {
+            let fName = dat[i].name;
+            if (fName == null || fName.length == 0)  {
+                ln += sep + i;
+                sep = ", ";
+            }
+        }
+        if (ln.length > 0) {
+            myAlert("No name specified for numbered fields " + ln);
+            return false;
+        }
         let hostDomain = currentProject.host;
         if (hostDomain != null && hostDomain.length > 0) {
             let ff = JSON.stringify(dat);
             let t = {id_table:tableId,name_table:nn,title_table:dd,fields_table:ff,schema:currentProject.resurseInd};
-console.log("FFF="+ff+"<< DD="+t+"<<");
+console.log("FFF="+ff+"<<");
+console.log("CCCCRRRR="+JSON.stringify(t)+"<<");
             if (tableId == -1) {
                 doServerAlien("POST", hostDomain + "tables/descr", cbSaveTable, JSON.stringify(t));
             } else {
                 doServerAlien("POST", hostDomain + "tables/descr", cbChangeTable, JSON.stringify(t));
             }
         }
+    } else {
+        myAlert("Table name not specified");
+        return false;
     }
 }
 
@@ -92,6 +142,15 @@ function editTable(i) {
     tableId = item.id_table;
     tablePosition = i;
     descrTable = newDOMelement(htmlTable);
+    if (item.name_table == USER_TABLE_NAME) {
+        let nt = descrTable.querySelector(".name_t");
+        nt.setAttribute('disabled','disabled');
+//        nt.value = 'user'
+        nt.onkeyup = "";
+        let dt = descrTable.querySelector(".descr_t");
+        dt.setAttribute('disabled','disabled');
+//        dt.value = "User data table. You can add your own fields";
+    }
     descrTable.getElementsByClassName("name_t")[0].value = item.name_table;
     descrTable.getElementsByClassName("descr_t")[0].value = item.title_table;
     editDataWind(metaTable, fieldsTable, cbAddTable, descrTable);

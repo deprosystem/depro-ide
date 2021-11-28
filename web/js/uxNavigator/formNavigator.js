@@ -67,7 +67,7 @@ function FormNavigator() {
         let ik = dat.length;
         if (ik > 0) {
             for (let i = 0; i < ik; i++) {
-                this.dataView.appendChild(this.oneHandView(i, this.dataHand[i]));
+                this.dataView.append(this.oneHandView(i, this.dataHand[i]));
             }
             this.selHand(0, this.dataView);
         } 

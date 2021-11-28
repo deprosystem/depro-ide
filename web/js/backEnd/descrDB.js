@@ -7,15 +7,6 @@ function setHostPanel() {
     let par = button_host.parentElement;
     par.onclick = descrHost;
     hostDomain = currentProject.host;
-    if (hostDescr == "Third party API") {
-        addTab.innerHTML = "";
-        addTab.onclick = "";
-        openAdmin.onclick = "";
-    } else {
-        addTab.onclick = addTable;
-        openAdmin.onclick = openAdminWind;
-        addTab.innerHTML = '<div style="margin-top: 5px; display: inline-block">Add table</div>';
-    }
     where_serv.innerHTML = whereServ;
     button_host.innerHTML = hostButt;
     if (hostDomain != null && hostDomain.length > 0) {
@@ -41,9 +32,31 @@ function cbGetTables(res) {
 function formListTables() {
     listTablesView.innerHTML = "";
     let ik = listTables.length;
+    let isUser = false;
     if (ik > 0) {
         for (let i = 0; i < ik; i++) {
+            let item = listTables[i];
+            if (item.name_table == USER_TABLE_NAME) {
+                isUser = true;
+            }
             oneTableView(i, listTablesView);
+        }
+    }
+    setButtonAdd(isUser);
+}
+
+function setButtonAdd(isUser) {
+    if (hostDescr == "Third party API") {
+        addTab.innerHTML = "";
+//        addTab.onclick = "";
+        openAdmin.onclick = "";
+    } else {
+//        addTab.onclick = addTable;
+        openAdmin.onclick = openAdminWind;
+        addTab.append(newDOMelement('<div onclick="addTable()" style="margin-top: 5px;float:left;margin-left:30px;cursor: pointer;">Add table</div>'));
+        if ( ! isUser) {
+//            addTab.append(newDOMelement('<div onclick="addTable(true)" style="margin-top: 5px;margin-left:10px;float:left;display: inline-block"> </div>'));
+            addTab.append(newDOMelement('<div onclick="addTable(true)" style="margin-top: 5px;margin-left:30px;float:left;cursor: pointer;">Creating a user table</div>'));
         }
     }
 }
@@ -126,15 +139,7 @@ function sendDescrHost() {
 }
 
 function cbCreateHost(res) {
-    if (hostDescr == "Third party API") {
-        addTab.innerHTML = "";
-        addTab.onclick = '';
-        openAdmin.onclick = '';
-    } else {
-        addTab.onclick = addTable;
-        openAdmin.onclick = openAdminWind;
-        addTab.innerHTML = '<div style="margin-top: 5px; display: inline-block">Add table</div>';
-    }
+    setButtonAdd(false);
     currentProject.host = hostDomain;
     descr_host.innerHTML = hostDomain;
     currentProject.whereServer = hostDescr;
@@ -148,6 +153,7 @@ function cbCreateHost(res) {
 
 function cbSetHost(res) {
 // нічого не треба
+    doServerAlien("GET", hostDomain + 'tables/list', cbGetTables);
 }
 
 function openAdminWind() {

@@ -93,6 +93,9 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
             for (let j = 0; j < ikD; j++) {
                 let item = edData[j];
                 tr = document.createElement('tr');
+                if (item != null && item.system != null && item.system.length > 0) {
+                    tr.system = item.system;
+                }
                 let idF = item.id_field;
                 if (idF == null) {
                     idF = maxIdField;
@@ -112,7 +115,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
                     td = createTD(i, item);
                     tr.appendChild(td);
                 }
-                if (item.system) {
+                if ( item.system != null && item.system.length > 0) {
                     td = createDelBlanck();
                 } else {
                     td = createDel();
@@ -243,7 +246,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
             met.type = TYPE_TEXT;
         }
         let isSyst = false;
-        if (item != null && item.system) {
+        if (item != null && item.system != null && item.system.length > 0) {
             isSyst = true;
         }
         let inp;
@@ -251,7 +254,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
             case TYPE_BOOLEAN:
                 inp = document.createElement('input');
                 if (isSyst) {
-                    inp.readonly = "true";
+                    inp.setAttribute('disabled','disabled');
                 }
                 inp.type = "checkbox";
                 inp.name = met.name;
@@ -282,6 +285,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
                     }
                     inp = newDOMelement('<div style="width:' + met.len + 'px;background-color:#0000;margin-left:5px">' + vv + '</div>');
                     td.append(inp);
+                    inp.isSyst = isSyst;
                 } else {
                     if (met.select != null && met.select.length > 0) {
                         td.append(setSelect(met, item));
@@ -338,16 +342,10 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
             default:
                 let readOnl = "";
                 if (isSyst) {
-                    readOnl = " readonly";
+//                    readOnl = " readonly";
+                    readOnl = "disabled = 'disabled'";
                 }
                 inp = newDOMelement('<input type="text" name="' + met.name + '" size="' + met.len + '" style="margin-left:3px;margin-right:3px;border:none"' + readOnl +  '>');
-/*
-                inp = document.createElement('input');
-                inp.type = "text";
-                inp.name = met.name;
-                inp.size = met.len;
-                inp.style.cssText = "margin-left:3px;margin-right:3px;border:none";
-*/
                 if (item != null) {
                     let nameV = met.name;
                     let vv = item[nameV];
@@ -558,31 +556,6 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
                     break
             }
         }
-/*
-        if (valid != null) {
-            if (valid.latin != null && valid.latin) {
-                let kUp = event.key.toUpperCase();
-                if ( ! ((kUp >= "A" && kUp <= "Z") || kUp == "_" || (kUp >= "0" && kUp <= "9")))  {
-                    event.preventDefault();
-                    tooltip(event.target, "Только английские буквы, _ и цифры");
-                }
-            } else {
-                if (valid.name_low != null && valid.name_low) {
-                    let targ = event.target;
-//                        let k = event.key;
-                    if ( ! ((k >= "a" && k <= "z") || k == "_" || (k >= "0" && k <= "9")))  {
-                        event.preventDefault();
-                        tooltip(targ, "Только английские буквы, _ и цифры");
-                    } else {
-                        if (targ.value.length == 0 && k >= "0" && k <= "9") {
-                            event.preventDefault();
-                            tooltip(targ, "The first character cannot be a digit");
-                        }
-                    }
-                }
-            }
-        }
-*/
     }
     
     function clickNumbet(event) {
@@ -720,10 +693,14 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
                         item[edMeta[i1].name] = elem.options[elem.selectedIndex].value;
                         break;
                     case "DIV":
-                        let elImg = elem.getElementsByTagName("img");
-                        if (elImg != null && elImg.length > 0) {
-                            elImg = elImg[0];
-                            item[edMeta[i1].name] = elImg.srcElem;
+                        if (elem.isSyst) {
+                            item[edMeta[i1].name] = elem.innerHTML;
+                        } else {
+                            let elImg = elem.getElementsByTagName("img");
+                            if (elImg != null && elImg.length > 0) {
+                                elImg = elImg[0];
+                                item[edMeta[i1].name] = elImg.srcElem;
+                            }
                         }
                         break;
                     case "IMG":
@@ -731,11 +708,20 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
                         break;
                 }
             }
+            if (row.system != null && row.system.length > 0) {
+                item.system = row.system;
+            }
             edData.push(item);
         }
-        closeWindEditData();
+        let closeW = true;
         if (edObrSave != null) {
-            edObrSave(edData);
+            let cc = edObrSave(edData);
+            if (cc != null && ! cc) {
+                closeW = false;
+            }
+        }
+        if (closeW) {
+            closeWindEditData();
         }
     }
     

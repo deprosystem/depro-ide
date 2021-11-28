@@ -70,7 +70,9 @@ import projects.ProjectM;
 public class ExportResult extends BaseServlet {
     
     private String tab4 = "    ", tab8 = "        ", tab12 = "            ", tab16 = "                ", tab20 = "                    ";
-
+    private String afterAutch = "setToken(), setProfile(\"profile\")";
+    private String paramAutch = "login,email,phone,password";
+    
     @Override
     protected void processRequest(HttpServletRequest request, HttpServletResponse response, DataServlet ds) {
         ProjectM projectM;
@@ -1042,11 +1044,39 @@ public class ExportResult extends BaseServlet {
                 
                 res = "handler(" + vId + ", VH.CLICK_SEND, model(POST, \"" + parSend.url + "\", \"" + parSend.queryFilds.fields + "\")" 
                         + "\n" + tab20 + stAfter + mValid + ")";
-//System.out.println("res="+res+"<<");
-                
-//                handler(R.id.done, VH.CLICK_SEND, model(POST, Api.EDIT_PROF,
-//                                "surname,name,second_name,phone,photo,email"),
-//                                after(setProfile()))
+                break;
+            case "sign in":
+                vId = "0";
+                if (stId.length() > 0) {
+                    vId = stId;
+                }
+                parSend = gson.fromJson(hh.param, ParamSend.class);
+                stAfter = ", after("+ afterAutch + ")";
+                if (hh.after != null && hh.after.size() > 0) {
+                    stAfter = ", after(" + afterAutch;
+                    String sepAft = ",\n" + tab20;
+                    int ak = hh.after.size();
+                    for (int a = 0; a < ak; a++) {
+                        stAfter += sepAft + formHandler(hh.after, a, menu);
+                    }
+                    stAfter += ")";
+                }
+                mValid = "";
+                if (parSend.queryFilds.valid != null && parSend.queryFilds.valid.length() > 0) {
+                    String en = "false";
+                    if (hh.check != null && hh.check) {
+                        en = "true";
+                    }
+                    mValid = ",\n" + tab20 + en;
+                    String[] arValid = parSend.queryFilds.valid.split(",");
+                    for (String stValid : arValid) {
+                        mValid += ", R.id." + stValid;
+                    }
+                }
+                int iQu = parSend.url.lastIndexOf("/");
+                String qu = parSend.url.substring(0, iQu) + "/sign_in";
+                res = "handler(" + vId + ", VH.CLICK_SEND, model(POST, \"" + qu + "\", \"" + parSend.queryFilds.fields + "\")" 
+                        + "\n" + tab20 + stAfter + mValid + ")";
                 break;
             case "delRecord":
                 vId = "0";

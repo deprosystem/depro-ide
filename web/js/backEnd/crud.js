@@ -185,12 +185,14 @@ function CRUD(dat, name) {
         let SQL = "";
         switch (this.param.oper) {
             case "INSERT":
-                SQL = "INSERT INTO " + currentProject.resurseInd + "." + res[0].name_tble;
+                SQL = "INSERT INTO " + currentProject.resurseInd + "." + res[0].name_table;
                 break;
         }
         let param_query = "";
-        let strParam = res[0].name_tble;
+        let strParam = res[0].name_table;
         let dat = {id_query:qu,name_query:nam,type_query:this.query.type_query,origin_query:original,sql_query:SQL,param_query:strParam};
+console.log("origin_query="+original+"<< sql_query="+SQL+"<< param_query="+strParam+"<<");
+console.log("DAT="+JSON.stringify(dat)+"<<");
         doServerAlien("POST", hostDomain + "query/create", this, JSON.stringify(dat), "saveCrud", this.fieldsTable);
     }
     

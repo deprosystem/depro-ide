@@ -31,6 +31,8 @@ var listAppParam, listValueAppParam;
 var listProjectForOpen;
 var deleteProjectIdVar;
 var popupMenuParamProj;
+var newProjectForCreate;
+var createChangeProgectOper;
 
 function openProject() {
     doServer("POST", "project/list", cbListProject);
@@ -95,151 +97,50 @@ function formAppParam() {
 }
 
 function createProject() {
-    shutScreen.style.display = "none";
-    listEdit = [{name : "nameProject", label : "* Project name", type : TYPE_String, valid: validNameEmpty},
-//    {name : "namePackage", label : "Package name", type : TYPE_String, valid: validEmpty, value: "com.example.ide"},
-    {name : "nameAPP", label : "APP name", type : TYPE_String,},
-    {name : "comment", label : "Description", type : TYPE_StringAr}];
-    setCreateData(1);       // 1 - create, 0 - chang
+    formCreateProject(1);
 }
 
 function changeProject() {
-    listEdit = [{name : "nameProject", label : "nameProject", type : TYPE_String, valid: validNameEmpty, value: currentProject.nameProject},
-//        {name : "namePackage", label : "Package name", type : TYPE_String, valid: validEmpty, value: currentProject.namePackage},
-        {name : "nameAPP", label : "nameAPP", type : TYPE_String, value: currentProject.nameAPP},
-        {name : "comment", label : "Description", type : TYPE_StringAr, value: currentProject.comment},
-        {name : "logo", label : "Logo", type : TYPE_Image, value: currentProject.logo}];
-    setCreateData(0);
+    formCreateProject();
 }
 
-function setCreateData(oper) {      //  oper = 1 - create, 0 - chang
-    let str = "";
-    let ik = listEdit.length;
+function formCreateProject(oper) {      //  oper = 1 - create, 0 - chang
     let h;
     let titl;
-    if (oper == 0) {
+    let create = [
+        {name: "nameProject", title:"* Project name",len:-1,type:"Text",valid:"latin"},
+        {name: "comment", title:"Description",type:"Textarea",rows:3,br:true}
+    ]
+    if (oper == null) {
         h = 450;
         titl = "Change Project";
+        create.push({name: "logo", title:"Logo",type:"Img",br:true});
+        newProjectForCreate = {nameProject:currentProject.nameProject,comment:currentProject.comment,logo:currentProject.logo};
     } else {
         h = 400;
         titl = "New project";
+        newProjectForCreate = {};
     }
-    let wind = formWind(300, h, 40, 200, titl);
-    wind.style.paddingLeft = "16px";
-    wind.style.paddingRight = "16px";
-    for (var i = 0; i < ik; i++) {
-        pp = listEdit[i];
-        let label = document.createElement("div");
-        label.style.cssText = "margin-top: 16px;font-size:10px";
-        label.innerHTML = pp.label;
-        wind.appendChild(label);
-        let inpEl;
-        let vv;
-        switch (pp.type) {
-            case TYPE_String:
-                vv = "";
-                if (pp.value != null) {
-                    vv = pp.value;
-                }
-                inpEl = document.createElement("input");
-                if (pp.valid == validName || pp.valid == validNameEmpty) {
-//                    inpEl.addEventListener("keydown",function(event){return validNameLower(event)}, true);
-                    inpEl.onkeydown = function() {return validNameLower(event)};
-//                    inpEl.addEventListener("keydown",function(event){checkLatinKey(event)}, true);
-                }
-                inpEl.style.cssText = "font-weight:400";
-                inpEl.className = "input_style form";
-                inpEl.size = "40";
-                inpEl.value = vv;
-                break;
-            case TYPE_StringAr:
-                inpEl = document.createElement("textarea");
-                inpEl.className = "form";
-                inpEl.rows = "3";
-                inpEl.cols = "31";
-                inpEl.style.cssText = "font-weight:400;border:1px solid #C5DCFA;box-sizing: border-box;border-radius: 8px;";
-//                + '<textarea name="' + pp.name + '" class="form" style="font-weight:400;border:1px solid #C5DCFA;box-sizing: border-box;border-radius: 8px;" rows="3" cols="31"></textarea>';
-                break;
-            case TYPE_Image:
-//                str += '<div style="margin-top: 16px;font-size:10px">'+ pp.label + '</div>'
-//                + '<img onclick="setImg(this)" class="imgLogo" src="' + pp.value + '" width="30" height="30" style="cursor:pointer">';
-                inpEl = document.createElement("img");
-                inpEl.style.cursor = "pointer";
-                if (pp.value != null) {
-                    inpEl.src = pp.value;
-                }
-                inpEl.width = "30";
-                inpEl.height = "30";
-                let divVal = document.createElement('div');
-                divVal.style.display = "none";
-                divVal.className = "form";
-                divVal.name = pp.name;
-                wind.appendChild(divVal);
-                let parLogo = {"img": inpEl, "val":divVal};
-                inpEl.addEventListener("click",function(event){selectListImage(event, resultSelectLogo, parLogo)}, true);
-                break;
-        }
-        inpEl.valid = pp.valid;
-        inpEl.name = pp.name;
-        wind.appendChild(inpEl);
-    }
-
-    wind.getElementsByTagName('input')[0].focus();
-
-    wind.addEventListener("keyup", function(event){if (event.which == 13) {
-        let res = formDataJson(wind);
-        
-        if (res == "") {
-            myAlert("You need to fill in the fields with *");
-        } else {
-            closeWindow(wind);
-            sendCreateProject(res, oper);
-        }
-    }}, true);
-    
-    let footer = createFooter(56);
-    wind.appendChild(footer);
-    let buttonSend = createButtonBlue('Send', 70);
-    buttonSend.addEventListener("click", function(event){
-            let res = formDataJson(wind);
-            if (res == "") {
-                myAlert("You need to fill in the fields with *");
-            } else {
-                closeWindow(wind);
-                sendCreateProject(res, oper);
-            }
-        }, true);
-    footer.appendChild(buttonSend);
-    let buttonCancel = createButtonWeite('Cancel', 70);
-    buttonCancel.addEventListener("click", function(event){closeWindow(wind);}, true);
-    footer.appendChild(buttonCancel);
+    createChangeProgectOper = oper;
+    let wind = formWind(300, h, 40, 200, titl, null, null, "Send", sendServCreate, "");
+    let windDat = newDOMelement('<div style="position:absolute;left:16px;right:16px"></div>');
+    wind.append(windDat);
+    wind.addEventListener('keyup', function(e) {
+      if (e.key === 'Enter') {
+        sendServCreate();
+        closeDataWindow(wind);
+      }
+    });
+    new EditForm(create, newProjectForCreate, windDat, null, null, true, 20);
 }
 
-function resultSelectLogo(i, param) {
-    let nn = listImage[i];
-    param.img.src = nn;
-    param.val.innerHTML = nn;
-}
-
-function formDataJson(wind) {
-    let listForm = wind.getElementsByClassName("form");
-    let ik = listForm.length;
-    let obj = {};
-    for (let i = 0; i < ik; i++) {
-        let el = listForm[i];
-        if (el.value == "") {
-            if (el.valid == validNameEmpty || el.valid == validEmpty) {
-                return "";
-            }
-        }
-        if (el.tagName == 'DIV') {
-            obj[el.name] = el.innerHTML;
-        } else {
-            obj[el.name] = el.value;
-        }
+function sendServCreate() {
+    if (newProjectForCreate.nameProject == null || newProjectForCreate.nameProject.length == 0) {
+        myAlert("You need to fill in the fields with *");
+        return true;
+    } else {
+        sendCreateProject(JSON.stringify(newProjectForCreate), createChangeProgectOper);
     }
-    let st = JSON.stringify(obj);
-    return st;
 }
 
 function sendCreateProject(data, oper) {
@@ -258,6 +159,7 @@ function cbCreateProject(res, oper) {
     }
     currentProject = JSON.parse(res);
     cbCreateProjectDop();
+    shutScreen.style.display = "none";
 }
 function cbCreateProjectDop() {
     ux_ui_w.style.display = "block";

@@ -71,6 +71,7 @@ public class ExportResult extends BaseServlet {
     
     private String tab4 = "    ", tab8 = "        ", tab12 = "            ", tab16 = "                ", tab20 = "                    ";
     private String afterAutch = "setToken(), setProfile(\"profile\")";
+    private String afterAutchProf = "setProfile(\"profile\")";
     private String paramAutch = "login,email,phone,password";
     
     @Override
@@ -462,6 +463,7 @@ public class ExportResult extends BaseServlet {
                             declare.add(tab12 + ".component(TC.PANEL, " + formModel(comp)
                                     + "\n" + tab16 + "view(R.id." + comp.view.viewId + ")" + noData + formNavigator(comp.navigator, tab20, ",\n" + tab16) + endComp);
                             break;
+                        case Constants.SCROLL_F:
                         case Constants.FORM:
                             declare.add(tab12 + ".component(TC.PANEL_ENTER, " + formModel(comp)
                                     + "\n" + tab16 + "view(R.id." + comp.view.viewId + ")" + formNavigator(comp.navigator, tab20, ",\n" + tab16) + endComp);
@@ -1045,13 +1047,28 @@ public class ExportResult extends BaseServlet {
                 res = "handler(" + vId + ", VH.CLICK_SEND, model(POST, \"" + parSend.url + "\", \"" + parSend.queryFilds.fields + "\")" 
                         + "\n" + tab20 + stAfter + mValid + ")";
                 break;
+            case "edit profile":
+            case "sign up":
             case "sign in":
                 vId = "0";
                 if (stId.length() > 0) {
                     vId = stId;
                 }
                 parSend = gson.fromJson(hh.param, ParamSend.class);
+                int quInt = 1;
                 stAfter = ", after("+ afterAutch + ")";
+                switch (hh.handler) {
+                    case "sign in":
+                        quInt = 1;
+                        break;
+                    case "sign up":
+                        quInt = 2;
+                        break;
+                    case "edit profile":
+                        quInt = 3;
+                        stAfter = ", after("+ afterAutchProf + ")";
+                        break;
+                }
                 if (hh.after != null && hh.after.size() > 0) {
                     stAfter = ", after(" + afterAutch;
                     String sepAft = ",\n" + tab20;
@@ -1073,10 +1090,16 @@ public class ExportResult extends BaseServlet {
                         mValid += ", R.id." + stValid;
                     }
                 }
+                String elRec = "";
+                if (hh.param_1 != null && hh.param_1.length() > 0) {
+                    elRec = ", R.id." + hh.param_1;
+                }
                 int iQu = parSend.url.lastIndexOf("/");
-                String qu = parSend.url.substring(0, iQu) + "/sign_in";
-                res = "handler(" + vId + ", VH.CLICK_SEND, model(POST, \"" + qu + "\", \"" + parSend.queryFilds.fields + "\")" 
+                String qu = parSend.url.substring(0, iQu) + "/" + quInt;
+                res = "send(" + vId + elRec + ", model(POST, \"" + qu + "\", \"" + parSend.queryFilds.fields + "\")" 
                         + "\n" + tab20 + stAfter + mValid + ")";
+//                res = "handler(" + vId + ", VH.CLICK_SEND, model(POST, \"" + qu + "\", \"" + parSend.queryFilds.fields + "\")" 
+//                        + "\n" + tab20 + stAfter + mValid + ")";
                 break;
             case "delRecord":
                 vId = "0";
@@ -1440,7 +1463,7 @@ public class ExportResult extends BaseServlet {
                                 }
                             }
                         }
-                        if (typeEl.equals(Constants.SCROLLPANEL)) {
+                        if (typeEl.equals(Constants.SCROLLPANEL) || typeEl.equals(Constants.SCROLLFORM)) {
                             CreateRelativeForScroll(writer, parSave);
                         }
                         elScreen.children.forEach((es) -> {
@@ -1451,7 +1474,7 @@ public class ExportResult extends BaseServlet {
                                 createFragmentContainer(writer, parSave);
                             }
                         }
-                        if (typeEl.equals(Constants.SCROLLPANEL)) {
+                        if (typeEl.equals(Constants.SCROLLPANEL) || typeEl.equals(Constants.SCROLLFORM)) {
                             writer.write("\n" + tab8 + "</RelativeLayout>");
                         }
                         writer.write(tab0 + "</" + typeEl + ">");
@@ -1647,7 +1670,6 @@ public class ExportResult extends BaseServlet {
                         isInputLayout = true;
                     } else {
                         if (p.componParam.st_13 != null && p.componParam.st_13.length() > 0) {
-//                        if (p.componParam.typeValidTV != null && p.componParam.typeValidTV.equals("mask")) {
                             typeEl = Constants.EditMask;
                         } else {
                             typeEl = Constants.EditCompon;
@@ -1666,15 +1688,6 @@ public class ExportResult extends BaseServlet {
                 break;
             case Constants.IMAGEVIEW:
                 typeEl = Constants.componImage;
-/*
-                if (p.corners != null || (p.componParam != null && p.componParam.oval != null && p.componParam.oval)) {
-                    typeEl = Constants.roundedType;
-                }
-
-                if (p.componParam != null && p.componParam.int_0 != null && p.componParam.int_0 > 0) {     // BLUR
-                    typeEl = Constants.componImage;
-                }
-*/
                 break;
         }
         try {
@@ -1687,7 +1700,7 @@ public class ExportResult extends BaseServlet {
             }
 
             if (p.viewId != null && p.viewId.length() > 0) {
-                if (typeEl.equals(Constants.SCROLLPANEL)) {
+                if (typeEl.equals(Constants.SCROLLPANEL) || typeEl.equals(Constants.SCROLLFORM)) {
                     parSave.scrollId = p.viewId;
                 } else {
                     if (isInputLayout) {
@@ -1786,12 +1799,9 @@ public class ExportResult extends BaseServlet {
             }
             
             if (isInputLayout) {
-//                if (p.componParam.color_2 != 21) {
                 String styleTxtInpt = "txtInpt_12_" + p.componParam.color_2;
                 parSave.styleTxtInpt.add(styleTxtInpt);
-//                writer.write(tab + "android:textColorHint=\"" + findColorByIndex(p.componParam.color_2, parSave.colors) + "\"");
                 writer.write(tab + "app:hintTextAppearance=\"@style/" + styleTxtInpt + "\"");
-//                }
 
                 
                 
@@ -1799,7 +1809,6 @@ public class ExportResult extends BaseServlet {
                 writer.write(">");
                 String tab_1 = tab + "    ";
                 if (p.componParam.st_13 != null && p.componParam.st_13.length() > 0) {
-//                if (p.componParam.typeValidTV != null && p.componParam.typeValidTV.equals("mask")) {
                     writer.write(tab + "<" + Constants.EditMask);
                 } else {
                     writer.write(tab + "<" + Constants.EditCompon);
@@ -1930,6 +1939,16 @@ public class ExportResult extends BaseServlet {
                     case Constants.TOOL:
                         writer.write(tab + "app:titleSize=\"" + dimens(p.textSize) + "\"");
                         break;
+                    case Constants.EDITTEXT:
+                        if (p.textSize != 18) {
+                            writer.write(tab + "android:textSize=\"" + dimens(p.textSize) + "\"");
+                        }
+                        break;
+                    case Constants.TEXTVIEW:
+                        if (p.textSize != 16) {
+                            writer.write(tab + "android:textSize=\"" + dimens(p.textSize) + "\"");
+                        }
+                        break;
                     default:
                         if (p.textSize != 14) {
                             writer.write(tab + "android:textSize=\"" + dimens(p.textSize) + "\"");
@@ -1979,7 +1998,7 @@ public class ExportResult extends BaseServlet {
                 case Constants.IMAGEVIEW:
                     Corners pc = p.corners;
                     if (p.componParam != null && p.componParam.oval != null && p.componParam.oval) {
-                        writer.write(tab + "app:riv_oval=\"true\"");
+                        writer.write(tab + "app:oval=\"true\"");
                     } else {
                         if (pc != null) {
                             int lt = 0, tr = 0, rb = 0, bl = 0;
@@ -2013,26 +2032,6 @@ public class ExportResult extends BaseServlet {
                                     writer.write(tab + "app:corner_lb=\"" + bl + "dp\"");
                                 }
                             }
-/*
-                            if (lt == tr && lt == rb && lt == bl) {
-                                if (lt > 0) {
-                                    writer.write(tab + "app:riv_corner_radius=\"" + lt + "dp\"");
-                                }
-                            } else {
-                                if (lt > 0) {
-                                    writer.write(tab + "app:riv_corner_radius_top_left=\"" + lt + "dp\"");
-                                }
-                                if (tr > 0) {
-                                    writer.write(tab + "app:riv_corner_radius_top_right=\"" + tr + "dp\"");
-                                }
-                                if (rb > 0) {
-                                    writer.write(tab + "app:riv_corner_radius_bottom_right=\"" + rb + "dp\"");
-                                }
-                                if (bl > 0) {
-                                    writer.write(tab + "app:riv_corner_radius_bottom_left=\"" + bl + "dp\"");
-                                }
-                            }
-*/
                         }
                     }
                     if (p.componParam != null) {
@@ -2115,11 +2114,13 @@ public class ExportResult extends BaseServlet {
                     if (p.componParam.st_1 != null) {
                         writer.write(tab + "android:hint=\"" + p.componParam.st_1 + "\"");
                     }
-                    if (p.componParam.st_2 != null && ! p.componParam.st_2.equals("none")) {
-                        writer.write(tab + "android:inputType=\"" + p.componParam.st_2 + "\"");
-                    }
-                    if (p.componParam.st_3 != null && ! p.componParam.st_3.equals("none")) {
-                        writer.write(tab + "android:imeOptions=\"" + p.componParam.st_3 + "\"");
+                    boolean noInputType = true;
+                    if (p.componParam.st_3 == null) {
+                        writer.write(tab + "android:imeOptions=\"actionNext\"");
+                    } else {
+                        if ( ! p.componParam.st_3.equals("none")) {
+                            writer.write(tab + "android:imeOptions=\"" + p.componParam.st_3 + "\"");
+                        }
                     }
                     if (p.componParam.st_4 != null && p.componParam.st_4.length() > 0) {
                         writer.write(tab + "android:maxLength=\"" + p.componParam.st_4 + "\"");
@@ -2131,11 +2132,15 @@ public class ExportResult extends BaseServlet {
                     if (p.componParam.st_13 != null && p.componParam.st_13.length() > 0) {
                         writer.write(tab + "app:mask=\"" + p.componParam.st_13 + "\"");
                         writer.write(tab + "android:maxLines=\"1\"");
+                        writer.write(tab + "android:inputType=\"phone\"");
+                        noInputType = false;
                         noRestrict = false;
                     }
                     if (p.componParam.bool_4 != null && p.componParam.bool_4 && noRestrict) {
                         writer.write(tab + "app:typeValidate=\"email\"");
                         writer.write(tab + "android:maxLines=\"1\"");
+//                        writer.write(tab + "android:inputType=\"textEmailAddress\"");
+//                        noInputType = false;
                         noRestrict = false;
                     }
                     if (p.componParam.bool_5 != null && p.componParam.bool_5 && noRestrict) {
@@ -2144,7 +2149,7 @@ public class ExportResult extends BaseServlet {
                             writer.write(tab + "app:validPassword=\"" + p.componParam.st_9 + "\"");
                         }
                         if (p.componParam.st_10 != null && p.componParam.st_10.length() > 0) {
-                            writer.write(tab + "app:idShowPassword=\"@id/" + p.componParam.st_9 + "\"");
+                            writer.write(tab + "app:idShowPassword=\"@id/" + p.componParam.st_10 + "\"");
                         }
                         if (p.componParam.st_11 != null && p.componParam.st_11.length() > 0) {
                             writer.write(tab + "app:idHidePassword=\"@id/" + p.componParam.st_11 + "\"");
@@ -2158,13 +2163,28 @@ public class ExportResult extends BaseServlet {
                     if (p.componParam.st_6 != null && p.componParam.st_6.length() > 0) {
                         writer.write(tab + "app:minLength=\"" + p.componParam.st_6 + "\"");
                     }
+                    if (noInputType) {
+                        if (p.componParam.st_2 == null) {
+                            writer.write(tab + "android:inputType=\"text\"");
+                        } else {
+                            if ( ! p.componParam.st_2.equals("none")) {
+                                writer.write(tab + "android:inputType=\"" + p.componParam.st_2 + "\"");
+                            }
+                        }
+                    }
                     if (noRestrict) {
                         if (p.componParam.lines != null && p.componParam.lines > 1) {
                             writer.write(tab + "android:lines=\"" + p.componParam.lines + "\"");
-                        } else {
+                        } 
+/*
+                        else {
                             if (p.componParam.maxLine != null && p.componParam.maxLine > 1) {
                                 writer.write(tab + "android:maxLines=\"" + p.componParam.maxLine + "\"");
                             }
+                        }
+*/
+                        if (p.componParam.maxLine != null && p.componParam.maxLine > 0) {
+                            writer.write(tab + "android:maxLines=\"" + p.componParam.maxLine + "\"");
                         }
                         if (p.componParam.st_5 != null && p.componParam.st_5.length() > 0) {
                             writer.write(tab + "app:fieldLength=\"" + p.componParam.st_5 + "\"");

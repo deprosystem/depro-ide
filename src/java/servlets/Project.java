@@ -272,6 +272,11 @@ public class Project extends BaseServlet {
 
     private String formDrawable() {
         List<ItemResurces> li = new ArrayList();
+        ItemResurces ir = new ItemResurces();
+        ir.itemId = 1000;
+        ir.itemName = "shape_1000";
+        ir.itemValue = "{\"corners\":{\"lt\":50,\"tr\":50,\"rb\":50,\"bl\":50},\"type\":\"rectangle\",\"border\":0,\"borderStyle\":\"solid\",\"bordedColor\":3,\"color_1\":0,\"color_2\":-1,\"gradient\":0}";
+        li.add(ir);
         return gson.toJson(li);
     }
     

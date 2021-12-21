@@ -9,7 +9,6 @@ function tooltipMessage(target, message) {
 
 function tooltipMessageOver(target, message) {
     let sW = window.screen.width;
-
     let tooltipElem = document.createElement('div');
     tooltipElem.className = 'tooltip';
     tooltipElem.innerHTML = message;

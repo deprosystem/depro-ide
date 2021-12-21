@@ -1,4 +1,4 @@
-function CRUD(dat, name) {
+function CRUD(dat, name, type_crud) {
     this.param;
     this.choose;
     this.fieldsTable;
@@ -11,6 +11,9 @@ function CRUD(dat, name) {
     this.query;
     this.data;
     this.selectOperQuery;
+    this.blockErrorTxt;
+    
+    this.type_crud = type_crud;
     
     let self = this;
     
@@ -19,8 +22,16 @@ function CRUD(dat, name) {
     let hRow = 24;
     let hWhere = 150;
     let hViewFT = 240;
+    let meta_send = [
+        {name: "err_1", title:"Text error",len:300,type:"Text"}
+    ]
+    let meta_EditProf = [
+        {name: "err_1", title:"Text error",len:300,type:"Text"},
+        {name: "err_2", title:"Not logged in",len:300,type:"Text"}
+    ]
     
     this.init = function() {
+        let titForm;
         this.data = dat;
         this.hostDomainQ = currentProject.host;
         hostDescr = currentProject.whereServer;
@@ -29,33 +40,48 @@ function CRUD(dat, name) {
             return;
         }
         let wind = formWind(wFields + wTab + 1, 400, 40, 650, "Model parameters", false, null, "Save", this, "");
-        let par = this.data[name];
-        if (par == null) {
-            this.param = {method:"POST", url:"",oper:"INSERT"};
-        } else {
-            this.param = JSON.parse(par);
-        }
         wind.style.display = "flex";
         wind.style.flexDirection = "column";
-        let titForm = newDOMelement('<div style="width:100%;height:' + hRow + 'px;border-bottom:1px solid #1dace9"></div>');
-        wind.append(titForm);
-        let oper = newDOMelement('<div style="float:left;height:100%;width:' + wFields 
-                + 'px;border-right:1px solid #1dace9;"><div style="float:left;margin-top:3px;margin-left:7px;">Operation</div></div>');
-        titForm.append(oper);
+        this.blockErrorTxt = newDOMelement('<div style="width:100%;height:48px;border-bottom:1px solid #1dace9"></div>');
         
-        let vv = this.param.oper;
-        this.selectOperQuery = formSelectForEditData("INSERT,UPDATE,DELETE,LOGIN,REGISTRATION", vv);
-        this.selectOperQuery.style.cssText = "width:120px;font-size:12px;color:#110000;float:left;margin-left:7px;height:22px;";
-        this.selectOperQuery.className = 'select_' + browser;
-        this.selectOperQuery.addEventListener("change", () => {this.changeOper(this.selectOperQuery)}, false);
-        oper.append(this.selectOperQuery);
-        
-        this.choose = newDOMelement('<div style="float:left;height:100%;width:' + wTab + 'px;"></div>');
-        let clickChoose = newDOMelement('<div style="float:left;margin-top:3px;margin-left:25px;cursor:pointer">Choose a table</div>');
-        clickChoose.addEventListener("click", () => {this.cooseTableCrud()}, false);
-        this.choose.append(clickChoose);
-        
-//        let viewFT = newDOMelement('<div style="position:absolute;top:' + (hRow + 1) + 'px;left:0;right:0;height:' + (hViewFT + 1) + 'px;border-bottom:1px solid #1dace9"></div>');
+        wind.append(this.blockErrorTxt);
+        let par = this.data[name];
+        if (par != null) {
+            this.param = JSON.parse(par);
+        }
+        switch (this.type_crud) {
+            case "Send":
+                if (par == null) {
+                    this.param = {method:"POST", url:"",oper:"INSERT",err_1:"There is already an entry with such keys"};
+                }
+                let foot = wind.parentElement.querySelector(".footer_wind");
+                let buttonChooseT = createButtonBlue("Choose a table");
+                buttonChooseT.addEventListener("click", () => {this.cooseTableCrud()}, false);
+                foot.prepend(buttonChooseT);
+                if (this.param.err_1 == null) {
+                    this.param.err_1 = "There is already an entry with such keys";
+                }
+                break;
+            case "SignUp":
+                if (par == null) {
+                    this.param = {method:"POST", url:"autch/" + currentProject.resurseInd + "/2",oper:"INSERT",err_1:"A user with this login already exists",
+                    queryFilds:{fields:"login,password",valid:"login,password",indF:[1,2],indV:[1,2]}};
+                }
+                break;
+            case "SignIn":
+                if (par == null) {
+                    this.param = {method:"POST", url:"autch/" + currentProject.resurseInd + "/1",oper:"INSERT",err_1:"Incorrect login or password",
+                    queryFilds:{fields:"login,password",valid:"login,password",indF:[1,2],indV:[1,2]}};
+                }
+                break;
+            case "EditProfile":
+                if (par == null) {
+                    this.param = {method:"POST", url:"autch/" + currentProject.resurseInd + "/3",oper:"INSERT",err_1:"A user with this login already exists",
+                    err_2:"You need to log in",queryFilds:{fields:"login,password",valid:"login,password",indF:[1,2],indV:[1,2]}};
+                }
+                this.blockErrorTxt.style.height = "96px";
+                break;
+        }
         let viewFT = newDOMelement('<div style="position:relative;width:100%;flex-grow:1;"></div>');
         wind.append(viewFT);
         this.where = newDOMelement('<div style="width:100%;height:' + hWhere + 'px;display:none;border-top:1px solid #1dace9;"></div>');
@@ -73,9 +99,12 @@ function CRUD(dat, name) {
         this.fieldsTable = newDOMelement('<div style="float:left;height:100%;width:' + wTab + 'px;position:relative;"></div>');
         viewFT.append(selF);
         viewFT.append(this.fieldsTable);
-        
-        titForm.append(this.choose);
-        
+        if (this.type_crud == "SignIn") {
+            let shutScreen = newDOMelement('<div style="position:absolute;left:0;top:0;right:0;bottom:0"></div>');
+            shutScreen.addEventListener('click', () => {event.stopPropagation();});
+            viewFT.append(shutScreen);
+        }
+
         hostDomain = currentProject.host;
         if (hostDomain != null && hostDomain.length > 0  && hostDescr != "Third party API") {
             if (listTables == null) {
@@ -120,8 +149,12 @@ function CRUD(dat, name) {
     
     this.cbGetQuery = function(res) {
         this.query = JSON.parse(res);
+        if (this.type_crud == "EditProfile") {
+            new EditForm(meta_EditProf, this.query, this.blockErrorTxt);
+        } else {
+            new EditForm(meta_send, this.query, this.blockErrorTxt);
+        }
         let originQuery = JSON.parse(this.query.origin_query);
-        this.selectOperQuery.value = this.query.type_query;
         if (originQuery.fieldTable != null) {
             let origin = originQuery.fieldTable;
             let item = origin[0];
@@ -130,6 +163,7 @@ function CRUD(dat, name) {
                 this.idTable = item.id_table;
                 this.tabbleObj.formFieldsInTable(tab);
                 this.tabbleObj.addSelectFields(item.listFields);
+                this.tabbleObj.setViewImg();
                 if (this.param != null && this.param.queryFilds != null && this.param.queryFilds.indV != null) {
                     this.markingValidFields(this.param.queryFilds.indV);
                 }
@@ -190,9 +224,14 @@ function CRUD(dat, name) {
         }
         let param_query = "";
         let strParam = res[0].name_table;
-        let dat = {id_query:qu,name_query:nam,type_query:this.query.type_query,origin_query:original,sql_query:SQL,param_query:strParam};
-console.log("origin_query="+original+"<< sql_query="+SQL+"<< param_query="+strParam+"<<");
-console.log("DAT="+JSON.stringify(dat)+"<<");
+        let dat;
+        if (qu < 4) {
+            dat = {id_query:qu,type_query:this.query.type_query,origin_query:original,sql_query:SQL,param_query:strParam,
+                err_1:this.query.err_1,err_2:this.query.err_2};
+        } else {
+            dat = {id_query:qu,name_query:nam,type_query:this.query.type_query,origin_query:original,sql_query:SQL,param_query:strParam,
+                err_1:this.query.err_1,err_2:this.query.err_2};
+        }
         doServerAlien("POST", hostDomain + "query/create", this, JSON.stringify(dat), "saveCrud", this.fieldsTable);
     }
     

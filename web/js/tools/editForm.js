@@ -1,4 +1,4 @@
-function EditForm(meta, data, domEl, after, cbEdit, marg) {
+function EditForm(meta, data, domEl, after, cbEdit, marg, margTop) {
     if (meta == null || domEl == null || data == null) {
         return null;
     };
@@ -17,12 +17,17 @@ function EditForm(meta, data, domEl, after, cbEdit, marg) {
     this.makeEditForm = function() {
         let ik = this.edMeta.length;
         if (marg) {
-            this.marg_T = "";
+            if (margTop != null && margTop > 0) {
+                this.marg_T = "margin-top:" + margTop + "px;";
+            } else {
+               this.marg_T = "";
+            }
             this.marg_L = "";
         } else {
             this.marg_T = "margin-top:5px;";
             this.marg_L = "margin-left:7px;";
         }
+        let isFocus = false;
         for (let i = 0; i < ik; i++) {
             let ff = this.oneField(i);
             if (ff != null) {
@@ -31,7 +36,11 @@ function EditForm(meta, data, domEl, after, cbEdit, marg) {
             let met = this.edMeta[i];
             if (met.type == "Line" ) {
                 if (marg) {
-                    this.marg_T = "";
+                    if (margTop != null && margTop > 0) {
+                        this.marg_T = "margin-top:" + margTop + "px;";
+                    } else {
+                       this.marg_T = "";
+                    }
                     this.marg_L = "";
                 } else {
                     this.marg_T = "margin-top:5px;";
@@ -44,6 +53,11 @@ function EditForm(meta, data, domEl, after, cbEdit, marg) {
                     this.marg_L = "margin-left:7px;";
                 }
             }
+            if (met.type == "Text" && ! isFocus) {
+                let elInp = ff.querySelector("input");
+                elInp.focus();
+                isFocus = true;
+            }
         }
     }
     
@@ -53,7 +67,11 @@ function EditForm(meta, data, domEl, after, cbEdit, marg) {
         if (met.br) {
             br = "clear:both;"
             if (marg) {
-                this.marg_T = "";
+                if (margTop != null && margTop > 0) {
+                    this.marg_T = "margin-top:" + margTop + "px;";
+                } else {
+                   this.marg_T = "";
+                }
                 this.marg_L = "";
             } else {
                 this.marg_T = "margin-top:5px;";
@@ -66,16 +84,22 @@ function EditForm(meta, data, domEl, after, cbEdit, marg) {
             clazz = ' class="' + met.clazz + '"';
         }
         let res = newDOMelement('<div' + clazz + ' style="float:left;' + this.marg_L + this.marg_T + br + '"></div>');
-        res.append(newDOMelement('<div style="color: #2228;font-size: 10px;margin-left:4px">' + met.title + '</div>'));
+        res.append(newDOMelement('<div style="color: #8199A5;font-size: 10px;margin-left:4px">' + met.title + '</div>'));
         let inp;
         let vv = this.edData[met.name];
         if (vv == null) {
             vv = "";
         }
-        
         switch (met.type) {
             case "Text":
-                inp = newDOMelement('<input class="input_style" style="width:' + met.len + 'px;" value="' + vv + '"/>');
+                let ww;
+                if (met.len == -1) {
+                    ww = "100%;box-sizing: border-box";
+                    res.style.width = "100%";
+                } else {
+                    ww = met.len + "px";
+                }
+                inp = newDOMelement('<input class="input_style" style="width:' + ww+ ';" value="' + vv + '"/>');
                 inp.nameField = met.name;
                 inp.addEventListener('keydown', () => {this.clickText(event, met.valid)}, false);
                 inp.addEventListener('keyup', () => {this.clickTextUp(event)}, false);
@@ -90,7 +114,10 @@ function EditForm(meta, data, domEl, after, cbEdit, marg) {
                     res.addEventListener('click', () => {this.clickAfter(event, met)}, false);
                 }
                 break;
+            case "SignUp":
+            case "SignIn":
             case "Send":
+            case "EditProfile":
                 res = newDOMelement('<div style="float:left;margin-left:7px;clear:both;margin-top:15px;padding-left:10px;padding-right:10px;height:30px;background-color:#1DACE9;' 
                         +'border-radius:4px;cursor:pointer;"><div style="text-align: center;margin-top:7px;color:#fff">' + met.title + '</div></div>');
                 res.addEventListener('click', () => {this.clickSend(event, met)}, false);
@@ -204,7 +231,7 @@ function EditForm(meta, data, domEl, after, cbEdit, marg) {
                 res.append(inp);
                 break;
             case "Number":
-                
+
                 break;
             case "Img":
                 inp = newDOMelement('<img class="imageV" style="border:2px solid #bdf;border-radius:4px;background:#fff;cursor:pointer;" width="24" height="24" src="' 
@@ -348,9 +375,15 @@ function EditForm(meta, data, domEl, after, cbEdit, marg) {
             switch (valid) {
                 case "latin":
                     kUp = event.key.toUpperCase();
+                    targ = event.target;
                     if ( ! ((kUp >= "A" && kUp <= "Z") || kUp == "_" || (kUp >= "0" && kUp <= "9")))  {
                         event.preventDefault();
-                        tooltipMessage(event.target, "English letters only, _ and numbers");
+                        tooltipMessage(targ, "Only english letters, _ and numbers");
+                    } else {
+                        if ( targ.selectionStart == 0 && k >= "0" && k <= "9") {
+                            event.preventDefault();
+                            tooltipMessage(targ, "The first character cannot be a digit");
+                        }
                     }
                     break;
                 case "name_low":
@@ -459,7 +492,7 @@ function EditForm(meta, data, domEl, after, cbEdit, marg) {
     
     this.clickSend = function(event, met) {
         let name = met.name;
-        let crud = new CRUD(this.edData, name);
+        let crud = new CRUD(this.edData, name, met.type);
     }
 
     this.clickCheckbox = function(check, el) {

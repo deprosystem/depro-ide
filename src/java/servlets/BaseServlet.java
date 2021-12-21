@@ -102,8 +102,6 @@ System.out.println("query="+ds.query);
         } else {
             isSerwer = true;
             return Constants.BASEPATH;
-//            int i = st.lastIndexOf(File.separator) + 1;
-//            return st.substring(0, i);
         }
     }
     

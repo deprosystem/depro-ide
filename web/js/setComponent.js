@@ -138,14 +138,28 @@ function createDivImg() {
 }
 
 function clickElement(event, el) {
+console.log("clickElement clickElement clickElement");
     if (formNewElem) return;
-//    if (el != ACTIVE) {
-        hideContourEl();
-        currentElement = el;
-        setParamCompon();
-        setPickElement(el);
-        selectNavigatorEl(el);
-//    }
+    hideContourEl();
+    currentElement = el;
+    setParamCompon();
+    setPickElement(el);
+    selectNavigatorEl(el);
+    if (el.android != null) {
+        if (el.android.type == "ItemScroll") {
+            ScrollItem(el);
+        } else {
+            if (el.android.type == "ScrollForm") {
+                let cont = el.querySelector("div");
+                if (cont != null) {
+                    let dd = cont.querySelector("div");
+                    if (dd != null && dd.android != null && dd.android.type == "ItemScroll") {
+                        ScrollItem(dd);
+                    }
+                }
+            }
+        }
+    }
 }
 
 function setPickElement(el) {
@@ -1004,7 +1018,7 @@ function wrapTextViewW(el, p, pLL, pTT) {
 function wrapEditTextH(el, p) {
     let h;
     if (p.textSize == null || p.textSize == 0) {
-        h = 14;
+        h = 18;
     } else {
         h = p.textSize;
     }
@@ -1014,6 +1028,9 @@ function wrapEditTextH(el, p) {
             && (p.componParam.st_13 == null || p.componParam.st_13.length == 0)) {
         let plusH = (p.componParam.lines - 1) * 1.3 * p.textSize;
         standH = standH + plusH;
+    }
+    if (p.componParam.bool_1) {
+        standH += 12;
     }
     el.style.height = standH * MEASURE + px;
 }

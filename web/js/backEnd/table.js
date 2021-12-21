@@ -18,42 +18,14 @@ let htmlTable = '<div style="height:40px;margin-left:20px">'
         +'</div>'
     +'</div>';
 
-function addTable(usr) {
-    fieldsTable = [];
+function addTable() {
     descrTable = newDOMelement(htmlTable);
-    if (usr) {
-        fieldsTable = [{id_field:0, name:"id_user", type:"Bigserial", title:"Primary key", key:true, system:"primary"},
-        {id_field:1, name:"login", type:"Text", title:"Login", system:"primary"},
-//        {id_field:2, name:"email", type:"Text", title:"Email", system:"primary"},
-//        {id_field:3, name:"phone", type:"Text", title:"Phone", system:"primary"},
-        {id_field:2, name:"password", type:"Text", title:"Password", system:"primary"}];
-        let nt = descrTable.querySelector(".name_t");
-        nt.setAttribute('disabled','disabled');
-        nt.value = 'user'
-        nt.onkeyup = "";
-        let dt = descrTable.querySelector(".descr_t");
-        dt.setAttribute('disabled','disabled');
-        dt.value = "User data table. You can add your own fields";
-    } else {
-        fieldsTable = [{id_field:0, name:"id_", type:"Bigserial", title:"Primary key", key:true, system:"primary"}];
-    }
+    fieldsTable = [{id_field:0, name:"id_", type:"Bigserial", title:"Primary key", key:true, system:"primary"}];
     tableId = -1;
     editDataTable = editDataDop(metaTable, fieldsTable, cbAddTable, descrTable, 500, 500, 300);
     let td = editDataTable.getCellXY(0, 1);
     idTableField = td.querySelector("INPUT");
 }
-/*
-function addTableUser() {
-    fieldsTable = [{id_field:0, name:"id_user", type:"Bigserial", title:"Primary key", key:true, system:"primary"},
-        {id_field:1, name:"login", type:"Text", title:"Login", system:"primary"},
-        {id_field:2, name:"email", type:"Text", title:"Email", system:"primary"},
-        {id_field:3, name:"phone", type:"Text", title:"Phone", system:"primary"},
-        {id_field:4, name:"password", type:"Text", title:"Password", system:"primary"}];
-    let wind = formWind(500, 500, 50, 300, metaTable.titleForm);
-    
-
-}
-*/
 
 function cbAddTable(dat) {
     let nn = descrTable.getElementsByClassName("name_t")[0].value;
@@ -81,8 +53,6 @@ function cbAddTable(dat) {
         if (hostDomain != null && hostDomain.length > 0) {
             let ff = JSON.stringify(dat);
             let t = {id_table:tableId,name_table:nn,title_table:dd,fields_table:ff,schema:currentProject.resurseInd};
-console.log("FFF="+ff+"<<");
-console.log("CCCCRRRR="+JSON.stringify(t)+"<<");
             if (tableId == -1) {
                 doServerAlien("POST", hostDomain + "tables/descr", cbSaveTable, JSON.stringify(t));
             } else {
@@ -145,11 +115,9 @@ function editTable(i) {
     if (item.name_table == USER_TABLE_NAME) {
         let nt = descrTable.querySelector(".name_t");
         nt.setAttribute('disabled','disabled');
-//        nt.value = 'user'
         nt.onkeyup = "";
         let dt = descrTable.querySelector(".descr_t");
         dt.setAttribute('disabled','disabled');
-//        dt.value = "User data table. You can add your own fields";
     }
     descrTable.getElementsByClassName("name_t")[0].value = item.name_table;
     descrTable.getElementsByClassName("descr_t")[0].value = item.title_table;
@@ -191,7 +159,6 @@ function oneTableForQuery(i, el) {
 function formTableForQuery(i) {
     let item = listTables[i];
     let itemForList = {id_table:item.id_table,name_table: item.name_table,title_table:item.title_table,fields_table:JSON.parse(item.fields_table)};
-//    itemForList.fields_table.unshift({id_field:0, name:"id_" + item.name_table, type:"Bigserial", title:""});
     listTablesForQuery.push(itemForList);
     formBlockTable(item);
 
@@ -223,9 +190,7 @@ function formBlockTable(item) {
     let viewDataT = viewScroll.getElementsByClassName("viewData")[0];
 
     let fields = JSON.parse(item.fields_table);
-//    fields.unshift({id_field:0, name:"id_" + item.name_table, type:"Bigserial", title:""});
     let ik = fields.length;
-//    oneFieldTables(item.id_table, {id_field:0, name:"id_" + item.name_table, type:"Bigserial", title:""}, viewDataT);
     for (let i = 0; i < ik; i++) {
         oneFieldTables(item.id_table, fields[i], viewDataT);
     }
@@ -373,6 +338,9 @@ function delFieldsInQuery(el) {
 }
 
 function oneFieldView(idTab, item, el) {
+    let tt = currentComponentDescr.type;
+    let isFormForQuery = tt == "Form" || tt == "ScrollForm";
+
     let cont = newDOMelement('<div class="field" style="float:left;width:100%;position:relative;height:' 
             + hItemListFieldsTable + 'px;overflow: hidden;border-bottom:1px solid #aaf;clear:both"></div>');
     cont.idTable = idTab;
@@ -386,9 +354,11 @@ function oneFieldView(idTab, item, el) {
     let rect_1 = name.getBoundingClientRect();
     let descr = newDOMelement('<div style="font-size:10px;color:#555;margin-top:6px;height:11px;width:' + (rect.width - rect_1.width - 20) 
             + 'px;float:left;margin-left:5px;overflow:hidden">' + item.title);
-    let selField = newDOMelement('<img style="width:18px;cursor:pointer;height:18px;float:right;margin-right:2px;margin-top:3px;" src="img/check-sel_1.png">');
-    selField.addEventListener("click", function(){checkElement(selField)}, false);
-    cont.append(selField);
+    if (isFormForQuery) {
+        let selField = newDOMelement('<img style="width:18px;cursor:pointer;height:18px;float:right;margin-right:2px;margin-top:3px;" src="img/check-sel_1.png">');
+        selField.addEventListener("click", function(){checkElement(selField)}, false);
+        cont.append(selField);
+    }
     cont.appendChild(descr);
 }
 

@@ -146,7 +146,7 @@ public class BaseDB {
     }
     
     public String getQueryRecord(String sql) {
-System.out.println("getQueryRecord SQL="+sql);
+System.out.println("getQueryRecord SQL="+sql+"<<");
         StringBuilder result = new StringBuilder(1024);
         result.append("{");
         try (Connection connection = getDBConnection(); Statement statement = connection.createStatement()) {

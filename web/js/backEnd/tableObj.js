@@ -63,8 +63,8 @@ function TableObj(selF, tabF) {
         cont.appendChild(descr);
     }
     
-    this.formFieldsInTable = function(i) {
-        let item = listTables[i];
+    this.formFieldsInTable = function(it) {
+        let item = listTables[it];
         this.tableName = item.name_table;
         this.selectTable = {id_table:item.id_table,name_table: item.name_table,title_table:item.title_table,fields_table:JSON.parse(item.fields_table)};
 //        this.selectTable.fields_table.unshift({id_field:0, name:"id_" + item.name_table, type:"Bigserial", title:""});
@@ -185,7 +185,8 @@ function TableObj(selF, tabF) {
     }
     
     this.setViewImg = function (el) {
-        let cont = el.closest(".viewData");
+//        let cont = el.closest(".viewData");
+        let cont = this.viewData;
         let child = cont.children;
         let ik = child.length;
         let cPl = 0, cMin = 0;
@@ -198,8 +199,10 @@ function TableObj(selF, tabF) {
                 cMin++;
             }
         }
-        let tabBlock = el.closest(".table_view");
-        let viewData = tabBlock.getElementsByClassName("tab_title")[0];
+        
+//        let tabBlock = el.closest(".table_view");
+//        let viewData = tabBlock.getElementsByClassName("tab_title")[0];
+        let viewData = this.fieldsTable.getElementsByClassName("tab_title")[0];
         let sel = viewData.getElementsByTagName("img")[0];
         if (cMin == 0) {
             sel.src = "img/check-sel_1.png";

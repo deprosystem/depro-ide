@@ -42,9 +42,9 @@ function formWind(w, h, t, l, tit, scroll, cbClose, footName, footListener, colo
         ww.appendChild(controll);
         let buttonOk = createButtonBlue(footName);
         if (footListener.cbWind != null) {
-            buttonOk.addEventListener("click", function(){footListener.cbWind();closeDataWindow(ww);}, false);
+            buttonOk.addEventListener("click", function(){closeDataWindow(ww, footListener.cbWind());}, false);
         } else {
-            buttonOk.addEventListener("click", function(){footListener();closeDataWindow(ww);}, false);
+            buttonOk.addEventListener("click", function(){closeDataWindow(ww, footListener());}, false);
         }
         controll.appendChild(buttonOk);
         let buttonCancel = createButtonWeite('Cancel', 70);
@@ -147,6 +147,10 @@ function newElementFromString(st) {
     return container.firstChild;
 }
 
+function addButton(txt) {
+    let
+}
+
 function createButtonBlue(tit, w) {
     var container = document.createElement('div')
     if (w != null) {
@@ -169,6 +173,7 @@ function createButtonWeite(tit, w) {
 function createFooter(h) {
     let container = document.createElement('div');
     container.style.cssText = "height:" + h + "px;bottom:0px;right:0px;left:0px;position:absolute;border-top:1px solid #C5DCFA;";
+    container.className = "footer_wind";
     return container;
 }
 

@@ -143,13 +143,21 @@ function mouseUpEl(e) {
 }
 
 function clickEl() {
+console.log("currentElement.getElementsByClassName('contourEl')[0]="+currentElement.getElementsByClassName('contourEl')[0]);
     if (currentElement.getElementsByClassName('contourEl')[0] != null) {
+console.log("clickEl hideScroll currentElement="+currentElement);
         hideContourEl();
+        if (currentElement != null) {
+            hideScroll(currentElement);
+        }
     } else {
+console.log("clickEl showScroll");
         let targ = event.target;
         if (targ != null) {
             currentElement = targ;
+            showScroll(currentElement);
         }
+console.log("clickEl setPickElement");
         setPickElement();
     }
 }
@@ -202,7 +210,7 @@ function mouseUpNewEl(e) {
             uiFunction = eval("new ui" + p.type + "()");
             typeEl = uiFunction.newElementUI(p);
         } catch(e) {
-console.log("mouseUpNewEl catch="+e+"<<");
+//console.log("mouseUpNewEl catch="+e+"<<");
         }
         if (typeEl != null) {
             currentElement.appendChild(typeEl);

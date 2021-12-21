@@ -17,8 +17,8 @@ public class Constants {
     
     public static String PROJECTS_DATA = "projectdataIDE/", 
             USERS_DATA = "usersdataIDE/";
-    public static final String TOOL = "ToolBar", PANEL = "Panel", SCROLLPANEL = "ScrollView", FORM = "Form", ELLIPSIS = "Ellipsis",
-            LIST = "List", PAGER = "Pager", TAB = "TabLayout", DRAWER = "Drawer", SCROLL = "ScrollPanel", CARD_VIEW = "CardView",
+    public static final String TOOL = "ToolBar", PANEL = "Panel", SCROLLPANEL = "ScrollView", SCROLLFORM = "ScrollForm", FORM = "Form", ELLIPSIS = "Ellipsis",
+            LIST = "List", PAGER = "Pager", TAB = "TabLayout", DRAWER = "Drawer", SCROLL = "ScrollPanel", SCROLL_F = "ScrollForm", CARD_VIEW = "CardView",
             MENU_B = "MenuBottom", MENU = "Menu", GALLERY = "Gallery", INDICATOR = "Indicator", IMAGEVIEW = "ImageView",
             PLUS_MINUS = "PlusMinus", RATINGS = "Ratings", SWITCH = "Switch", CHECKBOX = "CheckBox", TOTAL = "Total", PHOTO = "Photo",
             MAP = "Map", SHEET = "SheetBottom", TEXTVIEW = "TextView", EDITTEXT = "EditText", CALENDAR = "Calendar", SEEKBAR = "SeekBar", 

@@ -189,7 +189,6 @@ function FormNavigator() {
             this.dataHand[i].innerHTML = "";
             this.paramView.innerHTML = "";
             let dd = new EditForm(listMetaHandlers[selJ].meta, this.dataHand[i], this.paramView, this.after);
-//            dd.makeEditForm(dd);
         } else {
             this.paramView.innerHTML = "";
         }

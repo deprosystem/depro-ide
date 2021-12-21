@@ -41,7 +41,7 @@ function uiTextView() {
     
     this.newElementUI = function(p) {
         p.text = "";
-        p.textSize = 14;
+        p.textSize = 16;
         p.letterSpac = '0.0';
         p.textColor = 12;
         p.componParam = {typeValidTV:"no"};

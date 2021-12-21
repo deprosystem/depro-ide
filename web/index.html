@@ -45,7 +45,9 @@
         <script src="js/uiElements/uiPlusMinus.js" ></script>
         <script src="js/uiElements/uiRatings.js" ></script>
         <script src="js/uiElements/uiScrollPanel.js" ></script>
+        <script src="js/uiElements/uiScrollForm.js" ></script>
         <script src="js/uiElements/uiSpinner.js" ></script>
+        <script src="js/uiElements/uiItemScroll.js" ></script>
 
         <script src="js/screens.js" ></script>
         
@@ -68,6 +70,7 @@
         <script src="js/uxComponents/uxMenu.js" ></script>
         <script src="js/uxComponents/uxPanel.js" ></script>
         <script src="js/uxComponents/uxScrollPanel.js" ></script>
+        <script src="js/uxComponents/uxScrollForm.js" ></script>
         <script src="js/uxComponents/uxMap.js" ></script>
         <script src="js/uxComponents/uxDrawer.js" ></script>
         <script src="js/uxComponents/uxList.js" ></script>
@@ -80,6 +83,8 @@
         <script src="js/uxComponents/uxSpinner.js" ></script>
         
         <script src="js/scroll/scrollY.js"></script>
+        <script src="js/scroll/ScrollItem.js"></script>
+        <script src="js/scroll/resizeScrollItem.js"></script>
         
         <script src="js/editData/metaData.js" ></script>
         <script src="js/editData/editArrayData.js" ></script>
@@ -127,6 +132,7 @@
     </head>
     <body>
         <div id="header">
+            <img width="35" height="35" src="img/logo_blue.png" style="float: left;margin-right: 5px;">
             <div id="panel_hamburger" onclick="mainMenuShow()">
                 <div id="hamburger1" class="hamburger1" ></div>
                 <div id="hamburger2" class="hamburger2" ></div>
@@ -372,6 +378,7 @@
         <div id="content_v" onclick="hideSelectEl(event)">
             <div id="content_src" class="viewport" data-control="scroll" data-colorscr="#ffc700">
                 <div class="content">
+                    <div id="forScroll"></div>
                     <div id="root_boarder">
                         <div id="root-g">
                             <div id="root">
@@ -389,7 +396,8 @@
                     <div id="scaleValue" style="float: left;width: 50px;text-align: center;margin-top: 7px">100%</div>
                     <img id="scalePlus" width="24" height="24" onclick="scalePlus()" style="float: left;margin-top: 2px;cursor: pointer" src="img/plus.png">
                 </div>
-                <div id="dev" style="height: 100%; float: right; margin-right: 20px"></div>
+<!--                <div id="dev" style="height: 100%; float: right; margin-right: 20px"></div>     -->
+                <div id="dev" style="width: 180px;position: absolute;right: 130px;top: 2px"></div>
 
             </div>
 
@@ -413,7 +421,7 @@
                         <div style="text-align: center;margin-top:5px;color:#fff">Admin</div>
                     </div>
                 </div>
-                <div id="addTab" style="position: absolute;right: 0;top: 151px;left: 0;background-color: #f7f7ff; height: 30px;text-align: center;border-bottom: 1px solid #1DACE9;width: 100%">
+                <div id="addTab" style="position: absolute;right: 0;top: 151px;left: 0;background-color: #f7f7ff; height: 30px;text-align: center;border-bottom: 1px solid #1DACE9;cursor: pointer;width: 100%">
                 </div>
                 <div id="listTablesView" style="position: absolute;right: 8px;top: 181px;left: 8px;bottom: 0;">
                 </div>

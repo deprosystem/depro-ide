@@ -89,6 +89,14 @@ function createViewForPanelV(el) {
                     }
                 }
             }
+            if (currentComponent.type == "Form") {
+                let button = formButton("Send");
+                p = button.android;
+                if (namePrev != "") {
+                    p.below = namePrev;
+                }
+                p.topMarg = 40;
+            }
             listV.android.height = MATCH;
             showElemChilds(listV);
         } else {

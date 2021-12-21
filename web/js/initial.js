@@ -41,7 +41,8 @@ function initialView(AuthResult) {
 function setBlanckToolBar() {
     shutScreen.style.display = "block";
     shutScreen.innerHTML = '<div style="font-size:34px;margin-top:50px;margin-left:50px;">You have no projects</div>'
-        +'<div style="font-size:16px;margin-top:10px;margin-left:50px;">To create a new project, select the projects item -> create from the menu</div>'
+        +'<div onclick="createInitProject(this);" style="font-size:16px;margin-top:10px;margin-left:50px;cursor:pointer">Create a new project</div>'
+//        +'<div style="font-size:16px;margin-top:10px;margin-left:50px;">To create a new project, select the projects item -> create from the menu</div>'
         +'<a style="font-size:16px;margin-top:10px;margin-left:50px;float:left;" href="https://docs.google.com/document/d/1iYRvK_JAz67laVPot_pCEUa0sM9Jp3hSJZMMG4qmtxQ">Documentation</a>';
     project_name_bl.style.display = "none";
     corners.style.display = "none";
@@ -50,6 +51,12 @@ function setBlanckToolBar() {
     show_data.style.display = "none";
     type_insert.style.display = "none";
     active.style.display = "none";
+}
+
+function createInitProject(el) {
+    
+    shutScreen.style.display = "none";
+    createProject();
 }
     
 function eventFocusBlur() {

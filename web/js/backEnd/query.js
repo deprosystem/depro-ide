@@ -12,6 +12,8 @@ var queryFieldsOrderView;
 var errorQuery;
 
 function editQueryWind() {
+    let tt = currentComponentDescr.type;
+    let isFormForQuery = tt == "Form" || tt == "ScrollForm";
     let hFooter = 150;
     let hTitleQuery_2 = hTitleQuery + 2;
     selectQueryEl = null;
@@ -28,9 +30,11 @@ function editQueryWind() {
     let footer = '<div style="position:absolute;;border-top:1px solid #1dace9;left:0;bottom:0;right:0;height:' + hFooter +'px"></div>';
     let fieldsTit = '<div style="position:absolute;border-right:1px solid #1dace9;left:0;top:' + (hTitleQuery + 1) + 'px;width:' + wFieldQuery + 'px;height:' + (hTitleQuery + 1) 
             +'px;border-bottom:1px solid #1dace9;background-color:#f3f8ff;">'
-            +'<div style="margin-top:4px;float:left;margin-left:5px;">Fields name</div>'
-            +'<div style="margin-top:4px;float:right;margin-right:10px;">Edit</div>'
-            +'</div>';
+            +'<div style="margin-top:4px;float:left;margin-left:5px;">Fields name</div>';
+    if (isFormForQuery) {
+        fieldsTit += '<div style="margin-top:4px;float:right;margin-right:10px;">Edit</div>';
+    }
+    fieldsTit += '</div>';
 //    let fields = '<div style="position:absolute;;border-right:1px solid #1dace9;left:0;top:' + hTitleQuery_2 + 'px;width:' + wFieldQuery + 'px;bottom:' + hFooter +'px"></div>';
     let fields = '<div class="fields_q" style="position:absolute;border-right:1px solid #1dace9;left:0;top:' + (hTitleQuery * 2 + 2) + 'px;width:' + wFieldQuery + 'px;bottom:' + (hFooter + 1) +'px"></div>';
     let tables = '<div class="tables_q" style="position:absolute;;top:' + hTitleQuery_2 + 'px;left:' + (wFieldQuery + 1) + 'px;bottom:' + (hFooter + 1) +'px;right:0"></div>';
@@ -424,18 +428,6 @@ function saveQuery() {
             cf = 2;
             fields += sepF + aliasForF + "*";
             sepF = ", ";
-/*
-            if (listField != null) {
-                let zk = listField.length;
-                for (z = 0; z < zk; z++) {
-                    let itF = listField[z];
-                    if (itF.type != "Serial") {
-                        itemData = {name:itF.name,type:itF.type};
-                        data.push(itemData);
-                    }
-                }
-            }
-*/
         }
         let lF = [];
         if (cf == 1) {

@@ -31,7 +31,8 @@
     var selectViewElement;
     
     var sizeDevice;
-    var sizeDeviceArray = [[360, 640], [420, 748], [420, 800], [480, 800]];
+    var sizeDeviceArray = [[425, 897, "Samsung A10"], [426, 948, "Samsung A51"], [428, 929, "Samsung M31"], [440, 977, "Samsung A72"]];
+//    var sizeDeviceArray = [[360, 640], [420, 748], [420, 800], [480, 800]];
     var screenW; // dp
     var screenH; // dp
     var screenWpx;
@@ -103,13 +104,13 @@
     }
 
     function setSelectDevice() {
-        var strSel = '<select name="device" class=select_' + browser + ' id="id-device" onchange="changeDevice(value)" style="width: 100px;height:26px">\n';
+        var strSel = '<select name="device" class=select_' + browser + ' id="id-device" onchange="changeDevice(value)" style="width: 180px;height:26px">\n';
         for (var i = 0; i < sizeDeviceArray.length; i++) {
             var d = sizeDeviceArray[i];
-            if (i == 1) {
-                strSel += '<option selected value="' + i + '">' + d[0] + '*' + d[1] + '</option>\n';
+            if (i == 0) {
+                strSel += '<option selected value="' + i + '">' + d[0] + '*' + d[1] + ' ' + d[2] + '</option>\n';
             } else {
-                strSel += '<option value="' + i + '">' + d[0] + '*' + d[1] + '</option>\n';
+                strSel += '<option value="' + i + '">' + d[0] + '*' + d[1] + ' ' + d[2] + '</option>\n';
             }
         }
         strSel += '</select>';
@@ -127,6 +128,7 @@
         root_g.style.height = screenHpx + px;
         root.style.width = screenWpx + px;
         root.style.height = screenHpx + px;
+        forScroll.style.height = screenHpx + px;
         let p;
         if (currentScreen == null) {
             p = {};

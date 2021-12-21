@@ -69,7 +69,8 @@ function uiEditText() {
     
     this.newElementUI = function(p) {
         p.text = "";
-        p.textSize = 14;
+        p.textSize = 18;
+        p.textColor = 12;
         p.letterSpac = '0.0';
         p.componParam = {typeValidTV:"no",errorId:"",errorTxt:"",color_1:3,color_2:21,bool_2:true,bool_1:true};
         return createDivEditText(currentElement);
@@ -135,14 +136,19 @@ function uiEditText() {
         setValueSelectBlock(spacBl, p.letterSpac);
         uiParamTextView.appendChild(spacBl);
         setTextViewAttr(p);
-
+        
+        if (p.componParam.st_2 == null) {
+            p.componParam.st_2 = "text";
+        }
         let inputType = dropDownList("inputType", 
             "none,text,textCapCharacters,textCapWords,textCapSentences,textAutoCorrect,textAuto,Complete,textMultiLine,textImeMultiLine,textNoSuggestions,textUri,textEmailAddress,textEmailSubject,textShortMessage,textLongMessage,textPersonName,textPostalAddress,textPassword,textVisiblePassword,textWebEditText,textFilter,textPhonetic,number,numberSigned,numberDecimal,phone,datetime,date,time", 
             150, "changeInputType", p.componParam.st_2);
         inputType.style.clear = "both";
         inputType.style.marginLeft = "";
         contentAttributes.append(inputType);
-        
+        if (p.componParam.st_3 == null) {
+            p.componParam.st_3 = "actionNext";
+        }
         let imeOptions = dropDownList("imeOptions", 
             "actionNext,actionDone,none", 
             100, "changeImeOptions", p.componParam.st_3);
@@ -193,7 +199,7 @@ function uiEditText() {
             divText.style.fontSize = (p.textSize * MEASURE) + px;
         }
         if (p.textColor == null) {
-            divText.style.color = "#808080";
+            divText.style.color = "#333";
         } else {
             divText.style.color = findColorByIndex(p.textColor);
         }
@@ -282,6 +288,7 @@ function checkAnimateEditText(el) {
     } else {
         errorTextId.style.display = "block";
     }
+    viewCompon();
 }
 
 function setPickerCursorColor() {

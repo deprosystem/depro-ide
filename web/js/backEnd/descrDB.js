@@ -32,32 +32,23 @@ function cbGetTables(res) {
 function formListTables() {
     listTablesView.innerHTML = "";
     let ik = listTables.length;
-    let isUser = false;
     if (ik > 0) {
         for (let i = 0; i < ik; i++) {
-            let item = listTables[i];
-            if (item.name_table == USER_TABLE_NAME) {
-                isUser = true;
-            }
             oneTableView(i, listTablesView);
         }
     }
-    setButtonAdd(isUser);
+    setButtonAdd();
 }
 
-function setButtonAdd(isUser) {
+function setButtonAdd() {
     if (hostDescr == "Third party API") {
         addTab.innerHTML = "";
-//        addTab.onclick = "";
+        addTab.onclick = "";
         openAdmin.onclick = "";
     } else {
-//        addTab.onclick = addTable;
+        addTab.innerHTML = '<div style="margin-top: 5px;">Add table</div>';
+        addTab.onclick = addTable;
         openAdmin.onclick = openAdminWind;
-        addTab.append(newDOMelement('<div onclick="addTable()" style="margin-top: 5px;float:left;margin-left:30px;cursor: pointer;">Add table</div>'));
-        if ( ! isUser) {
-//            addTab.append(newDOMelement('<div onclick="addTable(true)" style="margin-top: 5px;margin-left:10px;float:left;display: inline-block"> </div>'));
-            addTab.append(newDOMelement('<div onclick="addTable(true)" style="margin-top: 5px;margin-left:30px;float:left;cursor: pointer;">Creating a user table</div>'));
-        }
     }
 }
 
@@ -71,9 +62,11 @@ function oneTableView(i, el) {
     let rect_1 = name.getBoundingClientRect();
     let descr = newDOMelement('<div class="title_t" style="font-size:12px;color:#555;margin-top:9px;height:12px;width:' + Math.round(rect.width - rect_1.width - 40) 
             + 'px;float:left;margin-left:10px;overflow:hidden">' + item.title_table + '</div>');
-    let del = newDOMelement('<img onclick="deleteTableAdm(' + i + ');" style="margin-top:11px;float:right;margin-right:7px;cursor:pointer;" width="10" height="10" src="img/del_red.png">');
     cont.appendChild(descr);    
-    cont.appendChild(del);
+    if (item.name_table != "user") {
+        let del = newDOMelement('<img onclick="deleteTableAdm(' + i + ');" style="margin-top:11px;float:right;margin-right:7px;cursor:pointer;" width="10" height="10" src="img/del_red.png">');
+        cont.appendChild(del);
+    }
 }
 
 function descrHost() {

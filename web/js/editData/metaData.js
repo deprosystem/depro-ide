@@ -41,7 +41,7 @@ var metaVisiManager = {titleForm:"Visibility manager", description:
     }
 
 function editDataWind(meta, data, obrSave, dopEl, w, h, l, t, colorFon) {
-    let ww = 400, hh = 300, ll = 550, tt = 50;
+    let ww = 400, hh = 500, ll = 550, tt = 50;
     if (w != null) {
         ww = w;
     }

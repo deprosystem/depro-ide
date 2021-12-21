@@ -189,14 +189,19 @@ function formIndicator(item) {
 function formTxt(item) {
     currentElement = createNewEl();
     p = {typeUxUi: "ui"};
+    p.componParam = {typeValidTV:"no"};
     let typeEl;
     if (item.edit != null && item.edit) {
         p.type = "EditText";
         p.typeFull = {name: 'EditText', typeBlock: 0};
+        p.textSize = 18;
+        p.componParam.bool_1 = true;
+        p.componParam.st_3 = "actionNext";
         typeEl = createDivEditText(currentElement);
     } else {
         p.type = "TextView";
         p.typeFull = {name: 'TextView', typeBlock: 0};
+        p.textSize = 16;
         typeEl = createDivText();
     }
     p.width = MATCH;
@@ -205,16 +210,28 @@ function formTxt(item) {
     p.gravLayout = {h:4,v:4};
     p.gravity = {h:4,v:4};
     currentElement.android = p;
-    
-//    typeEl = createDivText();
     p.text = item.name;
     p.viewId = item.name;
-    p.textSize = 14;
+//    p.textSize = 14;
     p.letterSpac = '0.0';
     p.textColor = 12;
     p.rightMarg = 12;
-    p.componParam = {typeValidTV:"no"};
     currentElement.appendChild(typeEl);
+    addNewElement(ACTIVE, currentElement);
+    addNavigatorEl(currentElement);
+    ACTIVE.android.children.push(currentElement.android);
+    return currentElement;
+}
+
+function formButton(name) {
+    currentElement = createNewEl();
+    let typeEl = createDivText();
+    let p = {"typeUxUi":"ui","children":[],"type":"TextView","typeFull":{"name":"TextView","typeBlock":0},"gravLayout":{"h":1,"v":4},
+        "gravity":{"h":1,"v":1},"width":200,"height":35,"topMarg":"50","leftMarg":"","itemNav":{},"text":"Send","textSize":24,"letterSpac":"0.0","textColor":"19",
+        "componParam":{"typeValidTV":"no","format":"no","ellipsize":"none","maxLine":0},"background":1000,"viewId":"send","formResourse":true};
+    currentElement.android = p;
+    currentElement.appendChild(typeEl);
+    currentElement.android.viewElement = currentElement;
     addNewElement(ACTIVE, currentElement);
     addNavigatorEl(currentElement);
     ACTIVE.android.children.push(currentElement.android);

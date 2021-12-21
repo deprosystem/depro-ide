@@ -1,4 +1,4 @@
-var components = ["ToolBar", "MenuBottom", "Menu", "List", "Pager", "TabLayout", "Drawer", "Map", "Panel", "Form", "ScrollPanel", 
+var components = ["ToolBar", "MenuBottom", "Menu", "List", "Pager", "TabLayout", "Drawer", "Map", "Panel", "Form", "ScrollPanel", "ScrollForm",
     "SheetBottom", "Spinner", "Tags", "PlusMinus", "Total", "Photo"];
 var list_cont;
 var uxFunction, uiFunction;
@@ -221,13 +221,6 @@ function setScreenComponents() {
                         currentComponentView.className = "component";
                     }
                     setValueComponent(currentComponentView, currentComponent, currentComponentDescr);
-/*
-                    if (currentComponent == null) {
-//                        error
-                    } else {
-                        setValueComponent(currentComponentView, currentComponent, currentComponentDescr);
-                    }
-*/
                 }
 
                 container_scr.scroll_y.resize(container_scr);

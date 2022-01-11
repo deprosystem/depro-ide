@@ -143,21 +143,23 @@ function mouseUpEl(e) {
 }
 
 function clickEl() {
-console.log("currentElement.getElementsByClassName('contourEl')[0]="+currentElement.getElementsByClassName('contourEl')[0]);
+//console.log("currentElement.getElementsByClassName('contourEl')[0]="+currentElement.getElementsByClassName('contourEl')[0]);
     if (currentElement.getElementsByClassName('contourEl')[0] != null) {
-console.log("clickEl hideScroll currentElement="+currentElement);
+//console.log("clickEl hideScroll currentElement="+currentElement);
         hideContourEl();
+/*
         if (currentElement != null) {
             hideScroll(currentElement);
         }
+*/
     } else {
-console.log("clickEl showScroll");
+//console.log("clickEl showScroll");
         let targ = event.target;
         if (targ != null) {
             currentElement = targ;
-            showScroll(currentElement);
+//            showScroll(currentElement);
         }
-console.log("clickEl setPickElement");
+//console.log("clickEl setPickElement");
         setPickElement();
     }
 }

@@ -120,22 +120,6 @@ function newDOMelement(st) {
     return container.firstChild
 }
 
-function colorStrToRGB(st) {
-    let res = {};
-    let r1 = charToInt(st.charCodeAt(1));
-    let r2 = charToInt(st.charCodeAt(2));
-    res.r = r1 * 16 + r2;
-    
-    let g1 = charToInt(st.charCodeAt(3));
-    let g2 = charToInt(st.charCodeAt(4));
-    res.g = g1 * 16 + g2;
-    
-    let b1 = charToInt(st.charCodeAt(5));
-    let b2 = charToInt(st.charCodeAt(6));
-    res.b = b1 * 16 + b2;
-    return res;
-}
-
 function charToInt(c) {
     if (c < 58) {
         return c - 48;

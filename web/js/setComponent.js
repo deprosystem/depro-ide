@@ -138,7 +138,6 @@ function createDivImg() {
 }
 
 function clickElement(event, el) {
-console.log("clickElement clickElement clickElement");
     if (formNewElem) return;
     hideContourEl();
     currentElement = el;
@@ -658,6 +657,9 @@ function viewComponElem(el) {
                 viewComponElem(parentW);
             }
         }
+    }
+    if (p.type == "ItemScroll" || p.type == "ScrollForm") {
+        resizeScroll(el);
     }
 }
 

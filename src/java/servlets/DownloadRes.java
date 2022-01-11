@@ -16,12 +16,6 @@ public class DownloadRes extends BaseServlet {
 
     @Override
     protected void processRequest(HttpServletRequest request, HttpServletResponse response, DataServlet ds) {
-/*
-            ProjectDB projectDb = new ProjectDB(request);
-            List<ProjectM> listProject;
-            ProjectM pc;
-            String projectId;
-*/
             String[] ar = (" " + ds.query).split("/");
             String basePath = ds.patchOutsideProject;
             String userProjPath;
@@ -34,7 +28,7 @@ public class DownloadRes extends BaseServlet {
                         file = new File(filename);
                         if (file.exists()) {
                             response.setHeader("Accept-Ranges", "bytes");
-                            response.setContentType("application/octet-stream");
+                            response.setContentType("application/vnd.android.package-archive/octet-stream");
                             response.setContentLength((int)file.length());
 //                            response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
                             response.setHeader("Content-Disposition", "attachment;");

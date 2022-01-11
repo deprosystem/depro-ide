@@ -221,6 +221,7 @@ function showModeUX() {
 function clearRoot() {
     let cont_1 = createContour();
     root.innerHTML = "";
+    forScroll.innerHTML = "";
     root.android = currentScreen.layout;
     root.appendChild(cont_1);
 }
@@ -462,6 +463,8 @@ function sendImageProject(id, nameFile, el, title, accept) {
 
 function cbImageProject(res, par) {
     closeWindow(par.wind);
+    doServer("GET", 'images/list', cbGetListImg);
+/*
     listImage = null;
     if (par.elImg != null) {
         let el = par.elImg;
@@ -472,16 +475,18 @@ function cbImageProject(res, par) {
             imgProj.style.visibility = "visible";
             imgProj.src = res + "?" + Math.random();
         } else {
-            doServer("GET", 'images/list', cbGetListImgForward);
+            doServer("GET", 'images/list', cbGetListImg);
+//            doServer("GET", 'images/list', cbGetListImgForward);
         }
     }
+*/
 }
-
+/*
 function cbGetListImgForward(res) {
     if (res == "") return;
     listImage = JSON.parse(res);
 }
-
+*/
 function projectMenu(e, id, i) {
     let el = e.target;
     if (el.popup == null) {

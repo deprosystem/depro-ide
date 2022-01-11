@@ -1463,20 +1463,38 @@ public class ExportResult extends BaseServlet {
                                 }
                             }
                         }
+/*
                         if (typeEl.equals(Constants.SCROLLPANEL) || typeEl.equals(Constants.SCROLLFORM)) {
                             CreateRelativeForScroll(writer, parSave);
                         }
-                        elScreen.children.forEach((es) -> {
-                            createEl(es, false, tab, writer, parSave, elScreen.children);
-                        });
+*/
+                        if (typeEl.equals(Constants.SCROLLPANEL) || typeEl.equals(Constants.SCROLLFORM)) {
+                            AndroidPar srollChild = elScreen.children.get(0);
+                            srollChild = srollChild.children.get(0);
+                            srollChild.viewId = elScreen.viewId;
+                            createEl(srollChild, false, tab, writer, parSave, null);
+/*
+                            srollChild = srollChild.children.get(0);
+                            List<AndroidPar> chil = srollChild.children;
+                            srollChild.children.forEach((es) -> {
+                                createEl(es, false, tab, writer, parSave, chil);
+                            });
+*/
+                        } else {
+                            elScreen.children.forEach((es) -> {
+                                createEl(es, false, tab, writer, parSave, elScreen.children);
+                            });
+                        }
                         if (parSave.typeScreen == 0 && first) {
                             if (parSave.menuId.length() > 0) {
                                 createFragmentContainer(writer, parSave);
                             }
                         }
+/*
                         if (typeEl.equals(Constants.SCROLLPANEL) || typeEl.equals(Constants.SCROLLFORM)) {
                             writer.write("\n" + tab8 + "</RelativeLayout>");
                         }
+*/
                         writer.write(tab0 + "</" + typeEl + ">");
                     } else {
                         if (typeEl.length() > 0) {
@@ -1512,19 +1530,18 @@ public class ExportResult extends BaseServlet {
             Logger.getLogger(ExportResult.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+/*
     private void CreateRelativeForScroll(BufferedWriter writer, ParamSave parSave) {
         try {
             writer.write("\n" + tab4 + "<RelativeLayout\n");
             writer.write(tab8 + "android:id=\"@+id/" + parSave.scrollId + "\"\n");
             writer.write(tab8 + "android:layout_width=\"match_parent\"\n");
             writer.write(tab8 + "android:layout_height=\"match_parent\">\n");
-
         } catch (IOException ex) {
             Logger.getLogger(ExportResult.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+*/
     private void createItemLayout(AndroidPar p, String path, ParamSave parSave, List<AndroidPar> parent) {
         try ( BufferedWriter writer = new BufferedWriter(new OutputStreamWriter( new FileOutputStream(path), "UTF8"))) {    
             writer.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
@@ -1799,13 +1816,12 @@ public class ExportResult extends BaseServlet {
             }
             
             if (isInputLayout) {
+                if (p.componParam.color_2 == null) {
+                    p.componParam.color_2 = 21;
+                }
                 String styleTxtInpt = "txtInpt_12_" + p.componParam.color_2;
                 parSave.styleTxtInpt.add(styleTxtInpt);
                 writer.write(tab + "app:hintTextAppearance=\"@style/" + styleTxtInpt + "\"");
-
-                
-                
-                
                 writer.write(">");
                 String tab_1 = tab + "    ";
                 if (p.componParam.st_13 != null && p.componParam.st_13.length() > 0) {
@@ -2823,9 +2839,11 @@ public class ExportResult extends BaseServlet {
                     }
                 }
             }
+System.out.println("parSave.styleTxtInpt="+parSave.styleTxtInpt+"<<");
             Set<String> stInpt = parSave.styleTxtInpt;
             int color;
             for (String stT : stInpt) {
+System.out.println("   stT="+stT+"<<");
                 writer.write("    <style name=\"" + stT + "\">\n");
                 String[] arSt = stT.split("_");
                 switch (arSt[0]) {

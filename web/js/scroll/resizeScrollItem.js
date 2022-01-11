@@ -6,28 +6,15 @@ function resizeScrollItem(el) {
     }
 }
 
-function hideScroll(el) {
-console.log("hideScroll");
-    let vp = el.closest(".viewportItem");
-    if (vp != null) {
-        let cont = vp.querySelector("div");
-        let scroll = cont.querySelector("div");
-        if (scroll.scroll_y != null) {
-            scroll.scroll_y.hideScroll();
-        }
+function resizeScroll(el) {
+    let elScr = el;
+    if (el.className.indexOf("infoItem") == -1) {
+        elScr = el.querySelector(".infoItem");
+    }
+    if (elScr != null) {
+        resizeScrollItem(elScr);
     }
 }
 
-function showScroll(el) {
-console.log("showScroll");
-    let vp = el.closest(".viewportItem");
-    if (vp != null) {
-        let cont = vp.querySelector("div");
-        let scroll = cont.querySelector("div");
-        if (scroll.scroll_y != null) {
-            scroll.scroll_y.showScroll();
-        }
-    }
-}
 
 

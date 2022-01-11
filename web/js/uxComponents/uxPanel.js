@@ -60,6 +60,9 @@ function setValueViewPan(componParam) {
 
 function createViewForPanelV(el) {
     let listV = currentComponent.viewElement;
+    if (currentComponent.type.indexOf("Scroll") > -1) {
+        listV = listV.querySelector(".infoItem");
+    }
     if (listV != null) {
         let ik = currentComponentDescr.model.data[0].length;
         if (ik > 0) {
@@ -89,7 +92,7 @@ function createViewForPanelV(el) {
                     }
                 }
             }
-            if (currentComponent.type == "Form") {
+            if (currentComponent.type.indexOf("Form") > -1) {
                 let button = formButton("Send");
                 p = button.android;
                 if (namePrev != "") {

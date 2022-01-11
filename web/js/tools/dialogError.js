@@ -15,8 +15,8 @@ function dialogError(title, message, cancel) {
     futErr.className = 'futer_wind';
     windMenu.appendChild(futErr);
     let okErr = document.createElement('div');
-    okErr.style.marginTop = "15px";
     okErr.className = 'button_blue';
+    okErr.style.marginTop = "12px";
     futErr.appendChild(okErr);
     
     let okTxt = document.createElement('div');

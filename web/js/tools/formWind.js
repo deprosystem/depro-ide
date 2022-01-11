@@ -205,7 +205,7 @@ function clearMoveWind(e) {
 }
 
 //  ViewScrol заносится в wraperScroll
-function formViewScrolY(wraperScroll) {
+function formViewScrolY(wraperScroll, hide) {
     let viewport = document.createElement('div');
     viewport.className = "viewport";
     viewport.style.top = "0px";
@@ -219,7 +219,11 @@ function formViewScrolY(wraperScroll) {
     content.appendChild(viewDataY);
 
     let scrollY = new ScrollY(viewport, true);
-    scrollY.setScrollHide(true);
+    let hhh = hide;
+    if (hhh == null) {
+        hhh = true;
+    }
+    scrollY.setScrollHide(hhh);
     scrollY.init();
     return viewport;
 }

@@ -120,6 +120,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
                 } else {
                     td = createDel();
                 }
+                tr.key_dat = item.key;
                 tr.append(td);
                 tableEdit.appendChild(tr);
                 if (isId) {
@@ -678,6 +679,9 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
             item.id_field = row.idField;
             let cells = row.getElementsByTagName('td');
             let ik = cells.length - 1;
+            if (row.key_dat) {
+                item.key = row.key_dat;
+            }
             for (i = 1; i < ik; i++) {
                 let elem = cells[i].firstElementChild;
                 let i1 = i - 1;

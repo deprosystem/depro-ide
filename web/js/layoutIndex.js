@@ -66,8 +66,14 @@
         textValue = document.getElementById('text_text_value');
         setTypeInsert('RelativeLayout');
         insertTypeFull = {name: 'RelativeLayout', typeBlock: 2};
+/*
         ux_ui.style.width = '100mm';
+console.log("ux_ui.clientWidth="+ux_ui.clientWidth);
         DENSITY = ux_ui.clientWidth / pxIn100mm;
+*/
+        ux_ui.style.width = '2in';
+        DENSITY = ux_ui.clientWidth / 320;
+//console.log("DENSITY="+DENSITY+" SCALE="+SCALE);
         MEASURE = DENSITY * SCALE;
         setDp();
         ux_ui.style.width = '100%';
@@ -128,6 +134,7 @@
         root_g.style.height = screenHpx + px;
         root.style.width = screenWpx + px;
         root.style.height = screenHpx + px;
+        forScroll.style.left = (screenWpx + 100) + px;
         forScroll.style.height = screenHpx + px;
         let p;
         if (currentScreen == null) {

@@ -4,6 +4,7 @@ function changeImgColor(canvas, url, rgb) {
     let context = canvas.getContext("2d");
     let w = canvas.width;
     let h = canvas.height;
+    context.clearRect(0, 0, w, h);
     let img = new Image();
     img.src = url;
     if (rgb != null) {

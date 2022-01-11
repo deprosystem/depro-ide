@@ -18,7 +18,7 @@ listMenu_UX[1].children = new Array(
 listMenu_UX[2] = {nameM : 'Android'};
 listMenu_UX[2].children = new Array(
         {nameI : 'Set application parameters', func : setAppParameters, dependProject : true},
-        {nameI : 'Upload image', func : uploadImage, dependProject : true},
+//        {nameI : 'Upload image', func : uploadImage, dependProject : true},
         {nameI : 'Generate APK file', func : generateAPK, dependProject : true},
 //        {nameI : 'Generate android project', func : generateProject, dependProject : true}
                 );

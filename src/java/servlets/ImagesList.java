@@ -144,7 +144,6 @@ public class ImagesList extends BaseServlet {
             System.out.println("getListCategoryImages error: No icons dataPath=" + dataPath);
         } else {
             for (File file : files) {
-//                System.out.println(file.getName());
                 results.add(file.getName());
             }
 

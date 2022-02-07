@@ -167,6 +167,37 @@ function formGallery(item) {
     return currentElement;
 }
 
+/*
+function formGallery(item) {
+    currentElement = createNewEl();
+    p = {typeUxUi: "ui"};
+    
+    
+    if (item.edit != null && item.edit) {
+        p.type = "EditGallery";
+        p.typeFull = {name: 'EditText', typeBlock: 0};
+        p.componParam = {type:26};
+    } else {
+        p.type = "Gallery";
+        p.typeFull = {name: 'TextView', typeBlock: 0};
+        p.componParam = {type:8};
+    }
+    
+    
+//    p.type = "Gallery";
+//    p.typeFull = {name: 'Gallery', typeBlock: 0};
+    p.gravLayout = {h:4,v:4};
+    p.gravity = {h:4,v:4};
+    currentElement.android = p;
+    let typeEl = createDivImg();
+    p.viewId = item.name;
+    currentElement.appendChild(typeEl);
+    addNewElement(ACTIVE, currentElement);
+    addNavigatorEl(currentElement);
+    ACTIVE.android.children.push(currentElement.android);
+    return currentElement;
+}
+*/
 function formIndicator(item) {
     currentElement = createNewEl();
     p = {typeUxUi: "ui"};

@@ -27,7 +27,8 @@ function formCompon() {
             {name: 'Switch', typeBlock: 0},
             {name: 'CheckBox', typeBlock: 0},
             {name: 'PlusMinus', typeBlock: 0},
-            {name: 'Calendar', typeBlock: 0}
+            {name: 'Calendar', typeBlock: 0},
+//            {name: 'EditGallery', typeBlock: 0},
     );
     listComponent[3] = {};
     listComponent[3].name = 'Containers';
@@ -243,6 +244,7 @@ function viewComponElem(el) {
     if (p.visibility != null && ! p.visibility) {
         return;
     }
+//console.log("p.viewId="+p.viewId+"<< el.parentElement="+el.parentElement);
     setLayoutChange();
     let rectParentEl = p.parent.getBoundingClientRect();
     let parentX = parseInt(rectParentEl.left);
@@ -382,51 +384,55 @@ function viewComponElem(el) {
         relativeL(el, p, parL, parT, parR, parB, margR);
     }
     let ik;
+    
     if (p.gravLayout.h == null || p.gravLayout.h == "" || p.gravLayout.h == NONE) {
         if (p.toLeftOf != null && p.toLeftOf != "") {
             let leftOf = -1;
             let rectEl;
             let parentV = el.parentElement;
-            let child = parentV.children;
-            ik = child.length;
-            let elem;
-            for (let i = 0; i < ik; i++) {
-                elem = child[i];
-                if (elem.android != null && elem.android.viewId == p.toLeftOf) {
-                    rectEl = elem.getBoundingClientRect();
-                    leftOf = parseInt(rectParentEl.right - rectEl.left);
-                    break;
+            if (parentV != null) {
+                let child = parentV.children;
+                ik = child.length;
+                let elem;
+                for (let i = 0; i < ik; i++) {
+                    elem = child[i];
+                    if (elem.android != null && elem.android.viewId == p.toLeftOf) {
+                        rectEl = elem.getBoundingClientRect();
+                        leftOf = parseInt(rectParentEl.right - rectEl.left);
+                        break;
+                    }
                 }
-            }
-            if (leftOf > -1) {
-                let leftMargElem = 0;
-                if (elem.android.leftMarg != null && elem.android.leftMarg != "") {
-                    leftMargElem = parseInt(elem.android.leftMarg) * MEASURE;
+                if (leftOf > -1) {
+                    let leftMargElem = 0;
+                    if (elem.android.leftMarg != null && elem.android.leftMarg != "") {
+                        leftMargElem = parseInt(elem.android.leftMarg) * MEASURE;
+                    }
+                    if (p.width != MATCH) {
+                        el.style.left = "";
+                    }
+                    el.style.right = (leftOf + leftMargElem + RR) + px;
                 }
-                if (p.width != MATCH) {
-                    el.style.left = "";
-                }
-                el.style.right = (leftOf + leftMargElem + RR) + px;
             }
         }
-    
         if (p.toRightOf != null && p.toRightOf != "") {
             let rightOf = -1;
             let rectEl;
             let parentV = el.parentElement;
-            let child = parentV.children;
-            ik = child.length;
-            let elem;
-            for (let i = 0; i < ik; i++) {
-                elem = child[i];
-                if (elem.android != null && elem.android.viewId == p.toRightOf) {
-                    rectEl = elem.getBoundingClientRect();
-                    rightOf = parseInt(rectEl.right) - parentX;
-                    break;
+            if (parentV != null) {
+                let child = parentV.children;
+                ik = child.length;
+                let elem;
+                for (let i = 0; i < ik; i++) {
+                    elem = child[i];
+                    if (elem.android != null && elem.android.viewId == p.toRightOf) {
+                        rectEl = elem.getBoundingClientRect();
+                        rightOf = parseInt(rectEl.right) - parentX;
+                        break;
+                    }
                 }
-            }
-            if (rightOf > -1) {
-                el.style.marginLeft = (rightOf + LL) + px;
+                if (rightOf > -1) {
+                    el.style.marginLeft = (rightOf + LL) + px;
+                }
             }
         }
     }
@@ -639,6 +645,7 @@ function viewComponElem(el) {
                 let ik = parCh.length;
                 for (let i = 0; i < ik; i++) {
                     let pCh = parCh[i];
+//console.log("setCompon 645 p.viewId="+p.viewId+"<< II="+i+" pCh.viewId="+pCh.viewId+"<<");
                     if (pCh.viewId != idEl && pCh.viewElement != null) {
                         if (pCh.above == idEl || pCh.below == idEl || pCh.toRightOf == idEl || pCh.toLeftOf == idEl) {
                             viewComponElem(pCh.viewElement);
@@ -901,6 +908,7 @@ function relativeL(el, p, pLL, pTT, pRR, pBB, margR) {
         }
     }
 
+//    if (p.type == "ImageView" || p.type == "Gallery" || p.type == "EditGallery" || p.type == "Map") {
     if (p.type == "ImageView" || p.type == "Gallery" || p.type == "Map") {
         if (p.src != null && p.src != '') {
             var elDivImg = el.getElementsByClassName('image')[0];

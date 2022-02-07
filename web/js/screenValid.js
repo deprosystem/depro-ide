@@ -5,11 +5,11 @@ function screenValid() {
     
 }
 
-function oneScreenValid(scrD, ii) {
+function oneScreenValid(scrD, scrV, generalCheck) {
     let newErrors = "";
     let newLevelErrors = 0;
     if (scrD.screenName == "") { 
-        newErrors += txtError(2, "", "Screen number " + ii + " has no title");
+        newErrors += txtError(2, "", "Screen number has no title");
         newLevelErrors = 2;
     }
     let arrComp = scrD.components;
@@ -18,7 +18,7 @@ function oneScreenValid(scrD, ii) {
         let compD = arrComp[i];
         try {
             uxFunction = eval("new ux" + compD.type + "();");
-            let errComp = uxFunction.isValid(compD, scrD);
+            let errComp = uxFunction.isValid(compD, scrD, generalCheck);
             if (errComp.text != "") {
                 newErrors += errComp.text;
                 if (newLevelErrors < errComp.error) {
@@ -45,9 +45,13 @@ function oneScreenValid(scrD, ii) {
         }
     }
 
+//    let scrV = list_screens.children[ii];
+    let divErr = scrV.getElementsByClassName("error_screen")[0];
+    divErr.style.backgroundColor = colorsEroor[newLevelErrors];
+
     if (scrD.levelErrors != newLevelErrors) {
-        let divErr = currentScreenView.getElementsByClassName("error_screen")[0];
-        divErr.style.backgroundColor = colorsEroor[newLevelErrors];
+//        let divErr = currentScreenView.getElementsByClassName("error_screen")[0];
+//        divErr.style.backgroundColor = colorsEroor[newLevelErrors];
         scrD.levelErrors = newLevelErrors;
         setBoxError();
     }

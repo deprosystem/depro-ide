@@ -63,6 +63,55 @@ function formWind(w, h, t, l, tit, scroll, cbClose, footName, footListener, colo
     }
 }
 
+function formPopUp(el, w, h) {
+    let xy = getCoordsEl(el);
+    let x = parseInt(xy.left + 5);
+    let y = parseInt(xy.top + xy.height + 2);
+    let dv = document.createElement('div');
+    dv.className = "windPopUp";
+    let wD = document.documentElement.clientWidth;
+    if ((wD - x) < w) {
+        x = wD - w - 20;
+    }
+    let hD = document.documentElement.clientHeight;
+    if ((hD - y) < h) {
+        y = y - h - 20; 
+    }
+    let panelFon = newDOMelement('<div style="width:100%;height:100%;position:absolute;z-index:20;"></div>');
+    document.body.append(panelFon);
+    dv.style.cssText = "z-index: 20; position: absolute;background:#ffffff; border: 1px solid #1dace9;width:" + w + "px;height:" + h + "px;left:" + x + "px;top:" + y + "px;box-shadow: 0px 30px 100px rgba(0, 0, 0, 0.1);border-radius: 5px;";
+    dv.panelFon = panelFon;
+    panelFon.addEventListener('click', () => {
+        event.stopPropagation();
+        dv.panelFon.remove();
+        dv.remove();
+    });
+    document.body.append(dv);
+    return dv;
+}
+
+function formPopUpAbs(w, h, x, y) {
+    let dv = document.createElement('div');
+    dv.className = "windPopUp";
+    let panelFon = newDOMelement('<div style="width:100%;height:100%;position:absolute;z-index:20;"></div>');
+    document.body.append(panelFon);
+    dv.style.cssText = "z-index: 20; position: absolute;background:#ffffff; border: 1px solid #1dace9;width:" + w + "px;height:" + h + "px;left:" + x + "px;top:" + y + "px;box-shadow: 0px 30px 100px rgba(0, 0, 0, 0.1);border-radius: 5px;";
+    dv.panelFon = panelFon;
+    panelFon.addEventListener('click', () => {
+        event.stopPropagation();
+        dv.panelFon.remove();
+        dv.remove();
+    });
+    document.body.append(dv);
+    return dv;
+}
+
+function closePopUp(el) {
+    let dv = el.closest('.windPopUp');
+    dv.panelFon.remove();
+    dv.remove();
+}
+
 function addFooter(wind, footer) {
     if (wind.className == "content") {
         let viewP = wind.parentElement;

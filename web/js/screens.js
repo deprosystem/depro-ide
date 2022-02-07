@@ -1,5 +1,6 @@
-var components = ["ToolBar", "MenuBottom", "Menu", "List", "Pager", "TabLayout", "Drawer", "Map", "Panel", "Form", "ScrollPanel", "ScrollForm",
-    "SheetBottom", "Spinner", "Tags", "PlusMinus", "Total", "Photo"];
+//var components = ["ToolBar", "MenuBottom", "Menu", "Map", "Pager", "TabLayout", "Drawer", "Map", "Panel", "Form", "ScrollPanel", "ScrollForm",
+//    "SheetBottom", "Spinner", "Tags", "PlusMinus", "Total", "Photo", "ScreenSequence", "Intro"];
+
 var list_cont;
 var uxFunction, uiFunction;
 
@@ -87,8 +88,9 @@ function crScreenForList(scrP) {
 
 function noScreen(tt) {
     let ik = listScreen.length;
+    let uu = tt.toUpperCase();
     for (let i = 0; i < ik; i++) {
-        if (tt == listScreen[i].screenName) {
+        if (uu == listScreen[i].screenName.toUpperCase()) {
             return false;
         }
     }
@@ -444,6 +446,9 @@ function plusCompon(el) {
     if (el_1 != undefined) {
         list_cont = el_1[0];
         if (list_cont != null) {
+            choiseComponent(el);
+            
+/*
             if (windTypeComponent == null) {
                 windTypeComponent = formWind(650, 450, 40, 150, "Type component", true, "cbCloseWind");
                 let ik = components.length;
@@ -470,6 +475,7 @@ function plusCompon(el) {
                 let el_1 = windTypeComponent.closest('.dataWindow');
                 el_1.style.display = "block";
             }
+*/
         }
     }
 }
@@ -479,7 +485,7 @@ function cbCloseWind(el) {
     el_1.style.display = "none";
     return true;
 }
-
+/*
 function plusComponName(name) {
     var ik = components.length;
     for (let i = 0; i < ik; i++) {
@@ -489,17 +495,30 @@ function plusComponName(name) {
         }
     }
 }
-
-function selComponType(i) {
+*/
+function selComponType(name) {
     if (currentComponentView != null) {
         currentComponentView.className = "component";
     }
+//console.log("selComponType name="+name);
     uxFunction = null;
     try {
-        uxFunction = eval("new ux" + components[i] + "();");
+        uxFunction = eval("new ux" + name + "();");
     } catch(e) { }
     if (uxFunction != null) {
-        let viewId = setViewId(uxFunction.param.viewBaseId);
+        let viewBaseId = uxFunction.param.viewBaseId;
+        if (uxFunction.param.onePerScreen) {
+            if (currentScreen.components.length > 0) {
+                myAlert("together with the " + viewBaseId + " component, other components cannot be on the screen");
+                return;
+            }
+        } else {
+            if (currentScreen.components.length == 1 && currentScreen.components[0].onePerScreen) {
+                myAlert("together with the " + currentScreen.components[0].type + " component, other components cannot be on the screen");
+                return;
+            }
+        }
+        let viewId = setViewId(viewBaseId);
         currentComponentView = newComponent(viewId);
         currentComponentView.addEventListener('click', selComponent, true);
         currentComponentView.addEventListener('focus', selComponent, true);
@@ -513,7 +532,9 @@ function selComponType(i) {
         if (currentComponent != null) {
             currentChildren.push(currentComponent);
         }
+//console.log("selComponType el="+currentComponent.viewElement+"<< currentComponent.viewId="+currentComponent.viewId+"<<");
         setValueComponent(currentComponentView, currentComponent, currentComponentDescr);
+//viewCompon();
         setScreenView();
         container_scr.scroll_y.resize(container_scr);
     }

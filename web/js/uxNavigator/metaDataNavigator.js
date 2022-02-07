@@ -1,3 +1,14 @@
+//var handlers = "start,back,backOk,send,sign in,sign up,edit profile,actual,assignValue,setValueParam,setVar,checked,restoreVar,hide,show,addRecord,delRecord,dialUp,springScale";
+var listEvents = "click,change";
+var handlerGroups = [
+    {group:"Navigation",items:"start,back,backOk,finishDialog,setMenu,nextScreen,actual"},
+    {group:"Variables",items:"addVar,delVar,cleanVar,cleanCopyVar,restoreVar,setVar,writeVar,saveViewInParams,addParam,setParam,setValueParam"},
+    {group:"Visibility",items:"show,hide,showHide,openDrawer,closeDrawer"},
+    {group:"Data",items:"send"},
+    {group:"Autch",items:"sign in,sign up,edit profile,setToken,setProfile,exit"},
+    {group:"Animation",items:"springScale"},
+    {group:"Other",items:"dialUp"},
+];
 
 var listMetaHandlers = [
         {handl:"start", meta:[{name: "param", title:"Screen",len:150,type:"Text",valid:"latin"},

@@ -95,7 +95,7 @@ function callbackSaveDataTab() {
         if (noPager) {
             let id = currentComponent.viewId;
             list_cont = currentScreenView.getElementsByClassName("list_components")[0];
-            plusComponName("Pager");
+            selComponType("Pager");
             currentComponentDescr.view.tabLayout = id;
             let selTab = currentComponentView.getElementsByClassName("select_tab")[0];
             if (selTab != null) {

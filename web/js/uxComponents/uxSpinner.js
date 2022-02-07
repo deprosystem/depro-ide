@@ -6,7 +6,7 @@ function uxSpinner() {
     }
     
     this.getSpecialView = function () {
-        return "";
+        return docNavigator;
     }
     
     this.getEditParam = function () {
@@ -18,15 +18,16 @@ function uxSpinner() {
     }
     
     this.addComponent = function (componId, viewId) {
+//console.log("uxSpinner addComponent viewId="+viewId+"<< componId="+componId+"<<");
         let tt = this.param.name;
         let head = {type:"RelativeLayout",typeFull:{name:"RelativeLayout",typeBlock:2},viewId:"__T_head",typeUxUi: "ui",gravLayout:{h:4,v:4},
             gravity:{h:4,v:4},width: -1,height:10,children:[]};
         let drop = {type:"RelativeLayout",typeFull:{name:"RelativeLayout",typeBlock:2},viewId:"__T_drop",below:"__T_head",typeUxUi: "ui",
             visibility:false,gravLayout:{h:4,v:4},gravity:{h:4,v:4},width: -1,height:10,children:[]};
         currentComponent = {type: tt, componId: componId, viewId:viewId, typeUxUi: "ux", componParam:{type:24},
-                typeFull: {name: tt, typeBlock: 10}, gravLayout: {h: 3, v: 1}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
-            width:200,height:-2,itemNav:{},viewElement: null,children:[head,drop]};
-        currentComponentDescr = {type:tt, componId: componId,model:{method:0,data:[[]],progr:"standard"},view:{viewId: viewId}};
+                typeFull: {name: tt, typeBlock: 10}, gravLayout: {h: 3, v: 3}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
+            width:150,height:-2,itemNav:{},viewElement: null,children:[head,drop]};
+        currentComponentDescr = {type:tt, componId: componId,model:{method:0,data:[[]],progr:"standard"},view:{viewId: viewId},navigator:[]};
     }
     
     this.setValue = function(componParam) {
@@ -42,6 +43,15 @@ function uxSpinner() {
         let err = {text:"",error:0};
 
 
+
+        let nav = compD.navigator;
+        if (nav != null && nav.length > 0) {
+            let erNav = isValidNavigator(nav);
+            if (erNav != "") {
+                err.text += txtError(2, tab, "component " + compD.view.viewId + " error in Navigator " + erNav);
+                err.error = 2;
+            }
+        }
         return err;
     }
     
@@ -53,7 +63,6 @@ function uxSpinner() {
 function createViewForSpinner(el, ind) {
     data = currentComponentDescr.model.data[0];
     let listV = currentComponent.viewElement;
-console.log("TTT="+currentComponent.type+"<< VVVV="+currentComponent.viewId+"<<");
     if (listV != null) {
         let ik = data.length;
         if (ik > 0) {

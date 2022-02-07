@@ -404,7 +404,7 @@ function chooseDrawable(fCB, p) {
         var item = listDrawable[i];
         var itemView = newItemListDraw(item, i);
         var itemDraw = itemView.getElementsByClassName("itemDraw")[0];
-console.log("itemValue="+item.itemValue+"<<");
+//console.log("itemValue="+item.itemValue+"<<");
 
         setDrawable(itemDraw, JSON.parse(item.itemValue));
         divList.appendChild(itemView);

@@ -163,7 +163,7 @@ public class ImagesList extends BaseServlet {
 //                results.add(file.getName());
 
                 if (file.isFile()) {
-System.out.println(userDataPath + file.getName()+"<<  NNNN="+file.getAbsolutePath());
+//System.out.println(userDataPath + file.getName()+"<<  NNNN="+file.getAbsolutePath());
                     results.add(userDataPath + file.getName());
                 }
 

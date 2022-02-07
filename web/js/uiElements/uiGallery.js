@@ -6,7 +6,7 @@ function uiGallery() {
     this.newElementUI = function(p) {
         p.componParam = {type:8};
         p.src = "img/picture.png";
-        return createDivImg();;
+        return createDivImg();
     }
     
     this.setContent = function(p) {

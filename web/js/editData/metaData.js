@@ -1,7 +1,6 @@
 var TYPE_TEXT = 0, TYPE_INT = 1, TYPE_FLOAT = 3, TYPE_BOOLEAN = 4, TYPE_SELECT = 5, TYPE_IMG = 6, ID_SELECT = 7, ID_SELECT_HANDL = 8, ID_SELECT_HANDL_SCR = 9, 
         FIELDS_SELECT = 10;
 
-var handlers = "start,back,backOk,send,sign in,sign up,edit profile,actual,assignValue,setValueParam,setVar,checked,restoreVar,hide,show,addRecord,delRecord,dialUp,springScale";
 var typeSource = "PARAM,SIZE,LOCALE,SYSTEM_TIME,GROUPP_PARAM,GLOBAL_VAR";
 
 var metaPager = {titleForm:"Данные для TabLayout", description:
@@ -22,6 +21,7 @@ var metaMenu = {titleForm:"Menu", description:
     {name: "screen", title:"Screen",len:8,valid:"latin"},
     {name: "start", title:"Start",type:TYPE_BOOLEAN,marg:15},
     {name: "divider", title:"Divider",type:TYPE_BOOLEAN,marg:20},
+    {name: "enabled", title:"Enabled",len:80,type:TYPE_SELECT,select:",Auth",marg:20},
     {name: "badge", title:"Badge",len:12,valid:"latin"}]
     }
     

@@ -8,23 +8,27 @@ function FormNavigator() {
     this.dataHand;
     this.wind;
     this.hControl = 40;
-    this.wContent = 340;
-    this.wWind = 600;
+    this.wContent = 440;
+    this.wWind = 700;
     let wNum = 24;
     let wElem = 150;
     let wType = 135;
+    let wEvent = 100;
     let hLine = 20;
-    this.panelFon;
+//    this.panelFon;
     this.after;
     this.dataView;
+    this.indSelGroupHand;
+    this.listHandView;
+    this.contentGroup;
+    this.selElementHand;
+    this.selDataHand;
     
     this.init = function(dat, aft) {
         if (dat == null) return;
         this.after = aft;
         this.dataHand = dat;
         this.selectRow = -1;
-        this.panelFon = newDOMelement('<div style="width:100%;height:100%;background-color:#aaaa;position:absolute;"></div>');
-        document.body.append(this.panelFon);
         let ll, tt;
         if (this.after) {
             ll = 600;
@@ -33,7 +37,7 @@ function FormNavigator() {
             ll = 550;
             tt = 40;
         }
-        this.contentD = formWind(this.wWind, 300, tt, ll, "Navigator");
+        this.contentD = formWind(this.wWind, 300, tt, ll, "Navigator", null, null, "", null, "");
         this.contentD.style.bottom = (this.hControl - 1) + "px";
         this.contentD.style.width = this.wContent + "px";
         this.wind = this.contentD.closest(".dataWindow");
@@ -61,9 +65,11 @@ function FormNavigator() {
         buttonAdd.addEventListener('click', () => {
             this.addHand(dat, this.dataView);
         });
+/*
         this.panelFon.addEventListener('click', () => {
             this.stopProp();
         });
+*/
         let ik = dat.length;
         if (ik > 0) {
             for (let i = 0; i < ik; i++) {
@@ -78,8 +84,7 @@ function FormNavigator() {
         if ( ! this.after) {
             saveNavigator(this.dataHand);
         }
-        this.wind.remove(); 
-        this.panelFon.remove();
+        closeDataWindow(this.controll);
     }
     
     this.stopProp = function() {
@@ -90,7 +95,6 @@ function FormNavigator() {
         if ( ! this.after) {
             saveNavigator(this.dataHand);
         }
-        this.panelFon.remove();
     }
     
     this.addHand = function(dat, dataView) {
@@ -107,6 +111,7 @@ function FormNavigator() {
                     + '<div style="margin-top:2px;margin-right:2px">' + i + '</div>' 
                 + '</div>'
                 +'<div class="elId" style="width:' + wElem + 'px;height:100%;border-right:1px solid #1dace9;float:left"></div>'
+                +'<div class="typeEvent" style="width:' + wEvent + 'px;height:100%;border-right:1px solid #1dace9;float:left"></div>'
                 +'<div class="elType" style="width:' + wType + 'px;height:100%;border-right:1px solid #1dace9;float:left"></div>'
                 +'<img class="delRec" style="margin-top:5px;margin-left:5px;float:left;cursor:pointer" src="img/del_red.png"/>'
             + '</div';
@@ -115,14 +120,25 @@ function FormNavigator() {
         let idHand = this.setSelectIdHandl({name:"viewId",len:wElem}, item);
         idHand.className = "sel_id";
         elId.appendChild(idHand);
+        
+        let elEvent = hh.querySelector(".typeEvent");
+        let typeEvent = this.setSelectEvent({name:"event",len:wEvent}, item);
+        typeEvent.className = "event";
+        elEvent.appendChild(typeEvent);
 
         let elType = hh.querySelector(".elType");
-        let typeHand = this.setSelect({name:"handler",len:wType,select:handlers}, item);
-        typeHand.className = "sel_type";
+        let typeHand = this.setSelectHand({name:"handler"}, item);
+        typeHand.addEventListener('click', () => {
+            this.selectHand(i, typeHand);
+        }, false);
         elType.appendChild(typeHand);
         hh.addEventListener('click', () => {
             this.selHand(i, hh);
         });
+        let tagSelIdEvent = hh.querySelector(".event");
+        tagSelIdEvent.addEventListener('change', () => {
+            this.changeEvent(i, tagSelIdEvent);
+        }, false);
         let tagSelIdHand = hh.querySelector(".sel_id");
         tagSelIdHand.addEventListener('change', () => {
             this.changeIdHand(i, tagSelIdHand);
@@ -131,13 +147,108 @@ function FormNavigator() {
         del.addEventListener('click', () => {
             this.delRecord(i);
         }, false);
-        let tagSelTypeHand = hh.querySelector(".sel_type");
-        tagSelTypeHand.addEventListener('change', () => {
-            this.changeTypeHand(i, tagSelTypeHand);
-        }, false);
         return hh;
     }
     
+    this.selectHand = function(ind, el) {
+//        let maxW = 250;
+        let hand = this.dataHand[ind].handler;
+        this.selDataHand = ind;
+        let wPopUp = 230;
+        let wContGr = 90;
+        let wContHand = wPopUp - wContGr - 4;
+        let ww = formPopUp(el, wPopUp, 250);
+        this.selElementHand = el;
+        this.contentGroup = newDOMelement('<div style="position:absolute;width:' + wContGr + 'px;left:4px;top:4px;bottom:4px;border-right:1px solid #1dace9"></div>');
+        ww.append(this.contentGroup);
+        let contentHand = newDOMelement('<div style="position:absolute;width:' + wContHand + 'px;right:0;top:4px;bottom:4px;"></div>');
+        ww.append(this.contentGroup);
+        ww.append(contentHand);
+        let scrollHand = formViewScrolY(contentHand, true);
+        this.listHandView = scrollHand.querySelector(".viewData");
+        let ik = handlerGroups.length;
+        let iSel = -1;
+        this.indSelGroupHand = -1;
+        for (let i = 0; i < ik; i++) {
+            let it = newDOMelement('<div style="height:20px;margin-right:4px;"></div>');
+            let nn = newDOMelement('<div style="margin-top:3px;cursor:pointer;float:left;width:100%;">' + handlerGroups[i].group + '</div>');
+            it.append(nn);
+            it.addEventListener('click', () => {
+                this.clickGroup(i);
+            }, false);
+            if (("," + handlerGroups[i].items + ",").indexOf(hand) > -1) {
+                it.style.backgroundColor = "#eef";
+                iSel = i;
+            }
+            this.contentGroup.append(it);
+        }
+        this.clickGroup(iSel);
+    }
+    
+    this.clickGroup = function(ind) {
+        if (this.indSelGroupHand == ind) return;
+        let ch = this.contentGroup.children;
+        if (this.indSelGroupHand > -1) {
+            ch[this.indSelGroupHand].style.backgroundColor = "";
+        }
+        this.indSelGroupHand = ind;
+        ch[this.indSelGroupHand].style.backgroundColor = "#eef";
+        let listH = handlerGroups[ind].items.split(",");
+        let ik = listH.length;
+        this.listHandView.innerHTML = "";
+        for (let i = 0; i < ik; i++) {
+            let it = newDOMelement('<div style="height:20px;margin-left:4px;"></div>');
+            let nn = newDOMelement('<div style="margin-top:3px;cursor:pointer;float:left;width:100%;">' + listH[i] + '</div>');
+            it.append(nn);
+            it.addEventListener('click', () => {
+                this.clickHand(listH[i]);
+            }, false);
+            this.listHandView.append(it);
+        }
+    }
+    
+    this.clickHand = function(st) {
+        let txtHand = this.selElementHand.querySelector("div");
+        txtHand.innerHTML = st;
+        
+        this.dataHand[this.selDataHand].handler = st;
+        this.selHandFull(this.selDataHand);
+        
+        closePopUp(this.listHandView);
+    }
+    
+    this.setSelectHand = function(met, item) {
+        let vv;
+        if (item != null) {
+            let nameV = met.name;
+            vv = item[nameV];
+            if (vv == null) {
+                vv = "start";
+            }
+        }
+        let cont = newDOMelement('<div style="width:100%;height:100%;cursor:pointer"></div>');
+        let valTxt = newDOMelement('<div style="float:left;margin-left:4px;margin-top:1px;font-size:13px">' + vv + '</div>');
+        cont.append(valTxt);
+        cont.append(newDOMelement('<img style="margin-right:5px;float:right;width:' + hLine + 'px;height:' + hLine + 'px" src="img/chevron_down.png"/>'));
+        return cont;
+    }
+/*
+    this.setSelectEvent = function(met, item) {
+        let vv;
+        if (item != null) {
+            let nameV = met.name;
+            vv = item[nameV];
+            if (vv == null) {
+                vv = "click";
+            }
+        }
+        let cont = newDOMelement('<div style="width:100%;height:100%;cursor:pointer"></div>');
+        let valTxt = newDOMelement('<div style="float:left;margin-left:4px;margin-top:1px;font-size:13px">' + vv + '</div>');
+        cont.append(valTxt);
+        cont.append(newDOMelement('<img style="margin-right:5px;float:right;width:' + hLine + 'px;height:' + hLine + 'px" src="img/chevron_down.png"/>'));
+        return cont;
+    }
+*/    
     this.delRecord = function(i) {
         event.stopPropagation();
         this.dataHand.splice(i, 1);
@@ -199,17 +310,26 @@ function FormNavigator() {
         this.dataHand[i].viewId = val;
     }
     
+    this.changeEvent = function(i, el) {
+        let val = el.options[el.selectedIndex].value;
+        this.dataHand[i].event = val;
+    }
+    
+/*
     this.changeTypeHand = function(i, el) {
         let val = el.options[el.selectedIndex].value;
         this.dataHand[i].handler = val;
         this.selHandFull(i);
     }
-    
+*/
     this.titleHandView = function() {
         let vv = '<div style="height:' + hLine + 'px;width:100%;border-bottom:1px solid #1dace9">' 
                 +'<div style="width:' + wNum + 'px;height:100%;text-align:right;border-right:1px solid #1dace9;float:left"></div>'
                 +'<div style="width:' + wElem + 'px;height:100%;text-align:center;border-right:1px solid #1dace9;float:left">' 
                     + '<div style="margin-top:2px;">Element</div>'
+                + '</div>'
+                +'<div style="width:' + wEvent + 'px;height:100%;text-align:center;border-right:1px solid #1dace9;float:left">'
+                    + '<div style="margin-top:2px;">Type event</div>'
                 + '</div>'
                 +'<div style="width:' + wType + 'px;height:100%;text-align:center;border-right:1px solid #1dace9;float:left">'
                     + '<div style="margin-top:2px;">Handler</div>'
@@ -234,7 +354,23 @@ function FormNavigator() {
         selSel.style.backgroundColor = "#0000";
         return selSel;
     }
-    
+
+    this.setSelectEvent = function (met, item, addItem) {
+        let vv;
+        if (item != null) {
+            let nameV = met.name;
+            vv = item[nameV];
+            if (vv == null) {
+                vv = "click";
+            }
+        }
+        let selSel = formSelectForEditData(listEvents, vv);
+        selSel.style.width = met.len + "px";
+        selSel.style.border = "none";
+        selSel.style.backgroundColor = "#0000";
+        return selSel;
+    }
+
     this.setSelect = function (met, item) {
         let vv;
         if (item != null) {

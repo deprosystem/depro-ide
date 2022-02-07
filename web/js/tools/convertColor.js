@@ -25,7 +25,7 @@ function jsColorToIntAndroid (col) {
         c_4 = col.substring(7);
         color = c_4 + c_1 + c_2 + c_3;
     }
-console.log("Color="+color+"<<");
+//console.log("Color="+color+"<<");
     return color;
 }
 

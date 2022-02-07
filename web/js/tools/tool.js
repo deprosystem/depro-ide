@@ -47,8 +47,9 @@ function tooltipErrorScreen(target, message) {
     if ((wD - x) < maxW) {
         x = wD - maxW - 20;
     }
-    dv.style.cssText = "position:absolute;max-width:" + maxW + "px;padding:5px;background:var(--c_yelow_lite);border:1px solid #ffc700;border-radius:8px;left:" + x + "px;top:" + y + "px;z-index:100";
-    dv.innerHTML = "<pre>" + message + "</pre>";
+    dv.style.cssText = "position:absolute;max-width:" + maxW + "px;padding:5px;white-space:pre-wrap;background:var(--c_yelow_lite);border:1px solid #ffc700;border-radius:8px;left:" + x + "px;top:" + y + "px;z-index:100";
+    dv.innerHTML = message;
+//    dv.innerHTML = "<pre>" + message + "</pre>";
     document.body.append(dv);
     windTooltip = dv;
     return dv;

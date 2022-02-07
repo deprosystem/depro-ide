@@ -96,7 +96,6 @@ function selectImage() {
     } else {
         setCategoryImg();
     }
-
     if (listImage == null) {
         if ( ! isPanelSelImg) {
             doServer("GET", 'images/list', cbGetListImg, null, null, blockCustom);
@@ -201,8 +200,11 @@ function setCategoryImg() {
     }
     let scr = dataCategoryImg.closest('.viewport');
     scr.scroll_y.resize();
+
     if (indListCategorySysImg > -1) {
         selectCategory_1(indListCategorySysImg);
+    } else {
+        selectCategory_1(0);
     }
 }
 

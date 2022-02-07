@@ -22,7 +22,7 @@ public class Constants {
             MENU_B = "MenuBottom", MENU = "Menu", GALLERY = "Gallery", INDICATOR = "Indicator", IMAGEVIEW = "ImageView",
             PLUS_MINUS = "PlusMinus", RATINGS = "Ratings", SWITCH = "Switch", CHECKBOX = "CheckBox", TOTAL = "Total", PHOTO = "Photo",
             MAP = "Map", SHEET = "SheetBottom", TEXTVIEW = "TextView", EDITTEXT = "EditText", CALENDAR = "Calendar", SEEKBAR = "SeekBar", 
-            TAGS = "Tags", SPINNER = "Spinner";
+            TAGS = "Tags", SPINNER = "Spinner", SEQUENCE = "ScreenSequence", INTRO = "Intro", EDIT_GALLERY = "EditGallery";
     public static String txtInp = "_txt_inp_";
 /*
     public static String toolCompon = "com.dpcsa.compon.custom_components.ComponToolBar",
@@ -32,6 +32,7 @@ public class Constants {
     public static String importMenu = "import com.dpcsa.compon.interfaces_classes.Menu;\n";
     public static String importParamMap = "import com.dpcsa.compon.param.ParamMap;\n";
     public static String importMultiply = "import com.dpcsa.compon.interfaces_classes.Multiply;\n";
+    public static String importViewHandler = "import com.dpcsa.compon.interfaces_classes.ViewHandler;\n";
     
     public static String[] animate = {"No", "LR", "RL", "BT", "TB"};
     public static String[] scaleType = {"centerCrop", "center"};
@@ -70,6 +71,8 @@ public class Constants {
         "com.dpcsa.compon.custom_components.ComponCheckBox",            // 22
         "RelativeLayout",                                                // 23   TOTAL
         "com.dpcsa.compon.custom_components.ComponSpinner",            // 24
+        "androidx.viewpager.widget.ViewPager",                      // 25    INTRO
+//        "com.dpcsa.compon.custom_components.EditGallery",            // 26 
     };
 
 }

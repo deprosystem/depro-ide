@@ -255,10 +255,11 @@ function setScreenElements(el, children, tab) {
     for (let i = 0; i < ik; i++) {
         let newNode = children[i];
         let newEl = createNewEl();
-        let typeEl;
+//        let typeEl;
         newEl.android = newNode;
         newNode.viewElement = newEl;
         addNewElement(el, newEl);
+//console.log("setScreenElements II="+i+" newNode.viewId="+newNode.viewId+"<< parentElement="+newEl.parentElement);
         let p = newEl.android;
         try {
             uiFunction = eval("new ui" + p.type + "()");
@@ -352,7 +353,9 @@ function openMenu() {
     listMenu_UX[1].children[1].domElement.className = 'subMainMenu';
     listMenu_UX[2].children[0].domElement.className = 'subMainMenu';
     listMenu_UX[2].children[1].domElement.className = 'subMainMenu';
-    listMenu_UX[2].children[2].domElement.className = 'subMainMenu';
+    if (listMenu_UX[2].children[2] != null) {
+        listMenu_UX[2].children[2].domElement.className = 'subMainMenu';
+    }
     if (listMenu_UX[2].children[3] != null) {
         listMenu_UX[2].children[3].domElement.className = 'subMainMenu';
     }
@@ -677,7 +680,13 @@ function generateProjectF(apk) {
         buttSave.style.marginTop = "25px";
         buttSave.className = "save-apk";
         windMenu.appendChild(buttSave);
-        doServer("GET", url + "?projectId=" + currentProject.projectId, cbGenerateProject, null, windMenu, windMenu, null, attent);
+        doServer("GET", url + "?projectId=" + currentProject.projectId, cbGenerateProject, null, windMenu, windMenu, errorAPK, attent);
+    }
+}
+
+function errorAPK(mes, par) {
+    if (par != null) {
+        closeDataWindow(par);
     }
 }
 
@@ -688,9 +697,13 @@ function validDeclare() {
     if (ik == 0) {
         strError += "Нет описаных экранов<br>";
     } else {
+//console.log("MENU_PROCESSING");
         for (let i = 0; i < ik; i++) {
             let ls = listScreen[i];
-            oneScreenValid(ls, i);
+            oneScreenValid(ls, list_screens.children[i], true);
+//            oneScreenValid(ls, i);
+//            let scrV = list_screens.children[i];
+//            let divErr = scrV.getElementsByClassName("error_screen")[0];
             if (ls.levelErrors > 0) {
                 if (ls.textErrors != "") {
                     strError += "Screen " + ls.screenName + "<br>";
@@ -699,7 +712,16 @@ function validDeclare() {
                 if (newLevelErrors < ls.levelErrors) {
                     newLevelErrors = ls.levelErrors;
                 }
+/*
+                if (divErr != null) {
+                    divErr.style.backgroundColor = colorsEroor[newLevelErrors];
+                }
+*/
             }
+/* else {
+                divErr.style.backgroundColor = colorsEroor[0];
+            } 
+*/
         }
     }
     ik = listValueAppParam.length;
@@ -763,15 +785,15 @@ function validDeclare() {
             }
         }
     }
-    let divErr = currentScreenView.getElementsByClassName("error_screen")[0];
+//    let divErr = currentScreenView.getElementsByClassName("error_screen")[0];
     if (strError != "") {
-        divErr.style.backgroundColor = colorsEroor[newLevelErrors];
+//        divErr.style.backgroundColor = colorsEroor[newLevelErrors];
         var wind = formWind(500, 400, 35, 270, "Error in project");
         wind.style.paddingLeft = "4px";
         wind.innerHTML = strError;
         return false;
     } else {
-        divErr.style.backgroundColor = colorsEroor[0];
+//        divErr.style.backgroundColor = colorsEroor[0];
         return true;
     }
 }
@@ -961,7 +983,7 @@ function changeUser() {
 }
 
 function closeIDE() {
-console.log("closeIDE closeIDE closeIDE");
+//console.log("closeIDE closeIDE closeIDE");
     window.close();
 }
 

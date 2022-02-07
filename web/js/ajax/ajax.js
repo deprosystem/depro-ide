@@ -33,7 +33,7 @@ console.log("AJAX="+req.responseText);
                 var mes = JSON.parse(req.responseText).message;
                 dialogError("Server error", "status=" + req.status + " " + mes);
                 if (cbError != null) {
-                    cbError(req.responseText);
+                    cbError(req.responseText, paramCallBack);
                 }
 //                alert("doServer status=" + req.status + " " + mes);
             }

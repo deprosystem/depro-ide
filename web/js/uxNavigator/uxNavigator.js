@@ -35,22 +35,37 @@ function isValidNavigator(listNav, myScreen) {
     let ik = listNav.length;
     for (let i = 0; i < ik; i++) {
         let item = listNav[i];
-        if (item.handler == "start") {
-            let scr = item.param;
-            if (scr != null && scr != "") {
-                if (myScreen != null && scr.toUpperCase() == myScreen) {
-                    strRes += sep + "Calls itself " + scr;
-                    sep = ", ";
-                } else {
-                    if (noScreen(scr)) {
-                        strRes += sep + "no screen " + scr;
+        switch (item.handler) {
+            case "start":
+                let scr = item.param;
+                if (scr != null && scr != "") {
+                    if (myScreen != null && scr.toUpperCase() == myScreen) {
+                        strRes += sep + "Calls itself " + scr;
                         sep = ", ";
+                    } else {
+                        if (noScreen(scr)) {
+                            strRes += sep + "no screen " + scr;
+                            sep = ", ";
+                        }
                     }
+                } else {
+                    strRes += sep + "screen for viewId " + item.viewId + " is not described";
+                    sep = ", ";
                 }
-            } else {
-                strRes += sep + "screen for viewId " + item.viewId + " is not described";
-                sep = ", ";
-            }
+                break;
+            case "backOk":
+            case "back":
+                if (item.viewId == 0) {
+                    strRes += sep + "handler back (backOk) must have viewId";
+                    sep = ", ";
+                }
+                break
+            case "actual":
+                if (item.id == null || item.id == 0) {
+                    strRes += sep + 'handler actual must have "Component to be updated"';
+                    sep = ", ";
+                }
+                break
         }
     }
     return strRes;

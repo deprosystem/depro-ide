@@ -70,7 +70,7 @@ import projects.ProjectM;
 public class ExportResult extends BaseServlet {
     
     private String tab4 = "    ", tab8 = "        ", tab12 = "            ", tab16 = "                ", tab20 = "                    ";
-    private String afterAutch = "setToken(), setProfile(\"profile\")";
+    private String afterAutch = "setToken(), setProfile(\"profile\"), handler(0, VH.NEXT_SCREEN_SEQUENCE)";
     private String afterAutchProf = "setProfile(\"profile\")";
     private String paramAutch = "login,email,phone,password";
     
@@ -95,9 +95,11 @@ public class ExportResult extends BaseServlet {
         parSave.switchSpec = gson.fromJson(projectM.style_spec, ListSwitchParam.class);
         parSave.styleCheck = gson.fromJson(projectM.style_check, ListSwitchParam.class);
         parSave.addApp = new ArrayList();
+        parSave.schema = projectM.resurseInd;
         parSave.addPermish = new HashSet();
         parSave.styleTxtInpt = new HashSet();
         parSave.isCamera = false;
+        parSave.importD = new HashSet();
         String basePath = ds.patchOutsideProject;
         String realPath = request.getServletContext().getRealPath("");
         String userPath = Constants.USERS_DATA + ds.userResurseInd + "/";
@@ -110,7 +112,6 @@ public class ExportResult extends BaseServlet {
         String javaPath = userProjPath + "/app/src/main/java/" + pack;
         int lengthBase = (basePath + userPath).length();
         setColorAlpha(projectM);
-
         switch (ds.query) {
             case "/export/apk":
             case "/export/android":
@@ -296,7 +297,7 @@ public class ExportResult extends BaseServlet {
         List<String> menu = new ArrayList();
         parSave.arrayString = new ArrayList();
         List<String> declare = new ArrayList();
-        HashSet<String> importD = new HashSet();
+//        HashSet<String> importD = new HashSet();
         try {
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter( new FileOutputStream(path + "/MyDeclare.java"), "UTF8"));
             parSave.sreens = gson.fromJson(pr.screens, ListScreen.class);
@@ -358,7 +359,7 @@ public class ExportResult extends BaseServlet {
                 }
                 declare.add("        " + type + "(" + scName.toUpperCase() + ", R.layout." + type + "_" + scName + tit + titPar + endScr);
                 
-                String startNavig = formStartNavigator(sc.navigator, tab16, tab12 + ".");
+                String startNavig = formStartNavigator(sc.navigator, tab16, tab12 + ".", parSave);
                 String sepSatrtNav;
                 if (startNavig.length() > 0) {
                     sepSatrtNav = ",\n";
@@ -412,7 +413,7 @@ public class ExportResult extends BaseServlet {
                     if (jk == 0) {
                         endScrNav = ";";
                     }
-                    declare.add(formNavigator(sc.navigator, tab16, tab12 + ".") + endScrNav + "\n");
+                    declare.add(formNavigator(sc.navigator, tab16, tab12 + ".", parSave) + endScrNav + "\n");
                 }
                 int jk1 = jk - 1;
                 MenuList ml;
@@ -431,26 +432,11 @@ public class ExportResult extends BaseServlet {
                         case Constants.LIST:
                             navList = "";
                             if (comp.options != null && comp.options.isCascade != null && comp.options.isCascade) {
-                                navList = formNavigatorList(comp.navigator, comp.options, tab20, ",\n" + tab16);
+                                navList = formNavigatorList(comp.navigator, comp.options, tab20, ",\n" + tab16, parSave);
                             } else {
-                                navList = formNavigator(comp.navigator, tab20, ",\n" + tab16);
+                                navList = formNavigator(comp.navigator, tab20, ",\n" + tab16, parSave);
                             }
                             String visiManager = formVisibility(comp);
-/*
-                            if (comp.visiManager != null && comp.visiManager.size() > 0) {
-                                visiManager = "\n" + tab16 + ".visibilityManager(";
-                                String sepVis = "";
-                                for (ItemVisibility iv : comp.visiManager) {
-                                    if (iv.type.equals("show")) {
-                                        visiManager += sepVis + "visibility(R.id." + iv.view + ", \"" + iv.field + "\")" ;
-                                    } else {
-                                        visiManager += sepVis + "enabled(R.id." + iv.view + ", \"" + iv.field + "\")" ;
-                                    }
-                                    sepVis = ",";
-                                }
-                                visiManager += ")";
-                            }
-*/
                             declare.add(tab12 + ".list(" + formModel(comp)
                                     + "\n" + tab16 + formView(comp, scName) + visiManager + navList + endComp);
                             break;
@@ -461,12 +447,12 @@ public class ExportResult extends BaseServlet {
                                 noData = ".noDataView(R.id." + comp.view.no_data + ")";
                             }
                             declare.add(tab12 + ".component(TC.PANEL, " + formModel(comp)
-                                    + "\n" + tab16 + "view(R.id." + comp.view.viewId + ")" + noData + formNavigator(comp.navigator, tab20, ",\n" + tab16) + endComp);
+                                    + "\n" + tab16 + "view(R.id." + comp.view.viewId + ")" + noData + formNavigator(comp.navigator, tab20, ",\n" + tab16, parSave) + endComp);
                             break;
                         case Constants.SCROLL_F:
                         case Constants.FORM:
                             declare.add(tab12 + ".component(TC.PANEL_ENTER, " + formModel(comp)
-                                    + "\n" + tab16 + "view(R.id." + comp.view.viewId + ")" + formNavigator(comp.navigator, tab20, ",\n" + tab16) + endComp);
+                                    + "\n" + tab16 + "view(R.id." + comp.view.viewId + ")" + formNavigator(comp.navigator, tab20, ",\n" + tab16, parSave) + endComp);
                             break;
                         case Constants.PAGER:
                             Component compTab = getComponentById(sc.components, comp.view.tabLayout);
@@ -477,10 +463,8 @@ public class ExportResult extends BaseServlet {
                             break;
                         case Constants.SPINNER:
                             declare.add(tab12 + ".component(TC.SPINNER, " + formModel(comp)
-                                    + "\n" + tab16 + formViewSpinner(comp, scName) + endComp);
-                            
-                            
-//                        view(R.id.spinner, R.layout.item_spin_drop, R.layout.item_spin_hider))
+                                    + "\n" + tab16 + formViewSpinner(comp, scName) 
+                                    + formNavigator(comp.navigator, tab20, ",\n" + tab16, parSave) + endComp);
                             break;
                         case Constants.DRAWER:
                             declare.add(tab12 + ".drawer(R.id." + cViewId + ", R.id.container_fragm, R.id.left_drawer, null, " 
@@ -495,7 +479,7 @@ public class ExportResult extends BaseServlet {
                             }
                             ml = comp.model.menuList;
                             nameMenu = "menu" + firstUpperCase(scName) + firstUpperCase(cViewId);
-                            importD.add(Constants.importMenu);
+                            parSave.importD.add(Constants.importMenu);
                             menu.add("    Menu " + nameMenu + " = new Menu()\n");
                             mk = ml.list.size();
                             mk1 = mk - 1;
@@ -526,25 +510,22 @@ public class ExportResult extends BaseServlet {
                             }
                             String navMenuB = "";
                             if (comp.navigator != null && comp.navigator.size() > 0) {
-                                navMenuB = navigatorMenuB(comp.navigator, mk);
+                                navMenuB = navigatorMenuB(comp.navigator, mk, parSave);
                             }
                             declare.add("            .menuBottom(model(" + nameMenu + "), view(R.id." + cViewId + ")" + navMenuB + endComp);
                             break;
                         case Constants.MENU:
                             ml = comp.model.menuList;
                             nameMenu = "menu_" + firstUpperCase(scName) + "_" + firstUpperCase(cViewId);
-                            importD.add(Constants.importMenu);
+                            parSave.importD.add(Constants.importMenu);
                             menu.add("    Menu " + nameMenu + " = new Menu()\n");
-/*
-                            menu.add("    Menu " + nameMenu + " = new Menu(" + findColorResourse(ml.colorNormId, parSave.colors) + ", "
-                                    + findColorResourse(ml.colorSelId, parSave.colors) + ")\n");
-*/
                             mk = ml.list.size();
                             mk1 = mk - 1;
                             noStart = true;
                             for (int m = 0; m < mk; m++) {
                                 MenuItem mi = ml.list.get(m);
                                 String startScr;
+                                String stEnabled = "";
                                 String endM = ")\n";
                                 if (m == mk1 && ! (mi.divider != null && mi.divider)) {
                                     endM = ");\n";
@@ -560,8 +541,11 @@ public class ExportResult extends BaseServlet {
                                 } else {
                                     startScr = "";
                                 }
+                                if (mi.enabled != null && mi.enabled.equals("Auth")) {
+                                    stEnabled = ").enabled(1";
+                                }
                                 menu.add("        .item(" + dravableFromUrl(mi.icon) + ", "
-                                        + formStringId(scName, cViewId, String.valueOf(m), mi.title, listString) + screenM + startScr + endM);
+                                        + formStringId(scName, cViewId, String.valueOf(m), mi.title, listString) + screenM + startScr + stEnabled + endM);
                                 if (mi.divider != null && mi.divider) {
                                     if (m == mk1) {
                                         menu.add("        .divider();");
@@ -575,7 +559,7 @@ public class ExportResult extends BaseServlet {
                         case Constants.MAP:
                             String zoom;
                             Param par = comp.param;
-                            importD.add(Constants.importParamMap);
+                            parSave.importD.add(Constants.importParamMap);
                             if (par.levelZoom == null || par.levelZoom.length() == 0) {
                                 zoom = "";
                             } else {
@@ -609,7 +593,7 @@ public class ExportResult extends BaseServlet {
                             if (comp.navigator.size() == 0) {
                                 nav = ", null";
                             } else {
-                                nav = formNavigator(comp.navigator, tab20, ",\n" + tab16);
+                                nav = formNavigator(comp.navigator, tab20, ",\n" + tab16, parSave);
                             }
                             declare.add(tab12 + ".componentMap(R.id." + cViewId + ", " + mod
                                     + "\n" + tab16 + "new ParamMap(true)" + zoom + coord + formMarker(comp) + contr + nav + endComp);
@@ -617,12 +601,12 @@ public class ExportResult extends BaseServlet {
                             parSave.addPermish.add("<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>");
                             break;
                         case Constants.TAGS:
-                            navList = formNavigator(comp.navigator, tab20, ",\n" + tab16);
+                            navList = formNavigator(comp.navigator, tab20, ",\n" + tab16, parSave);
                             declare.add(tab12 + ".component(TC.TAGS, " + formModel(comp)
                                     + "\n" + tab16 + formView(comp, scName) + navList + endComp);
                             break;
                         case Constants.PLUS_MINUS:
-                            navList = formNavigator(comp.navigator, tab20, ",\n" + tab16);
+                            navList = formNavigator(comp.navigator, tab20, ",\n" + tab16, parSave);
                             if (navList.length() == 0) {
                                 navList = ", null";
                             }
@@ -657,7 +641,7 @@ public class ExportResult extends BaseServlet {
                             if (nf.length() == 0) {
                                 nf = ", null";
                             } else {
-                                importD.add(Constants.importMultiply);
+                                parSave.importD.add(Constants.importMultiply);
                             }
                             String evV = ", 0";
                             if (comp.view.plusId != null && comp.view.plusId.length() != 0) {
@@ -696,12 +680,32 @@ public class ExportResult extends BaseServlet {
                             declare.add(tab12 + ".componentPhoto(R.id." + comp.view.title + phId + idStrPerm + phParam + endComp);
                             addCameraPermishen(realPath + "/android_base/provider", parSave);
                             break;
+                        case Constants.EDIT_GALLERY:
+                            idStrPerm = ", 0";
+                            if (comp.view.selectedField != null && comp.view.selectedField.length() > 0) {
+                                idStrPerm = ", " + formStringId(scName + "_" + comp.view.tabLayout, comp.view.selectedField, parSave.listString);
+                            }
+                            declare.add(tab12 + ".editGallery(R.id." + comp.view.tabLayout + ", R.id." + comp.view.plusId + ", R.id." + comp.view.minusId 
+                                    + ",\n" + tab16 + "R.id." + comp.view.title + idStrPerm 
+                                    + ", \"query/" + parSave.schema + "/\"" + endComp);
+                            addCameraPermishen(realPath + "/android_base/provider", parSave);
+                            break;
+                        case Constants.SEQUENCE:
+                            declare.add(tab12 + ".componentSequence(" + comp.view.plusId.toUpperCase() + ", " + comp.view.minusId.toUpperCase() +
+                                    ", " + comp.view.tabLayout.toUpperCase() + endComp);
+                            break;
+                        case Constants.INTRO:
+                            declare.add(tab12 + ".componentIntro(" + formModel(comp) + " R.id." + comp.view.viewId + ", R.layout.item_" + scName + "_" 
+                                    + comp.view.viewId + "_0 , R.id." + comp.view.plusId +
+                                    ", R.id." + comp.view.minusId + ", R.id." + comp.view.tabLayout +
+                                    ", R.id." + comp.view.param + endComp);
+                            break;
                     }
                 }
             }
             writer.write("package " + pr.namePackage + ";\n\n");
             writer.write("import com.dpcsa.compon.base.DeclareScreens;\n");
-            for (String stI : importD) {
+            for (String stI : parSave.importD) {
                 writer.write(stI);
             }
             writer.write("\n");
@@ -849,7 +853,7 @@ public class ExportResult extends BaseServlet {
         return inDoubleQuotes(comp.model.param);
     }
     
-    private String formNavigatorList(Navigator navigator, Options opt, String tab, String beg) {
+    private String formNavigatorList(Navigator navigator, Options opt, String tab, String beg, ParamSave parSave) {
         int ik = navigator.size();
         String res = beg + "navigator(";
         String sep = ",\n" + tab;
@@ -864,14 +868,14 @@ public class ExportResult extends BaseServlet {
         res += sep + "backOk(R.id." + opt.enterId + ")";
         if (ik > 0) {
             for (int i = 0; i < ik; i++) {
-                res += sep + formHandler(navigator, i, false);
+                res += sep + formHandler(navigator, i, false, parSave);
             }
         }
         res += ")";
         return res;
     }
     
-    private String formStartNavigator(Navigator navigator, String tab, String beg) {
+    private String formStartNavigator(Navigator navigator, String tab, String beg, ParamSave parSave) {
         int ik = navigator.size();
         if (ik > 0) {
             String res = "";
@@ -879,7 +883,7 @@ public class ExportResult extends BaseServlet {
             for (int i = 0; i < ik; i++) {
                 Handler hh = navigator.get(i);
                 if ( hh.viewId.equals("Execute at startup screen")) {
-                    res += sep + formHandler(navigator, i, false);
+                    res += sep + formHandler(navigator, i, false, parSave);
                     sep = ",\n" + tab;
                 }
             }
@@ -889,7 +893,7 @@ public class ExportResult extends BaseServlet {
         }
     }
     
-    private String formNavigator(Navigator navigator, String tab, String beg) {
+    private String formNavigator(Navigator navigator, String tab, String beg, ParamSave parSave) {
         int ik = navigator.size();
         if (ik > 0) {
             String res = beg + "navigator(";
@@ -897,7 +901,7 @@ public class ExportResult extends BaseServlet {
             for (int i = 0; i < ik; i++) {
                 Handler hh = navigator.get(i);
                 if ( ! hh.viewId.equals("Execute at startup screen")) {
-                    res += sep + formHandler(navigator, i, false);
+                    res += sep + formHandler(navigator, i, false, parSave);
                     sep = ",\n" + tab;
                 }
             }
@@ -908,13 +912,18 @@ public class ExportResult extends BaseServlet {
         }
     }
     
-    private String formHandler(Navigator navigator, int i, boolean menu) {
+    private String formHandler(Navigator navigator, int i, boolean menu, ParamSave parSave) {
         Handler hh = navigator.get(i);
         String res = "";
         String stId;
         String parId;
         String sep = "";
-        int ik = navigator.size();
+        String evType = "";
+        if (hh.event != null && ! hh.event.equals("click")) {
+            evType = ".setTypeEvent(ViewHandler.ev" + hh.event.toUpperCase() + ")";
+            parSave.importD.add(Constants.importViewHandler);
+        }
+//        int ik = navigator.size();
         if (menu) {
             stId = "";
         } else {
@@ -951,7 +960,7 @@ public class ExportResult extends BaseServlet {
                     String sepAft = "";
                     int ak = hh.after.size();
                     for (int a = 0; a < ak; a++) {
-                        stAfter += sepAft + formHandler(hh.after, a, menu);
+                        stAfter += sepAft + formHandler(hh.after, a, menu, parSave);
                         sepAft = ",\n" + tab20;
                     }
                     stAfter += ")";
@@ -980,7 +989,7 @@ public class ExportResult extends BaseServlet {
                         String sepAft = "";
                         int ak = hh.after.size();
                         for (int a = 0; a < ak; a++) {
-                            stAfter += sepAft + formHandler(hh.after, a, menu);
+                            stAfter += sepAft + formHandler(hh.after, a, menu, parSave);
                             sepAft = ",\n" + tab20;
                         }
                         stAfter += ")";
@@ -992,7 +1001,7 @@ public class ExportResult extends BaseServlet {
                         String sepAft = "";
                         int ak = hh.nav_1.size();
                         for (int a = 0; a < ak; a++) {
-                            stNav += sepAft + formHandler(hh.nav_1, a, menu);
+                            stNav += sepAft + formHandler(hh.nav_1, a, menu, parSave);
                             sepAft = ",\n" + tab20;
                         }
                         stNav += ")";
@@ -1007,8 +1016,22 @@ public class ExportResult extends BaseServlet {
                 }
                 res = "handler(" + vId + ", VH.ADD_RECORD, R.id." + hh.id + ")";
                 break;
+            case "nextScreen":
+                vId = "0";
+                if (stId.length() > 0) {
+                    vId = stId;
+                }
+                res = "handler(" + vId + ", VH.NEXT_SCREEN_SEQUENCE)";
+                break;
             case "dialUp":
                 res = "handler(" + stId+ ", VH.DIAL_UP)";
+                break;
+            case "exit":
+                vId = "0";
+                if (stId.length() > 0) {
+                    vId = stId;
+                }
+                res = "exit(" + vId+ ")";
                 break;
             case "springScale":
                 res = "springScale(" + parId+ ", 3, 1000)";
@@ -1026,7 +1049,7 @@ public class ExportResult extends BaseServlet {
                     String sepAft = "";
                     int ak = hh.after.size();
                     for (int a = 0; a < ak; a++) {
-                        stAfter += sepAft + formHandler(hh.after, a, menu);
+                        stAfter += sepAft + formHandler(hh.after, a, menu, parSave);
                         sepAft = ",\n" + tab20;
                     }
                     stAfter += ")";
@@ -1074,7 +1097,7 @@ public class ExportResult extends BaseServlet {
                     String sepAft = ",\n" + tab20;
                     int ak = hh.after.size();
                     for (int a = 0; a < ak; a++) {
-                        stAfter += sepAft + formHandler(hh.after, a, menu);
+                        stAfter += sepAft + formHandler(hh.after, a, menu, parSave);
                     }
                     stAfter += ")";
                 }
@@ -1115,6 +1138,7 @@ public class ExportResult extends BaseServlet {
                 }
                 res = hh.handler + "(" + stId + com + parId + par + ")";
         }
+        res += evType;
         return res;
     }
     
@@ -1128,7 +1152,7 @@ public class ExportResult extends BaseServlet {
         return res;
     }
     
-    private String navigatorMenuB(Navigator nav, int ik) {
+    private String navigatorMenuB(Navigator nav, int ik, ParamSave parSave) {
         String res = "";
         int nk = nav.size();
         for (int i = 0; i < ik; i++) {
@@ -1138,7 +1162,7 @@ public class ExportResult extends BaseServlet {
             for (int n = 0; n < nk; n++) {
                 Handler hh = nav.get(n);
                 if (hh.viewId != null && hh.viewId.length() > 0 && hh.viewId.equals(vId)) {
-                    st += sep + formHandler(nav, n, true);
+                    st += sep + formHandler(nav, n, true, parSave);
                     sep = ",";
                 }
             }
@@ -1363,6 +1387,7 @@ public class ExportResult extends BaseServlet {
             int ik;
             switch (elScreen.type) {
                 case Constants.LIST:
+                case Constants.INTRO:
                     writer.write(tab0 + "/>");
                     ik = elScreen.children.size();
                     if (ik == 0) {
@@ -1385,9 +1410,9 @@ public class ExportResult extends BaseServlet {
                         for (int i = 0; i < ik; i++) {
                             String hd;
                             if (i == 0) {
-                                hd = "_drop";
-                            } else {
                                 hd = "_header";
+                            } else {
+                                hd = "_drop";
                             }
                             createItemLayout(elScreen.children.get(i), parSave.pathLayoutItem + elScreen.viewId + hd+ ".xml", parSave, elScreen.children);
                         }
@@ -2839,11 +2864,11 @@ public class ExportResult extends BaseServlet {
                     }
                 }
             }
-System.out.println("parSave.styleTxtInpt="+parSave.styleTxtInpt+"<<");
+//System.out.println("parSave.styleTxtInpt="+parSave.styleTxtInpt+"<<");
             Set<String> stInpt = parSave.styleTxtInpt;
             int color;
             for (String stT : stInpt) {
-System.out.println("   stT="+stT+"<<");
+//System.out.println("   stT="+stT+"<<");
                 writer.write("    <style name=\"" + stT + "\">\n");
                 String[] arSt = stT.split("_");
                 switch (arSt[0]) {

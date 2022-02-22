@@ -1,6 +1,6 @@
 function uxScrollPanel() {
     this.param = {name: "ScrollPanel", viewBaseId: "scroll_panel", onlyOne: true};
-    
+    this.hiddenHandlers = ",Autch,Data,";
     this.getParamComp = function () {
         return this.param;
     }

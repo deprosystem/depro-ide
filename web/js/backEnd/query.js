@@ -472,6 +472,7 @@ function saveQuery() {
     
     let SQL = "SELECT " + fields + " FROM " + tables;
     let qu;
+//console.log("currentComponentDescr="+jsonNoViewParent(currentComponentDescr));
     currentComponentDescr.model.data[0] = data;
     currentComponentDescr.model.bool_1 = noRequest.src.indexOf("check-sel") > -1;
 //console.log("currentComponentDescr.model.bool_1="+currentComponentDescr.model.bool_1);
@@ -591,6 +592,7 @@ function saveQuery() {
     currentComponentDescr.model.param = strParam;
     let original = JSON.stringify(origin_query);
     let nam = currentScreen.screenName + "_" + currentComponent.viewId;
+console.log("SQL="+SQL+"<< original="+original+"<<");
     let dat = {id_query:qu,name_query:nam,type_query:"SELECT",origin_query:original,sql_query:SQL,param_query:strParam};
     doServerAlien("POST", hostDomain + "query/create", cbQueryCreate, JSON.stringify(dat));
 }

@@ -1,4 +1,4 @@
-function EditData(meta, data, domEl, obrSave, dopEl) {
+function EditData(meta, data, domEl, obrSave, dopEl, move_1) {
     let edData, edMeta, edDomEl;
     let edObrSave = obrSave;
     let tableEdit, tableEditRows, tabContainer, tabTool;
@@ -10,6 +10,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
     let imgSetValue;
     let tabViewport;
     let scrollVert;
+    let move;
     let  colorSelect = "#f3f8ff", colorNew = "#f5f9ff", 
             colorDel, colorErrorTr, colorErrorTh;
     if (meta == null) {
@@ -40,6 +41,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
         tabContainer.style.cssText = "position:relative;height:100%;;-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;-o-user-select: none;user-select: none; ";
         edDomEl.appendChild(tabContainer);
         hDopEl = 0;
+        move = move_1;
         if (dopEl != null) {
             tabContainer.append(dopEl);
             hDopEl = dopEl.clientHeight;
@@ -54,6 +56,12 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
             dv = document.createElement('div');
             dv.innerHTML = edMeta[i].title;
             dv.style.cssText = "display:inline-block;height:100%;margin-top:7px;";
+            tabHeader.appendChild(dv);
+        }
+        if (move) {
+            dv = document.createElement('div');
+            dv.innerHTML = "&nbsp;";
+            dv.style.cssText = "display:inline-block;height:100%;";
             tabHeader.appendChild(dv);
         }
         dv = document.createElement('div');
@@ -114,6 +122,10 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
                 for (let i = 0; i < ikM; i++) {
                     td = createTD(i, item);
                     tr.appendChild(td);
+                }
+                if (move) {
+                    td = createMove();
+                    tr.append(td);
                 }
                 if ( item.system != null && item.system.length > 0) {
                     td = createDelBlanck();
@@ -194,6 +206,39 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
         dv.addEventListener("click", function(event){delRow(event)}, true);
         td.appendChild(dv);
         return td;
+    }
+    
+    function createMove() {
+        let td = document.createElement('td');
+        let dv = document.createElement('img');
+        dv.style.cssText = "width:8px;height:16px;margin-left:5px;cursor:pointer";
+        dv.src = "img/arrow_top.png";
+        dv.addEventListener("click", function(event){moveRowTop(event)}, true);
+        td.appendChild(dv);
+        dv = document.createElement('img');
+        dv.style.cssText = "width:8px;height:16px;margin-left:2px;cursor:pointer";
+        dv.src = "img/arrow_bottom.png";
+        dv.addEventListener("click", function(event){moveRowBottom(event)}, true);
+        td.appendChild(dv);
+        return td;
+    }
+    
+    function moveRowTop(e) {
+        let tr = e.target.closest('tr');
+        let befTr = tr.previousElementSibling;
+        let parEl = tr.parentElement;
+        if (befTr != null) {
+            parEl.insertBefore(tr, befTr);
+        }
+    }
+    
+    function moveRowBottom(e) {
+        let tr = e.target.closest('tr');
+        let aftTr = tr.nextElementSibling;
+        let parEl = tr.parentElement;
+        if (aftTr != null) {
+            parEl.insertBefore(aftTr, tr);
+        }
     }
     
     function delRow(e) {
@@ -506,7 +551,7 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
                 let cC = cell.cellIndex;
                 switch (k) {
                     case "ArrowDown":
-                        if (cR < countRows) {
+                        if ((cR + 1) < countRows) {
                             upDown(cC, cR + 1);
                             return true;
                         }
@@ -655,6 +700,10 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
             }
             tr.appendChild(td);
         }
+        if (move) {
+            td = createMove();
+            tr.append(td);
+        }
         td = createDel();
         tr.appendChild(td);
         tr.addEventListener("mouseover", function(event){mouseoverTr(event)}, true);
@@ -681,6 +730,9 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
             let ik = cells.length - 1;
             if (row.key_dat) {
                 item.key = row.key_dat;
+            }
+            if (move) {
+                ik--;
             }
             for (i = 1; i < ik; i++) {
                 let elem = cells[i].firstElementChild;
@@ -719,7 +771,12 @@ function EditData(meta, data, domEl, obrSave, dopEl) {
         }
         let closeW = true;
         if (edObrSave != null) {
-            let cc = edObrSave(edData);
+            let cc;
+            if (edObrSave.obrSaveEdit != null) {
+                cc = edObrSave.obrSaveEdit(edData);
+            } else {
+                cc = edObrSave(edData);
+            }
             if (cc != null && ! cc) {
                 closeW = false;
             }

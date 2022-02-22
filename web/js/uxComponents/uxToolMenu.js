@@ -1,5 +1,5 @@
-function uxToolBar() {
-    this.param = {name: "ToolBar", viewBaseId: "tool_bar", onlyOne: true};
+function uxToolMenu() {
+    this.param = {name: "ToolMenu", viewBaseId: "tool_menu", onlyOne: true};
     this.hiddenHandlers = "";
     this.editParam = '<div style="float:left;position:relative;height:46px;width:65px">'
             +'<div style="top:0px;position:absolute;font-size:10px;color:#2228">img back</div>'
@@ -18,14 +18,21 @@ function uxToolBar() {
         +'</div>'
         +'<div class="menu_tool" style="float:left;position:relative;height:46px;width:120px;cursor:pointer;">'
             +'<div style="top:0px;position:absolute;font-size:10px;color:#2228">Formation of menu</div>'
-            +'<img style="position:absolute;bottom:3px;left:0px;" width="24" height="24" src="img/menu_hh.png">'
+            +'<img style="position:absolute;bottom:3px;left:0px;border:2px solid #bdf;border-radius:4px" width="24" height="24" src="img/menu_hh.png">'
         +'</div>'
         +'<div class="nav_tool" style="float:left;position:relative;height:46px;width:120px;cursor:pointer;">'
             +'<div style="top:0px;position:absolute;font-size:10px;color:#2228">Navigator</div>'
-            +'<img style="position:absolute;bottom:3px;left:0px;" width="24" height="24" src="img/navigator.png">'
+            +'<img style="position:absolute;bottom:3px;left:0px;border:2px solid #bdf;border-radius:4px" width="24" height="24" src="img/navigator.png">'
         +'</div>';
 
 //    this.specialView = '<div onclick="editMenu_Tool()" style="display: inline-block;float:left; vertical-align: top; cursor:pointer;margin-left: 20px">Formation of menu</div>';
+
+    let meta = [
+        {name: "selectedType", title:"img back",type:"ImgChess"},
+        {name: "minusId", title:"Activity with toolbar",type:"Select",len:80},
+        {name: "zoomButtons", title:"Clear",type:"Check"},
+        {name: "menu", title:"Formation of menu",type:"Click",img:"img/menu_hh.png"}
+    ];
             
     this.getParamComp = function () {
         return this.param;
@@ -37,18 +44,49 @@ function uxToolBar() {
     }
     
     this.getEditParam = function () {
-        return this.editParam;
+        return "";
+//        return this.editParam;
     }
     
     this.addComponent = function (componId, viewId) {
         let tt = this.param.name;
-        currentComponent = {type: tt, componId: componId, viewId:viewId, typeUxUi: "ux", componParam:{type:0}, 
-                typeFull: {name: tt, typeBlock: 0}, gravLayout: {h: 3, v: 3}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
-            width:-1,height:56,topMarg:"",leftMarg:"",itemNav:{},textColor:19,textSize:20,background:0, viewElement: null,children:[]};
+        currentComponent = null;
         currentComponentDescr = {type: tt, componId: componId, model:{menuList:{list:[]}},view:{viewId: viewId, title:"", titleParam: ""},navigator:[]};
     }
     
-    this.setValue = function(componParam) {
+    this.setValue = function(cont) {
+        cont.style.height = "45px";
+        let st = "";
+        let sep = "";
+        let firstScr = "";
+        let ik = listScreen.length;
+        for (let i = 0; i < ik; i++) {
+            let itemSct = listScreen[i];
+            if (itemSct.typeScreen == 0) {      // Activity
+                let comp = itemSct.components;
+                let jk = comp.length;
+                for (let j = 0; j < jk; j++) {
+                    if (comp[j].type == "ToolBar") {
+                        st += sep + itemSct.screenName;
+                        sep = ",";
+                        if (firstScr.length == 0) {
+                            firstScr = itemSct.screenName;
+                        }
+                        break;
+                    }
+                    
+                }
+            }
+        }
+        let cdv = currentComponentDescr.view;
+        if (cdv.minusId == null || cdv.minusId.length == 0) {
+            cdv.minusId = firstScr;
+        }
+        meta[1].value = st;
+        new EditForm(meta, cdv, cont, null, this, true);
+        
+/*
+        
         let cont = currentComponentView.getElementsByClassName("component_param")[0];
         let cDescr = currentComponentDescr.view;
         cont.style.height = "45px";
@@ -82,13 +120,26 @@ function uxToolBar() {
         nav.addEventListener('click', () => {
             this.formNavigatorTool();
         });
+*/
+    }
+    
+    this.cbEdit = function(name) {
+        let cdv = currentComponentDescr.view;
+        console.log("NNNNN="+name+"<< cdv.zoomButtons="+cdv.zoomButtons);
+        switch(name) {
+            case "menu":
+                if (cdv.zoomButtons) {
+                    this.editMenu_Tool();
+                }
+                break;
+        }
     }
     
     this.editMenu_Tool = function() {
         if (currentComponentDescr.model.menuList == null) {
             currentComponentDescr.model.menuList = {list:[]};
         }
-        editDataWind(metaTool, currentComponentDescr.model.menuList.list, this, null, null, null, null, null, "", true);
+        editDataWind(metaTool, currentComponentDescr.model.menuList.list, this, null, null, 350, null, null, "", true);
     }
     
     this.obrSaveEdit = function(dat) {
@@ -174,4 +225,3 @@ function setImgAdditionaTB(i) {
     imgBl.src = nn;
     currentComponentDescr.view.selectedValue = nn;
 }
-

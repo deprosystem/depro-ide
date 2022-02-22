@@ -1,5 +1,6 @@
 function uxList() {
     this.param = {name: "List", viewBaseId: "list", onlyOne: false};
+    this.hiddenHandlers = ",Autch,Data,backOk,";
     this.editParam = '<div style="height:1px;background-color:#1dace9;margin-top:5px"></div>\n\
         <div class="comp_view_param" style="height:42px;">\n\
             <div class="span_count" style="float: left;">\n\
@@ -120,7 +121,7 @@ function uxList() {
         
         let nav = compD.navigator;
         if (nav != null && nav.length > 0) {
-            let erNav = isValidNavigator(nav, compD.screenName.toUpperCase());
+            let erNav = isValidNavigator(nav, compD);
             if (erNav != "") {
                 err.text += txtError(2, tab, "component " + viewId + " error in Navigator " + erNav);
                 err.error = 2;

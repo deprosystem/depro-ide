@@ -30,7 +30,7 @@ function oneScreenValid(scrD, scrV, generalCheck) {
     
     let nav = scrD.navigator;
     if (nav != null && nav.length > 0) {
-        let erNav = isValidNavigator(nav, scrD.screenName.toUpperCase());
+        let erNav = isValidNavigator(nav, scrD, true);
         if (erNav != "") {
             newErrors += txtError(2, "&ensp;", "Error in Navigator " + erNav);
             newLevelErrors = 2;

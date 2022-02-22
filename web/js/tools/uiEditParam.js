@@ -141,7 +141,25 @@ function editCheck(title, varName, viewEl, cb) {
     elAll.appendChild(elImg);
     contentAttributes.appendChild(elAll);
 }
-
+/*
+function editCheckInCont(title, varName, viewEl, cb, container) {
+    val = currentElement.android.componParam[varName];
+    valCh = "check-act";
+    if (val != null && val) {
+        valCh = "check-sel_1";
+    }
+    let changFirst = '<div style="float:left;margin-top:5px;margin-right:10px">'
+                +'<div style="font-size:10px;color:#2228">' + title + '</div></div>';
+    let html_1 = '<img class="_check" onclick="checkEditCheck(this);" style="cursor:pointer;margin-top:5px;margin-left:14px" width="16" height="16" src="img/' + valCh + '.png">';
+    let elAll = newDOMelement(changFirst);
+    let elImg = newDOMelement(html_1);
+    elImg.varName = varName;
+    elImg.viewEl = viewEl;
+    elImg.cb = cb;
+    elAll.append(elImg);
+    container.append(elAll);
+}
+*/
 function checkEditCheck(el) {
     let val = checkEditCheckbox(el);
     let varName = el.varName;

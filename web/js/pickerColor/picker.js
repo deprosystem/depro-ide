@@ -75,6 +75,7 @@ var Line ={
         document.onmouseup = function (){
             document.onmousemove = null; 
             cAr.onmousemove = null; 
+            canvaLine.onmousemove = null;
         }
     },
 

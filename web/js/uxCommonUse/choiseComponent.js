@@ -1,6 +1,6 @@
 
 var groupComponents = [
-    {group:"Navigation",item:"ToolBar,MenuBottom,Menu,Spinner,PopupMenu,ScreenSequence,Intro"},
+    {group:"Navigation",item:"ToolBar,ToolMenu,MenuBottom,Menu,Spinner,PopupMenu,ScreenSequence,Intro"},
     {group:"Containers",item:"List,Pager,TabLayout,Panel,Form,ScrollPanel,ScrollForm,SheetBottom"},
     {group:"Media",item:"Photo,Video,EditGallery"},
     {group:"Google",item:"Map"},

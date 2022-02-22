@@ -1,5 +1,6 @@
 function uxMenuBottom() {
     this.param = {name: "MenuBottom", viewBaseId: "menu_b",  onlyOne: true};
+    this.hiddenHandlers = ",Autch,Data,";
     this.specialView = '<div onclick="editMenu_b()" style="display: inline-block;float:left; vertical-align: top; cursor:pointer;margin-left: 20px">Formation of menu</div>';
             
     this.getParamComp = function () {

@@ -1,6 +1,6 @@
 function uxTags() {
     this.param = {name: "Tags", viewBaseId: "tags", onlyOne: false};
-    
+    this.hiddenHandlers = ",Autch,Data,";
     this.getParamComp = function () {
         return this.param;
     }

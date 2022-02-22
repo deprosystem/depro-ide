@@ -148,7 +148,6 @@ public class ExportResult extends BaseServlet {
                 copyFile(realPath + "/android_base/git_ignor_app", basePath + userProjPath + "/app/.gitignore");
                 setFileAndroid(realPath + "/android_base/settings", basePath + userProjPath + "/settings.gradle", arChange);
 
-                
                 if (ds.query.equals("/export/apk")) {
                     PrintWriter writer;
                     try {
@@ -156,7 +155,7 @@ public class ExportResult extends BaseServlet {
                         if (isSerwer) {
                             writer.println("sdk.dir=/home/jura/android/cmdline-tools");
                         } else {
-                            writer.println("sdk.dir=C\\:\\\\Users\\\\jura\\\\AppData\\\\Local\\\\Android\\\\Sdk");
+                            writer.println("sdk.dir=C\\:\\\\Users\\\\Yurii\\\\AppData\\\\Local\\\\Android\\\\Sdk");
                         }
                         writer.close();
                     } catch (FileNotFoundException | UnsupportedEncodingException ex) {
@@ -168,7 +167,7 @@ public class ExportResult extends BaseServlet {
 //                        progr.add("/opt/gradle/gradle-5.5/bin/gradle");
                     } else {
 //                        progr.add("gradle.bat");
-                        progr.add("C:\\Users\\jura\\.gradle\\wrapper\\dists\\gradle-6.7.1-all\\2moa8rlfac5eqlcfgk98k0deb\\gradle-6.7.1\\bin\\gradle.bat");
+                        progr.add("C:\\Users\\Yurii\\.gradle\\wrapper\\dists\\gradle-6.7.1-all\\2moa8rlfac5eqlcfgk98k0deb\\gradle-6.7.1\\bin\\gradle.bat");
                     }
                     progr.add("build");
                     String pathProject = basePath + userProjPath;
@@ -202,7 +201,6 @@ public class ExportResult extends BaseServlet {
                     } catch (InterruptedException ex) {
                         System.out.println("Compil waitFor Error="+ ex);
                     }
-
                     if (isOk) {
                         String resultFile = "download/get_apk/" + ds.userResurseInd + "/" + projectM.nameProject + "/app-debug.apk";
 
@@ -462,9 +460,13 @@ public class ExportResult extends BaseServlet {
                             }
                             break;
                         case Constants.SPINNER:
+                            String noActual = "";
+                            if (comp.view.targetButton != null && comp.view.targetButton) {
+                                noActual = ").noActualStart(";
+                            }
                             declare.add(tab12 + ".component(TC.SPINNER, " + formModel(comp)
                                     + "\n" + tab16 + formViewSpinner(comp, scName) 
-                                    + formNavigator(comp.navigator, tab20, ",\n" + tab16, parSave) + endComp);
+                                    + formNavigator(comp.navigator, tab20, ",\n" + tab16, parSave) + noActual + endComp);
                             break;
                         case Constants.DRAWER:
                             declare.add(tab12 + ".drawer(R.id." + cViewId + ", R.id.container_fragm, R.id.left_drawer, null, " 
@@ -1036,6 +1038,9 @@ public class ExportResult extends BaseServlet {
             case "springScale":
                 res = "springScale(" + parId+ ", 3, 1000)";
                 break;
+            case "actual":
+                res = "handler(0, VH.ACTUAL, " + parId + ")";
+                break;
             case "send":
                 vId = "0";
                 if (stId.length() > 0) {
@@ -1055,20 +1060,26 @@ public class ExportResult extends BaseServlet {
                     stAfter += ")";
                 }
                 String mValid = "";
+                String en = "false";
+                if (hh.check != null && hh.check) {
+                    en = "true";
+                }
+                mValid = ",\n" + tab20 + en;
                 if (parSend.queryFilds.valid != null && parSend.queryFilds.valid.length() > 0) {
-                    String en = "false";
-                    if (hh.check != null && hh.check) {
-                        en = "true";
-                    }
-                    mValid = ",\n" + tab20 + en;
                     String[] arValid = parSend.queryFilds.valid.split(",");
                     for (String stValid : arValid) {
                         mValid += ", R.id." + stValid;
                     }
                 }
-                
-                res = "handler(" + vId + ", VH.CLICK_SEND, model(POST, \"" + parSend.url + "\", \"" + parSend.queryFilds.fields + "\")" 
+System.out.println("mValid="+mValid+"<<");
+                String stRecordId = "";
+                if (hh.param_1 != null && hh.param_1.length() > 0) {
+                    stRecordId = ", R.id." + hh.param_1;
+                }
+                res = "send(" + vId + stRecordId + ", model(POST, \"" + parSend.url + "\", \"" + parSend.queryFilds.fields + "\")" 
                         + "\n" + tab20 + stAfter + mValid + ")";
+//                res = "handler(" + vId + ", VH.CLICK_SEND, model(POST, \"" + parSend.url + "\", \"" + parSend.queryFilds.fields + "\")" 
+//                        + "\n" + tab20 + stAfter + mValid + ")";
                 break;
             case "edit profile":
             case "sign up":
@@ -1102,12 +1113,12 @@ public class ExportResult extends BaseServlet {
                     stAfter += ")";
                 }
                 mValid = "";
+                en = "false";
+                if (hh.check != null && hh.check) {
+                    en = "true";
+                }
+                mValid = ",\n" + tab20 + en;
                 if (parSend.queryFilds.valid != null && parSend.queryFilds.valid.length() > 0) {
-                    String en = "false";
-                    if (hh.check != null && hh.check) {
-                        en = "true";
-                    }
-                    mValid = ",\n" + tab20 + en;
                     String[] arValid = parSend.queryFilds.valid.split(",");
                     for (String stValid : arValid) {
                         mValid += ", R.id." + stValid;
@@ -2028,6 +2039,7 @@ public class ExportResult extends BaseServlet {
             }
             
             switch (p.type) {
+/*
                 case Constants.TOOL:
                     if (p.imgBack != null && p.imgBack.length() > 0) {
                         writer.write(tab + "app:imgBack=\"@drawable/" + nameFromUrl(p.imgBack) + "\"");
@@ -2036,6 +2048,7 @@ public class ExportResult extends BaseServlet {
                         writer.write(tab + "app:imgHamburger=\"@drawable/" + nameFromUrl(p.imgHamburg) + "\"");
                     }
                     break;
+*/
                 case Constants.IMAGEVIEW:
                     Corners pc = p.corners;
                     if (p.componParam != null && p.componParam.oval != null && p.componParam.oval) {

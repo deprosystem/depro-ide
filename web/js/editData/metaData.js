@@ -2,6 +2,7 @@ var TYPE_TEXT = 0, TYPE_INT = 1, TYPE_FLOAT = 3, TYPE_BOOLEAN = 4, TYPE_SELECT =
         FIELDS_SELECT = 10;
 
 var typeSource = "PARAM,SIZE,LOCALE,SYSTEM_TIME,GROUPP_PARAM,GLOBAL_VAR";
+var showAsAction = "ifRoom,always,never";
 
 var metaPager = {titleForm:"Данные для TabLayout", description:
     [{name: "title", title:"Text tab",len:15},
@@ -25,6 +26,13 @@ var metaMenu = {titleForm:"Menu", description:
     {name: "badge", title:"Badge",len:12,valid:"latin"}]
     }
     
+var metaTool = {titleForm:"Menu", description:
+    [{name: "icon", title:"Icon",len:20,type:TYPE_IMG,marg:5},
+    {name: "title", title:"Title",len:20},
+    {name: "show", title:"show",len:80,type:TYPE_SELECT,select:showAsAction},
+    {name: "withText", title:"withText",type:TYPE_BOOLEAN,marg:15}]
+    }
+    
 var metaModel = {titleForm:"Data formation", description:
     [{name: "name", title:"Name",len:20,valid:"latin"},
     {name: "type", title:"Type",len:70,type:TYPE_SELECT,select:"Text,Img,Int,Float,Time,Gallery,Boolean"},
@@ -40,7 +48,7 @@ var metaVisiManager = {titleForm:"Visibility manager", description:
     {name: "type", title:"Show-hide",len:70,type:TYPE_SELECT,select:"show,hide,enabled"}]
     }
 
-function editDataWind(meta, data, obrSave, dopEl, w, h, l, t, colorFon) {
+function editDataWind(meta, data, obrSave, dopEl, w, h, l, t, colorFon, move) {
     let ww = 400, hh = 500, ll = 550, tt = 50;
     if (w != null) {
         ww = w;
@@ -55,7 +63,7 @@ function editDataWind(meta, data, obrSave, dopEl, w, h, l, t, colorFon) {
         tt = t;
     }
     let windMenu = formWind(ww, hh, tt, ll, meta.titleForm, null, null, null, null, colorFon);
-    let editDat = new EditData(meta.description, data, windMenu, obrSave, dopEl);
+    let editDat = new EditData(meta.description, data, windMenu, obrSave, dopEl, move);
     windMenu.parentElement.style.width = (editDat.getWidthW() + 10) + "px";
     if (dopEl != null) {
         windMenu.parentElement.style.height = (dopEl.clientHeight + hh) + "px";

@@ -50,7 +50,11 @@ function editSelect(title, w, list, value, on) {
 
 function editCreateSelect(ll, value, on) {
     let ik = ll.length;
-    let st = '<select class = "select_' + browser + '" onchange="' + on + '(this)">';
+    let onCh = '"';
+    if (on != null && on.length > 0) {
+        onCh = '" onchange="' + on + '(this)"';
+    }
+    let st = '<select class = "select_' + browser + onCh + '>';
     for (let i = 0; i < ik; i++) {
         let sel = "";
         if (value == ll[i]) {

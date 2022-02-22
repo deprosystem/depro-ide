@@ -79,7 +79,8 @@ function screenClone() {
 }
 
 function crScreenForList(scrP) {
-    let crScreen = {screenName: scrP.scrN, screenId: scrP.scrNum, screenComment: "", animate: 0, castom: "", typeScreen: scrP.scrT, 
+//    let crScreen = {screenName: scrP.scrN, screenId: scrP.scrNum, screenComment: "", animate: 0, castom: "", typeScreen: scrP.scrT, 
+    let crScreen = {screenName: scrP.scrN, screenId: scrP.scrNum, screenComment: "", animate: 0, typeScreen: scrP.scrT, 
         title: scrP.scrTit, titleParam: "", components: [], textErrors: "", levelErrors: 0, navigator:[], initData:[]};
     crScreen.layout =  {type:"RelativeLayout",typeFull:{name:"RelativeLayout",typeBlock:2},parent:null,width:-1,height:-1,gravLayout:{h:4,v:4},
         gravity:{h:4,v:4},itemNav:{},viewId:"root", children:[]};
@@ -368,7 +369,7 @@ function navigatorScreen() {
         currentScreen.navigator = [];
     }
     let nnn = new FormNavigator();
-    nnn.init(currentScreen.navigator);
+    nnn.init(currentScreen.navigator, null, null, true);
 //    editDataWind(metaNavigatorScreen, currentScreen.navigator, saveNavigator);
 }
 

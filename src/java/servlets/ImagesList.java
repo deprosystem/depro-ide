@@ -82,6 +82,9 @@ public class ImagesList extends BaseServlet {
                 String originPath = "";
                 String[] dirImg = {"drawable-hdpi/", "drawable-mdpi/", "drawable-xhdpi/", "drawable-xxhdpi/", "drawable-xxxhdpi/"};
                 for (String nameDir : dirImg) {
+                    createDir(preResult + nameDir);
+                }
+                for (String nameDir : dirImg) {
                     originPath = preOrigin + nameDir + nameF;
                     resultPath = preResult + nameDir + nameN;
                     changeColorImg(originPath, resultPath, color);

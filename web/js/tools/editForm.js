@@ -1,4 +1,4 @@
-function EditForm(meta, data, domEl, after, cbEdit, marg, margTop) {
+function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, visi) {
     if (meta == null || domEl == null || data == null) {
         return null;
     };
@@ -29,34 +29,36 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop) {
         }
         let isFocus = false;
         for (let i = 0; i < ik; i++) {
-            let ff = this.oneField(i);
-            if (ff != null) {
-                this.edDomEl.append(ff);
-            }
             let met = this.edMeta[i];
-            if (met.type == "Line" ) {
-                if (marg) {
-                    if (margTop != null && margTop > 0) {
-                        this.marg_T = "margin-top:" + margTop + "px;";
+            if (met.visibility == null || (visi && met.visibility)) {
+                let ff = this.oneField(i);
+                if (ff != null) {
+                    this.edDomEl.append(ff);
+                }
+                if (met.type == "Line" ) {
+                    if (marg) {
+                        if (margTop != null && margTop > 0) {
+                            this.marg_T = "margin-top:" + margTop + "px;";
+                        } else {
+                           this.marg_T = "";
+                        }
+                        this.marg_L = "";
                     } else {
-                       this.marg_T = "";
+                        this.marg_T = "margin-top:5px;";
+                        this.marg_L = "margin-left:7px;";
                     }
-                    this.marg_L = "";
                 } else {
-                    this.marg_T = "margin-top:5px;";
-                    this.marg_L = "margin-left:7px;";
+                    if (marg) {
+                        this.marg_L = "margin-left:10px;";
+                    } else {
+                        this.marg_L = "margin-left:7px;";
+                    }
                 }
-            } else {
-                if (marg) {
-                    this.marg_L = "margin-left:10px;";
-                } else {
-                    this.marg_L = "margin-left:7px;";
+                if (met.type == "Text" && ! isFocus) {
+                    let elInp = ff.querySelector("input");
+                    elInp.focus();
+                    isFocus = true;
                 }
-            }
-            if (met.type == "Text" && ! isFocus) {
-                let elInp = ff.querySelector("input");
-                elInp.focus();
-                isFocus = true;
             }
         }
     }
@@ -84,7 +86,7 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop) {
             clazz = ' class="' + met.clazz + '"';
         }
         let res = newDOMelement('<div' + clazz + ' style="float:left;' + this.marg_L + this.marg_T + br + '"></div>');
-        res.append(newDOMelement('<div style="color: #8199A5;font-size: 10px;margin-left:4px">' + met.title + '</div>'));
+        res.append(newDOMelement('<div style="color: #8199A5;font-size: 10px;">' + met.title + '</div>'));
         let inp;
         let vv = this.edData[met.name];
         if (vv == null) {
@@ -233,10 +235,27 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop) {
             case "Number":
 
                 break;
+            case "Click":
+                inp = newDOMelement('<img class="imageV" style="margin-top:3px;cursor:pointer;" width="24" height="24" src="' 
+                        + met.img + '">');
+//                res.addEventListener("click", () => {clickCustom(met.name)}, false);
+                res.addEventListener("click", () => {this.clickCustom(met.name)}, false);
+                res.append(inp);
+                break;
             case "Img":
                 inp = newDOMelement('<img class="imageV" style="border:2px solid #bdf;border-radius:4px;background:#fff;cursor:pointer;" width="24" height="24" src="' 
                         + vv + '">');
                 inp.addEventListener("click", () => {selectListImage(event, this, met.name)}, false);
+                res.append(inp);
+                break;
+            case "ImgChess":
+                inp = newDOMelement('<div style="width:34px;height:34px;position:relative;">'
+                    +'<img style="position:absolute;bottom:0px;left:0px;border:2px solid #bdf;border-radius:4px" width="30" height="30" src="img/chess_2.png">'
+                    +'<img class="img_back" style="position:absolute;cursor:pointer;bottom:6px;left:6px" width="20" height="20" src=">' + vv + '">'
+                    +'</div>'
+                );
+                let imgB = inp.querySelector(".img_back");
+                imgB.addEventListener("click", () => {selectListImage(event, this, met.name)}, false);
                 res.append(inp);
                 break;
         }
@@ -326,6 +345,12 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop) {
         this.edData[el.nameField] = el.options[el.selectedIndex].value;
         if (this.cb != null) {
             this.cb.cbEdit(el.nameField);
+        }
+    }
+    
+    this.clickCustom = function(name) {
+        if (this.cb != null) {
+            this.cb.cbEdit(name);
         }
     }
     

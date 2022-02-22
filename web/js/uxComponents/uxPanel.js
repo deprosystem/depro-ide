@@ -1,5 +1,6 @@
 function uxPanel() {
     this.param = {name: "Panel", viewBaseId: "panel", onlyOne: false};
+    this.hiddenHandlers = ",Autch,Data,";
     let devider = '<div style="height:1px;background-color:#1dace9;margin-top:5px"></div><div class="comp_view_param" style="height:42px;">\n\
         <div class="no_data" style="float: left;"><div class="text_style_ui">View if no data</div></div></div>';
     

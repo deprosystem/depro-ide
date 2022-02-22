@@ -1,7 +1,7 @@
 
 function uxSheetBottom() {
     this.param = {name: "SheetBottom", viewBaseId: "sheet_b", onlyOne: false};
-    
+    this.hiddenHandlers = ",Autch,Data,";
     this.getParamComp = function () {
         return this.param;
     }

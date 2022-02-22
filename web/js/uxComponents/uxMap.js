@@ -1,5 +1,6 @@
 function uxMap() {
     this.param = {name: "Map", viewBaseId: "map", onlyOne: true};
+    this.hiddenHandlers = ",Autch,Data,";
     this.editParam = 
             uxSeparatorHorisoltal
             +'<div style="display:inline-block;margin-top:3px;">'

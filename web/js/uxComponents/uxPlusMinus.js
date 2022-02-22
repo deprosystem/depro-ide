@@ -1,6 +1,6 @@
 function uxPlusMinus() {
     this.param = {name: "PlusMinus", viewBaseId: "plus_minus", onlyOne: false};
-    
+    this.hiddenHandlers = ",Autch,Data,";
     this.getParamComp = function () {
         return this.param;
     }

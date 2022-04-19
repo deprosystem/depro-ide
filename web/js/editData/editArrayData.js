@@ -124,7 +124,11 @@ function EditData(meta, data, domEl, obrSave, dopEl, move_1) {
                     tr.appendChild(td);
                 }
                 if (move) {
-                    td = createMove();
+                    if ( item.system != null && item.system.length > 0) {
+                        td = createMoveBlanck();
+                    } else {
+                        td = createMove();
+                    }
                     tr.append(td);
                 }
                 if ( item.system != null && item.system.length > 0) {
@@ -223,11 +227,18 @@ function EditData(meta, data, domEl, obrSave, dopEl, move_1) {
         return td;
     }
     
+    function createMoveBlanck() {
+        let td = document.createElement('td');
+        let dv = newDOMelement('<div class="systemRow" style="width:16px;height:16px;margin-left:5px;"></div>');
+        td.appendChild(dv);
+        return td;
+    }
+    
     function moveRowTop(e) {
         let tr = e.target.closest('tr');
         let befTr = tr.previousElementSibling;
         let parEl = tr.parentElement;
-        if (befTr != null) {
+        if (befTr != null && befTr.querySelector('.systemRow') == null) {
             parEl.insertBefore(tr, befTr);
         }
     }
@@ -236,7 +247,7 @@ function EditData(meta, data, domEl, obrSave, dopEl, move_1) {
         let tr = e.target.closest('tr');
         let aftTr = tr.nextElementSibling;
         let parEl = tr.parentElement;
-        if (aftTr != null) {
+        if (aftTr != null && aftTr.querySelector('.systemRow') == null) {
             parEl.insertBefore(aftTr, tr);
         }
     }
@@ -299,7 +310,7 @@ function EditData(meta, data, domEl, obrSave, dopEl, move_1) {
         switch (met.type) {
             case TYPE_BOOLEAN:
                 inp = document.createElement('input');
-                if (isSyst) {
+                if (isSyst && item.system.indexOf(',' + met.name + ',') == -1) { 
                     inp.setAttribute('disabled','disabled');
                 }
                 inp.type = "checkbox";
@@ -320,7 +331,7 @@ function EditData(meta, data, domEl, obrSave, dopEl, move_1) {
                 td.appendChild(inp);
                 break;
             case TYPE_SELECT:
-                if (isSyst) {
+                if (isSyst && item.system.indexOf(',' + met.name + ',') == -1) {
                     let vv;
                     if (item != null) {
                         let nameV = met.name;
@@ -381,14 +392,15 @@ function EditData(meta, data, domEl, obrSave, dopEl, move_1) {
                     img.style.marginLeft = "2px";
                     img.style.marginTop = "2px";
                 }
-                img.addEventListener('click', function(event){selecktImgArrayData(event)}, false);
+                if ( ! (isSyst && item.system.indexOf(',' + met.name + ',') == -1)) {
+                    img.addEventListener('click', function(event){selecktImgArrayData(event)}, false);
+                }
                 divImg.appendChild(img);
                 td.appendChild(divImg);
                 break;
             default:
                 let readOnl = "";
-                if (isSyst) {
-//                    readOnl = " readonly";
+                if (isSyst && item.system.indexOf(',' + met.name + ',') == -1) {
                     readOnl = "disabled = 'disabled'";
                 }
                 inp = newDOMelement('<input type="text" name="' + met.name + '" size="' + met.len + '" style="margin-left:3px;margin-right:3px;border:none"' + readOnl +  '>');

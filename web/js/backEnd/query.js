@@ -1,9 +1,11 @@
 // type_query 0 - SELECT,  1 - INSERT, 
 
 var hTitleQuery = 24;
-var wFieldQuery = 180;
+var wFieldQuery = 280;
+var wTypeParamQu = 80;
 var wTableInQuery = 197;
 var wOperQuery = 32;
+var wDivParam = wFieldQuery - wOperQuery - wOperQuery - 2;
 var wraperQuery;
 var selectQueryEl;
 var footerQuery, noRequest;
@@ -17,7 +19,7 @@ function editQueryWind() {
     let hFooter = 150;
     let hTitleQuery_2 = hTitleQuery + 2;
     selectQueryEl = null;
-    wFieldQuery = 180;
+//    wFieldQuery = 280;
     listTablesForQuery.length = 0;
     let title = '<div style="height:' + hTitleQuery + 'px;border-bottom:1px solid #1dace9;">'
             +'<div style="width:' + wFieldQuery + 'px;text-align:center;margin-top:3px;float:left;font-size:14px;">Fields</div>'
@@ -39,7 +41,7 @@ function editQueryWind() {
     let fields = '<div class="fields_q" style="position:absolute;border-right:1px solid #1dace9;left:0;top:' + (hTitleQuery * 2 + 2) + 'px;width:' + wFieldQuery + 'px;bottom:' + (hFooter + 1) +'px"></div>';
     let tables = '<div class="tables_q" style="position:absolute;;top:' + hTitleQuery_2 + 'px;left:' + (wFieldQuery + 1) + 'px;bottom:' + (hFooter + 1) +'px;right:0"></div>';
     
-    let wind = formWind(800, 590, 40, 250, "Forming a request");
+    let wind = formWind(900, 590, 40, 250, "Forming a request");
     
     let controll = createFooter(50);
     addFooter(wind, controll);
@@ -248,21 +250,57 @@ function addWhereForQuery(item) {
     let itemParam = "";
     let itemOper = "";
     let itemAndOr = "";
+    let itemTypePar = "";
+    let itemTypeValue;
     if (item != null) {
         itemParam = item.param;
         itemOper = item.oper;
         itemAndOr = item.addOr;
+        itemTypePar = item.typePar;
+        itemTypeValue = item.typeValue;
     }
     let qu = '<div class="one_query" onclick="selectQuery(this);" style="height:' + hTitleQuery + 'px;border-bottom:1px solid #1dace9;width:100%"></div>';
     let quEl = newDOMelement(qu);
     let and_or = newDOMelement('<div class="and_or" style="float:left;width:' + wOperQuery + 'px;border-right:1px solid #1dace9;height:100%"></div>');
     quEl.appendChild(and_or);
 //{addOr:andOrValue,param:paramValue,oper:selOperValue,list:listFieldInTab}
-    let quParam = newDOMelement('<div class="div_param" style="float:left;width:' + (wFieldQuery - wOperQuery - wOperQuery - 2) 
-            + 'px;border-right:1px solid #1dace9;height:100%"></div>');
+    let quParam = newDOMelement('<div class="div_param" style="float:left;width:' + wDivParam + 'px;border-right:1px solid #1dace9;height:100%"></div>');
+/*
     inputValue = newDOMelement('<input class="value_qu" value="' + itemParam + '" type="text" style="width:' + (wFieldQuery - wOperQuery - wOperQuery - 8) 
             + 'px;margin-top:3px;margin-left:2px;border:none;background-color:#0000;"/>');
-    quParam.appendChild(inputValue);
+*/
+    let selectTypeParam = formSelectForEditData("Parameter,System,Value,Field", itemTypePar);
+    selectTypeParam.className = "typePar select";
+    selectTypeParam.addEventListener("change", function(){setTypePar(selectTypeParam)}, false);
+//    selectTypeParam.addEventListener("change", function(){changeTypePar(selectTypeParam)}, false);
+    selectTypeParam.style.cssText = 'float:left;border:none;width:' + wTypeParamQu + 'px;background-color:#0000;text-indent:unset;font-size:11px;margin-top:4px';
+    quParam.append(selectTypeParam);
+    let valueParam = newDOMelement('<div class="valPar" style="float:left;height:100%"></div>');
+    valueParam.typeValue = itemTypeValue;
+    quParam.append(valueParam);
+    let inputValue = newDOMelement('<input class="value_qu" value="' + itemParam + '" type="text" style="width:' + (wDivParam - wTypeParamQu - 6) 
+            +'px;margin-top:3px;border:none;background-color:#0000;"/>');
+    valueParam.append(inputValue);
+    
+    let inp = newDOMelement('<select class = "viewId select_' + browser + '">');
+    let vvF = "";
+    if (itemTypePar == "Field") {
+        vvF = itemParam;
+    }
+//    inp.addEventListener('change', () => {this.changeSelIdQu(inp)}, true);
+    inp.innerHTML = newOptionsTypeUI(null, vvF);
+    inp.style.cssText = 'float:left;border:none;width:' +  (wDivParam - wTypeParamQu - 6) + 'px;background-color:#0000;text-indent:unset;font-size:11px;height:24px;';
+    inp.style.display = "none";
+    quParam.append(inp);
+    
+/*
+    if (itemTypePar == "Value") {
+        let inputValue = newDOMelement('<input class="value_qu" value="' + itemParam + '" type="text" style="width:' + (wDivParam - wTypeParamQu - 6) 
+                +'px;margin-top:3px;border:none;background-color:#0000;"/>');
+        valueParam.append(inputValue);
+    }
+*/
+//    quParam.appendChild(inputValue);
     quEl.appendChild(quParam);
     let oper_param = newDOMelement('<div class="oper_param" style="float:left;width:' + wOperQuery + 'px;border-right:1px solid #1dace9;height:100%"></div>');
     quEl.appendChild(oper_param);
@@ -312,6 +350,7 @@ function addWhereForQuery(item) {
             }
         }
     }
+    setTypePar(selectOper);
     let scr = queryQueryData.closest('.viewport');
     scr.scroll_y.resize();
     if (errorQuery) {
@@ -319,6 +358,112 @@ function addWhereForQuery(item) {
     }
 }
 
+function setTypePar(el) {
+    let qu = el.closest('.one_query');
+    let listQu = qu.getElementsByClassName("field");
+    let ik = listQu.length;
+    let count = 0;
+    let quI;
+    for (let i = 0; i < ik; i++) {
+        quI = listQu[i];
+        if (quI.innerHTML.length > 0) {
+            count++;
+        }
+    }
+    let typePar = qu.querySelector(".typePar");
+    let valPar = qu.querySelector(".valPar");
+    let selPar = qu.querySelector(".viewId");
+    if (count == 1) {
+        let typeF = quI.typeField;
+        let inputValue = valPar.querySelector(".value_qu");
+        inputValue.type = "text";
+        inputValue.onkeydown = null;
+        inputValue.value = "";
+        selPar.style.display = "none";
+        switch (typePar[typePar.selectedIndex].value) {
+            case "Parameter":
+                typePar.style.display = "block";
+                valPar.style.display = "block";
+                inputValue.onkeydown = validNameParam;
+                break;
+            case "Field":
+                typePar.style.display = "block";
+                valPar.style.display = "none";
+                selPar.style.display = "block";
+//                selPar.value = "";
+                break;
+            case "System":
+                typePar.style.display = "block";
+                valPar.style.display = "block";
+                inputValue.value = "";
+                switch (typeF) {
+                    case "Date":
+                        inputValue.value = "CURRENT_DATE";
+                        break;
+                    case "Time":
+                        inputValue.value = "CURRENT_TIME";
+                        break;
+                    case "Timestamp":
+                    case "TimestampZ":
+                        inputValue.value = "CURRENT_TIMESTAMP";
+                        break;
+                    default:
+                        inputValue.value = "Has no system value";
+                }
+                inputValue.onkeydown = function(e) {return false;}
+                break;
+            case "Value":
+                valPar.style.display = "block";
+                if (typeF != valPar.typeValue) {
+                    inputValue.value = "";
+                    valPar.typeValue = typeF;
+                    switch (typeF) {
+                        case "Long":
+                        case "Int":
+                            inputValue.onkeydown = validNumberSign;
+                            break;
+                        case "Float":
+                        case "Double":
+                            inputValue.onkeydown = validFloat;
+                            break;
+                        case "Boolean":
+
+                            break;
+                        case "Text":
+                            inputValue.onkeydown = null;
+                            break;
+                        case "Date":
+                            inputValue.type = "date";
+                            break;
+                        case "Timestamp":
+                            inputValue.type = "datetime";
+                            break;
+                        case "Time":
+                            inputValue.type = "time";
+                            break;
+                    }
+                }
+                break;
+        }
+    } else {
+        typePar.style.display = "none";
+        valPar.style.display = "none";
+    }
+}
+/*
+function changeTypePar(el) {
+    let vv = el.options[el.selectedIndex].value;
+    let qu = el.closest('.one_query');
+    let valPar = qu.querySelector(".valPar");
+    valPar.innerHTML = "";
+    if (vv == "Value") {
+//        let inputValue = newDOMelement('<input class="value_qu" type="text" style="margin-top:3px;border:none;background-color:#0000;"/>');
+        let inputValue = newDOMelement('<input class="value_qu" type="text" style="width:' + (wDivParam - wTypeParamQu - 4) 
+            +'px;margin-top:3px;border:none;background-color:#0000;"/>');
+        valPar.append(inputValue);
+    } 
+}
+*/
 function addViewForTableInQuery(i, quEl) {
     let item = listTablesForQuery[i];
     let divWhereForTab = newDOMelement('<div class="table" style="float:left;width:' + wTableInQuery 
@@ -335,7 +480,6 @@ function setFieldInQuery(el) {
     let idTab = cont.idTable;
     let idField = cont.idField;
     let name = cont.name_field;
-    
     setFieldInQueryParam(idTab, idField, name, cont.type_field);
 }
 
@@ -353,11 +497,18 @@ function setFieldInQueryParam(idTab, idField, nameField, typeField) {
         let listTab = selectQueryEl.getElementsByClassName("table");
         if (iRes < listTab.length) {
             let item = listTab[iRes];
-            item.id_field = idField;
-            item.name = nameField;
-            item.type = typeField;
-            let elFieldQu = item.getElementsByClassName("field")[0];
-            elFieldQu.innerHTML = nameField;
+            let elFieldQu = item.querySelector(".field");
+            if (elFieldQu.innerHTML == nameField) {
+                elFieldQu.innerHTML = "";
+                elFieldQu.typeField = "";
+            } else {
+                item.id_field = idField;
+                item.name = nameField;
+                item.type = typeField;
+                elFieldQu.typeField = typeField;
+                elFieldQu.innerHTML = nameField;
+            }
+            setTypePar(elFieldQu);
         }
     }
 }
@@ -523,8 +674,15 @@ function saveQuery() {
         }
         let div_par = itemQ.getElementsByClassName("div_param")[0];
         let inp_val = div_par.getElementsByTagName('input')[0];
+        let typeParV = div_par.querySelector(".typePar");
         let val = inp_val.value;
+        let typeVal = inp_val.typeValue;
         let paramValue = val;
+        let typeParValue = typeParV.options[typeParV.selectedIndex].value;
+        if (typeParValue == "Field") {
+            let fieldId = div_par.querySelector(".viewId");
+            paramValue = fieldId.options[fieldId.selectedIndex].value;
+        }
         if (jk > 0) {
             let it_0 = listFieldInTab[0];
             let nameT_0 = "";
@@ -549,7 +707,7 @@ function saveQuery() {
                 oneQuery =  valQu + " " + selOperValue + " " + nameT_0 + it_0.name;
                 where_query += sepQ + oneQuery;
             }
-            queryForSave.push({addOr:andOrValue,param:paramValue,oper:selOperValue,list:listFieldInTab});
+            queryForSave.push({addOr:andOrValue,param:paramValue,typePar:typeParValue,typeValue:typeVal,oper:selOperValue,list:listFieldInTab});
         }
     }
     SQL += where_query;
@@ -608,12 +766,12 @@ function addQuote(type, val) {
             return val;
         case "Text":
         case "Select":
-            return "'" + val + "'";
+            return "\"" + val + "\"";
         case "Date":
             if (val.toUpperCase() == "CURRENT_DATE") {
                 return "CURRENT_DATE";
             } else {
-                return "'" + val + "'";
+                return "\"" + val + "\"";
             }
     }
 }

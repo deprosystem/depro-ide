@@ -19,7 +19,7 @@ public class Constants {
             USERS_DATA = "usersdataIDE/";
     public static final String TOOL = "ToolBar", PANEL = "Panel", SCROLLPANEL = "ScrollView", SCROLLFORM = "ScrollForm", FORM = "Form", ELLIPSIS = "Ellipsis",
             LIST = "List", PAGER = "Pager", TAB = "TabLayout", DRAWER = "Drawer", SCROLL = "ScrollPanel", SCROLL_F = "ScrollForm", CARD_VIEW = "CardView",
-            MENU_B = "MenuBottom", MENU = "Menu", GALLERY = "Gallery", INDICATOR = "Indicator", IMAGEVIEW = "ImageView",
+            MENU_B = "MenuBottom", MENU = "Menu", GALLERY = "Gallery", INDICATOR = "Indicator", IMAGEVIEW = "ImageView", TOOL_MENU = "ToolMenu",
             PLUS_MINUS = "PlusMinus", RATINGS = "Ratings", SWITCH = "Switch", CHECKBOX = "CheckBox", TOTAL = "Total", PHOTO = "Photo",
             MAP = "Map", SHEET = "SheetBottom", TEXTVIEW = "TextView", EDITTEXT = "EditText", CALENDAR = "Calendar", SEEKBAR = "SeekBar", 
             TAGS = "Tags", SPINNER = "Spinner", SEQUENCE = "ScreenSequence", INTRO = "Intro", EDIT_GALLERY = "EditGallery";
@@ -30,6 +30,7 @@ public class Constants {
             menu_bCompon = "com.dpcsa.compon.custom_components.ComponMenuB";
 */
     public static String importMenu = "import com.dpcsa.compon.interfaces_classes.Menu;\n";
+    public static String importToolMenu = "import com.dpcsa.compon.interfaces_classes.ToolBarMenu;\n";
     public static String importParamMap = "import com.dpcsa.compon.param.ParamMap;\n";
     public static String importMultiply = "import com.dpcsa.compon.interfaces_classes.Multiply;\n";
     public static String importViewHandler = "import com.dpcsa.compon.interfaces_classes.ViewHandler;\n";
@@ -46,7 +47,7 @@ public class Constants {
     public static String EditMask = "com.dpcsa.compon.custom_components.EditTextMask";
     public static String InputLayout = "com.google.android.material.textfield.TextInputLayout";
     public static String[] componType = {
-        "com.dpcsa.compon.custom_components.ComponToolBar", // 0
+        "androidx.appcompat.widget.Toolbar", // 0
         "com.dpcsa.compon.custom_components.ComponMenuB", // 1
         "androidx.recyclerview.widget.RecyclerView", // 2
         "com.dpcsa.compon.custom_components.ComponTextView", // 3

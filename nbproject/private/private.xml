@@ -3,14 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Yurii/Documents/NetBeansProjects/DeProIDE/web/js/uxComponents/uxToolBar.js</file>
-            <file>file:/C:/Users/Yurii/Documents/NetBeansProjects/DeProIDE/web/js/uxComponents/uxToolMenu.js</file>
+            <file>file:/C:/Users/Yurii/Documents/NetBeansProjects/DeProIDE/web/js/tools/editUX.js</file>
+            <file>file:/C:/Users/Yurii/Documents/NetBeansProjects/DeProIDE/web/js/backEnd/query.js</file>
             <file>file:/C:/Users/Yurii/Documents/NetBeansProjects/DeProIDE/src/java/servlets/ExportResult.java</file>
-            <file>file:/C:/Users/Yurii/Documents/NetBeansProjects/DeProIDE/web/js/uxNavigator/formNavigator.js</file>
             <file>file:/C:/Users/Yurii/Documents/NetBeansProjects/DeProIDE/web/js/selectData.js</file>
-            <file>file:/C:/Users/Yurii/Documents/NetBeansProjects/DeProIDE/web/js/screens.js</file>
+            <file>file:/C:/Users/Yurii/Documents/NetBeansProjects/DeProIDE/web/js/uxComponents/uxEditGallery.js</file>
             <file>file:/C:/Users/Yurii/Documents/NetBeansProjects/DeProIDE/web/js/tools/editForm.js</file>
-            <file>file:/C:/Users/Yurii/Documents/NetBeansProjects/DeProIDE/web/js/editData/editArrayData.js</file>
+            <file>file:/C:/Users/Yurii/Documents/NetBeansProjects/DeProIDE/web/js/uxCommonUse/model.js</file>
         </group>
     </open-files>
 </project-private>

@@ -44,7 +44,7 @@ function fromTemplates() {
 
 function saveProject() {
     var st = formJsonProject();
-    doServer("POST", "project/save", cbSaveProject, st);
+    doServer("POST", "project/save", cbSaveProject, st, null, document.body);
 }
 
 function inTemplates() {
@@ -259,7 +259,6 @@ function setScreenElements(el, children, tab) {
         newEl.android = newNode;
         newNode.viewElement = newEl;
         addNewElement(el, newEl);
-//console.log("setScreenElements II="+i+" newNode.viewId="+newNode.viewId+"<< parentElement="+newEl.parentElement);
         let p = newEl.android;
         try {
             uiFunction = eval("new ui" + p.type + "()");
@@ -366,7 +365,7 @@ function cbSaveProject(res) {
     isStringsChange = false;
     isDrawableChange = false;
     isDimensChange = false;
-    alert("Project changes saved");
+//    alert("Project changes saved");
 }
 
 function cbListProject(res) {
@@ -526,7 +525,6 @@ function clickMenu(i, param) {
 function deleteProjectId(project) {
     deleteProjectIdVar = project.projectId;
     let dat = {whereServer:project.host,schema:project.resurseInd,projectId:project.projectId,nameProject:project.nameProject};
-//console.log("deleteProjectId DAT="+JSON.stringify(dat)+"<<");
     if (project.where_server == "Third party API") {
         
     } else {
@@ -653,7 +651,7 @@ function cbGenerProj(res) {
     }
     generateProjectF();
 }
-
+/*
 function generateProjectF(apk) {
     if (validDeclare()) {
         let title;
@@ -683,6 +681,43 @@ function generateProjectF(apk) {
         doServer("GET", url + "?projectId=" + currentProject.projectId, cbGenerateProject, null, windMenu, windMenu, errorAPK, attent);
     }
 }
+*/
+
+function generateProjectF(apk) {
+    let title;
+    let url;
+    let mes, attent;
+    if (apk != null && apk) {
+        title = "Create APK";
+        url = "export/apk";
+        mes = "APK file generated";
+        attent = "APK creation takes 1 - 2 minutes";
+    } else {
+        title = "Create project";
+        url = "export/android";
+        mes = "Project generated";
+        attent = "";
+    }
+    let windMenu = formWind(250, 300, 40, 250, title, null, null, null, null, "");
+    let infBuild = newDOMelement('<div style="text-align:center; margin-top:20px;">Design check</div>');
+    windMenu.append(infBuild);
+
+    if (validDeclare()) {
+        windMenu.innerHTML = "";
+        let fileCreate = document.createElement("div");
+        fileCreate.style.cssText = "text-align:center; margin-top:20px;";
+        fileCreate.innerHTML = mes;
+        windMenu.appendChild(fileCreate);
+        let buttSave = createButtonBlue("Save", 80);
+        buttSave.style.position = "relative";
+        buttSave.style.marginTop = "25px";
+        buttSave.className = "save-apk";
+        windMenu.appendChild(buttSave);
+        doServer("GET", url + "?projectId=" + currentProject.projectId, cbGenerateProject, null, windMenu, windMenu, errorAPK, attent);
+    } else {
+        closeWindow(windMenu);
+    }
+}
 
 function errorAPK(mes, par) {
     if (par != null) {
@@ -697,13 +732,9 @@ function validDeclare() {
     if (ik == 0) {
         strError += "Нет описаных экранов<br>";
     } else {
-//console.log("MENU_PROCESSING");
         for (let i = 0; i < ik; i++) {
             let ls = listScreen[i];
             oneScreenValid(ls, list_screens.children[i], true);
-//            oneScreenValid(ls, i);
-//            let scrV = list_screens.children[i];
-//            let divErr = scrV.getElementsByClassName("error_screen")[0];
             if (ls.levelErrors > 0) {
                 if (ls.textErrors != "") {
                     strError += "Screen " + ls.screenName + "<br>";
@@ -983,7 +1014,6 @@ function changeUser() {
 }
 
 function closeIDE() {
-//console.log("closeIDE closeIDE closeIDE");
     window.close();
 }
 

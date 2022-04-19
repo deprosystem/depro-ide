@@ -251,7 +251,7 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, visi) {
             case "ImgChess":
                 inp = newDOMelement('<div style="width:34px;height:34px;position:relative;">'
                     +'<img style="position:absolute;bottom:0px;left:0px;border:2px solid #bdf;border-radius:4px" width="30" height="30" src="img/chess_2.png">'
-                    +'<img class="img_back" style="position:absolute;cursor:pointer;bottom:6px;left:6px" width="20" height="20" src=">' + vv + '">'
+                    +'<img class="img_back" style="position:absolute;cursor:pointer;bottom:6px;left:6px" width="20" height="20" src="' + vv + '">'
                     +'</div>'
                 );
                 let imgB = inp.querySelector(".img_back");

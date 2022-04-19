@@ -33,6 +33,15 @@ var metaTool = {titleForm:"Menu", description:
     {name: "withText", title:"withText",type:TYPE_BOOLEAN,marg:15}]
     }
     
+var metaToolMenu = {titleForm:"Menu", description:
+    [{name: "icon", title:"Icon",len:20,type:TYPE_IMG,marg:5},
+    {name: "title", title:"Title",len:20},
+    {name: "show", title:"show",len:80,type:TYPE_SELECT,select:showAsAction},
+    {name: "withText", title:"withText",type:TYPE_BOOLEAN,marg:15},
+    {name: "visib", title:"No visibility",type:TYPE_BOOLEAN,marg:15}
+    ]
+    }
+    
 var metaModel = {titleForm:"Data formation", description:
     [{name: "name", title:"Name",len:20,valid:"latin"},
     {name: "type", title:"Type",len:70,type:TYPE_SELECT,select:"Text,Img,Int,Float,Time,Gallery,Boolean"},

@@ -1,37 +1,12 @@
 function uxToolMenu() {
     this.param = {name: "ToolMenu", viewBaseId: "tool_menu", onlyOne: true};
     this.hiddenHandlers = "";
-    this.editParam = '<div style="float:left;position:relative;height:46px;width:65px">'
-            +'<div style="top:0px;position:absolute;font-size:10px;color:#2228">img back</div>'
-            +'<img style="position:absolute;bottom:0px;left:0px;border:2px solid #bdf;border-radius:4px" width="30" height="30" src="img/chess_2.png">'
-            +'<img class="img_back" style="position:absolute;cursor:pointer;bottom:6px;left:6px" onclick="selectImgBackTB(event)" width="20" height="20">'
-        +'</div>'
-        +'<div style="position:relative;height:46px;float:left;width:65px;">'
-            +'<div style="top:0px;position:absolute;font-size:10px;color:#2228">hamburger</div>'
-            +'<img style="position:absolute;bottom:0px;left:0px;border:2px solid #bdf;border-radius:4px" width="30" height="30" src="img/chess_2.png">'
-            +'<img class="img_hamburger" style="position:absolute;cursor:pointer;bottom:6px;left:6px" onclick="selectImgHamburgTB(event)" width="20" height="20">'
-        +'</div>'
-        +'<div style="float:left;position:relative;height:46px;width:120px">'
-            +'<div style="top:0px;position:absolute;font-size:10px;color:#2228">additional menu image</div>'
-            +'<img style="position:absolute;bottom:0px;left:0px;border:2px solid #bdf;border-radius:4px" width="30" height="30" src="img/chess_2.png">'
-            +'<img class="img_additional" style="position:absolute;cursor:pointer;bottom:6px;left:6px" onclick="selectImgAdditionalTB(event)" width="20" height="20">'
-        +'</div>'
-        +'<div class="menu_tool" style="float:left;position:relative;height:46px;width:120px;cursor:pointer;">'
-            +'<div style="top:0px;position:absolute;font-size:10px;color:#2228">Formation of menu</div>'
-            +'<img style="position:absolute;bottom:3px;left:0px;border:2px solid #bdf;border-radius:4px" width="24" height="24" src="img/menu_hh.png">'
-        +'</div>'
-        +'<div class="nav_tool" style="float:left;position:relative;height:46px;width:120px;cursor:pointer;">'
-            +'<div style="top:0px;position:absolute;font-size:10px;color:#2228">Navigator</div>'
-            +'<img style="position:absolute;bottom:3px;left:0px;border:2px solid #bdf;border-radius:4px" width="24" height="24" src="img/navigator.png">'
-        +'</div>';
-
-//    this.specialView = '<div onclick="editMenu_Tool()" style="display: inline-block;float:left; vertical-align: top; cursor:pointer;margin-left: 20px">Formation of menu</div>';
-
     let meta = [
         {name: "selectedType", title:"img back",type:"ImgChess"},
         {name: "minusId", title:"Activity with toolbar",type:"Select",len:80},
         {name: "zoomButtons", title:"Clear",type:"Check"},
-        {name: "menu", title:"Formation of menu",type:"Click",img:"img/menu_hh.png"}
+        {name: "menu", title:"Formation of menu",type:"Click",img:"img/menu_hh.png"},
+        {name: "navigat", title:"Navigator",type:"Click",img:"img/navigator.png"}
     ];
             
     this.getParamComp = function () {
@@ -40,12 +15,10 @@ function uxToolMenu() {
     
     this.getSpecialView = function () {
         return "";
-//        return this.specialView;
     }
     
     this.getEditParam = function () {
         return "";
-//        return this.editParam;
     }
     
     this.addComponent = function (componId, viewId) {
@@ -78,6 +51,9 @@ function uxToolMenu() {
                 }
             }
         }
+        if (firstScr.length == 0) {
+            dialogError("Error", "No activity with ToolBar");
+        }
         let cdv = currentComponentDescr.view;
         if (cdv.minusId == null || cdv.minusId.length == 0) {
             cdv.minusId = firstScr;
@@ -85,63 +61,98 @@ function uxToolMenu() {
         meta[1].value = st;
         new EditForm(meta, cdv, cont, null, this, true);
         
-/*
-        
-        let cont = currentComponentView.getElementsByClassName("component_param")[0];
-        let cDescr = currentComponentDescr.view;
-        cont.style.height = "45px";
-        
-//        selectedType -- imgBack, selectedField -- imgHamburg, selectedValue -- imgAdditional 
-        
-        if (cDescr.selectedType != null && cDescr.selectedType != "") {
-            let img = cont.getElementsByClassName("img_back")[0];
-            if (img != null) {
-                img.src = cDescr.selectedType;
-            }
-        }
-        if (cDescr.selectedField != null && cDescr.selectedField != "") {
-            let img = cont.getElementsByClassName("img_hamburger")[0];
-            if (img != null) {
-                img.src = cDescr.selectedField;
-            }
-        }
-        if (cDescr.selectedValue != null && cDescr.selectedValue != "") {
-            let img = cont.getElementsByClassName("img_hamburger")[0];
-            if (img != null) {
-                img.src = cDescr.selectedValue;
-            }
-        }
-        
-        let menu = cont.querySelector(".menu_tool");
-        menu.addEventListener('click', () => {
-            this.editMenu_Tool();
-        });
-        let nav = cont.querySelector(".nav_tool");
-        nav.addEventListener('click', () => {
-            this.formNavigatorTool();
-        });
-*/
     }
     
     this.cbEdit = function(name) {
         let cdv = currentComponentDescr.view;
-        console.log("NNNNN="+name+"<< cdv.zoomButtons="+cdv.zoomButtons);
-        switch(name) {
-            case "menu":
-                if (cdv.zoomButtons) {
-                    this.editMenu_Tool();
+        let listMenuFr = currentComponentDescr.model.menuList;
+        let listMenuAct = getListMenuAct(cdv.minusId);
+        if (listMenuAct == null) {
+            dialogError("Error", "Head ToolBar not found ");
+            return;
+        }
+        let listActMenu = [];
+        let listSelfMenu = [];
+        let ik = listMenuFr.list.length;
+        for (let i = 0; i < ik; i++) {
+            let item = listMenuFr.list[i];
+            if (item.id_field < 0) {
+                listActMenu.push(item);
+            } else {
+                listSelfMenu.push(item);
+            }
+        }
+        let isChangeAct = false;
+        ik = listActMenu.length;
+        if (ik != listMenuAct.length) {
+            isChangeAct = true;
+        } else {
+            for (let i = 0; i < ik; i++) {
+                if (listActMenu[i].id_field != -listMenuAct[i].id_field) {
+                    isChangeAct = true;
+                    break;
                 }
+            }
+        }
+        
+        switch(name) {
+//      ВСе ситуации описаны в документе "Структура данных" в разделе "Все ситуации при формировании меню для uxToolMenu"
+            case "menu":
+                if (cdv.zoomButtons) {      //  Clear   7 - 12
+                    if (listSelfMenu.length == 0) {     //  7 - 19
+                        listMenuFr.list = [];
+                    } else {                            //   10 - 12
+                        listMenuFr.list = JSON.parse(JSON.stringify(listSelfMenu));
+                    }
+                } else {                    // 1 - 6
+                    if (listSelfMenu.length == 0) {     //   1 - 3
+                        if (listMenuAct.length == 0) {      // 1
+                            listMenuFr.list = [];
+                        } else {                        //  2 - 3
+                            listMenuFr.list = JSON.parse(JSON.stringify(listMenuAct));
+                            ik = listMenuFr.list.length;
+                            for (let i = 0; i < ik; i++) {
+                                let item = listMenuFr.list[i];
+                                item.id_field = - item.id_field;
+                                item.system = ",visib,";
+                            }
+                        }
+                    } else {                // 4 - 6
+                        if (listMenuAct.length == 0) {          // 4
+                            listMenuFr.list = JSON.parse(JSON.stringify(listSelfMenu));
+                        } else {
+                            if (isChangeAct) {                  // 6
+                                listMenuFr.list = JSON.parse(JSON.stringify(listMenuAct));
+                                ik = listMenuFr.list.length;
+                                for (let i = 0; i < ik; i++) {
+                                    let item = listMenuFr.list[i];
+                                    item.id_field = - item.id_field;
+                                    item.system = ",visib,";
+                                }
+                                listMenuFr.list.concat(JSON.parse(JSON.stringify(listSelfMenu)));
+                            }           // else 5   все без изменений
+                        }
+                    }
+                }
+                editDataWind(metaToolMenu, listMenuFr.list, this, null, null, 350, null, null, "", true);
+                break;
+            case "minusId":         //  Activity with toolbar
+                
+                break;
+            case "navigat":
+                this.formNavigatorTool();
                 break;
         }
     }
-    
+/*
     this.editMenu_Tool = function() {
         if (currentComponentDescr.model.menuList == null) {
             currentComponentDescr.model.menuList = {list:[]};
         }
+        
         editDataWind(metaTool, currentComponentDescr.model.menuList.list, this, null, null, 350, null, null, "", true);
     }
-    
+*/
     this.obrSaveEdit = function(dat) {
         console.log(JSON.stringify(dat));
     }
@@ -163,7 +174,31 @@ function uxToolMenu() {
         if (currentComponentDescr.navigator == null) {
             currentComponentDescr.navigator = [];
         }
-        nnn.init(currentComponentDescr.navigator, currentComponentDescr, null, null, menuTitle);
+        nnn.init(currentComponentDescr.navigator, currentComponentDescr, null, null, menuTitle, this);
+    }
+    
+    this.cbNavigator = function() {
+        let nav = currentComponentDescr.navigator;
+        let mm = currentComponentDescr.model.menuList.list;
+        let ik = nav.length;
+        let mk = mm.length;
+        let itemM;
+        for (let i = 0; i < ik; i++) {
+            let item = nav[i];
+            let tit = item.viewId;
+            let noIs = false;
+            for (let m = 0; m < mk; m++) {
+                itemM = mm[m];
+                if (tit == itemM.title) {
+                    item.id_field = itemM.id_field;
+                    noIs = false;
+                    break;
+                }
+            }
+            if (noIs) {
+                item.id_field = -1;
+            }
+        }
     }
     
     this.getHelpLink = function() {
@@ -175,6 +210,27 @@ function uxToolMenu() {
         
         return err;
     }
+}
+
+function getListMenuAct(nameAct) {
+    let ik = listScreen.length;
+    for (let i = 0; i < ik; i++) {
+        let itemSct = listScreen[i];
+        if (itemSct.typeScreen == 0 && nameAct == itemSct.screenName) {      // Activity
+            let comp = itemSct.components;
+            let jk = comp.length;
+            for (let j = 0; j < jk; j++) {
+                let cJ = comp[j];
+                if (cJ.type == "ToolBar") {
+                    if (cJ.model.menuList.list == null) {
+                        cJ.model.menuList.list = [];
+                    }
+                    return cJ.model.menuList.list;
+                }
+            }
+        }
+    }
+    return null;
 }
 
 function selectImgBackTB(e) {

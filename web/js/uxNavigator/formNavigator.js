@@ -26,12 +26,13 @@ function FormNavigator() {
     this.hiddenHandlers;
     this.isScreen;
     this.menuSelect;
+    this.cb;
     
-    this.init = function(dat, compon, aft, isScreen, menuSelect) {
+    this.init = function(dat, compon, aft, isScreen, menuSelect, cb) {
         if (dat == null) return;
         this.after = aft;
+        this.cb = cb;
         this.isScreen = isScreen;
-console.log("compon="+compon);
         if (compon != null) {
             let uxFunction = null;
             try {
@@ -41,15 +42,7 @@ console.log("compon="+compon);
                 this.hiddenHandlers = uxFunction.hiddenHandlers;
             }
         } 
-/*
-        else {
-            if (currentScreen.typeScreen == 0) {    //Activity
-                this.hiddenHandlers = ",ToolMenu,";
-            } else {
-                this.hiddenHandlers = ",ToolBar,";
-            }
-        }
-*/
+
         if (aft) {
             this.hiddenHandlers = hiddenAfterHandlers;
         }
@@ -95,11 +88,7 @@ console.log("compon="+compon);
         buttonAdd.addEventListener('click', () => {
             this.addHand(dat, this.dataView);
         });
-/*
-        this.panelFon.addEventListener('click', () => {
-            this.stopProp();
-        });
-*/
+
         let ik = dat.length;
         if (ik > 0) {
             for (let i = 0; i < ik; i++) {
@@ -113,6 +102,13 @@ console.log("compon="+compon);
     this.closeWindows = function() {
         if ( ! this.after) {
             saveNavigator(this.dataHand);
+        }
+        if (this.cb != null) {
+            if (this.cb.cbNavigator != null) {
+                this.cb.cbNavigator();
+            } else {
+                this.cb();
+            }
         }
         closeDataWindow(this.controll);
     }
@@ -160,7 +156,11 @@ console.log("compon="+compon);
             idHand.className = "";
             idHand.style.width = wElem + "px";
             idHand.style.border = "none";
-            idHand.style.backgroundColor = "#0000";           
+            idHand.style.backgroundColor = "#0000";
+            let selEl = idHand.options[idHand.selectedIndex].value;
+            if (item.viewId != selEl)  {
+                item.viewId = selEl;
+            }
         }
 //        idHand.className = "sel_id";
         elId.appendChild(idHand);
@@ -188,12 +188,6 @@ console.log("compon="+compon);
         idHand.addEventListener('change', () => {
             this.changeIdHand(i, idHand);
         }, false);
-/*
-        let tagSelIdHand = hh.querySelector(".sel_id");
-        tagSelIdHand.addEventListener('change', () => {
-            this.changeIdHand(i, tagSelIdHand);
-        }, false);
-*/
         let del = hh.querySelector(".delRec");
         del.addEventListener('click', () => {
             this.delRecord(i);
@@ -264,11 +258,6 @@ console.log("compon="+compon);
             } else {
                 nn.style.color = "#999";
             }
-/*
-            it.addEventListener('click', () => {
-                this.clickHand(listH[i]);
-            }, false);
-*/
             this.listHandView.append(it);
         }
     }
@@ -298,23 +287,7 @@ console.log("compon="+compon);
         cont.append(newDOMelement('<img style="margin-right:5px;float:right;width:' + hLine + 'px;height:' + hLine + 'px" src="img/chevron_down.png"/>'));
         return cont;
     }
-/*
-    this.setSelectEvent = function(met, item) {
-        let vv;
-        if (item != null) {
-            let nameV = met.name;
-            vv = item[nameV];
-            if (vv == null) {
-                vv = "click";
-            }
-        }
-        let cont = newDOMelement('<div style="width:100%;height:100%;cursor:pointer"></div>');
-        let valTxt = newDOMelement('<div style="float:left;margin-left:4px;margin-top:1px;font-size:13px">' + vv + '</div>');
-        cont.append(valTxt);
-        cont.append(newDOMelement('<img style="margin-right:5px;float:right;width:' + hLine + 'px;height:' + hLine + 'px" src="img/chevron_down.png"/>'));
-        return cont;
-    }
-*/    
+ 
     this.delRecord = function(i) {
         event.stopPropagation();
         this.dataHand.splice(i, 1);
@@ -363,7 +336,7 @@ console.log("compon="+compon);
             }
         }
         if (selJ > -1) {
-            this.dataHand[i].innerHTML = "";
+//            this.dataHand[i].innerHTML = "";
             this.paramView.innerHTML = "";
             let dd = new EditForm(listMetaHandlers[selJ].meta, this.dataHand[i], this.paramView, this.after, null, null, null, this.isScreen);
         } else {
@@ -381,13 +354,6 @@ console.log("compon="+compon);
         this.dataHand[i].event = val;
     }
     
-/*
-    this.changeTypeHand = function(i, el) {
-        let val = el.options[el.selectedIndex].value;
-        this.dataHand[i].handler = val;
-        this.selHandFull(i);
-    }
-*/
     this.titleHandView = function() {
         let typeEv = "";
         if (this.menuSelect == null) {

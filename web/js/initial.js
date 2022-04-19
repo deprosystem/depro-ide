@@ -35,7 +35,18 @@ function initialView(AuthResult) {
         } else {
             setBlanckToolBar();
         }
-    } 
+    }
+    if (listImage == null) {
+        doServer("GET", 'images/list', cbGetImageList);
+    }
+}
+
+function cbGetImageList(res) {
+    if (res == "") {
+        listImage = [];
+    } else {
+        listImage = JSON.parse(res);
+    }
 }
 
 function setBlanckToolBar() {

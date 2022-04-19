@@ -1,43 +1,27 @@
 function uxToolBar() {
     this.param = {name: "ToolBar", viewBaseId: "tool_bar", onlyOne: true};
     this.hiddenHandlers = "";
-    this.editParam = '<div style="float:left;position:relative;height:46px;width:65px">'
-            +'<div style="top:0px;position:absolute;font-size:10px;color:#2228">img back</div>'
-            +'<img style="position:absolute;bottom:0px;left:0px;border:2px solid #bdf;border-radius:4px" width="30" height="30" src="img/chess_2.png">'
-            +'<img class="img_back" style="position:absolute;cursor:pointer;bottom:6px;left:6px" onclick="selectImgBackTB(event)" width="20" height="20">'
-        +'</div>'
-        +'<div style="position:relative;height:46px;float:left;width:65px;">'
-            +'<div style="top:0px;position:absolute;font-size:10px;color:#2228">hamburger</div>'
-            +'<img style="position:absolute;bottom:0px;left:0px;border:2px solid #bdf;border-radius:4px" width="30" height="30" src="img/chess_2.png">'
-            +'<img class="img_hamburger" style="position:absolute;cursor:pointer;bottom:6px;left:6px" onclick="selectImgHamburgTB(event)" width="20" height="20">'
-        +'</div>'
-        +'<div style="float:left;position:relative;height:46px;width:120px">'
-            +'<div style="top:0px;position:absolute;font-size:10px;color:#2228">additional menu image</div>'
-            +'<img style="position:absolute;bottom:0px;left:0px;border:2px solid #bdf;border-radius:4px" width="30" height="30" src="img/chess_2.png">'
-            +'<img class="img_additional" style="position:absolute;cursor:pointer;bottom:6px;left:6px" onclick="selectImgAdditionalTB(event)" width="20" height="20">'
-        +'</div>'
-        +'<div class="menu_tool" style="float:left;position:relative;height:46px;width:120px;cursor:pointer;">'
-            +'<div style="top:0px;position:absolute;font-size:10px;color:#2228">Formation of menu</div>'
-            +'<img style="position:absolute;bottom:3px;left:0px;" width="24" height="24" src="img/menu_hh.png">'
-        +'</div>'
-        +'<div class="nav_tool" style="float:left;position:relative;height:46px;width:120px;cursor:pointer;">'
-            +'<div style="top:0px;position:absolute;font-size:10px;color:#2228">Navigator</div>'
-            +'<img style="position:absolute;bottom:3px;left:0px;" width="24" height="24" src="img/navigator.png">'
-        +'</div>';
 
-//    this.specialView = '<div onclick="editMenu_Tool()" style="display: inline-block;float:left; vertical-align: top; cursor:pointer;margin-left: 20px">Formation of menu</div>';
-            
+    let meta = [
+        {name: "selectedType", title:"Img back",type:"ImgChess"},
+        {name: "selectedField", title:"Hamburger",type:"ImgChess"},
+//        {name: "amountSelected", title:"Logo",type:"ImgChess"},
+        {name: "selectedValue", title:"Overflow menu icon",type:"ImgChess"},
+        {name: "zoomButtons", title:"Show overflow menu item icon",type:"Check"},
+        {name: "menu", title:"Formation of menu",type:"Click",img:"img/menu_hh.png"},
+        {name: "navigat", title:"Navigator",type:"Click",img:"img/navigator.png"}
+    ];
+    
     this.getParamComp = function () {
         return this.param;
     }
     
     this.getSpecialView = function () {
         return "";
-//        return this.specialView;
     }
     
     this.getEditParam = function () {
-        return this.editParam;
+        return "";
     }
     
     this.addComponent = function (componId, viewId) {
@@ -48,40 +32,50 @@ function uxToolBar() {
         currentComponentDescr = {type: tt, componId: componId, model:{menuList:{list:[]}},view:{viewId: viewId, title:"", titleParam: ""},navigator:[]};
     }
     
-    this.setValue = function(componParam) {
-        let cont = currentComponentView.getElementsByClassName("component_param")[0];
-        let cDescr = currentComponentDescr.view;
+    this.setValue = function(cont) {
         cont.style.height = "45px";
-        
-//        selectedType -- imgBack, selectedField -- imgHamburg, selectedValue -- imgAdditional 
-        
-        if (cDescr.selectedType != null && cDescr.selectedType != "") {
-            let img = cont.getElementsByClassName("img_back")[0];
-            if (img != null) {
-                img.src = cDescr.selectedType;
+        new EditForm(meta, currentComponentDescr.view, cont, null, this, true);
+    }
+    
+    this.cbEdit = function(name) {
+        switch(name) {
+            case "menu":
+                this.editMenu_Tool();
+                break;
+            case "navigat":
+                this.formNavigatorTool();
+                break;
+            case "selectedType":
+                if (currentComponent.viewElement != null) {
+                    var tt = currentComponent.viewElement.getElementsByClassName("img_back")[0];
+                    tt.src = currentComponentDescr.view.selectedType;
+                }
+                break;
+        }
+    }
+    
+    this.cbNavigator = function() {
+        let nav = currentComponentDescr.navigator;
+        let mm = currentComponentDescr.model.menuList.list;
+        let ik = nav.length;
+        let mk = mm.length;
+        let itemM;
+        for (let i = 0; i < ik; i++) {
+            let item = nav[i];
+            let tit = item.viewId;
+            let noIs = false;
+            for (let m = 0; m < mk; m++) {
+                itemM = mm[m];
+                if (tit == itemM.title) {
+                    item.id_field = itemM.id_field;
+                    noIs = false;
+                    break;
+                }
+            }
+            if (noIs) {
+                item.id_field = -1;
             }
         }
-        if (cDescr.selectedField != null && cDescr.selectedField != "") {
-            let img = cont.getElementsByClassName("img_hamburger")[0];
-            if (img != null) {
-                img.src = cDescr.selectedField;
-            }
-        }
-        if (cDescr.selectedValue != null && cDescr.selectedValue != "") {
-            let img = cont.getElementsByClassName("img_hamburger")[0];
-            if (img != null) {
-                img.src = cDescr.selectedValue;
-            }
-        }
-        
-        let menu = cont.querySelector(".menu_tool");
-        menu.addEventListener('click', () => {
-            this.editMenu_Tool();
-        });
-        let nav = cont.querySelector(".nav_tool");
-        nav.addEventListener('click', () => {
-            this.formNavigatorTool();
-        });
     }
     
     this.editMenu_Tool = function() {
@@ -102,17 +96,16 @@ function uxToolBar() {
         let sep = "";
         for (let i = 0; i < ik; i++) {
             let tt = mm[i].title;
-            if (tt == null) {
-                tt = "";
+            if (tt != null && tt.length != 0) {
+                menuTitle += sep + tt;
+                sep = ",";
             }
-            menuTitle += sep + tt;
-            sep = ",";
         }
         let nnn = new FormNavigator();
         if (currentComponentDescr.navigator == null) {
             currentComponentDescr.navigator = [];
         }
-        nnn.init(currentComponentDescr.navigator, currentComponentDescr, null, null, menuTitle);
+        nnn.init(currentComponentDescr.navigator, currentComponentDescr, null, null, menuTitle, this);
     }
     
     this.getHelpLink = function() {
@@ -120,12 +113,50 @@ function uxToolBar() {
     }
     
     this.isValid = function(compD) {
+        let tab = "&ensp;";
         let err = {text:"",error:0};
-        
+        let nav = compD.navigator;
+        let mm = currentComponentDescr.model.menuList.list;
+        let ik = nav.length;
+        let mk = mm.length;
+        let itemM;
+        for (let m = 0; m < mk; m++) {
+            itemM = mm[m].isNav = false;
+        }
+        for (let i = 0; i < ik; i++) {
+            let item = nav[i];
+            let tit = item.viewId;
+            let noIs = true;
+            for (let m = 0; m < mk; m++) {
+                itemM = mm[m];
+                if (tit == itemM.title) {
+                    item.id_field = itemM.id_field;
+                    itemM.isNav = true;
+                    noIs = false;
+                    break;
+                }
+            }
+            if (noIs) {
+                item.id_field = -1;
+                if (err.error < 1) {
+                    err.error = 1;
+                }
+                err.text += txtError(1, tab, "component " + viewId + " error: No menu item with title " + tit);
+            }
+        }
+        for (let m = 0; m < mk; m++) {
+            itemM = mm[i];
+            if ( ! itemM.isNav) {
+                if (err.error < 1) {
+                    err.error = 1;
+                }
+                err.text += txtError(1, tab, "component " + viewId + " error: No handler for " + itemM.title);
+            }
+        }
         return err;
     }
 }
-
+/*
 function selectImgBackTB(e) {
     selectListImage(e, setImgBackTB);
 }
@@ -160,6 +191,21 @@ function setImgHamburgTB(i) {
     currentComponentDescr.view.selectedField = nn;
 }
 
+function selectImgLogoTB(e) {
+    selectListImage(e, setImgLogoTB);
+}
+
+function setImgLogoTB(i) {
+    var nn = listImage[i];
+    let img = currentComponentView.getElementsByClassName("img_logo");
+    if (img == null) {
+        return;
+    }
+    let imgBl = img[0];
+    imgBl.src = nn;
+    currentComponentDescr.view.amountSelected = nn;
+}
+
 function selectImgAdditionalTB(e) {
     selectListImage(e, setImgAdditionaTB);
 }
@@ -174,4 +220,5 @@ function setImgAdditionaTB(i) {
     imgBl.src = nn;
     currentComponentDescr.view.selectedValue = nn;
 }
+*/
 

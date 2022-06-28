@@ -185,14 +185,29 @@ public class ExportResult extends BaseServlet {
                     boolean isOk = false;
                     try ( BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream())) ) {
                         String line;
-                        while ((line = br.readLine()) != null) {
-                            if (line != null) {
-                                if (line.indexOf("BUILD SUCCESSFUL") > -1) {
-                                    isOk = true;
-                                }
-                                System.out.println(line);
+                        line = br.readLine();
+//                        while ((line = br.readLine()) != null) {
+                        while (line != null && line.indexOf("FAILED") == -1) {
+//                            if (line != null) {
+                            if (line.indexOf("BUILD SUCCESSFUL") > -1) {
+                                isOk = true;
                             }
+                            System.out.println(line);
+//                            }
+                            line = br.readLine();
                         }
+                        br.close();
+                    } catch (IOException | NullPointerException ex) {
+                        System.out.println("Compil WRITE Error="+ ex);
+                    }
+                    try ( BufferedReader br = new BufferedReader(new InputStreamReader(process.getErrorStream())) ) {
+                        String line;
+                        line = br.readLine();
+                        while (line != null) {
+                            System.err.println(line);
+                            line = br.readLine();
+                        }
+                        br.close();
                     } catch (IOException | NullPointerException ex) {
                         System.out.println("Compil WRITE Error="+ ex);
                     }
@@ -203,7 +218,6 @@ public class ExportResult extends BaseServlet {
                     }
                     if (isOk) {
                         String resultFile = "download/get_apk/" + ds.userResurseInd + "/" + projectM.nameProject + "/app-debug.apk";
-
                         sendResult(response, resultFile);
                     } else {
                         sendError(response, "Build error. Information about the error was sent to the support team. You will be contacted within 24 hours.");
@@ -435,8 +449,12 @@ public class ExportResult extends BaseServlet {
                                 navList = formNavigator(comp.navigator, tab20, ",\n" + tab16, parSave);
                             }
                             String visiManager = formVisibility(comp);
+                            String noActual = "";
+                            if (comp.view.targetButton != null && comp.view.targetButton) {
+                                noActual = ").noActualStart(";
+                            }
                             declare.add(tab12 + ".list(" + formModel(comp)
-                                    + "\n" + tab16 + formView(comp, scName) + visiManager + navList + endComp);
+                                    + "\n" + tab16 + formView(comp, scName) + visiManager + navList + noActual + endComp);
                             break;
                         case Constants.SCROLL:
                         case Constants.PANEL:
@@ -460,7 +478,7 @@ public class ExportResult extends BaseServlet {
                             }
                             break;
                         case Constants.SPINNER:
-                            String noActual = "";
+                            noActual = "";
                             if (comp.view.targetButton != null && comp.view.targetButton) {
                                 noActual = ").noActualStart(";
                             }
@@ -809,10 +827,35 @@ public class ExportResult extends BaseServlet {
                                     ", " + comp.view.tabLayout.toUpperCase() + endComp);
                             break;
                         case Constants.INTRO:
+                            String plus = comp.view.plusId;
+                            if (plus == null || plus.length() == 0) {
+                                plus = ", 0";
+                            } else {
+                                plus = ", R.id." + plus;
+                            }
+                            String minus = comp.view.minusId;
+                            if (minus == null || minus.length() == 0) {
+                                minus = ", 0";
+                            } else {
+                                minus = ", R.id." + minus;
+                            }
+                            String tabL = comp.view.tabLayout;
+                            if (tabL == null || tabL.length() == 0) {
+                                tabL = ", 0";
+                            } else {
+                                tabL = ", R.id." + tabL;
+                            }
+                            String parI = comp.view.param;
+                            if (parI == null || parI.length() == 0) {
+                                parI = ", 0";
+                            } else {
+                                parI = ", R.id." + parI;
+                            }
                             declare.add(tab12 + ".componentIntro(" + formModel(comp) + " R.id." + comp.view.viewId + ", R.layout.item_" + scName + "_" 
-                                    + comp.view.viewId + "_0 , R.id." + comp.view.plusId +
-                                    ", R.id." + comp.view.minusId + ", R.id." + comp.view.tabLayout +
-                                    ", R.id." + comp.view.param + endComp);
+                                    + comp.view.viewId + "_0" + plus + minus + tabL + parI + endComp);
+//                                    , R.id." + comp.view.plusId +
+//                                    ", R.id." + comp.view.minusId + ", R.id." + comp.view.tabLayout +
+//                                    ", R.id." + comp.view.param + endComp);
                             break;
                     }
                 }
@@ -900,6 +943,10 @@ public class ExportResult extends BaseServlet {
                 break;
             case Constants.POST:
                 res += "POST, ";
+            case Constants.FILTER:
+                if (m.method != Constants.POST) {
+                    res += "FILTER, ";
+                }
             case Constants.GET:
                 if (m.url == null || m.url.length() == 0) {
                     return "";
@@ -1155,7 +1202,11 @@ public class ExportResult extends BaseServlet {
                 res = "springScale(" + parId+ ", 3, 1000)";
                 break;
             case "actual":
-                res = "handler(0, VH.ACTUAL, " + parId + ")";
+                vId = "0";
+                if (stId.length() > 0) {
+                    vId = stId;
+                }
+                res = "handler(" + vId + ", VH.ACTUAL, " + parId + ")";
                 break;
             case "send":
                 vId = "0";
@@ -1195,6 +1246,17 @@ public class ExportResult extends BaseServlet {
                         + "\n" + tab20 + stAfter + mValid + ")";
 //                res = "handler(" + vId + ", VH.CLICK_SEND, model(POST, \"" + parSend.url + "\", \"" + parSend.queryFilds.fields + "\")" 
 //                        + "\n" + tab20 + stAfter + mValid + ")";
+                break;
+            case "Clear form fields":
+                vId = "0";
+                if (stId.length() > 0) {
+                    vId = stId;
+                }
+                stRecordId = "";
+                if (hh.param_1 != null && hh.param_1.length() > 0) {
+                    stRecordId = ", R.id." + hh.param_1;
+                }
+                res = "handler(" + vId + ", VH.CLEAR_DATA" + stRecordId + ")";
                 break;
             case "edit profile":
             case "sign up":
@@ -2508,6 +2570,25 @@ public class ExportResult extends BaseServlet {
                         }
                         if (sbp.sendNotif != null && sbp.sendNotif.length() > 0) {
                             writer.write(tab + "app:sendNotif=\"" + sbp.sendNotif + "\"");
+                        }
+                        if (p.componParam.saveParam != null && p.componParam.saveParam.length() > 0) {
+                            writer.write(tab + "app:saveParam=\"" + p.componParam.saveParam + "\"");
+                        }
+                        
+                        if (p.componParam.st_2 != null && p.componParam.st_2.length() > 0) {
+                            writer.write(tab + "app:saveParamMin=\"" + p.componParam.st_2 + "\"");
+                        }
+                        if (p.componParam.st_3 != null && p.componParam.st_3.length() > 0) {
+                            writer.write(tab + "app:saveParamMax=\"" + p.componParam.st_3 + "\"");
+                        }
+                        if (p.componParam.st_4 != null && p.componParam.st_4.length() > 0) {
+                            writer.write(tab + "app:showMinMaxValue=\"@id/" + p.componParam.st_4 + "\"");
+                        }
+                        if (p.componParam.st_5 != null && p.componParam.st_5.length() > 0) {
+                            writer.write(tab + "app:showMinValue=\"@id/" + p.componParam.st_5 + "\"");
+                        }
+                        if (p.componParam.st_6 != null && p.componParam.st_6.length() > 0) {
+                            writer.write(tab + "app:showMaxValue=\"@id/" + p.componParam.st_6 + "\"");
                         }
                     }
                     break;

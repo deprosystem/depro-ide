@@ -27,15 +27,23 @@ function uxList() {
             +'<img style="float:left;margin-left:5px;" width="14" height="14" src="img/options.png">'
         +'</div>';
     let cascadingPar = "";
-    let options = '<div class="container_options" style="height:42px;margin-top:5px;padding-top:5px;display:none;border-top:1px solid #1dace9"></div>'
-    
+    let options = '<div class="container_options" style="height:42px;margin-top:5px;padding-top:5px;display:none;border-top:1px solid #1dace9"></div>';
 
     this.getParamComp = function () {
         return this.param;
     }
     
     this.getSpecialView = function () {
-        return docNavigator + optionsIcon;
+        let valNoAct = currentComponentDescr.view.targetButton;
+        let stSrc = "check-act";
+        if (valNoAct)  {
+            stSrc = "check-sel_1";
+        }
+        let noActiveL = '<div style="float:left;cursor:pointer;margin-left:20px;">'
+            +'<div style="float:left;color:#2228;font-size:10px">Do not activate at startup</div>'
+            +'<img onclick="noActiveListClick(this)" style="float:left;margin-left:5px;" width="14" height="14" src="img/' + stSrc + '.png">'
+        +'</div>';
+        return docNavigator + optionsIcon + noActiveL;
     }
     
     this.getEditParam = function () {
@@ -525,6 +533,12 @@ function changeNameGlobVar(el) {
 function changeListGlobVar(el) {
     currentComponentDescr.options.listVar = el.value;
 }
+
+function noActiveListClick(el) {
+    let chec = checkEditCheckbox(el);
+    currentComponentDescr.view.targetButton = chec;
+}
+
 /*
 function changeVisibilityList(el) {
     currentComponentDescr.view.visibility = el.value;

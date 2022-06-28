@@ -864,7 +864,7 @@ function cbGenerateProject(res, wind) {
         save.appendChild(newDOMelement('<a href="' + res + 
                 '" download="' + currentProject.nameProject + '_debug.apk" style="text-decoration: none;color:#fff0;display:inline-block;width:100%;height:100%;position:absolute;top:0;left:0"> </a>'));
     }
-    save.addEventListener("click", function(){closeWindow(save);}, true);
+    save.addEventListener("click", function(){closeDataWindow(save);}, true);
 }
 
 function setAppParameters() {

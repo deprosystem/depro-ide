@@ -36,7 +36,7 @@ function initialView(AuthResult) {
             setBlanckToolBar();
         }
     }
-    if (listImage == null) {
+    if (listImage == null && currentProject != null) {
         doServer("GET", 'images/list', cbGetImageList);
     }
 }

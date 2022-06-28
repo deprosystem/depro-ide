@@ -16,8 +16,8 @@ function CRUD(dat, name, type_crud) {
     this.type_crud = type_crud;
     
     let self = this;
-    
-    let wFields = 200;
+    let isSend;
+    let wFields = 250;
     let wTab = 200;
     let hRow = 24;
     let hWhere = 150;
@@ -31,6 +31,7 @@ function CRUD(dat, name, type_crud) {
     ]
     
     this.init = function() {
+        isSend = false;
         let titForm;
         this.data = dat;
         this.hostDomainQ = currentProject.host;
@@ -61,6 +62,7 @@ function CRUD(dat, name, type_crud) {
                 if (this.param.err_1 == null) {
                     this.param.err_1 = "There is already an entry with such keys";
                 }
+                isSend = true;
                 break;
             case "SignUp":
                 if (par == null) {
@@ -87,8 +89,13 @@ function CRUD(dat, name, type_crud) {
         this.where = newDOMelement('<div style="width:100%;height:' + hWhere + 'px;display:none;border-top:1px solid #1dace9;"></div>');
         wind.append(this.where);
         let selF = newDOMelement('<div style="float:left;position:relative;height:100%;width:' + wFields + 'px;border-right:1px solid #1dace9;"></div>');
+        let stSend = "";
+        if (isSend) {
+            stSend = '<div style="margin-top:3px;float:right;margin-right:5px;">Profile</div>';
+        }
         let titleF = newDOMelement('<div class="tab_title" style="height:' + hRow + 'px;border-bottom:1px solid #1dace9;position:absolute;left:0;top:0;right:0;background:#f3f8ff;">' 
                 +'<div style="margin-top:3px;float:left;margin-left:5px;">Fields name</div>'
+                +stSend
                 +'<div style="margin-top:3px;float:right;margin-right:5px;">Validate</div>'
                 +'</div>');
         selF.appendChild(titleF);
@@ -123,7 +130,7 @@ function CRUD(dat, name, type_crud) {
     }
     
     self.init_1 = function() {
-        self.tabbleObj = new TableObj(self.selectFields, self.fieldsTable);
+        self.tabbleObj = new TableObj(self.selectFields, self.fieldsTable, isSend);
         self.getQuery();
     }
     
@@ -165,7 +172,8 @@ function CRUD(dat, name, type_crud) {
                 this.tabbleObj.addSelectFields(item.listFields);
                 this.tabbleObj.setViewImg();
                 if (this.param != null && this.param.queryFilds != null && this.param.queryFilds.indV != null) {
-                    this.markingValidFields(this.param.queryFilds.indV);
+                    let pp = this.param.queryFilds.indP;
+                    this.markingValidFields(this.param.queryFilds.indV, pp);
                 }
             }
         }
@@ -246,33 +254,54 @@ function CRUD(dat, name, type_crud) {
     this.formFieldsValid = function() {
         let ff = "";
         let vv = "";
+        let pp = "";
         let indF = [];
         let indV = [];
-        let sepF = "", sepV = "";
+        let indP = [];
+        let imgP;
+        let sepF = "", sepV = "", sepP = "";
         let fieldsView = this.selectFields.children;
         let ik = fieldsView.length;
         for (let i = 0; i < ik; i++) {
             let item = fieldsView[i];
             ff += sepF + item.name_field;
             indF.push(item.idField);
-            sepF = ",";
-            let img = item.querySelector('IMG');
-            if (img.src.indexOf("act") == -1) {
-                vv += sepV + item.name_field;
-                indV.push(item.idField);
-                sepV = ",";
+            if (isSend) {
+                sepF = ",";
+                imgP = item.querySelector('.selProf');
+            }
+            if (isSend && imgP.src.indexOf("act") == -1) {
+                pp += sepP + item.name_field;
+                indP.push(item.idField);
+                sepP = ",";
+            } else {
+                let img = item.querySelector('.selField');
+                if (img.src.indexOf("act") == -1) {
+                    vv += sepV + item.name_field;
+                    indV.push(item.idField);
+                    sepV = ",";
+                }
             }
         }
-        return {fields:ff,valid:vv,indF:indF,indV:indV};
+        return {fields:ff,valid:vv,indF:indF,indV:indV,prof:pp,indP:indP};
     }
     
-    this.markingValidFields = function (arr) {
+    this.markingValidFields = function (arr, arrP) {
         let fieldsView = this.selectFields.children;
         let ik = fieldsView.length;
+        let img;
         for (let i = 0; i < ik; i++) {
             let item = fieldsView[i];
-            if (isFieldInList(item.idField, arr)) {
-                let img = item.querySelector('IMG');
+            let noProf = true;
+            if (isSend && arrP != null) {
+                if (isFieldInList(item.idField, arrP)) {
+                    img = item.querySelector('.selProf');
+                    img.src = "img/check-sel_1.png";
+                    noProf = false;
+                }
+            }
+            if (noProf && isFieldInList(item.idField, arr)) {
+                img = item.querySelector('.selField');
                 img.src = "img/check-sel_1.png";
             }
         }

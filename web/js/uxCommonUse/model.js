@@ -3,7 +3,7 @@ let uxModel1 = '<div class="model_view" style="height:40px;">'
         +'<div style="float:left;"><div style="color:#2228;font-size: 10px;margin-left:4px">Method</div>'
         +'<select class="model_method type_screen select_';
 
-let uxModel2 = '" onchange="changeMethod(this)" style="width:120px;"><option>GET</option><option>POST</option><option>TEST</option>'
+let uxModel2 = '" onchange="changeMethod(this)" style="width:120px;"><option>GET</option><option>POST</option><option>FILTER</option><option>TEST</option>'
             +'<option>JSON</option><option>PARAMETERS</option>'
             +'<option>GLOBAL</option><option>ARGUMENTS</option><option>PROFILE</option><option>FIELD</option><option>GET_DB</option>'
             +'<option>POST_DB</option><option>INSERT_DB</option><option>DEL_DB</option><option>UPDATE_DB</option><option>NULL</option></select>'
@@ -129,6 +129,7 @@ function changeMethod(el) {
 //        selectMethodInModel = el.options[el.selectedIndex].value;
         switch (el.options[el.selectedIndex].value) {
             case "POST":
+            case "FILTER":
             case "GET":
                 if (hostDescr == "Third party API") {
                     pm.innerHTML = pmUrl + pmParamUrl + pmProgr;

@@ -77,6 +77,7 @@ function editDataWind(meta, data, obrSave, dopEl, w, h, l, t, colorFon, move) {
     if (dopEl != null) {
         windMenu.parentElement.style.height = (dopEl.clientHeight + hh) + "px";
     }
+    return editDat;
 }
 
 function editDataDop(meta, data, obrSave, dopEl, w, h, l, t, colorFon) {

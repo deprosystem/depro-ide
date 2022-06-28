@@ -265,6 +265,7 @@ function formViewScrolY(wraperScroll, hide) {
     
     let viewDataY = document.createElement('div');
     viewDataY.className = "viewData";
+    viewDataY.style.marginRight = "15px";
     content.appendChild(viewDataY);
 
     let scrollY = new ScrollY(viewport, true);

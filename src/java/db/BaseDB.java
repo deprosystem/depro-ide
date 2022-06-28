@@ -202,4 +202,18 @@ public class BaseDB {
     public String inQuotes(String par) {
         return "'" + par + "'";
     }
+    
+    public String escapingQuotes(String st) {
+        int ik = st.length();
+        StringBuffer sb = new StringBuffer(ik + 100);
+        char[] sCh = st.toCharArray();
+        for (int i = 0; i < ik; i++) {
+            char cc = sCh[i];
+            sb.append(cc);
+            if (cc == '\'') {
+                sb.append(cc);
+            }
+        }
+        return sb.toString();
+    }
 }

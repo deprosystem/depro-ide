@@ -2,7 +2,7 @@
 var listEvents = "click,change";
 var handlerGroups = [
     {group:"Navigation",items:"start,back,backOk,finishDialog,setMenu,nextScreen,actual"},
-    {group:"Variables",items:"addVar,delVar,cleanVar,cleanCopyVar,restoreVar,setVar,writeVar,saveViewInParams,addParam,setParam,setValueParam"},
+    {group:"Variables",items:"addVar,delVar,cleanVar,cleanCopyVar,restoreVar,setVar,writeVar,saveViewInParams,addParam,setParam,setValueParam,Clear form fields"},
     {group:"Visibility",items:"show,hide,showHide,openDrawer,closeDrawer"},
     {group:"Data",items:"send"},
     {group:"Autch",items:"sign in,sign up,edit profile,setToken,setProfile,exit"},
@@ -41,6 +41,7 @@ var listMetaHandlers = [
         {handl:"assignValue", meta:[{name: "id", title:"The element to be assigned values",len:150,type:"SelectId"}]},
         {handl:"restoreVar", meta:[{name: "param", title:"The element that is shown",len:150,type:"Text",valid:"latin"}]},
         {handl:"addRecord", meta:[{name: "id", title:"The element to which the record is added",len:150,type:"SelectId",tags:"List"}]},
+        {handl:"Clear form fields", meta:[{name: "param_1", title:"Element with data",len:100,type:"SelectId",visibility:true}]},
         {handl:"checked", meta:[{name: "after", title:"On navigator",type:"Navig"},
             {name: "nav_1", title:"Off navigator",type:"Navig"}]}
     ];

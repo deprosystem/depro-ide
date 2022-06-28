@@ -1,4 +1,4 @@
-function TableObj(selF, tabF) {
+function TableObj(selF, tabF, isSend) {
     this.selectFields = selF;
     this.fieldsTable = tabF;
     this.selectTable;
@@ -67,7 +67,6 @@ function TableObj(selF, tabF) {
         let item = listTables[it];
         this.tableName = item.name_table;
         this.selectTable = {id_table:item.id_table,name_table: item.name_table,title_table:item.title_table,fields_table:JSON.parse(item.fields_table)};
-//        this.selectTable.fields_table.unshift({id_field:0, name:"id_" + item.name_table, type:"Bigserial", title:""});
         this.tableId = item.id_table;
         this.fieldsTable.innerHTML = "";
         this.selectFields.innerHTML = "";
@@ -89,7 +88,6 @@ function TableObj(selF, tabF) {
         this.scrollT = viewScroll.scroll_y;
 
         let fields = JSON.parse(item.fields_table);
-//        fields.unshift({id_field:0, name:"id_" + item.name_table, type:"Bigserial", title:""});
         let ik = fields.length;
         for (let i = 0; i < ik; i++) {
             this.oneFieldTables(item.id_table, fields[i], this.viewData);
@@ -185,7 +183,6 @@ function TableObj(selF, tabF) {
     }
     
     this.setViewImg = function (el) {
-//        let cont = el.closest(".viewData");
         let cont = this.viewData;
         let child = cont.children;
         let ik = child.length;
@@ -199,9 +196,7 @@ function TableObj(selF, tabF) {
                 cMin++;
             }
         }
-        
-//        let tabBlock = el.closest(".table_view");
-//        let viewData = tabBlock.getElementsByClassName("tab_title")[0];
+
         let viewData = this.fieldsTable.getElementsByClassName("tab_title")[0];
         let sel = viewData.getElementsByTagName("img")[0];
         if (cMin == 0) {
@@ -264,7 +259,14 @@ function TableObj(selF, tabF) {
         let rect_1 = name.getBoundingClientRect();
         let descr = newDOMelement('<div style="font-size:10px;color:#555;margin-top:6px;height:11px;width:' + (rect.width - rect_1.width - 20) 
                 + 'px;float:left;margin-left:5px;overflow:hidden">' + item.title);
-        let selField = newDOMelement('<img style="width:18px;cursor:pointer;height:18px;position:absolute;right:2px;top:3px;" src="img/check-act.png">');
+        let margR = "2";
+        if (isSend) {
+            let selProf = newDOMelement('<img class="selProf" style="width:18px;cursor:pointer;height:18px;position:absolute;right:2px;top:3px;" src="img/check-act.png">');
+            selProf.addEventListener("click", () => {checkElement(selProf);}, false);
+            cont.appendChild(selProf);
+            margR = "30";
+        }
+        let selField = newDOMelement('<img class="selField" style="width:18px;cursor:pointer;height:18px;position:absolute;right:' + margR + 'px;top:3px;" src="img/check-act.png">');
         selField.addEventListener("click", () => {checkElement(selField);}, false);
         cont.appendChild(selField);
         cont.appendChild(descr);

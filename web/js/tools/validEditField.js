@@ -40,11 +40,18 @@ function validNameLower(e) {
     let k = e.key;
     if ((k >= "a" && k <= "z") || k == "_" || (k >= "0" && k <= "9") || 
             k == 'ArrowLeft' || k == 'ArrowRight' || k == 'Delete' || k == 'Backspace' || k == 'Enter'
-            || k == "Tab" || k == 'ArrowDown' || k == 'ArrowUp' || k == 'Shift' || k == 'Alt')  {
+            || k == "Tab" || k == 'ArrowDown' || k == 'ArrowUp' || k == 'Shift' || k == 'Alt' || k == 'Home' || k == 'End')  {
         let el = e.target;
-        if (el.selectionStart == 0 && k >= "0" && k <= "9") {
-            tooltipMessage(e.currentTarget, "The first character cannot be a digit");
-            return false;
+        if (el.selectionStart == 0) {
+            if (k >= "0" && k <= "9") {
+                tooltipMessage(e.currentTarget, "The first character cannot be a digit");
+                return false;
+            }
+            if (k == "_") {
+                tooltipMessage(e.currentTarget, "The first character cannot be a _");
+                return false;
+            }
+            return true;
         } else {
             return true;
         }
@@ -70,7 +77,8 @@ function validNumber(event) {
 function validNumberSign(event) {
     let k = event.keyCode;
     if (k < 47) {
-        return clickUpInput(event);
+        return true;
+//        return clickUpInput(event);
     } else {
         if ( ! ((k > 47 && k < 58) || k == 173)) {
             event.preventDefault();

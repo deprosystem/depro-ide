@@ -1,4 +1,4 @@
-function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, visi) {
+function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
     if (meta == null || domEl == null || data == null) {
         return null;
     };
@@ -30,7 +30,7 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, visi) {
         let isFocus = false;
         for (let i = 0; i < ik; i++) {
             let met = this.edMeta[i];
-            if (met.visibility == null || (visi && met.visibility)) {
+            if (met.visibility == null || (isScreen && met.visibility)) {
                 let ff = this.oneField(i);
                 if (ff != null) {
                     this.edDomEl.append(ff);
@@ -79,7 +79,6 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, visi) {
                 this.marg_T = "margin-top:5px;";
                 this.marg_L = "margin-left:7px;";
             }
-//            this.marg_L = "";
         }
         let clazz = "";
         if (met.clazz != null && met.clazz.length > 0) {

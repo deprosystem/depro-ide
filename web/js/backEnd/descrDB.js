@@ -30,11 +30,24 @@ function cbGetTables(res) {
 }
 
 function formListTables() {
+    formListTables_1();
+    setButtonAdd();
+}
+
+function formListTables_1() {
+    listTables.sort(function(a, b){
+        let nameA=a.name_table.toLowerCase(), nameB=b.name_table.toLowerCase();
+        if (nameA < nameB) return -1;
+        if (nameA > nameB) return 1;
+        return 0;
+    });
+
     listTablesView.innerHTML = "";
     let ik = listTables.length;
     if (ik > 0) {
         for (let i = 0; i < ik; i++) {
-            oneTableView(i, listTablesView);
+//            oneTableView(i, listTablesView);
+            oneTableView(listTables[i], listTablesView);
         }
     }
     setButtonAdd();
@@ -52,9 +65,10 @@ function setButtonAdd() {
     }
 }
 
-function oneTableView(i, el) {
-    let item = listTables[i];
-    let cont = newDOMelement('<div onclick="editTable(' + i + ')" style="float:left;width:100%;height:30px;overflow: hidden;cursor:pointer;border-bottom:1px solid #aaf;clear:both"></div>');
+function oneTableView(item, el) {
+//    let item = listTables[i];
+//    let cont = newDOMelement('<div class="tableInf" onclick="editTable(' + i + ')" style="float:left;width:100%;height:30px;overflow: hidden;cursor:pointer;border-bottom:1px solid #aaf;clear:both"></div>');
+    let cont = newDOMelement('<div class="tableInf" onclick="editTable(' + item.id_table + ')" style="float:left;width:100%;height:30px;overflow: hidden;cursor:pointer;border-bottom:1px solid #aaf;clear:both"></div>');
     let name = newDOMelement('<div class="name_t" style="font-size:16px;color:#000;margin-top:5px;float:left;margin-left:5px">' + item.name_table + '</div>');
     cont.appendChild(name);
     el.appendChild(cont);
@@ -64,7 +78,8 @@ function oneTableView(i, el) {
             + 'px;float:left;margin-left:10px;overflow:hidden">' + item.title_table + '</div>');
     cont.appendChild(descr);    
     if (item.name_table != "user") {
-        let del = newDOMelement('<img onclick="deleteTableAdm(' + i + ');" style="margin-top:11px;float:right;margin-right:7px;cursor:pointer;" width="10" height="10" src="img/del_red.png">');
+//        let del = newDOMelement('<img onclick="deleteTableAdm(' + i + ');" style="margin-top:11px;float:right;margin-right:7px;cursor:pointer;" width="10" height="10" src="img/del_red.png">');
+        let del = newDOMelement('<img onclick="deleteTableAdm(' + item.id_table + ');" style="margin-top:11px;float:right;margin-right:7px;cursor:pointer;" width="10" height="10" src="img/del_red.png">');
         cont.appendChild(del);
     }
 }

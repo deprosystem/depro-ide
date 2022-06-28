@@ -13,6 +13,17 @@ function uiSeekBar() {
                 +'<div class="text_style_ui">Image</div>'
                 +'<img class="thumb_img" onclick="setImgThumb(event)" width="30" height="30" style="width: 30px; height: 30px; float: left; border: 1px solid #bbd4ef;border-radius:5px;">'
             +'</div>';
+    
+    let meta = [
+        {title:"Save in parameters",len:150,type:"Label"},
+        {name: "saveParam", title:"min - max",type:"Text",len:80,br:true,valid:"latin"},
+        {name: "st_2", title:"min",type:"Text",len:80,valid:"latin"},
+        {name: "st_3", title:"max",type:"Text",len:80,valid:"latin"},
+        {title:"Show in view",len:150,type:"Label"},
+        {name: "st_4", title:"min - max",type:"SelectId",len:80,br:true,tags:"TextView"},
+        {name: "st_5", title:"min",type:"SelectId",len:80,tags:"TextView"},
+        {name: "st_6", title:"max",type:"SelectId",len:80,tags:"TextView"}
+    ]
 
     this.setElementUI = function(p, newEl, parent) {
         newEl.appendChild(createDivSeekBar(p));
@@ -71,6 +82,12 @@ function uiSeekBar() {
         contentAttributes.appendChild(c_thumb);
         contentAttributes.appendChild(newDOMelement(imgThumb));
         
+        let sss = selectListID("Slider id", 80, currentChildren, sbPar.sliderId, changeSeekSlider);
+//        sss.style.clear = "both";
+        sss.style.marginLeft = "10px";
+        sss.style.marginTop = "5px";
+        contentAttributes.appendChild(sss);
+        
         let ed_r = editCheckbox("Range", sbPar.range, "seekRange");
         ed_r.style.clear = "both";
         ed_r.style.marginTop = "5px";
@@ -106,21 +123,19 @@ function uiSeekBar() {
         setValueNumber(v_min, sbPar.maxInit);
         contentAttributes.appendChild(v_min);
         
-        let sss = selectListID("Slider id", 80, currentChildren, sbPar.sliderId, changeSeekSlider);
-        sss.style.clear = "both";
-        sss.style.marginLeft = "0px";
-        sss.style.marginTop = "5px";
-        contentAttributes.appendChild(sss);
-        
         let sendN = editTextParam("Send notification", 80, sbPar.sendNotif, "seekSendNotif");
+        sendN.style.clear = "both";
         sendN.style.marginTop = "5px";
-        sendN.style.marginLeft = "10px";
+//        sendN.style.marginLeft = "10px";
         contentAttributes.appendChild(sendN);
-        
+/*
         let savP = editTextParam("Save in parameters", 80, sbPar.saveParam, "seekSaveParam");
         savP.style.marginTop = "5px";
         savP.style.marginLeft = "10px";
         contentAttributes.appendChild(savP);
+*/
+        let dd = new EditForm(meta, p.componParam, contentAttributes, null, this, true);
+        
     }
     
     this.viewElementUI = function(p, el) {
@@ -277,7 +292,8 @@ function changeSeekSlider(el) {
 function seekSendNotif(el) {
     currentElement.android.seekBarParam.sendNotif = el.value;
 }
-
+/*
 function seekSaveParam(el) {
     currentElement.android.seekBarParam.saveParam = el.value;
 }
+*/

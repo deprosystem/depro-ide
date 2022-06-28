@@ -40,7 +40,8 @@ public class ProjectDB extends BaseDB {
         return res;
     }
 
-    public void updateProject(ProjectM pc) {
+    public String updateProject(ProjectM pc) {
+        String res = "";
         String strUpd = "UPDATE projects SET ";
         String sep = "";
         if (pc.colors != null && pc.colors.length() > 0) {
@@ -68,17 +69,21 @@ public class ProjectDB extends BaseDB {
             sep = ",";
         }
         if (pc.screens != null) {
-            strUpd += sep + "screens = " + " '" + pc.screens + "' ";
+//            strUpd += sep + "screens = " + " '" + pc.screens + "' ";
+            strUpd += sep + "screens = " + " '" + escapingQuotes(pc.screens) + "' ";
             sep = ",";
         }
         strUpd += " WHERE project_id = " + pc.projectId;
         try (Connection connection = getDBConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(strUpd);
         } catch (SQLException ex) {
-            System.out.println("updateProject error="+ex);
+            System.out.println("updateProject SQL: error="+ex);
+            res = "updateProject SQL: error="+ex;
         } catch (ClassNotFoundException ex) {
-            System.out.println("updateProject error="+ex);
+            System.out.println("updateProject NotFound error="+ex);
+            res = "updateProject NotFound error="+ex;
         }
+        return res;
     }
     
     public void changeProject(ProjectM pc, String projectId) {
@@ -144,7 +149,8 @@ public class ProjectDB extends BaseDB {
     public ProjectM getProjectById(String id) {
         ProjectM pm = null;
         try (Connection connection = getDBConnection(); Statement statement = connection.createStatement()) {
-            ResultSet res = statement.executeQuery(SQL.getProjectById + inQuotes(id) + ";");
+//            ResultSet res = statement.executeQuery(SQL.getProjectById + inQuotes(id) + ";");
+            ResultSet res = statement.executeQuery(SQL.getProjectById + id + ";");
             if (res.next()) {
                 pm = new ProjectM();
                 pm.projectId = res.getLong("project_id");

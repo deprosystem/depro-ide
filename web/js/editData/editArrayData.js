@@ -785,9 +785,9 @@ function EditData(meta, data, domEl, obrSave, dopEl, move_1) {
         if (edObrSave != null) {
             let cc;
             if (edObrSave.obrSaveEdit != null) {
-                cc = edObrSave.obrSaveEdit(edData);
+                cc = edObrSave.obrSaveEdit(edData, dopEl);
             } else {
-                cc = edObrSave(edData);
+                cc = edObrSave(edData, dopEl);
             }
             if (cc != null && ! cc) {
                 closeW = false;

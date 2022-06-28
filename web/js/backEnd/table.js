@@ -1,15 +1,12 @@
 var listTables = null;
 var fieldsTable;
-var descrTable;
-var tableId;
 var tablePosition;
 var hItemListFieldsTable = 24;
 var listTablesForQuery = [];
-var editDataTable;
 var idTableField;
 var USER_TABLE_NAME = "user";
 
-let htmlTable = '<div style="height:40px;margin-left:20px">'
+let htmlTable = '<div class="descrTable" style="height:40px;margin-left:20px">'
         +'<div style="float:left;margin-left:10px"><div style="color: #2228;font-size: 10px;margin-left:4px">Name table</div>'
         +'<input class="name_t input_style" onkeyup="setFieldId(this)" onkeydown="return validNameLower(event)" value="" type="text" size="30"/>'
         +'</div>'
@@ -19,21 +16,22 @@ let htmlTable = '<div style="height:40px;margin-left:20px">'
     +'</div>';
 
 function addTable() {
-    descrTable = newDOMelement(htmlTable);
+    let descrTable = newDOMelement(htmlTable);
+    descrTable.id_table = -1;
     fieldsTable = [{id_field:0, name:"id_", type:"Bigserial", title:"Primary key", key:true, system:"primary"}];
-    tableId = -1;
-    editDataTable = editDataDop(metaTable, fieldsTable, cbAddTable, descrTable, 500, 500, 300);
+    let editDataTable = editDataWind(metaTable, fieldsTable, cbAddTable, descrTable, 500, 500, 300);
     let td = editDataTable.getCellXY(0, 1);
-    idTableField = td.querySelector("INPUT");
+    descrTable.fieldId = td.querySelector("INPUT");
 }
 
-function cbAddTable(dat) {
-    let nn = descrTable.getElementsByClassName("name_t")[0].value;
-    let dd = descrTable.getElementsByClassName("descr_t")[0].value;
+function cbAddTable(dat, dopEl) {
+    let nn = dopEl.getElementsByClassName("name_t")[0].value;
+    let dd = dopEl.getElementsByClassName("descr_t")[0].value;
+    let tableId = dopEl.id_table;
     if (nn != null && nn != "") {
+        
         if (nn == USER_TABLE_NAME) {
-//            myAlert('The table cannot be named "user"');
-//            return false;
+            
         }
         let ik = dat.length;
         let ln = "";
@@ -56,7 +54,7 @@ function cbAddTable(dat) {
             if (tableId == -1) {
                 doServerAlien("POST", hostDomain + "tables/descr", cbSaveTable, JSON.stringify(t));
             } else {
-                doServerAlien("POST", hostDomain + "tables/descr", cbChangeTable, JSON.stringify(t));
+                doServerAlien("POST", hostDomain + "tables/descr", cbChangeTable, JSON.stringify(t), {id_table:dopEl.id_table});
             }
         }
     } else {
@@ -66,8 +64,10 @@ function cbAddTable(dat) {
 }
 
 function setFieldId(el) {
-    if (tableId == -1) {
-        idTableField.value = "id_" + el.value;
+    let descr = el.closest(".descrTable");
+    if (descr.id_table == -1) {
+        let inpId = descr.fieldId;
+        inpId.value = "id_" + el.value;
     }
 }
 
@@ -77,41 +77,49 @@ function cbSaveTable(res) {
         listTables = [];
     }
     listTables.push(it);
-    oneTableView(listTables.length - 1, listTablesView);
+    formListTables_1();
 }
 
-function cbChangeTable(res) {
+function cbChangeTable(res, par) {
     let it = JSON.parse(res);
-    listTables.splice(tablePosition, 1, it);
-    let viewEl = listTablesView.children[tablePosition];
-    viewEl.getElementsByClassName("name_t")[0].innerHTML = it.name_table;
-    viewEl.getElementsByClassName("title_t")[0].innerHTML = it.title_table;
+    let tablePos = getTablePosition(par.id_table);
+    if (tablePos > -1) {
+        listTables.splice(tablePos, 1, it);
+        formListTables_1();
+    }
 }
 
-function deleteTableAdm(i) {
+function getTablePosition(id_table) {
+    let ik = listTables.length;
+    for (let i = 0; i < ik; i++) {
+        if (id_table == listTables[i].id_table) {
+            return i;
+        }
+    }
+    return - 1;
+}
+
+function deleteTableAdm(id_table) {
     event.stopPropagation();
-    tablePosition = i;
-    let item = listTables[i];
-    myAlert("The " + item.name_table + "table and all its data will be deleted permanently.<br />Proceed?", "Proceed", proceedDelTable);
+    let item = listTables[getTablePosition(id_table)];
+    myAlert("The " + item.name_table + "table and all its data will be deleted permanently.<br />Proceed?", "Proceed", proceedDelTable, item);
 }
 
-function proceedDelTable() {
-    let item = listTables[tablePosition];
+function proceedDelTable(item) {
     let t = {name_table:item.name_table,id_table:item.id_table};
-    doServerAlien("POST", hostDomain + "tables/del_tab", cbDelTable, JSON.stringify(t), tablePosition);
+    doServerAlien("POST", hostDomain + "tables/del_tab", cbDelTable, JSON.stringify(t), item);
 }
 
-function cbDelTable(res, i) {
-    listTables.splice(i, 1);
-    listTablesView.children[i].remove();
+function cbDelTable(res, item) {
+    let i_1 =  getTablePosition(item.id_table);
+    listTables.splice(i_1, 1);
+    formListTables_1();
 }
 
 function editTable(i) {
-    let item = listTables[i];
+    let item = listTables[getTablePosition(i)];
     fieldsTable = JSON.parse(item.fields_table);
-    tableId = item.id_table;
-    tablePosition = i;
-    descrTable = newDOMelement(htmlTable);
+    let descrTable = newDOMelement(htmlTable);
     if (item.name_table == USER_TABLE_NAME) {
         let nt = descrTable.querySelector(".name_t");
         nt.setAttribute('disabled','disabled');
@@ -119,9 +127,12 @@ function editTable(i) {
         let dt = descrTable.querySelector(".descr_t");
         dt.setAttribute('disabled','disabled');
     }
+    descrTable.id_table = item.id_table;
     descrTable.getElementsByClassName("name_t")[0].value = item.name_table;
     descrTable.getElementsByClassName("descr_t")[0].value = item.title_table;
-    editDataWind(metaTable, fieldsTable, cbAddTable, descrTable);
+    let editDataTable = editDataWind(metaTable, fieldsTable, cbAddTable, descrTable);
+    let td = editDataTable.getCellXY(0, 1);
+    descrTable.fieldId = td.querySelector("INPUT");
 }
 
 function addTableForQuery() {
@@ -188,7 +199,7 @@ function formBlockTable(item) {
     let viewScroll = formViewScrolY(wraperScroll);
     viewScroll.style.right = "9px";
     let viewDataT = viewScroll.getElementsByClassName("viewData")[0];
-
+//    viewDataT.style.marginRight = "15px";
     let fields = JSON.parse(item.fields_table);
     let ik = fields.length;
     for (let i = 0; i < ik; i++) {
@@ -340,7 +351,6 @@ function delFieldsInQuery(el) {
 function oneFieldView(idTab, item, el) {
     let tt = currentComponentDescr.type;
     let isFormForQuery = tt == "Form" || tt == "ScrollForm";
-
     let cont = newDOMelement('<div class="field" style="float:left;width:100%;position:relative;height:' 
             + hItemListFieldsTable + 'px;overflow: hidden;border-bottom:1px solid #aaf;clear:both"></div>');
     cont.idTable = idTab;
@@ -361,6 +371,4 @@ function oneFieldView(idTab, item, el) {
     }
     cont.appendChild(descr);
 }
-
-
 

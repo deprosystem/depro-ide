@@ -12,8 +12,8 @@ public class Constants {
     public static final int TOP = 0, CENTER = 1, BOTTOM = 2, ABSOLUTE = 3, NONE = 4;
     public static final int LEFT = 0, RIGHT = 2;
     public static int[] ANGLES = {0, 90, 45, 0, 315};
-    public final static int GET = 0, POST = 1, TEST = 2, JSON = 3, PARAMETERS = 4, GLOBAL = 5, ARGUMENTS = 6, PROFILE = 7, FIELD = 8, 
-            GET_DB = 9, POST_DB = 10, INSERT_DB = 11, DEL_DB = 12, UPDATE_DB = 13, NULL = 14;
+    public final static int GET = 0, POST = 1, FILTER = 2, TEST = 3, JSON = 4, PARAMETERS = 5, GLOBAL = 6, ARGUMENTS = 7, PROFILE = 8, FIELD = 9, 
+            GET_DB = 10, POST_DB = 11, INSERT_DB = 12, DEL_DB = 13, UPDATE_DB = 14, NULL = 15;
     
     public static String PROJECTS_DATA = "projectdataIDE/", 
             USERS_DATA = "usersdataIDE/";

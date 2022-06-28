@@ -1,4 +1,4 @@
-function myAlert(txt, cbTxt, cbFunc) {
+function myAlert(txt, cbTxt, cbFunc, param) {
     let wCaution = 400, wCaution_2 = 200;
     let hCaution = 250, hCaution_2 = 125;
     let cautionBlockAll = newDOMelement('<div onclick="n_hiddenMyAlert(this)" style="background-color: #aaa7; top: 0;left: 0;right: 0;bottom: 0;z-index: 10;position: absolute;"></div>');
@@ -13,7 +13,7 @@ function myAlert(txt, cbTxt, cbFunc) {
     if (cbTxt != null) {
         let btnBl = createButtonBlue(cbTxt, 80);
         btnBl.style.marginTop = "20px";
-        btnBl.addEventListener("click", function(){cautionBlockAll.remove();cbFunc();}, false);
+        btnBl.addEventListener("click", function(){cautionBlockAll.remove();cbFunc(param);}, false);
         caution.appendChild(btnBl);
     }
     let btnWeite = createButtonWeite("Cancel", 80);

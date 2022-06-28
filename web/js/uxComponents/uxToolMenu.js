@@ -232,7 +232,7 @@ function getListMenuAct(nameAct) {
     }
     return null;
 }
-
+/*
 function selectImgBackTB(e) {
     selectListImage(e, setImgBackTB);
 }
@@ -281,3 +281,4 @@ function setImgAdditionaTB(i) {
     imgBl.src = nn;
     currentComponentDescr.view.selectedValue = nn;
 }
+*/

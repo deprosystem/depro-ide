@@ -15,6 +15,24 @@ function uiToolBar() {
     this.setElementUI = function(p, newEl, parent) {
         typeEl = newDOMelement(this.elementUI);
         newEl.appendChild(typeEl);
+        let myCompon = myComponentDescr(p.componId);
+        if (myCompon == null) return;
+        let v = myCompon.view;
+        let tit = typeEl.getElementsByClassName("title")[0];
+        if (tit != null) {
+            if (currentScreen.title != null && currentScreen.title != "") {
+                tit.innerHTML = currentScreen.title;
+            }
+            tit.style.color = findColorByIndex(p.textColor);
+            tit.style.fontSize = (p.textSize * MEASURE) + px;
+        }
+        let img = typeEl.getElementsByClassName("img_back")[0];
+        if (img != null) {
+            if (v.selectedType != null && v.selectedType != "") {
+                img.src = v.selectedType;
+            }
+        }
+/*
         let tit = typeEl.getElementsByClassName("title")[0];
         if (tit != null) {
             if (currentScreen.title != null && currentScreen.title != "") {
@@ -29,6 +47,7 @@ function uiToolBar() {
                 img.src = p.imgBack;
             }
         }
+*/
     }
     
     this.newElementUI = function(p) {
@@ -41,6 +60,26 @@ function uiToolBar() {
     }
     
     this.viewElementUI = function(p, el) {
+        let myCompon = myComponentDescr(p.componId);
+        if (myCompon == null) return;
+        let v = myCompon.view;
+        let tit = el.getElementsByClassName("title")[0];
+        if (tit != null) {
+            if (currentScreen.title != null && currentScreen.title != "") {
+                tit.innerHTML = currentScreen.title;
+            }
+            tit.style.color = findColorByIndex(p.textColor);
+            if (p.textSize != null) {
+                tit.style.fontSize = (p.textSize * MEASURE) + px;
+            }
+        }
+        img = el.getElementsByClassName("img_back")[0];
+        if (img != null) {
+            if (v.selectedType != null && v.selectedType != "") {
+                img.src = v.selectedType;
+            }
+        }
+/*
         let tit = el.getElementsByClassName("title")[0];
         if (tit != null) {
             if (currentScreen.title != null && currentScreen.title != "") {
@@ -57,6 +96,7 @@ function uiToolBar() {
                 img.src = p.imgBack;
             }
         }
+*/
     }
     
     this.getHelpLink = function() {

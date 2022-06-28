@@ -107,8 +107,12 @@ public class Project extends BaseServlet {
                         sendError(response, "Input Error " + e.toString());
                     }
                     if (pc != null) {
-                        projectDb.updateProject(pc);
-                        sendResultOk(response);
+                        String er = projectDb.updateProject(pc);
+                        if (er.length() == 0) {
+                            sendResultOk(response);
+                        } else {
+                            sendError(response, er);
+                        }
                     }
                     break;
                 case "/project/list":

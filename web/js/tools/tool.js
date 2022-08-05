@@ -118,7 +118,7 @@ function getChildrenByClassName(el, name) {
 function newDOMelement(st) {
     var container = document.createElement('div')
     container.innerHTML = st;
-    return container.firstChild
+    return container.firstChild;
 }
 
 function charToInt(c) {

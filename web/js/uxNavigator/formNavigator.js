@@ -28,7 +28,7 @@ function FormNavigator() {
     this.menuSelect;
     this.cb;
     
-    this.init = function(dat, compon, aft, isScreen, menuSelect, cb) {
+    this.init = function(dat, compon, aft, isScreen, menuSelect, cb, offset) {
         if (dat == null) return;
         this.after = aft;
         this.cb = cb;
@@ -61,7 +61,11 @@ function FormNavigator() {
             ll = 550;
             tt = 40;
         }
-        this.contentD = formWind(this.wWind, 300, tt, ll, "Navigator", null, null, "", null, "");
+        if (offset != null) {
+            tt += offset;
+            ll += offset;
+        }
+        this.contentD = formWind(this.wWind, 400, tt, ll, "Navigator", null, null, "", null, "");
         this.contentD.style.bottom = (this.hControl - 1) + "px";
         this.contentD.style.width = this.wContent + "px";
         this.wind = this.contentD.closest(".dataWindow");
@@ -265,10 +269,8 @@ function FormNavigator() {
     this.clickHand = function(st) {
         let txtHand = this.selElementHand.querySelector("div");
         txtHand.innerHTML = st;
-        
         this.dataHand[this.selDataHand].handler = st;
         this.selHandFull(this.selDataHand);
-        
         closePopUp(this.listHandView);
     }
     

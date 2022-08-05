@@ -136,7 +136,8 @@ function changeHost() {
 
 function sendDescrHost() {
     if (hostDescr == "Server IDE") {
-        hostDomain = "https://apps.deprosystem.com/";
+            hostDomain = "https://apps.dp-ide.com/";
+//        hostDomain = "https://apps.deprosystem.com/";
     }
     let dat = {whereServer:hostDescr,domain:hostDomain,pass:hostPassword,res_ind:currentProject.resurseInd};
     if (hostDescr == "Third party API") {
@@ -182,7 +183,8 @@ function changeHostSel(el) {
         hostPanel.style.display = "block";
     } else {
         hostPanel.style.display = "none";
-        hostDomain = "https://apps.deprosystem.com/";
+        hostDomain = "https://apps.dp-ide.com/";
+//        hostDomain = "https://apps.deprosystem.com/";
     }
 }
 

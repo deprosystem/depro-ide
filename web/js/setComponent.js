@@ -125,7 +125,8 @@ function createDivEditText(el) {
     var bot = 10 * MEASURE;
     var margbot = 7 * MEASURE;
     var container = document.createElement('div')
-    container.innerHTML = '<div class="line" style="position: absolute; top:0px; left:' + marg 
+        container.innerHTML = '<div class="line" style="position: absolute; left:' + marg 
+//    container.innerHTML = '<div class="line" style="position: absolute; top:0px; left:' + marg 
             + 'px;right:' + marg + 'px;border-bottom:1px solid #808080; bottom:' + margbot + 'px;"></div>' 
             + '<div class="text" style="position: absolute; white-space: pre-wrap; color: #808080"></div>';
     el.appendChild(container.firstChild);
@@ -244,7 +245,6 @@ function viewComponElem(el) {
     if (p.visibility != null && ! p.visibility) {
         return;
     }
-//console.log("p.viewId="+p.viewId+"<< el.parentElement="+el.parentElement);
     setLayoutChange();
     let rectParentEl = p.parent.getBoundingClientRect();
     let parentX = parseInt(rectParentEl.left);
@@ -645,7 +645,6 @@ function viewComponElem(el) {
                 let ik = parCh.length;
                 for (let i = 0; i < ik; i++) {
                     let pCh = parCh[i];
-//console.log("setCompon 645 p.viewId="+p.viewId+"<< II="+i+" pCh.viewId="+pCh.viewId+"<<");
                     if (pCh.viewId != idEl && pCh.viewElement != null) {
                         if (pCh.above == idEl || pCh.below == idEl || pCh.toRightOf == idEl || pCh.toLeftOf == idEl) {
                             viewComponElem(pCh.viewElement);

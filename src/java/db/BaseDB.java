@@ -30,7 +30,6 @@ public class BaseDB {
     }
     
     public Connection getDBConnection() throws SQLException, ClassNotFoundException {
-//        if (Constants.isLocale) {
         if (request.getServletContext().getRealPath("").indexOf(File.separator) != 0) {
             urlDB = "jdbc:postgresql://localhost:5001/";
         } else {
@@ -41,7 +40,6 @@ public class BaseDB {
     }
     
     public Connection getClientDBConnection() throws SQLException, ClassNotFoundException {
-//        if (Constants.isLocale) {
         if (request.getServletContext().getRealPath("").indexOf(File.separator) != 0) {
             urlDB = "jdbc:postgresql://localhost:5001/";
         } else {

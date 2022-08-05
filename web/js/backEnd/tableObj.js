@@ -80,9 +80,9 @@ function TableObj(selF, tabF, isSend) {
         title.appendChild(this.selAllFieldsImg);
 
         this.fieldsTable.appendChild(block);
-        let wraperScroll = newDOMelement('<div style="position:absolute;left:0;top:' + hItem + 'px;right:0;bottom:0"></div');
+        let wraperScroll = newDOMelement('<div class="TTT" style="position:absolute;left:0;top:' + hItem + 'px;right:0;bottom:0"></div');
         block.appendChild(wraperScroll);
-        let viewScroll = formViewScrolY(wraperScroll);
+        let viewScroll = formViewScrolY(wraperScroll, true);
         viewScroll.style.right = "9px";
         this.viewData = viewScroll.querySelector(".viewData");
         this.scrollT = viewScroll.scroll_y;
@@ -96,8 +96,11 @@ function TableObj(selF, tabF, isSend) {
     }
     
     this.oneFieldTables = function (idTable, item, el) {
-        let cont = newDOMelement('<div class="cont_f" style="float:left;width:100%;position:relative;height:' 
-                + hItem + 'px;overflow: hidden;border-bottom:1px solid #aaf;clear:both"></div>');
+//        let cont = newDOMelement('<div class="cont_f" style="float:left;width:100%;position:relative;height:' 
+//                + hItem + 'px;overflow: hidden;border-bottom:1px solid #aaf;clear:both"></div>');
+        
+        let cont = newDOMelement('<div class="cont_f" style="position:relative;height:' 
+                + hItem + 'px;border-bottom:1px solid #aaf;"></div>');
         cont.idField = item.id_field;
         cont.name_field = item.name;
         cont.type_field = item.type;
@@ -239,13 +242,13 @@ function TableObj(selF, tabF, isSend) {
             }
         }
     }
-    
+/*
     this.scrollTable = function() {
         if (this.scrollT != null) {
             this.scrollT.resize();
         }
     }
-    
+*/
     this.oneFieldView = function (item, el) {
         let cont = newDOMelement('<div class="field" style="float:left;width:100%;position:relative;height:' 
                 + hItem + 'px;overflow: hidden;border-bottom:1px solid #aaf;clear:both"></div>');
@@ -261,10 +264,21 @@ function TableObj(selF, tabF, isSend) {
                 + 'px;float:left;margin-left:5px;overflow:hidden">' + item.title);
         let margR = "2";
         if (isSend) {
+            let selSel = formSelectForEditData("Field,Profile,System date,System time,My longitude,My latitude", "");
+            selSel.className = "selProf";
+            selSel.style.width = "110px";
+            selSel.style.border = "none";
+            selSel.style.backgroundColor = "#0000";
+            selSel.style.float = "right";
+            cont.append(selSel);
+            margR = "110";
+        
+/*
             let selProf = newDOMelement('<img class="selProf" style="width:18px;cursor:pointer;height:18px;position:absolute;right:2px;top:3px;" src="img/check-act.png">');
             selProf.addEventListener("click", () => {checkElement(selProf);}, false);
             cont.appendChild(selProf);
             margR = "30";
+*/
         }
         let selField = newDOMelement('<img class="selField" style="width:18px;cursor:pointer;height:18px;position:absolute;right:' + margR + 'px;top:3px;" src="img/check-act.png">');
         selField.addEventListener("click", () => {checkElement(selField);}, false);

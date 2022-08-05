@@ -9,7 +9,7 @@ function formWind(w, h, t, l, tit, scroll, cbClose, footName, footListener, colo
         if (colorFon.length > 0) {
             backGr = "background-color:" + colorFon + ";";
         }
-        panelFon = newDOMelement('<div style="width:100%;height:100%;' + backGr + 'position:absolute;z-index:1"></div>');
+        panelFon = newDOMelement('<div style="width:100%;height:100%;' + backGr + 'position:absolute;z-index:1;"></div>');
         document.body.append(panelFon);
     }
     let ww = document.createElement('div');
@@ -261,6 +261,7 @@ function formViewScrolY(wraperScroll, hide) {
     wraperScroll.appendChild(viewport);
     let content = document.createElement('div');
     content.className = "content";
+    content.style.bottom = "0px";
     viewport.appendChild(content);
     
     let viewDataY = document.createElement('div');

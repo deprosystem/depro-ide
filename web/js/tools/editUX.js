@@ -31,6 +31,11 @@ function newOptionsTypeUI(type, vv) {
     return formOptionsSelUI(" " + st, vv);
 }
 
+function newOptionsTagsUI(type, vv) {
+    let st = formListIdTags(currentChildren, type);
+    return formOptionsSelUI(" " + st, vv);
+}
+
 function formOptionsSelUI(stOption, valueSel) {
     let ll = stOption.split(",");
     let ik = ll.length;

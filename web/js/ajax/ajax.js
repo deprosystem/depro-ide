@@ -29,9 +29,15 @@ function doServer(metod, url, callBack, data, paramCallBack, progress, cbError, 
                 }
 */
             } else {
-console.log("AJAX="+req.responseText);
-                var mes = JSON.parse(req.responseText).message;
-                dialogError("Server error", "status=" + req.status + " " + mes);
+                let resEr = req.responseText;
+console.log("AJAX="+resEr);
+                if (resEr.indexOf("<!doctype") > -1 || resEr.indexOf("<html>") > -1) {
+                    let wwind = new formWind(700, 450, 50, 200, "Error", true, null, null, null, "");
+                    wwind.innerHTML = resEr;
+                } else {
+                    let mes = JSON.parse(resEr).message;
+                    dialogError("Server error", "status=" + req.status + " " + mes);
+                }
                 if (cbError != null) {
                     cbError(req.responseText, paramCallBack);
                 }

@@ -163,10 +163,9 @@ public class ExportResult extends BaseServlet {
                     }
                     List<String> progr = new ArrayList();
                     if (isSerwer) {
-                        progr.add("/opt/gradle/gradle-6.7.1/bin/gradle");
-//                        progr.add("/opt/gradle/gradle-5.5/bin/gradle");
+                        progr.add("gradle");
+//                        progr.add("/opt/gradle/gradle-6.7.1/bin/gradle");
                     } else {
-//                        progr.add("gradle.bat");
                         progr.add("C:\\Users\\Yurii\\.gradle\\wrapper\\dists\\gradle-6.7.1-all\\2moa8rlfac5eqlcfgk98k0deb\\gradle-6.7.1\\bin\\gradle.bat");
                     }
                     progr.add("build");
@@ -179,7 +178,7 @@ public class ExportResult extends BaseServlet {
                     try {
                         process = builder.start();
                     } catch (IOException ex) {
-                        System.out.println("Compile Process Error="+ ex + "\n");
+                        System.out.println("Compile Process Error="+ ex);
                         return;
                     }
                     boolean isOk = false;
@@ -1244,8 +1243,6 @@ public class ExportResult extends BaseServlet {
                 }
                 res = "send(" + vId + stRecordId + ", model(POST, \"" + parSend.url + "\", \"" + parSend.queryFilds.fields + "\")" 
                         + "\n" + tab20 + stAfter + mValid + ")";
-//                res = "handler(" + vId + ", VH.CLICK_SEND, model(POST, \"" + parSend.url + "\", \"" + parSend.queryFilds.fields + "\")" 
-//                        + "\n" + tab20 + stAfter + mValid + ")";
                 break;
             case "Clear form fields":
                 vId = "0";
@@ -1309,8 +1306,29 @@ public class ExportResult extends BaseServlet {
                 String qu = parSend.url.substring(0, iQu) + "/" + quInt;
                 res = "send(" + vId + elRec + ", model(POST, \"" + qu + "\", \"" + parSend.queryFilds.fields + "\")" 
                         + "\n" + tab20 + stAfter + mValid + ")";
-//                res = "handler(" + vId + ", VH.CLICK_SEND, model(POST, \"" + qu + "\", \"" + parSend.queryFilds.fields + "\")" 
-//                        + "\n" + tab20 + stAfter + mValid + ")";
+                break;
+            case "setMenu":
+                vId = "0";
+                if (stId.length() > 0) {
+                    vId = stId;
+                }
+                if (hh.param != null && hh.param.length() > 0) {
+                    res = "handler(" + vId + ", VH.SET_MENU_ITEM, " + hh.param.toUpperCase()+ ")";
+                }
+                break;
+            case "clear form":
+                vId = "0";
+                if (stId.length() > 0) {
+                    vId = stId;
+                }
+                String[] arValid = hh.param_1.split(",");
+                mValid = "";
+                String sel = "";
+                for (String stValid : arValid) {
+                    mValid += sel + stValid;
+                    sel = ",";
+                }
+                res = "handler(" + vId + ", VH.CLEAR_FORM, R.id." + hh.id + ", \"" + mValid + "\")";
                 break;
             case "delRecord":
                 vId = "0";
@@ -2310,6 +2328,12 @@ public class ExportResult extends BaseServlet {
                         }
                         if (p.componParam.int_0 != null && p.componParam.int_0 > 0) {
                             writer.write(tab + "app:blur=\"" + p.componParam.int_0 + "\"");
+                        }
+                        String st_pl = p.componParam.st_1;
+                        if (st_pl != null && st_pl.length() > 0) {
+                            int ii = st_pl.lastIndexOf("/");
+                            String namP = st_pl.substring(ii + 1);
+                            writer.write(tab + "app:placeholder=\"@drawable/" + namP.substring(0, namP.indexOf('.')) + "\"");
                         }
                     }
                     break;

@@ -625,6 +625,8 @@ function saveQuery() {
     for (let i = 0; i < ik; i++) {
         let item = fieldsQQ[i];
         if (item.type_field.indexOf("erial") == -1) {
+//            let sel = item.querySelector("SELECT");
+//            itemData = {name:item.name_field,type:item.type_field,edit:sel.value};          
             let imgCheck = item.querySelector("IMG");
             let ed = false;
             if (imgCheck != null && imgCheck.src.indexOf("check-sel") > -1) {
@@ -891,6 +893,18 @@ function cbQueryValue(res) {
         for (let i = 0; i < ik; i++) {
             let item = fieldsQQ[i];
             if (item.type_field.indexOf("erial") == -1) {
+/*
+                let sel = item.querySelector("SELECT");
+                for (f = 0; f < fk; f++) {
+                    let itemF = dataEd[f];
+                    if (itemF.name == item.name_field) {
+                        if (itemF.edit != null && itemF.edit.length > 0) {
+                            sel.value = itemF.edit;
+                        }
+                        break;
+                    }
+                }
+*/
                 let imgCheck = item.querySelector("IMG");
                 if (imgCheck != null) {
                     imgCheck.src = "img/check-act.png";

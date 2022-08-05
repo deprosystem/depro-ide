@@ -501,7 +501,6 @@ function selComponType(name) {
     if (currentComponentView != null) {
         currentComponentView.className = "component";
     }
-//console.log("selComponType name="+name);
     uxFunction = null;
     try {
         uxFunction = eval("new ux" + name + "();");
@@ -533,7 +532,6 @@ function selComponType(name) {
         if (currentComponent != null) {
             currentChildren.push(currentComponent);
         }
-//console.log("selComponType el="+currentComponent.viewElement+"<< currentComponent.viewId="+currentComponent.viewId+"<<");
         setValueComponent(currentComponentView, currentComponent, currentComponentDescr);
 //viewCompon();
         setScreenView();

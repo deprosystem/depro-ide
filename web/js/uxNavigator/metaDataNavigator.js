@@ -5,9 +5,9 @@ var handlerGroups = [
     {group:"Variables",items:"addVar,delVar,cleanVar,cleanCopyVar,restoreVar,setVar,writeVar,saveViewInParams,addParam,setParam,setValueParam,Clear form fields"},
     {group:"Visibility",items:"show,hide,showHide,openDrawer,closeDrawer"},
     {group:"Data",items:"send"},
-    {group:"Autch",items:"sign in,sign up,edit profile,setToken,setProfile,exit"},
+    {group:"Autch",items:"sign in,sign up,edit profile,setToken,setProfile"},
     {group:"Animation",items:"springScale"},
-    {group:"Other",items:"dialUp"},
+    {group:"Other",items:"dialUp,exit,clear form"},
 ];
 
 var listMetaHandlers = [
@@ -33,6 +33,8 @@ var listMetaHandlers = [
                     {name: "param_1", title:"Element with data",len:200,type:"SelectId",br:true,visibility:true}]},
         {handl:"forgot", meta:[{name: "param", title:"Model",type:"Forgot"},
                     {name: "after", title:"After",type:"Navig",after:true}]},
+        {handl:"clear form", meta:[{name: "id", title:"The form",len:150,type:"SelectIdTags",tags:",Form,ScrollForm,",event:"param_1"},
+                    {name: "param_1", title:"Field List",len:240,height: 240,type:"ListCheck",br:true,tags:",ImageView,EditText,Spinner,"}]},
         {handl:"springScale", meta:[{name: "id", title:"Element for animation",len:150,type:"SelectId"}]},
         {handl:"hide", meta:[{name: "id", title:"The element that is hidden",len:150,type:"SelectId"}]},
         {handl:"show", meta:[{name: "id", title:"The element that is shown",len:150,type:"SelectId"}]},
@@ -40,6 +42,7 @@ var listMetaHandlers = [
         {handl:"setValueParam", meta:[{name: "id", title:"The element to which the parameter value is assigned",len:150,type:"SelectId"}]},
         {handl:"assignValue", meta:[{name: "id", title:"The element to be assigned values",len:150,type:"SelectId"}]},
         {handl:"restoreVar", meta:[{name: "param", title:"The element that is shown",len:150,type:"Text",valid:"latin"}]},
+        {handl:"setMenu", meta:[{name: "param", title:"Screen name",len:150,type:"Text",valid:"latin"}]},
         {handl:"addRecord", meta:[{name: "id", title:"The element to which the record is added",len:150,type:"SelectId",tags:"List"}]},
         {handl:"Clear form fields", meta:[{name: "param_1", title:"Element with data",len:100,type:"SelectId",visibility:true}]},
         {handl:"checked", meta:[{name: "after", title:"On navigator",type:"Navig"},

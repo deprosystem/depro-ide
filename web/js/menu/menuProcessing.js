@@ -651,37 +651,6 @@ function cbGenerProj(res) {
     }
     generateProjectF();
 }
-/*
-function generateProjectF(apk) {
-    if (validDeclare()) {
-        let title;
-        let url;
-        let mes, attent;
-        if (apk != null && apk) {
-            title = "Create APK";
-            url = "export/apk";
-            mes = "APK file generated";
-            attent = "APK creation takes 1 - 2 minutes";
-        } else {
-            title = "Create project";
-            url = "export/android";
-            mes = "Project generated";
-            attent = "";
-        }
-        let windMenu = formWind(250, 300, 40, 250, title);
-        let fileCreate = document.createElement("div");
-        fileCreate.style.cssText = "text-align:center; margin-top:20px;";
-        fileCreate.innerHTML = mes;
-        windMenu.appendChild(fileCreate);
-        let buttSave = createButtonBlue("Save", 80);
-        buttSave.style.position = "relative";
-        buttSave.style.marginTop = "25px";
-        buttSave.className = "save-apk";
-        windMenu.appendChild(buttSave);
-        doServer("GET", url + "?projectId=" + currentProject.projectId, cbGenerateProject, null, windMenu, windMenu, errorAPK, attent);
-    }
-}
-*/
 
 function generateProjectF(apk) {
     let title;
@@ -713,7 +682,9 @@ function generateProjectF(apk) {
         buttSave.style.marginTop = "25px";
         buttSave.className = "save-apk";
         windMenu.appendChild(buttSave);
-        doServer("GET", url + "?projectId=" + currentProject.projectId, cbGenerateProject, null, windMenu, windMenu, errorAPK, attent);
+        let wind = windMenu.closest(".dataWindow");
+        doServer("GET", url + "?projectId=" + currentProject.projectId, cbGenerateProject, null, windMenu, wind, errorAPK, attent);
+//        doServer("GET", url + "?projectId=" + currentProject.projectId, cbGenerateProject, null, windMenu, windMenu, errorAPK, attent);
     } else {
         closeWindow(windMenu);
     }

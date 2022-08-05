@@ -365,9 +365,19 @@ function oneFieldView(idTab, item, el) {
     let descr = newDOMelement('<div style="font-size:10px;color:#555;margin-top:6px;height:11px;width:' + (rect.width - rect_1.width - 20) 
             + 'px;float:left;margin-left:5px;overflow:hidden">' + item.title);
     if (isFormForQuery) {
+/*
+        let selSel = formSelectForEditData("Field,Profile,System dat,System_time", "");
+        selSel.style.width = "80px";
+        selSel.style.border = "none";
+        selSel.style.backgroundColor = "#0000";
+        selSel.style.float = "right";
+        cont.append(selSel);
+        
+*/
         let selField = newDOMelement('<img style="width:18px;cursor:pointer;height:18px;float:right;margin-right:2px;margin-top:3px;" src="img/check-sel_1.png">');
         selField.addEventListener("click", function(){checkElement(selField)}, false);
         cont.append(selField);
+
     }
     cont.appendChild(descr);
 }

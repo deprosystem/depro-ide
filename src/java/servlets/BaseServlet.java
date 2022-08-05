@@ -326,7 +326,7 @@ System.out.println("query="+ds.query);
             InputStream in = new FileInputStream(src);
             OutputStream out = new FileOutputStream(dest);
 
-            byte[]buffer = new byte[1024];
+            byte[]buffer = new byte[2048];
 
             int length;
            //copy the file content in bytes

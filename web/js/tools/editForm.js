@@ -141,6 +141,14 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
                 inp.innerHTML = newOptionsTypeUI(met.tags, vv);
                 res.append(inp);
                 break;
+            case "SelectIdTags":
+                inp = newDOMelement('<select class = "select_' + browser + '">');
+                inp.nameField = met.name;
+                inp.addEventListener('focus', () => {this.focusSelIdTags(inp, met.tags, vv)}, true);
+                inp.addEventListener('change', () => {this.changeSelIdTags(inp, met)}, true);
+                inp.innerHTML = newOptionsTagsUI(met.tags, vv);
+                res.append(inp);
+                break;
             case "SelectIdUX":
                 inp = formSelectIdHandlUx(vv);
                 inp.style.cssText = "width:100px;font-size:12px;color:#110000;";
@@ -257,8 +265,81 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
                 imgB.addEventListener("click", () => {selectListImage(event, this, met.name)}, false);
                 res.append(inp);
                 break;
+            case "ListCheck":
+                inp = newDOMelement('<div style="width:' + met.len + 'px;height:' + met.height + 'px;position:relative;">');
+                formViewScrolY(inp, true);
+                res.name = met.name;
+                res.inp = inp;
+                inp.vv = vv;
+                inp.nameField = met.name;
+                res.func = "formListCheck";
+                if (met.form != null && met.form.length > 0) {
+                    this.formListCheck(inp, met.form);
+                } else {
+                    let mk = this.edMeta.length;
+                    for (let m = 0; m < mk; m++) {
+                        let itMet = this.edMeta[m];
+                        if (itMet.event == met.name) {
+                            let vvV = this.edData[itMet.name];
+                            if (vvV != null && vvV.length > 0) {
+                                this.formListCheck(inp, vvV);
+                            }
+                        }
+                    }
+                }
+                res.append(inp);
+                break;
         }
         return res;
+    }
+    
+    this.formListCheck = function(inp, val) {
+//        inp.innerHTML = val;
+        let elSEl = choiceViewById(currentChildren, val);
+        let list = " " + formListIdTags(elSEl.children, this.edMeta[i].tags);
+        let dataV = inp.querySelector(".viewData");
+        let arr = list.split(",");
+        let ik = arr.length;
+        let vv = this.edData[inp.nameField];
+        if (vv == null) {
+            vv = "";
+        }
+        vv = "," + vv + ",";
+        for (let i = 1; i < ik; i++) {
+            let oneCheck = newDOMelement('<div style="width:100%;height:30px"></div>');
+            let srcVV = "check-act";
+            let nam = arr[i];
+            if (vv.indexOf("," + nam + ",") > -1) {
+                srcVV = "check-sel_1";
+            }
+            let selField = newDOMelement('<img class="sel_img" style="float:left;margin-top:6px;width:18px;cursor:pointer;height:18px;" src="img/' + srcVV + '.png">');
+            selField.addEventListener('click', () => {this.clickListCheck(inp, oneCheck)}, false);
+            oneCheck.append(selField);
+            oneCheck.append(newDOMelement('<div class="d_name" style="float:left;margin-top:6px;margin-left:5px;">' + nam + '</div>'));
+            dataV.append(oneCheck);
+        }
+        let viewPort = inp.querySelector(".viewport");
+        viewPort.scroll_y.resize();
+    }
+    
+    this.clickListCheck = function(inp, el) {
+        let ch = el.querySelector('.sel_img');
+        checkElement(ch);
+        let st = "";
+        let sel = "";
+        let dataV = inp.querySelector(".viewData");
+        let child = dataV.children;
+        let ik = child.length;
+        for (let i = 0; i < ik; i++) {
+            let item = child[i];
+            let ch1 = item.querySelector('.sel_img');
+            if (ch1.src.indexOf("check-sel") > -1) {
+                let dd = item.querySelector('.d_name');
+                st += sel + dd.innerHTML;
+                sel = ",";
+            }
+        }
+        this.edData[inp.nameField] = st;
     }
     
     this.callBackEditF = function(i, par) {
@@ -347,6 +428,25 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
         }
     }
     
+    this.changeSelIdTags = function(el, met) {
+        let val = el.options[el.selectedIndex].value;
+        this.edData[el.nameField] = val;
+        let ev = met.event;
+        if (ev != null && ev.length > 0) {
+            let ch = this.edDomEl.children;
+            let ik = ch.length;
+            for (let i = 0; i < ik; i++) {
+                let item = ch[i];
+                if (item.name == ev) {
+                    this[item.func](item.inp, val);
+                }
+            }
+        }
+        if (this.cb != null) {
+            this.cb.cbEdit(el.nameField);
+        }
+    }
+    
     this.clickCustom = function(name) {
         if (this.cb != null) {
             this.cb.cbEdit(name);
@@ -355,6 +455,10 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
     
     this.focusSelId = function(el, tags, vv) {
         el.innerHTML = newOptionsTypeUI(tags, vv);
+    }
+    
+    this.focusSelIdTags = function(el, tags, vv) {
+        el.innerHTML = newOptionsTagsUI(tags, vv);
     }
     
     this.clickLitera = function (el) {
@@ -511,7 +615,7 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
         if (this.edData[name] == null || ! this.edData[name]) {
             this.edData[name] = [];
         }
-        nnn.init(this.edData[name], met.after);
+        nnn.init(this.edData[name], met.after, null, null, null, null, 15);
     }
     
     this.clickSend = function(event, met) {

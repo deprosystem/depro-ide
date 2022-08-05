@@ -19,6 +19,14 @@ function uiImageView() {
                 +'<div style="font-size:10px;color:#2228">Show image in APP</div>'
                 +'<img class="check_form_res" onclick="checkFormResourseImg(this);" style="cursor:pointer;margin-top:5px;margin-left:14px" width="16" height="16" src="img/check-act.png">'
             +'</div>'
+            +'<div onclick="setImgPlaceholder(event)" style="float:left;cursor:pointer;margin-left:20px;margin-top:12px">'
+                +'<div style="font-size:10px;color:#2228">Image</div>'
+                +'<img class="imageVPlaceholder" style="border:2px solid #bdf;border-radius:4px;background:#fff" width="24" height="24">'
+            +'</div>'
+            +'<div style="float:left;margin-left:10px;margin-top:12px">'
+                +'<div style="font-size:10px;color:#2228">Name</div>'
+                +'<div class="imgPlaceholderName" style="width:120px;overflow:hidden;border:2px solid #bdf;border-radius:4px;height:20px;background:white;padding:2px 5px 2px 5px;"></div>'
+            +'</div>'
         +'</div>';
 
     let radius1 = '<div style="width: 100%;padding-bottom: 5px;float: left;clear: both;padding-bottom:12px;margin-top: 12px;border-bottom: 1px solid #1DACEf;">\n\
@@ -60,6 +68,7 @@ function uiImageView() {
         contentAttributes.innerHTML = uiParamView + browser + uiParamView_2;
 
         setImgAttr(p);
+        setImgAttrPl(p);
         if (p.formResourse != null) {
             let cfr = contentAttributes.getElementsByClassName("check_form_res")[0];
             if (p.formResourse) {
@@ -159,6 +168,17 @@ function cbImgViewSRC(i) {
     viewCompon();
 }
 
+function setImgPlaceholder(e) {
+    selectListImage(e, cbImgViewPl);
+}
+
+function cbImgViewPl(i) {
+    let nn = listImage[i];
+    currentElement.android.componParam.st_1 = nn;
+    setImgAttrPl(currentElement.android);
+    viewCompon();
+}
+
 function setImgAttr(p) {
     let ssrc = p.src;
     let img = contentAttributes.getElementsByClassName("imageV");
@@ -167,6 +187,21 @@ function setImgAttr(p) {
         img.src = p.src;
     }
     let imgName = contentAttributes.getElementsByClassName("imgName")[0];
+    if (ssrc != undefined) {
+        let ii = ssrc.lastIndexOf("/");
+        let nam = ssrc.substring(ii + 1);
+        imgName.innerHTML = nam.substring(0, nam.indexOf('.'));
+    }
+}
+
+function setImgAttrPl(p) {
+    let ssrc = p.componParam.st_1;
+    let img = contentAttributes.getElementsByClassName("imageVPlaceholder");
+    if (img != null) {
+        img = img[0];
+        img.src = p.componParam.st_1;
+    }
+    let imgName = contentAttributes.getElementsByClassName("imgPlaceholderName")[0];
     if (ssrc != undefined) {
         let ii = ssrc.lastIndexOf("/");
         let nam = ssrc.substring(ii + 1);

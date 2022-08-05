@@ -17,7 +17,7 @@ function CRUD(dat, name, type_crud) {
     
     let self = this;
     let isSend;
-    let wFields = 250;
+    let wFields = 320;
     let wTab = 200;
     let hRow = 24;
     let hWhere = 150;
@@ -91,7 +91,7 @@ function CRUD(dat, name, type_crud) {
         let selF = newDOMelement('<div style="float:left;position:relative;height:100%;width:' + wFields + 'px;border-right:1px solid #1dace9;"></div>');
         let stSend = "";
         if (isSend) {
-            stSend = '<div style="margin-top:3px;float:right;margin-right:5px;">Profile</div>';
+            stSend = '<div style="margin-top:3px;float:right;margin-right:35px;margin-left:30px;">Source</div>';
         }
         let titleF = newDOMelement('<div class="tab_title" style="height:' + hRow + 'px;border-bottom:1px solid #1dace9;position:absolute;left:0;top:0;right:0;background:#f3f8ff;">' 
                 +'<div style="margin-top:3px;float:left;margin-left:5px;">Fields name</div>'
@@ -101,7 +101,7 @@ function CRUD(dat, name, type_crud) {
         selF.appendChild(titleF);
         let wraperScrollF = newDOMelement('<div style="position:absolute;left:0;top:' + hRow + 'px;right:0;bottom:0"></div');
         selF.appendChild(wraperScrollF);
-        this.viewPortF = formViewScrolY(wraperScrollF);
+        this.viewPortF = formViewScrolY(wraperScrollF, true);
         this.selectFields = this.viewPortF.querySelector(".viewData");
         this.fieldsTable = newDOMelement('<div style="float:left;height:100%;width:' + wTab + 'px;position:relative;"></div>');
         viewFT.append(selF);
@@ -193,7 +193,7 @@ function CRUD(dat, name, type_crud) {
         }
         return qu;
     }
-    
+/*
     this.changeOper = function(el) {
         let op = el.options[el.selectedIndex].value;
         this.query.type_query = op;
@@ -206,14 +206,28 @@ function CRUD(dat, name, type_crud) {
         this.viewPortF.scroll_y.resize();
         this.tabbleObj.scrollTable();
     }
-    
+*/
     this.cooseTableCrud = function() {
         this.tabbleObj.cooseTable();
     }
-    
+
 // Save CRUD
     this.cbWind = function() {
         let qu = this.getIdQuery();
+        if (qu > 3) {
+            switch (this.type_crud) {
+                case "SignIn":
+                    qu = 1;
+                    break;
+                case "SignUp":
+                    qu = 2;
+                    break;
+                case "EditProfile":
+                    qu = 3;
+                    break;
+            }
+            this.param.url = "autch/" + currentProject.resurseInd + "/" + qu;
+        }
         let fv = this.formFieldsValid();
         if (fv.fields == ""){
             myAlert("No fields selected for data transfer");
@@ -265,11 +279,28 @@ function CRUD(dat, name, type_crud) {
         for (let i = 0; i < ik; i++) {
             let item = fieldsView[i];
             ff += sepF + item.name_field;
+            sepF = ",";
             indF.push(item.idField);
             if (isSend) {
-                sepF = ",";
+//                sepF = ",";
                 imgP = item.querySelector('.selProf');
             }
+            if (isSend && imgP.value != "Field") {
+                pp += sepP + item.name_field;
+                let valS = imgP.value;
+                ff += "=" + valS;
+                indP.push({id:item.idField,source:valS});
+//                indP.push(item.idField + "=" + imgP.value);
+                sepP = ",";
+            } else {
+                let img = item.querySelector('.selField');
+                if (img.src.indexOf("act") == -1) {
+                    vv += sepV + item.name_field;
+                    indV.push(item.idField);
+                    sepV = ",";
+                }
+            }
+/*
             if (isSend && imgP.src.indexOf("act") == -1) {
                 pp += sepP + item.name_field;
                 indP.push(item.idField);
@@ -282,6 +313,7 @@ function CRUD(dat, name, type_crud) {
                     sepV = ",";
                 }
             }
+*/
         }
         return {fields:ff,valid:vv,indF:indF,indV:indV,prof:pp,indP:indP};
     }
@@ -294,9 +326,10 @@ function CRUD(dat, name, type_crud) {
             let item = fieldsView[i];
             let noProf = true;
             if (isSend && arrP != null) {
-                if (isFieldInList(item.idField, arrP)) {
+                let valSource = isFieldInListCrud(item.idField, arrP);
+                if (valSource != null) {
                     img = item.querySelector('.selProf');
-                    img.src = "img/check-sel_1.png";
+                    img.value = valSource;
                     noProf = false;
                 }
             }
@@ -308,5 +341,15 @@ function CRUD(dat, name, type_crud) {
     }
     
     this.init();
+}
+
+function isFieldInListCrud(id, fields) {
+    let ik = fields.length;
+    for (let i = 0; i < ik; i++) {
+        if (fields[i].id == id) {
+            return fields[i].source;
+        }
+    }
+    return null;
 }
 

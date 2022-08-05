@@ -46,10 +46,11 @@ public class ImagesList extends BaseServlet {
                 }
                 break;
             case "/images/categorySystem":
-                userDataPath = Constants.PROJECTS_DATA + "systemIcons/";
+                userDataPath = Constants.PROJECTS_DATA + "systemIcons";
                 appPath = ds.patchOutsideProject;
                 projectPath = appPath + userDataPath;
-                sendResult(response, getListCategoryImages(projectPath, userDataPath));
+//System.out.println("categorySystem getRealPath="+request.getServletContext().getRealPath("")+"<<");
+                sendResult(response, getListCategoryImages(projectPath, request.getServletContext().getRealPath("") + userDataPath));
                 break;
             case "/images/changeColor":
                 projectId = request.getHeader("projectId");
@@ -141,15 +142,26 @@ public class ImagesList extends BaseServlet {
     
     private String getListCategoryImages(String dataPath, String userDataPath) {
         String res = "[]";
+        if (isSerwer) {
+            File dirF = new File(dataPath);
+            if( ! dirF.exists()) {             
+                if( ! dirF.mkdirs()) {                 
+                    System.out.println("getListCategoryImages " + dirF.getAbsolutePath() + " создвть не удалось.");
+                    return res;
+                } else {
+                    copyDir(userDataPath, dataPath);
+                }
+            }
+        }
+        
         List<String> results = new ArrayList();
-        File[] files = new File(dataPath).listFiles();
+        File[] files = new File(dataPath + "/").listFiles();
         if (files == null) {
             System.out.println("getListCategoryImages error: No icons dataPath=" + dataPath);
         } else {
             for (File file : files) {
                 results.add(file.getName());
             }
-
             res = gson.toJson(results);
         }
         return res;

@@ -236,6 +236,45 @@ function formListIdElem(childEl, type) {
     return st;
 }
 
+function formListIdTags(childEl, type) {
+    let st = "";
+    let ik = childEl.length;
+//console.log("IK="+ik+" type="+type+"<<");
+    for (let i = 0; i <ik; i++) {
+        let item = childEl[i];
+//console.log("  III="+i+" item.type="+item.type+"<<");
+        if (type == null || type.indexOf("," + item.type + ",") > -1) {
+            let vi = item.viewId;
+            if (vi != null && vi != "") {
+                st += "," + vi;
+            }
+        }
+        let ch = item.children;
+        if (ch != null && ch.length > 0) {
+            st += formListIdTags(ch, type);
+        }
+    }
+    return st;
+}
+
+
+function choiceViewById(childEl, id) {
+    if (id == null) return null;
+    let ik = childEl.length;
+    for (let i = 0; i <ik; i++) {
+        let item = childEl[i];
+        if (id == item.viewId) {
+            return item;
+        }
+        let ch = item.children;
+        if (ch != null && ch.length > 0) {
+            let itEl = choiceViewById(ch, id);
+            if (itEl != null) return itEl;
+        }
+    }
+    return null;
+}
+
 function formListIdElemIsType(childEl, type) {
     let st = "";
     let ik = childEl.length;

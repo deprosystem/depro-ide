@@ -1,6 +1,6 @@
 function uxList() {
     this.param = {name: "List", viewBaseId: "list", onlyOne: false};
-    this.hiddenHandlers = ",Autch,Data,backOk,";
+    this.hiddenHandlers = ",Autch,backOk,send,update,";
     this.editParam = '<div style="height:1px;background-color:#1dace9;margin-top:5px"></div>\n\
         <div class="comp_view_param" style="height:42px;">\n\
             <div class="span_count" style="float: left;">\n\
@@ -34,10 +34,12 @@ function uxList() {
     }
     
     this.getSpecialView = function () {
-        let valNoAct = currentComponentDescr.view.targetButton;
         let stSrc = "check-act";
-        if (valNoAct)  {
-            stSrc = "check-sel_1";
+        if (currentComponentDescr != null) {
+            let valNoAct = currentComponentDescr.view.targetButton;
+            if (valNoAct)  {
+                stSrc = "check-sel_1";
+            }
         }
         let noActiveL = '<div style="float:left;cursor:pointer;margin-left:20px;">'
             +'<div style="float:left;color:#2228;font-size:10px">Do not activate at startup</div>'
@@ -66,8 +68,13 @@ function uxList() {
     
     this.addComponent = function (componId, viewId) {
         let tt = this.param.name;
-        let typeView = {type:"RelativeLayout",typeFull:{name:"RelativeLayout",typeBlock:2},viewId:"T_0",typeUxUi: "ui",gravLayout:{h:4,v:4},gravity:{h:4,v:4},width: -1,height:10,children:[]};
-        currentComponent = {type: tt, componId: componId, viewId:viewId, typeUxUi: "ux", componParam:{type:2},
+//        let typeView = {type:"RelativeLayout",typeFull:{name:"RelativeLayout",typeBlock:2},viewId:"T_0",typeUxUi: "ui",gravLayout:{h:4,v:4},gravity:{h:4,v:4},width: -1,height:10,children:[]};
+        let typeView = {type:"SwipeLayout",typeFull:{name:"SwipeLayout",typeBlock:2},viewId:"__sw_0",typeUxUi: "ui",componParam:{type:26,nodel:true,noact:true,nomove:true,nodrop:true},gravLayout:{h:4,v:4},gravity:{h:4,v:4},width: -1,height:10,children:[
+                {type:"RelativeLayout",typeFull:{name:"RelativeLayout",typeBlock:2},viewId:"T_0",typeUxUi: "ui",componParam:{nomove:true},gravLayout:{h:4,v:4},gravity:{h:4,v:4},width: -1,height:-1,children:[]},
+                {type:"Swipe",typeFull:{name:"Swipe",typeBlock:2},viewId:"sw_l",typeUxUi: "ui",componParam:{type:7,nodel:true,nomove:true},gravLayout:{h:4,v:4},gravity:{h:4,v:4},width: 0,height:-1,children:[]},
+                {type:"Swipe",typeFull:{name:"Swipe",typeBlock:2},viewId:"sw_r",typeUxUi: "ui",componParam:{type:7,nodel:true,nomove:true},gravLayout:{h:2,v:4},gravity:{h:4,v:4},width: 0,height:-1,children:[]}
+        ]};
+        currentComponent = {type: tt, componId: componId, viewId:viewId, typeUxUi: "ux", componParam:{type:2,noact:true,nodrop:true},
                 typeFull: {name: tt, typeBlock: 10}, gravLayout: {h: 3, v: 3}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
             width:-1,height:-1,itemNav:{},viewElement: null,children:[typeView]};
         currentComponentDescr = {type:tt, componId: componId, model:{method:0,data:[[]],progr:"standard"},view:{viewId: viewId,spanC:1,orient:"vertical",no_data:""},
@@ -287,7 +294,22 @@ function createViewForListH(el, ind) {
     if (listV != null) {
         let ik = data.length;
         if (ik > 0) {
-            let listView = listV.children[num];
+            let listSwipe = listV.children[num];
+            let swipeChild = listSwipe.children;
+            let sk = swipeChild.length;
+            let listView = null;
+            for (let s = 0; s < sk; s++) {
+                let item = swipeChild[s];
+//console.log("HHHH SSS="+s+" TTT="+item.android.type+"<< VVV="+item.android.viewId+"<<");
+                if (item.android.type == "RelativeLayout") {
+                    listView = item;
+                }
+                break;
+            }
+            if (listView == null) return;
+            
+            
+//            let listView = listV.children[num];
             listView.innerHTML = "";        // Очистить в прототипе экрана
             listView.android.children.length = 0;   // очистить элементы в андроид
             listView.android.height = WRAP;
@@ -321,7 +343,8 @@ function createViewForListH(el, ind) {
                 height = estimatedHeight;
             }
             Divider.android.viewElement = Divider;
-            listView.android.height = height;
+            listSwipe.android.height = height;
+//            listView.android.height = height;
             showElemChilds(listV);
         } else {
             tooltipMessage(el, "You need to describe the data");
@@ -336,7 +359,6 @@ function createViewForListV(el, ind) {
         num = 0;
     } else {
         num = getNumDataTYpe(p);
-//        num = getNumDataTYpe(p) + 1;
     }
     let data = currentComponentDescr.model.data[num];
     if (data.length == 0) {
@@ -346,10 +368,24 @@ function createViewForListV(el, ind) {
     if (listV != null) {
         let ik = data.length;
         if (ik > 0) {
-            let listView = listV.children[num];
+            let listSwipe = listV.children[num];
+            let swipeChild = listSwipe.children;
+            let sk = swipeChild.length;
+            let listView = null;
+            for (let s = 0; s < sk; s++) {
+                let item = swipeChild[s];
+//console.log("VVVV SSS="+s+" TTT="+item.android.type+"<< VVV="+item.android.viewId+"<<");
+                if (item.android.type == "RelativeLayout") {
+                    listView = item;
+                }
+                break;
+            }
+            if (listView == null) return;
+//            let listView = listV.children[num];
             listView.innerHTML = "";        // Очистить в прототипе экрана
             listView.android.children.length = 0;   // очистить элементы в андроид
             listView.android.height = WRAP;
+            listSwipe.android.height = WRAP;
             let item_n = listView.android.itemNav;
             let item_compon = item_n.getElementsByClassName('item-compon')[0];
             item_compon.innerHTML = "";
@@ -392,6 +428,7 @@ function createViewForListV(el, ind) {
 
 function createListView() {
     currentElement = createNewEl();
+/*
     p = {typeUxUi: "ui"};
     p.type = 'RelativeLayout';
     p.typeFull = {name: 'RelativeLayout', typeBlock: 2};
@@ -401,6 +438,8 @@ function createListView() {
     p.height = 10;
     p.children = [];
     currentElement.android = p;
+*/
+    currentElement.android = {type:"SwipeLayout",typeFull:{name:"SwipeLayout",typeBlock:2},viewId:"__sw_0",typeUxUi: "ui",componParam:{type:13,nodel:true,noact:true,nomove:true,nodrop:true},gravLayout:{h:4,v:4},gravity:{h:4,v:4},width: -1,height:10,children:[]};
     return currentElement;
 }
 
@@ -538,6 +577,128 @@ function noActiveListClick(el) {
     let chec = checkEditCheckbox(el);
     currentComponentDescr.view.targetButton = chec;
 }
+
+/*
+function createViewForListH(el, ind) {
+    let num;
+    let p = el.parentElement.parentElement;
+    if (ind != null) {
+        num = 0;
+    } else {
+        num = getNumDataTYpe(p);
+//        num = getNumDataTYpe(p) + 1;
+    }
+    let data = currentComponentDescr.model.data[num];
+    if (data.length == 0) {
+        data = currentComponentDescr.model.data[0];
+    }
+    let listV = currentComponent.viewElement;
+    if (listV != null) {
+        let ik = data.length;
+        if (ik > 0) {
+            let listView = listV.children[num];
+            listView.innerHTML = "";        // Очистить в прототипе экрана
+            listView.android.children.length = 0;   // очистить элементы в андроид
+            listView.android.height = WRAP;
+            let item_n = listView.android.itemNav;
+            let item_compon = item_n.getElementsByClassName('item-compon')[0];
+            item_compon.innerHTML = "";
+            let height = 120;
+            let toRightOf = "";
+
+            setActive(listView);
+            let imgId = formImgFirst(120, 120, data);
+            if (imgId > -1) {
+                toRightOf = data[imgId].name;
+            }
+            let topM = 16;
+            let estimatedHeight = topM;
+            let namePrev = "";
+            for (let i = 0; i < ik; i++) {
+                let item = data[i];
+                if (item.notShow) continue;
+                if (imgId != i) {
+                    formElement(item, toRightOf, namePrev, topM);
+                    currentElement.android.viewElement = currentElement;
+                    namePrev = item.name;
+                    topM = 10;
+                    estimatedHeight += 22;
+                }
+            }
+            let Divider = formDivider();
+            if (height < estimatedHeight) {
+                height = estimatedHeight;
+            }
+            Divider.android.viewElement = Divider;
+            listView.android.height = height;
+            showElemChilds(listV);
+        } else {
+            tooltipMessage(el, "You need to describe the data");
+        }
+    }
+}
+
+function createViewForListV(el, ind) {
+    let num;
+    let p = el.parentElement.parentElement;
+    if (ind != null) {
+        num = 0;
+    } else {
+        num = getNumDataTYpe(p);
+//        num = getNumDataTYpe(p) + 1;
+    }
+    let data = currentComponentDescr.model.data[num];
+    if (data.length == 0) {
+        data = currentComponentDescr.model.data[0];
+    }
+    let listV = currentComponent.viewElement;
+    if (listV != null) {
+        let ik = data.length;
+        if (ik > 0) {
+            let listView = listV.children[num];
+            listView.innerHTML = "";        // Очистить в прототипе экрана
+            listView.android.children.length = 0;   // очистить элементы в андроид
+            listView.android.height = WRAP;
+            let item_n = listView.android.itemNav;
+            let item_compon = item_n.getElementsByClassName('item-compon')[0];
+            item_compon.innerHTML = "";
+            let namePrev = "";
+            let imgHeight = 240;
+            setActive(listView);
+            let imgId = formImgFirst(MATCH, imgHeight, data);
+            if (imgId > -1) {
+                namePrev = data[imgId].name;
+            }
+            let topM = 10;
+            let estimatedHeight = imgHeight + 12;
+            
+            for (let i = 0; i < ik; i++) {
+                let item = data[i];
+                if (item.notShow) continue;
+                if (imgId != i) {
+                    formElement(item, "", namePrev, topM);
+                    currentElement.android.viewElement = currentElement;
+                    namePrev = item.name;
+                    estimatedHeight += 22;
+                }
+            }
+
+            let Divider = formDivider();
+            let pp = Divider.android;
+            pp.viewElement = Divider;
+            if (namePrev != "") {
+                pp.below = namePrev;
+            }
+            pp.gravLayout.v = NONE;
+            pp.topMarg = 12;
+
+            showElemChilds(listV);
+        } else {
+            tooltipMessage(el, "You need to describe the data");
+        }
+    }
+}
+*/
 
 /*
 function changeVisibilityList(el) {

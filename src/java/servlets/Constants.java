@@ -12,6 +12,7 @@ public class Constants {
     public static final int TOP = 0, CENTER = 1, BOTTOM = 2, ABSOLUTE = 3, NONE = 4;
     public static final int LEFT = 0, RIGHT = 2;
     public static int[] ANGLES = {0, 90, 45, 0, 315};
+    public static String prefixProfileParam = "!!__!!";
     public final static int GET = 0, POST = 1, FILTER = 2, TEST = 3, JSON = 4, PARAMETERS = 5, GLOBAL = 6, ARGUMENTS = 7, PROFILE = 8, FIELD = 9, 
             GET_DB = 10, POST_DB = 11, INSERT_DB = 12, DEL_DB = 13, UPDATE_DB = 14, NULL = 15;
     
@@ -22,7 +23,8 @@ public class Constants {
             MENU_B = "MenuBottom", MENU = "Menu", GALLERY = "Gallery", INDICATOR = "Indicator", IMAGEVIEW = "ImageView", TOOL_MENU = "ToolMenu",
             PLUS_MINUS = "PlusMinus", RATINGS = "Ratings", SWITCH = "Switch", CHECKBOX = "CheckBox", TOTAL = "Total", PHOTO = "Photo",
             MAP = "Map", SHEET = "SheetBottom", TEXTVIEW = "TextView", EDITTEXT = "EditText", CALENDAR = "Calendar", SEEKBAR = "SeekBar", 
-            TAGS = "Tags", SPINNER = "Spinner", SEQUENCE = "ScreenSequence", INTRO = "Intro", EDIT_GALLERY = "EditGallery";
+            TAGS = "Tags", SPINNER = "Spinner", SEQUENCE = "ScreenSequence", INTRO = "Intro", EDIT_GALLERY = "EditGallery", SWIPE_LAYOUT = "SwipeLayout", 
+            SWIPE = "Swipe";
     public static String txtInp = "_txt_inp_";
 /*
     public static String toolCompon = "com.dpcsa.compon.custom_components.ComponToolBar",
@@ -73,7 +75,7 @@ public class Constants {
         "RelativeLayout",                                                // 23   TOTAL
         "com.dpcsa.compon.custom_components.ComponSpinner",            // 24
         "androidx.viewpager.widget.ViewPager",                      // 25    INTRO
-//        "com.dpcsa.compon.custom_components.EditGallery",            // 26 
+        "com.dpcsa.compon.custom_components.SwipeLayout",            // 26 
     };
 
 }

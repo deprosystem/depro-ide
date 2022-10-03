@@ -270,6 +270,7 @@ function FormNavigator() {
         let txtHand = this.selElementHand.querySelector("div");
         txtHand.innerHTML = st;
         this.dataHand[this.selDataHand].handler = st;
+        this.dataHand[this.selDataHand].param = null;
         this.selHandFull(this.selDataHand);
         closePopUp(this.listHandView);
     }

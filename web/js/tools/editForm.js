@@ -123,6 +123,11 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
                         +'border-radius:4px;cursor:pointer;"><div style="text-align: center;margin-top:7px;color:#fff">' + met.title + '</div></div>');
                 res.addEventListener('click', () => {this.clickSend(event, met)}, false);
                 break;
+            case "Delete":
+                res = newDOMelement('<div style="float:left;margin-left:7px;clear:both;margin-top:15px;padding-left:10px;padding-right:10px;height:30px;background-color:#1DACE9;' 
+                        +'border-radius:4px;cursor:pointer;"><div style="text-align: center;margin-top:7px;color:#fff">' + met.title + '</div></div>');
+                res.addEventListener('click', () => {this.clickDelete(event, met)}, false);
+                break;
             case "Label":
                 let fs = "";
                 if (met.fontS != null) {
@@ -136,9 +141,9 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
             case "SelectId":
                 inp = newDOMelement('<select class = "select_' + browser + '">');
                 inp.nameField = met.name;
-                inp.addEventListener('focus', () => {this.focusSelId(inp, met.tags, vv)}, true);
+                inp.addEventListener('focus', () => {this.focusSelId(inp, met.tags, vv, met.firstEl)}, true);
                 inp.addEventListener('change', () => {this.changeSelId(inp, met)}, true);
-                inp.innerHTML = newOptionsTypeUI(met.tags, vv);
+                inp.innerHTML = newOptionsTypeUI(met.tags, vv, met.firstEl);
                 res.append(inp);
                 break;
             case "SelectIdTags":
@@ -295,9 +300,14 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
     
     this.formListCheck = function(inp, val) {
 //        inp.innerHTML = val;
-        let elSEl = choiceViewById(currentChildren, val);
-        let list = " " + formListIdTags(elSEl.children, this.edMeta[i].tags);
         let dataV = inp.querySelector(".viewData");
+        if (val.trim() == "") {
+            dataV.innerHTML = "";
+            return;
+        }
+        let elSEl = choiceViewById(currentChildren, val);
+        let list = " " + formIdTagsNoUXGroup(elSEl.children, this.edMeta[i].tags);
+//        let list = " " + formListIdTags(elSEl.children, this.edMeta[i].tags);
         let arr = list.split(",");
         let ik = arr.length;
         let vv = this.edData[inp.nameField];
@@ -453,8 +463,8 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
         }
     }
     
-    this.focusSelId = function(el, tags, vv) {
-        el.innerHTML = newOptionsTypeUI(tags, vv);
+    this.focusSelId = function(el, tags, vv, firstEl) {
+        el.innerHTML = newOptionsTypeUI(tags, vv, firstEl);
     }
     
     this.focusSelIdTags = function(el, tags, vv) {
@@ -619,6 +629,11 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
     }
     
     this.clickSend = function(event, met) {
+        let name = met.name;
+        let crud = new CRUD(this.edData, name, met.type);
+    }
+    
+    this.clickDelete = function(event, met) {
         let name = met.name;
         let crud = new CRUD(this.edData, name, met.type);
     }

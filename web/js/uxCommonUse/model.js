@@ -58,6 +58,12 @@ function dataDescr(v, h, addType) {
             +hh
             +vv
         +'</div>'
+/*
+        +'<div style="float:left;margin-left:5px;">'
+            +'<div style="float:left;color:#2228;font-size:10px">Swipe</div>'
+            +'<img onclick="noActiveListClick(this)" style="clear:both;margin-top:5px;float:left;margin-left:5px;" width="14" height="14" src="img/check-act.png">'
+        +'</div>'
+*/
         + addT
     +'</div>';
 }
@@ -80,6 +86,12 @@ function dataDescrAdd(v, h) {
             +hh
             +vv
         +'</div>'
+/*
+        +'<div style="float:left;margin-left:5px;">'
+            +'<div style="float:left;color:#2228;font-size:10px">Swipe</div>'
+            +'<img onclick="noActiveListClick(this)" style="clear:both;margin-top:5px;float:left;margin-left:5px;" width="14" height="14" src="img/check-act.png">'
+        +'</div>'
+*/
         +'<div style="float:left;margin-left:5px">'
             +'<div style="font-size:10px;color:#2228;">Delete</div>'
             +'<img onclick="delDataType(this);" style="margin-top:6px;margin-left:5px;float:left;clear:both;cursor:pointer;" width="16" height="16" src="img/close-o.png">'
@@ -135,8 +147,9 @@ function changeMethod(el) {
                     pm.innerHTML = pmUrl + pmParamUrl + pmProgr;
                     setValueGetPost();
                 } else {
-                    pm.innerHTML = pmProgr;
-                    setValueQuery();
+                    let dd = new EditForm(metaGET, currentComponentDescr.model, pm, null, null, true);
+//                    pm.innerHTML = pmProgr;
+//                    setValueQuery();
                 }
                 break;
             case "TEST":
@@ -390,9 +403,9 @@ function delDataType(el) {
         if (ik > 1) {
             for (let i = 1; i < ik; i++) {
                 let item = chP[i];
-                item.viewId = "T_" + i;
+                item.viewId = "__sw_" + i;
                 if (i > 0) {
-                    item.below = "T_" + (i - 1);
+                    item.below = "__sw_" + (i - 1);
                 }
             }
             showElemChilds(currentComponent.viewElement);
@@ -408,14 +421,56 @@ function delDataType(el) {
 function addTypeView(p) {
     let el = p.viewElement;
     setActive(el);
+    let ik = p.children.length;
+    currentElement = createNewEl();
+    if (currentComponent.type == "List") {
+        currentElement.android = {type:"SwipeLayout",typeFull:{name:"SwipeLayout",typeBlock:2},viewId:"__sw_" + ik,below:"__sw_" + (ik - 1),typeUxUi: "ui",componParam:{type:13,nodel:true,noact:true,nomove:true,nodrop:true},gravLayout:{h:4,v:4},gravity:{h:4,v:4},width: -1,height:10,children:[]};
+    } else {
+        currentElement.android = {type:'RelativeLayout',typeUxUi:"ui",viewId:"T_" + ik,below:"T_" + (ik - 1),typeFull:{name: 'RelativeLayout', typeBlock: 2},gravLayout:{h:4,v:4},gravity:{h:4,v:4},width:-1,height:10,children:[]};
+    }
+    let listView = currentElement;
+    listView.android.viewElement = listView;
+/*
     let listView = createListView();
     let ik = p.children.length;
     listView.android.viewElement = listView;
-    listView.android.viewId = "T_" + ik;
-    listView.android.below = "T_" + (ik - 1);
+    if (currentComponent.type == "List") {
+        listView.android.viewId = "__sw_" + ik;
+        listView.android.below = "__sw__" + (ik - 1);
+    } else {
+        listView.android.viewId = "T_" + ik;
+        listView.android.below = "T_" + (ik - 1);
+    }
+*/
     addNewElement(ACTIVE, listView);
     addNavigatorEl(listView);
     ACTIVE.android.children.push(listView.android);
     listView.style.outline = "";
+    if (currentComponent.type == "List") {
+        setActive(listView);
+        let newEl = createNewEl();
+        newEl.android = {type:"RelativeLayout",typeFull:{name:"RelativeLayout",typeBlock:2},viewId:"T_0",typeUxUi: "ui",componParam:{nomove:true},gravLayout:{h:4,v:4},gravity:{h:4,v:4},width: -1,height:-1,children:[]};
+        newEl.android.viewElement = newEl;
+        addNewElement(ACTIVE, newEl);
+        addNavigatorEl(newEl);
+        ACTIVE.android.children.push(newEl.android);
+        newEl.style.outline = "";
+// swileL
+        newEl = createNewEl();
+        newEl.android = {type:"Swipe",typeFull:{name:"Swipe",typeBlock:2},viewId:"sw_l",typeUxUi: "ui",componParam:{type:13,nodel:true,nomove:true},gravLayout:{h:4,v:4},gravity:{h:4,v:4},width: 0,height:-1,children:[]};
+        newEl.android.viewElement = newEl;
+        addNewElement(ACTIVE, newEl);
+        addNavigatorEl(newEl);
+        ACTIVE.android.children.push(newEl.android);
+        newEl.style.outline = "";
+// swileR
+        newEl = createNewEl();
+        newEl.android = {type:"Swipe",typeFull:{name:"Swipe",typeBlock:2},viewId:"sw_r",typeUxUi: "ui",componParam:{type:13,nodel:true,nomove:true},gravLayout:{h:2,v:4},gravity:{h:4,v:4},width: 0,height:-1,children:[]};
+        newEl.android.viewElement = newEl;
+        addNewElement(ACTIVE, newEl);
+        addNavigatorEl(newEl);
+        ACTIVE.android.children.push(newEl.android);
+        newEl.style.outline = "";
+    }
     viewComponElem(listView);
 }

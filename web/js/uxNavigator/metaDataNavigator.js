@@ -2,9 +2,10 @@
 var listEvents = "click,change";
 var handlerGroups = [
     {group:"Navigation",items:"start,back,backOk,finishDialog,setMenu,nextScreen,actual"},
+    {group:"Components",items:"add item list,delete item list"},
     {group:"Variables",items:"addVar,delVar,cleanVar,cleanCopyVar,restoreVar,setVar,writeVar,saveViewInParams,addParam,setParam,setValueParam,Clear form fields"},
     {group:"Visibility",items:"show,hide,showHide,openDrawer,closeDrawer"},
-    {group:"Data",items:"send"},
+    {group:"Data",items:"send,update,delete"},
     {group:"Autch",items:"sign in,sign up,edit profile,setToken,setProfile"},
     {group:"Animation",items:"springScale"},
     {group:"Other",items:"dialUp,exit,clear form"},
@@ -22,6 +23,8 @@ var listMetaHandlers = [
         {handl:"send", meta:[{name: "param", title:"Model",type:"Send"},
                     {name: "after", title:"After",type:"Navig",after:true},
                     {name: "param_1", title:"Element with data",len:200,type:"SelectId",br:true,visibility:true}]},
+        {handl:"delete", meta:[{name: "param", title:"Model",type:"Delete"},
+                    {name: "after", title:"After",type:"Navig",after:true}]},
         {handl:"sign in", meta:[{name: "param", title:"Model",type:"SignIn"},
                     {name: "after", title:"After",type:"Navig",after:true},
                     {name: "param_1", title:"Element with data",len:200,type:"SelectId",br:true,visibility:true}]},

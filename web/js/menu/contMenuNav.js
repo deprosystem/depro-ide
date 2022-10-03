@@ -9,6 +9,7 @@ function n_contMenuStart(e){
     e = e || event;
     var target = e.target || event.srcElement;
     n_selectElement = target.elementLink;
+    let pp = n_selectElement.android;
     n_contextMenu.style.left=''+e.clientX+'px';
     n_contextMenu.style.top=''+e.clientY+'px';
     n_contextNameOb.innerHTML=target.elementLink.android.type;
@@ -20,6 +21,18 @@ function n_contMenuStart(e){
         n_contextActive.onclick = '';
     }
     n_contextMenu.style.visibility="visible";
+    let elR = n_contextMenu.querySelector(".del");
+    if (pp.componParam != null && pp.componParam.nodel) {
+        elR.style.display = "none";
+    } else {
+        elR.style.display = "block";
+    }
+    elR = n_contextMenu.querySelector(".act");
+    if (pp.componParam != null && pp.componParam.noact) {
+        elR.style.display = "none";
+    } else {
+        elR.style.display = "block";
+    }
     document.getElementById('n_blockAll').style.display = 'block';
     return false;
 }

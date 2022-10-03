@@ -340,6 +340,10 @@ public class ExportResult extends BaseServlet {
             for (int i = 0; i < ik; i++) {
                 Screen sc = parSave.sreens.get(i);
                 String scName = sc.screenName.toLowerCase();
+//System.out.println("scName="+scName+"<<");
+if (scName.equals("myads")) {
+    System.out.println("SCREEN="+gson.toJson(sc));
+}
                 String type = "activity";
                 if (sc.typeScreen == 1) {
                     type = "fragment";
@@ -950,9 +954,14 @@ public class ExportResult extends BaseServlet {
                 if (m.url == null || m.url.length() == 0) {
                     return "";
                 }
+//System.out.println("comp.param="+comp.model.param+"<<");
                 res += formUrl(comp);
                 if (m.param != null && m.param.length() > 0) {
                     res += ", " + formUrlParam(comp);
+                }
+                if (m.st_1 != null && m.st_1.length() > 0) {
+                    int dur = Integer.valueOf(m.st_1) * 60000;
+                    res += ", " + dur;
                 }
                 res += "),";
                 break;
@@ -1243,6 +1252,33 @@ public class ExportResult extends BaseServlet {
                 }
                 res = "send(" + vId + stRecordId + ", model(POST, \"" + parSend.url + "\", \"" + parSend.queryFilds.fields + "\")" 
                         + "\n" + tab20 + stAfter + mValid + ")";
+                break;
+            case "delete":
+                vId = "0";
+                if (stId.length() > 0) {
+                    vId = stId;
+                }
+                parSend = gson.fromJson(hh.param, ParamSend.class);
+//System.out.println("hh.param="+hh.param+"<< parSend="+parSend);
+                stAfter = ", after()";
+                if (hh.after != null && hh.after.size() > 0) {
+                    stAfter = ", after(";
+                    String sepAft = "";
+                    int ak = hh.after.size();
+                    for (int a = 0; a < ak; a++) {
+                        stAfter += sepAft + formHandler(hh.after, a, menu, tool, parSave);
+                        sepAft = ",\n" + tab20;
+                    }
+                    stAfter += ")";
+                }
+
+                stRecordId = "";
+                if (hh.param_1 != null && hh.param_1.length() > 0) {
+                    stRecordId = ", R.id." + hh.param_1;
+                }
+                res = "delete(" + vId + stRecordId + ", model(POST, \"" + parSend.url + "\", \"" + parSend.queryFilds.fields + "\")" 
+//                res = "delete(" + vId + stRecordId + ", model(POST, \"" + parSend.url + "\", \"\")" 
+                        + "\n" + tab20 + stAfter + ")";
                 break;
             case "Clear form fields":
                 vId = "0";
@@ -1712,23 +1748,12 @@ public class ExportResult extends BaseServlet {
                                 }
                             }
                         }
-/*
-                        if (typeEl.equals(Constants.SCROLLPANEL) || typeEl.equals(Constants.SCROLLFORM)) {
-                            CreateRelativeForScroll(writer, parSave);
-                        }
-*/
+
                         if (typeEl.equals(Constants.SCROLLPANEL) || typeEl.equals(Constants.SCROLLFORM)) {
                             AndroidPar srollChild = elScreen.children.get(0);
                             srollChild = srollChild.children.get(0);
                             srollChild.viewId = elScreen.viewId;
                             createEl(srollChild, false, tab, writer, parSave, null);
-/*
-                            srollChild = srollChild.children.get(0);
-                            List<AndroidPar> chil = srollChild.children;
-                            srollChild.children.forEach((es) -> {
-                                createEl(es, false, tab, writer, parSave, chil);
-                            });
-*/
                         } else {
                             elScreen.children.forEach((es) -> {
                                 createEl(es, false, tab, writer, parSave, elScreen.children);
@@ -1739,11 +1764,6 @@ public class ExportResult extends BaseServlet {
                                 createFragmentContainer(writer, parSave);
                             }
                         }
-/*
-                        if (typeEl.equals(Constants.SCROLLPANEL) || typeEl.equals(Constants.SCROLLFORM)) {
-                            writer.write("\n" + tab8 + "</RelativeLayout>");
-                        }
-*/
                         writer.write(tab0 + "</" + typeEl + ">");
                     } else {
                         if (typeEl.length() > 0) {
@@ -1779,18 +1799,7 @@ public class ExportResult extends BaseServlet {
             Logger.getLogger(ExportResult.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-/*
-    private void CreateRelativeForScroll(BufferedWriter writer, ParamSave parSave) {
-        try {
-            writer.write("\n" + tab4 + "<RelativeLayout\n");
-            writer.write(tab8 + "android:id=\"@+id/" + parSave.scrollId + "\"\n");
-            writer.write(tab8 + "android:layout_width=\"match_parent\"\n");
-            writer.write(tab8 + "android:layout_height=\"match_parent\">\n");
-        } catch (IOException ex) {
-            Logger.getLogger(ExportResult.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-*/
+
     private void createItemLayout(AndroidPar p, String path, ParamSave parSave, List<AndroidPar> parent) {
         try ( BufferedWriter writer = new BufferedWriter(new OutputStreamWriter( new FileOutputStream(path), "UTF8"))) {    
             writer.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
@@ -1907,6 +1916,11 @@ public class ExportResult extends BaseServlet {
         if ((parSave.noToolMenu && (typeEl.equals(Constants.TOOL) || typeEl.equals(Constants.MENU_B)) || 
                 (parSave.noDrawer && typeEl.equals(Constants.DRAWER)))) {
             return "";
+        }
+        if (p.type.equals(Constants.SWIPE)) {
+            if (p.width == 0) {
+                return "";
+            }
         }
         if (p.componParam != null && p.componParam.type != null) {
             typeEl = Constants.componType[p.componParam.type];
@@ -2884,6 +2898,26 @@ public class ExportResult extends BaseServlet {
                         }
                         if (p.componParam.resultId != null && p.componParam.resultId.length() > 0) {
                             writer.write(tab + "app:viewMirror=\"@id/" + p.componParam.resultId + "\"");
+                        }
+                    }
+                    break;
+                case Constants.SWIPE_LAYOUT:
+                    List<AndroidPar> child = p.children;
+                    if (child != null) {
+                        int ik = child.size();
+                        AndroidPar pp;
+                        writer.write(tab + "app:swipeViewId=\"@id/T_0\"");
+                        for (int i = 0; i < ik; i++) {
+                            pp = child.get(i);
+                            if (pp.viewId.equals("sw_l")) {
+                                if (pp.width > 0) {
+                                    writer.write(tab + "app:swipeLeftViewId=\"@id/sw_l\"");
+                                }
+                            } else if (pp.viewId.equals("sw_r")) {
+                                if (pp.width > 0) {
+                                    writer.write(tab + "app:swipeRightViewId=\"@id/sw_r\"");
+                                }
+                            }
                         }
                     }
                     break;

@@ -49,9 +49,9 @@ function formCompon() {
     listComponent[5] = {};
     listComponent[5].name = 'Indicators';
     listComponent[5].children = new Array(
-//            {name: 'ProgressGroup', typeBlock: 2}, 
-//            {name: 'ProgressCircle', typeBlock: 0},
-//            {name: 'ProgressLine', typeBlock: 0},
+            {name: 'ProgressGroup', typeBlock: 2}, 
+            {name: 'ProgressCircle', typeBlock: 0},
+            {name: 'ProgressLine', typeBlock: 0},
             {name: 'Indicator', typeBlock: 0},
             {name: 'Ellipsis', typeBlock: 0},
             {name: 'Ratings', typeBlock: 0});

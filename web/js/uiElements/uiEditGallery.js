@@ -10,7 +10,8 @@ function uiEditGallery() {
     }
     
     this.newElementUI = function(p) {
-        p.componParam = {type:26};
+        p.componParam = {};
+//        p.componParam = {type:26};
         p.src = "img/picture.png";
         return createDivImg();;
     }

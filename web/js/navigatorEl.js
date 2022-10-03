@@ -1,4 +1,4 @@
-var downMouseElem, overMouseElem;
+var downMouseElem, overMouseElem, noMoveEl;
 var parentDownMouseElem;
 function setNavigatorRoot() {
     navigatorEl.innerHTML = '';
@@ -148,17 +148,34 @@ function openItem(el) {
 
 function downNavigEl(el) {
     downMouseElem = el;
+    let pp = downMouseElem.elementLink.android;
+    if (pp != null && pp.componParam != null && pp.componParam.nomove) {
+        noMoveEl = true;
+    } else {
+        noMoveEl = false;
+    }
     parentDownMouseElem = el.parentElement;
     overMouseElem = null;
     document.onmouseup = upNavigEl;
 }
 
 function upNavigEl(e) {
-    if (overMouseElem != null && downMouseElem != null) {
+    if (overMouseElem != null && downMouseElem != null && ! noMoveEl) {
+        let uiEl = downMouseElem.elementLink;
         overMouseElem.style.backgroundColor = "";
         overMouseElem.style.borderBottom = "";
-        uiEl = downMouseElem.elementLink;
         let parentUiEl = uiEl.android.parent;
+        let pp = overMouseElem.elementLink.android;
+        if (pp.parent != null) {
+            pp = pp.parent.android;
+        } else {
+            pp = null;
+        }
+        if (pp != null && pp.componParam != null && pp.componParam.nodrop) {
+            overMouseElem = null;
+            downMouseElem = null;
+            return;
+        }
         uiElTarg = e.target.elementLink;
         let targ = e.target.parentElement;
         if (e.shiftKey) {
@@ -249,6 +266,7 @@ function searchElP(ch, el) {
 }
 
 function overNavigEl(el) {
+    if (noMoveEl) return;
     if (downMouseElem != null && el != downMouseElem && ( ! isChildNavigEl(el) ) ) {
         overMouseElem = el;
         el.style.backgroundColor = "#def";
@@ -257,6 +275,7 @@ function overNavigEl(el) {
 }
 
 function outNavigEl(el) {
+    if (noMoveEl) return;
     if (downMouseElem != null && el != downMouseElem) {
         overMouseElem = null;
         el.style.backgroundColor = "";

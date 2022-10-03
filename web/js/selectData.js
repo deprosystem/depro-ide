@@ -222,7 +222,8 @@ function formListIdElem(childEl, type) {
     let ik = childEl.length;
     for (let i = 0; i <ik; i++) {
         let item = childEl[i];
-        if (item.type == type || type == null) {
+//        if (item.type == type || type == null) {
+        if (type == null || type.indexOf(item.type) > -1) {
             let vi = item.viewId;
             if (vi != null && vi != "") {
                 st += "," + vi;
@@ -239,10 +240,8 @@ function formListIdElem(childEl, type) {
 function formListIdTags(childEl, type) {
     let st = "";
     let ik = childEl.length;
-//console.log("IK="+ik+" type="+type+"<<");
     for (let i = 0; i <ik; i++) {
         let item = childEl[i];
-//console.log("  III="+i+" item.type="+item.type+"<<");
         if (type == null || type.indexOf("," + item.type + ",") > -1) {
             let vi = item.viewId;
             if (vi != null && vi != "") {
@@ -252,6 +251,25 @@ function formListIdTags(childEl, type) {
         let ch = item.children;
         if (ch != null && ch.length > 0) {
             st += formListIdTags(ch, type);
+        }
+    }
+    return st;
+}
+
+function formIdTagsNoUXGroup(childEl, type) {
+    let st = "";
+    let ik = childEl.length;
+    for (let i = 0; i <ik; i++) {
+        let item = childEl[i];
+        if (type == null || type.indexOf("," + item.type + ",") > -1) {
+            let vi = item.viewId;
+            if (vi != null && vi != "") {
+                st += "," + vi;
+            }
+        }
+        let ch = item.children;
+        if (ch != null && ch.length > 0 && "Spinner,List".indexOf(item.type) == -1) {
+            st += formIdTagsNoUXGroup(ch, type);
         }
     }
     return st;

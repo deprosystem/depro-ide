@@ -4,5 +4,6 @@ public class Model {
     public String url, param, test, selected, fieldType;
     public MenuList menuList;
     public DataList data;
-    public Boolean bool_1;
+    public String st_1, st_2;
+    public Boolean bool_1, b_2;
 }

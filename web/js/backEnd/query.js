@@ -12,6 +12,7 @@ var footerQuery, noRequest;
 var queryTables, queryFields, queryFieldsData, queryQueryData, queryOrder;
 var queryFieldsOrderView;
 var errorQuery;
+var prefixProfileParam = "!!__!!";
 
 function editQueryWind() {
     let tt = currentComponentDescr.type;
@@ -359,16 +360,19 @@ function addWhereForQuery(item) {
 
 function optionsProfile(vv) {
     if (listTables != null && listTables.length > 0) {
+        let st = '';
         let ik = listTables.length;
         for (let i = 0; i < ik; i++) {
             let itemTab = listTables[i];
             if (itemTab.name_table == "user") {
                 listField = JSON.parse(itemTab.fields_table);
                 let jk = listField.length;
-                let st = '';
                 for (let j = 0; j < jk; j++) {
                     let sel = "";
                     nameF = listField[j].name;
+                    if (nameF == "login" || nameF == "password") {
+                        continue;
+                    }
                     if (nameF == vv) {
                         sel = "selected";
                     }
@@ -376,6 +380,7 @@ function optionsProfile(vv) {
                 }
             }
         }
+        return st;
     }
     return "";
 }
@@ -415,6 +420,7 @@ function setTypePar(el, newQU) {
             case "Profile":
                 typePar.style.display = "block";
                 valPar.style.display = "none";
+                selPar.style.display = "none";
                 selProf.style.display = "block";
                 break;
             case "Field":
@@ -425,7 +431,7 @@ function setTypePar(el, newQU) {
                 break;
             case "System":
                 typePar.style.display = "block";
-                valPar.style.display = "block";
+                valPar.style.display = "none";
                 inputValue.value = "";
                 switch (typeF) {
                     case "Date":
@@ -572,6 +578,24 @@ function saveQuery() {
     let alias;
     let aliasForF;
     let schema = currentProject.resurseInd;
+    let viewTabI;
+    let listAllField = [];
+    for (let i = 0; i < ik; i++) {
+        viewTabI = childTab[i];
+        let id_tab = viewTabI.id_table;
+        let tab = gatTableById(id_tab);
+        let listField = null;
+        if (tab != null) {
+            listField = JSON.parse(tab.fields_table);
+        }
+        if (listField != null) {
+            let kk = listField.length;
+            for (let k = 0; k < kk; k++) {
+                listAllField.push(listField[k].name);
+            }
+        }
+    }
+
     for (let i = 0; i < ik; i++) {
         viewTabI = childTab[i];
         let name_table = viewTabI.name_table;
@@ -610,7 +634,21 @@ function saveQuery() {
                 let it = childField[j];
                 if (it.getElementsByTagName('img')[0].src.indexOf("act") < 0) {
                     lF.push(it.idField);
-                    fields += sepF + it.name_field;
+                    let aliasObr = "";
+                    if (manyTables) {
+                        let bk = listAllField.length;
+                        let countName = 0;
+                        let nnn = it.name_field;
+                        for (let b = 0; b < bk; b++) {
+                            if (listAllField[b] == nnn) {
+                                countName ++;
+                            }
+                        }
+                        if (countName > 1) {
+                            aliasObr = aliasForF;
+                        }
+                    }
+                    fields += sepF + aliasObr + it.name_field;
                     sepF = ", ";
                 }
             }
@@ -618,7 +656,7 @@ function saveQuery() {
         resOneTab = {id_table:viewTabI.id_table,fullness:cf,listFields:lF};
         res.push(resOneTab);
     }
-    
+
     let fieldsQQ = queryFieldsData.children;
     ik = fieldsQQ.length;
     let listFields = [];
@@ -713,12 +751,12 @@ function saveQuery() {
                 where_list.push(oneQuery);
             } else {
                 let paramValueQu = paramValue;
+                let parVal;
                 switch (typeParValue) {
                     case "Field":
                         let fieldId = div_par.querySelector(".viewId");
                         val = fieldId.options[fieldId.selectedIndex].value.trim();
                     case "Parameter":
-                        let parVal;
                         if (val == null || val.length == 0) {
                             parVal = it_0.name;
                         } else {
@@ -727,6 +765,16 @@ function saveQuery() {
                         paramValue = parVal;
                         paramValueQu = "%" + parVal + "%";
                         strParam += sepStrPar + parVal;
+                        sepStrPar = ",";
+                        break;
+                    case "Profile":
+                        let profId = div_par.querySelector(".profile");
+                        parVal = profId.options[profId.selectedIndex].value.trim();
+                        paramValue = parVal;
+                        paramValueQu = "%" + parVal + "%";
+//                        strParam += sepStrPar + parVal;
+//                        paramValueQu = prefixProfileParam + parVal;
+                        strParam += sepStrPar + it_0.name + "=" + prefixProfileParam + parVal;
                         sepStrPar = ",";
                         break;
                 }
@@ -739,6 +787,7 @@ function saveQuery() {
             queryForSave.push({addOr:andOrValue,param:paramValue,typePar:typeParValue,typeValue:typeVal,oper:selOperValue,list:listFieldInTab});
         }
     }
+//console.log("queryForSave="+JSON.stringify(queryForSave));
 
 //   ORDER BY
 
@@ -776,7 +825,12 @@ function saveQuery() {
     let original = JSON.stringify(origin_query);
     let nam = currentScreen.screenName + "_" + currentComponent.viewId;
     let dat = {id_query:qu,name_query:nam,type_query:"SELECT",origin_query:original,sql_query:SQL,param_query:strParam, listWhere:JSON.stringify(where_list), orderBy:order_query};
+//console.log("DAT="+JSON.stringify(dat));
     doServerAlien("POST", hostDomain + "query/create", cbQueryCreate, JSON.stringify(dat));
+}
+
+function multipleFields(name) {
+    return true;
 }
 
 function addQuote(type, val) {

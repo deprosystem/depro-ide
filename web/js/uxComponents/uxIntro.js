@@ -17,11 +17,11 @@ function uxIntro() {
     }
     
     this.getEditParam = function () {
-        return uxModelView("createViewForListV", "");
+        return uxModelView("createViewForIntroV", "");
     }
     
     this.getCreateListener = function () {
-        return {vert:"createViewForListV", horiz:""};
+        return {vert:"createViewForIntroV", horiz:""};
     }
     
     this.addComponent = function (componId, viewId) {
@@ -47,6 +47,67 @@ function uxIntro() {
         let err = {text:"",error:0};
         
         return err;
+    }
+}
+
+function createViewForIntroV(el, ind) {
+    let num;
+    let p = el.parentElement.parentElement;
+    if (ind != null) {
+        num = 0;
+    } else {
+        num = getNumDataTYpe(p);
+//        num = getNumDataTYpe(p) + 1;
+    }
+    let data = currentComponentDescr.model.data[num];
+    if (data.length == 0) {
+        data = currentComponentDescr.model.data[0];
+    }
+    let listV = currentComponent.viewElement;
+    if (listV != null) {
+        let ik = data.length;
+        if (ik > 0) {
+            let listView = listV.children[num];
+            listView.innerHTML = "";        // Очистить в прототипе экрана
+            listView.android.children.length = 0;   // очистить элементы в андроид
+            listView.android.height = WRAP;
+            let item_n = listView.android.itemNav;
+            let item_compon = item_n.getElementsByClassName('item-compon')[0];
+            item_compon.innerHTML = "";
+            let namePrev = "";
+            let imgHeight = 240;
+            setActive(listView);
+            let imgId = formImgFirst(MATCH, imgHeight, data);
+            if (imgId > -1) {
+                namePrev = data[imgId].name;
+            }
+            let topM = 10;
+            let estimatedHeight = imgHeight + 12;
+            
+            for (let i = 0; i < ik; i++) {
+                let item = data[i];
+                if (item.notShow) continue;
+                if (imgId != i) {
+                    formElement(item, "", namePrev, topM);
+                    currentElement.android.viewElement = currentElement;
+                    namePrev = item.name;
+                    estimatedHeight += 22;
+                }
+            }
+
+            let Divider = formDivider();
+            let pp = Divider.android;
+            pp.viewElement = Divider;
+            if (namePrev != "") {
+                pp.below = namePrev;
+            }
+            pp.gravLayout.v = NONE;
+            pp.topMarg = 12;
+
+            showElemChilds(listV);
+        } else {
+            tooltipMessage(el, "You need to describe the data");
+        }
     }
 }
 

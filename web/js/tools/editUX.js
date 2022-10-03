@@ -26,9 +26,13 @@ function newOptionsTypeUX(type, vv) {
     return st;
 }
 
-function newOptionsTypeUI(type, vv) {
+function newOptionsTypeUI(type, vv, firstEl) {
     let st = formListIdElem(currentChildren, type);
-    return formOptionsSelUI(" " + st, vv);
+    let fEl = " ";
+    if (firstEl != null) {
+        fEl = firstEl;
+    }
+    return formOptionsSelUI(fEl + st, vv);
 }
 
 function newOptionsTagsUI(type, vv) {

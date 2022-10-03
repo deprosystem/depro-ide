@@ -1,5 +1,4 @@
 function TableObj(selF, tabF, isSend) {
-    this.selectFields = selF;
     this.fieldsTable = tabF;
     this.selectTable;
     this.selAllFieldsImg;
@@ -7,13 +6,27 @@ function TableObj(selF, tabF, isSend) {
     this.scrollT;
     this.tableId;
     this.tableName;
-    this.scrollF = this.selectFields.closest(".viewport");
-    this.scrollF = this.scrollF.scroll_y;
+    this.crud;
+    if (selF != null) {
+        this.selectFields = selF;
+        this.scrollF = this.selectFields.closest(".viewport");
+        this.scrollF = this.scrollF.scroll_y;
+    }
     
     let hItem = 24;
     let self = this;
     
+    this.chooseTableFields = function(crud) {
+        this.crud = crud;
+        this.cooseTable_0();
+    }
+    
     this.cooseTable = function() {
+        this.crud = null;
+        this.cooseTable_0();
+    }
+    
+    this.cooseTable_0 = function() {
         hostDomain = currentProject.host;
         if (hostDomain != null && hostDomain.length > 0  && hostDescr != "Third party API") {
             if (listTables == null) {
@@ -64,35 +77,39 @@ function TableObj(selF, tabF, isSend) {
     }
     
     this.formFieldsInTable = function(it) {
-        let item = listTables[it];
-        this.tableName = item.name_table;
-        this.selectTable = {id_table:item.id_table,name_table: item.name_table,title_table:item.title_table,fields_table:JSON.parse(item.fields_table)};
-        this.tableId = item.id_table;
-        this.fieldsTable.innerHTML = "";
-        this.selectFields.innerHTML = "";
-        let block = newDOMelement('<div class="table_view" style="width:100%;height:100%;float:left;position:relative;border-right:1px solid #1dace9;"></div>');
-        let title = newDOMelement('<div class="tab_title" style="height:' + hItem + 'px;border-bottom:1px solid #1dace9;position:absolute;left:0;top:0;right:0;background:#f3f8ff;">' 
-                +'<div style="margin-top:3px;width:100%;text-align:center;font-size:14px;">' + item.name_table + '</div>'
-                +'</div>');
-        block.appendChild(title);
-        this.selAllFieldsImg = newDOMelement('<img style="width:18px;height:18px;position:absolute;right:10px;top:3px;cursor:pointer" src="img/check-act.png">');
-        this.selAllFieldsImg.addEventListener("click", () => {this.selAllFields(this.selAllFieldsImg);}, false);
-        title.appendChild(this.selAllFieldsImg);
+        if (this.crud == null) {
+            let item = listTables[it];
+            this.tableName = item.name_table;
+            this.selectTable = {id_table:item.id_table,name_table: item.name_table,title_table:item.title_table,fields_table:JSON.parse(item.fields_table)};
+            this.tableId = item.id_table;
+            this.fieldsTable.innerHTML = "";
+            this.selectFields.innerHTML = "";
+            let block = newDOMelement('<div class="table_view" style="width:100%;height:100%;float:left;position:relative;border-right:1px solid #1dace9;"></div>');
+            let title = newDOMelement('<div class="tab_title" style="height:' + hItem + 'px;border-bottom:1px solid #1dace9;position:absolute;left:0;top:0;right:0;background:#f3f8ff;">' 
+                    +'<div style="margin-top:3px;width:100%;text-align:center;font-size:14px;">' + item.name_table + '</div>'
+                    +'</div>');
+            block.appendChild(title);
+            this.selAllFieldsImg = newDOMelement('<img style="width:18px;height:18px;position:absolute;right:10px;top:3px;cursor:pointer" src="img/check-act.png">');
+            this.selAllFieldsImg.addEventListener("click", () => {this.selAllFields(this.selAllFieldsImg);}, false);
+            title.appendChild(this.selAllFieldsImg);
 
-        this.fieldsTable.appendChild(block);
-        let wraperScroll = newDOMelement('<div class="TTT" style="position:absolute;left:0;top:' + hItem + 'px;right:0;bottom:0"></div');
-        block.appendChild(wraperScroll);
-        let viewScroll = formViewScrolY(wraperScroll, true);
-        viewScroll.style.right = "9px";
-        this.viewData = viewScroll.querySelector(".viewData");
-        this.scrollT = viewScroll.scroll_y;
+            this.fieldsTable.appendChild(block);
+            let wraperScroll = newDOMelement('<div class="TTT" style="position:absolute;left:0;top:' + hItem + 'px;right:0;bottom:0"></div');
+            block.appendChild(wraperScroll);
+            let viewScroll = formViewScrolY(wraperScroll, true);
+            viewScroll.style.right = "9px";
+            this.viewData = viewScroll.querySelector(".viewData");
+            this.scrollT = viewScroll.scroll_y;
 
-        let fields = JSON.parse(item.fields_table);
-        let ik = fields.length;
-        for (let i = 0; i < ik; i++) {
-            this.oneFieldTables(item.id_table, fields[i], this.viewData);
+            let fields = JSON.parse(item.fields_table);
+            let ik = fields.length;
+            for (let i = 0; i < ik; i++) {
+                this.oneFieldTables(item.id_table, fields[i], this.viewData);
+            }
+            this.scrollT.resize();
+        } else {
+            this.crud.crudDelete(it);
         }
-        this.scrollT.resize();
     }
     
     this.oneFieldTables = function (idTable, item, el) {

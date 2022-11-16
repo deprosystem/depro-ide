@@ -492,11 +492,11 @@ console.log("RES="+JSON.stringify(res));
 //   WHERE
         let queryForSave = [];
         let strParam = "";
+        let where_list = [];
         if (this.listWhere != null) {
             let queryChild = this.listWhere.children;
             let ik = queryChild.length;
             let where_query = " WHERE ";
-            let where_list = [];
             let sepStrPar = "";
             let sepQ = "";
             for (let i = 0; i < ik; i++) {
@@ -581,7 +581,7 @@ console.log("RES="+JSON.stringify(res));
 
 //*********
         let origin_query = {fieldTable:res,where:queryForSave,order:null};
-        currentComponentDescr.model.param = strParam;
+//        currentComponentDescr.model.param = strParam;
         let original = JSON.stringify(origin_query);
         let nam = currentScreen.screenName + "_" + this.data.viewId;
         let SQL = "";
@@ -606,9 +606,10 @@ console.log("RES="+JSON.stringify(res));
             dat = {id_query:qu,type_query:this.query.type_query,origin_query:original,sql_query:SQL,param_query:strParam,
                 err_1:this.query.err_1,err_2:this.query.err_2};
         } else {
-            dat = {id_query:qu,name_query:nam,type_query:this.query.type_query,origin_query:original,sql_query:SQL,param_query:strParam,
+            dat = {id_query:qu,name_query:nam,type_query:this.query.type_query,origin_query:original,sql_query:SQL,param_query:strParam, listWhere:JSON.stringify(where_list),
                 err_1:this.query.err_1,err_2:this.query.err_2};
         }
+
 //console.log("DAT="+JSON.stringify(dat));
         doServerAlien("POST", this.hostDomainQ + "query/create", this, JSON.stringify(dat), "saveCrud", this.fieldsTable);
     }

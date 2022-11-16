@@ -18,7 +18,9 @@ let htmlTable = '<div class="descrTable" style="height:40px;margin-left:20px">'
 function addTable() {
     let descrTable = newDOMelement(htmlTable);
     descrTable.id_table = -1;
-    fieldsTable = [{id_field:0, name:"id_", type:"Bigserial", title:"Primary key", key:true, system:"primary"}];
+    fieldsTable = [{id_field:0, name:"id_", type:"Bigserial", title:"Primary key", key:true, system:"primary"},
+        {id_field:1, name:"__date_create", type:"Timestamp", title:"Date create",def:"CURRENT_TIMESTAMP",system:"__date_create"}, 
+        {id_field:2, name:"__date_edit", type:"Timestamp", title:"Date edit",def:"CURRENT_TIMESTAMP",system:"__date_edit"}];
     let editDataTable = editDataWind(metaTable, fieldsTable, cbAddTable, descrTable, 500, 500, 300);
     let td = editDataTable.getCellXY(0, 1);
     descrTable.fieldId = td.querySelector("INPUT");

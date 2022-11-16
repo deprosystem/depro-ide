@@ -1,6 +1,6 @@
 
 :root {--h_header: 35px; 
-       --w_left: 300px; --w_right: 250px; --h_backEnd: 0; --r_data: 150px;
+       --w_left: 300px; --w_right: 250px; --h_backEnd: 0; --r_data: 150px; --r_emulator: 210px;
        --left_compon:0px; --w_ux_p: 60%; --w_ux_r: 0px; 
        --c_line: #2c3336;--c_blue:#1dace9;--c_yelow:#ffc700;--c_content:#FfFBEF; --c_screen:#DAF0FA;--c_screen_hover:#d5f0ff;
        --c_compon:#f7f7f7;--c_component:#fff;--c_input:#cbe4ef;--c_separator:#7ac;--c_scroll:#1DACE9;--c_yelow_lite:#FcFcdF;
@@ -14,6 +14,7 @@ select {-webkit-appearance: none; -moz-appearance: none; appearance:none;text-in
 select::-ms-expand {display: none;}
 
 #show_data {height: 100%;position: absolute;right: var(--r_data); cursor: pointer;padding-left: 10px;padding-right: 10px;transition: right 400ms;}
+
 #footer_inf {width: 300px; height: 100%; float: left;}
 #header{background-color: #117; height: var(--h_header); position: absolute; width: 100%;}
 

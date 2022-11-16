@@ -43,7 +43,8 @@ function fromTemplates() {
 }
 
 function saveProject() {
-    var st = formJsonProject();
+    offEmulator();
+    let st = formJsonProject();
     doServer("POST", "project/save", cbSaveProject, st, null, document.body);
 }
 

@@ -97,6 +97,10 @@ function doServerAlien(metod, url, callBack, data, paramCallBack, progress, cbEr
 //        req.setRequestHeader('projId', currentProject.projectId);
         req.setRequestHeader('schemDB', currentProject.resurseInd);
     }
+    
+    if (appToken != null && appToken != "") {
+        req.setRequestHeader('Auth-token', appToken);
+    }
 
     req.onreadystatechange = function () {
         if (divProgress != null) {

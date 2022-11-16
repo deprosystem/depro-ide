@@ -2,6 +2,7 @@ function formElement(item, toRightOf, namePrev, topM, leftM) {
     let txtView;
     let p = {};
     switch (item.type) {    // Text,Img,Int,Float,Time
+        case "Timestamp":
         case "Date":
         case "Text":
             txtView = formTxt(item);

@@ -49,6 +49,15 @@
         <script src="js/uiElements/uiSpinner.js" ></script>
         <script src="js/uiElements/uiItemScroll.js" ></script>
         <script src="js/uiElements/uiIntro.js" ></script>
+        
+        <script src="js/emulator/workEmulator.js"></script>
+        <script src="js/emulator/emPanel.js"></script>
+        <script src="js/emulator/emList.js"></script>
+        <script src="js/emulator/emScrollPanel.js"></script>
+        <script src="js/emulator/emModel.js"></script>
+        <script src="js/emulator/setComponentsScr.js"></script>
+        <script src="js/emulator/setDataToView.js"></script>
+        <script src="js/emulator/emNavigator.js"></script>
 
         <script src="js/screens.js" ></script>
         
@@ -160,8 +169,12 @@
                 <img width="15" height="14" onclick="restore()" style="float: left; margin-top: 9px;cursor: pointer;margin-left: 5px;" src="img/corner-no_act-right.png">
             </div>
             
-            <div id="statusDebagView" style="background-color:red;float: left;width:100px;height: 100%;display:none;margin-left: 100px">
+            <div id="statusDebagView" style="background-color:red;float: left;width:100px;height: 100%;display:none;margin-left: 30px">
                 <div style="color:white;text-align:center;margin-top: 9px">Status debug</div>
+            </div>
+            
+            <div onclick="setComponentsScr()" id="emalator" style="cursor: pointer;float: left;width:100px;height: 100%;margin-left: 30px">
+                <div id="emalator_inf" style="text-align: center;margin-top:12px;color:#ffffffcc;">Preview</div>
             </div>
                         
             <div onclick="viewData()" id="show_data">

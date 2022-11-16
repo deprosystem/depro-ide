@@ -1,5 +1,5 @@
 function uiEditText() {
-    
+    let inputTypeEd = "text,textCapCharacters,textCapWords,textCapSentences,textAutoCorrect,textAuto,Complete,textMultiLine,textImeMultiLine,textNoSuggestions,textUri,textEmailAddress,textEmailSubject,textShortMessage,textLongMessage,textPersonName,textPostalAddress,textPassword,textVisiblePassword,textWebEditText,textFilter,textPhonetic,number,numberSigned,numberDecimal,phone,datetime,date,time";
     let uiParamView = 
         '<div id="uiParamTextView" style="float:left;width:100%;">'
             +'<div class="text_style_ui" style="float: left;">Value</div>'
@@ -46,6 +46,9 @@ function uiEditText() {
         +'</div>';
 
     let meta= [
+        {name: "st_2", title:"inputType",len:150,type:"MultiCheck",value:inputTypeEd,br:true},
+        {name: "st_3", title:"imeOptions",type:"Select",value:"actionNext,actionDone,none"},
+        
         {type:"Line"},
         {title:"Restrictions",len:150,type:"Label"},
         {name: "bool_3", title:"Filled",type:"Check",br:true},
@@ -136,23 +139,7 @@ function uiEditText() {
         setValueSelectBlock(spacBl, p.letterSpac);
         uiParamTextView.appendChild(spacBl);
         setTextViewAttr(p);
-        
-        if (p.componParam.st_2 == null) {
-            p.componParam.st_2 = "text";
-        }
-        let inputType = dropDownList("inputType", 
-            "none,text,textCapCharacters,textCapWords,textCapSentences,textAutoCorrect,textAuto,Complete,textMultiLine,textImeMultiLine,textNoSuggestions,textUri,textEmailAddress,textEmailSubject,textShortMessage,textLongMessage,textPersonName,textPostalAddress,textPassword,textVisiblePassword,textWebEditText,textFilter,textPhonetic,number,numberSigned,numberDecimal,phone,datetime,date,time", 
-            150, "changeInputType", p.componParam.st_2);
-        inputType.style.clear = "both";
-        inputType.style.marginLeft = "";
-        contentAttributes.append(inputType);
-        if (p.componParam.st_3 == null) {
-            p.componParam.st_3 = "actionNext";
-        }
-        let imeOptions = dropDownList("imeOptions", 
-            "actionNext,actionDone,none", 
-            100, "changeImeOptions", p.componParam.st_3);
-        contentAttributes.append(imeOptions);
+
         let maxLine = editNumberParam("maxLines", 50, 24, 0, 20, "maxLineTV");
         maxLine.style.clear = "both";
         maxLine.style.marginLeft = "";

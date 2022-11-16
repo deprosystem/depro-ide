@@ -985,15 +985,22 @@ function wrapTextViewH(el, p) {
     let contentEl = el.getElementsByClassName("text")[0];
     let tS = parseInt(p.textSize);
     let standH = tS;
-    if (p.componParam != null && p.componParam.lines != null && p.componParam.lines > 1 
-            && (p.componParam.st_2 == null || p.componParam.st_2 != "text")) {
-        let plusH = (p.componParam.lines - 1) * 1.3 * p.textSize;
-        standH = standH + plusH;
-    }
-    el.style.height = standH * MEASURE + px;
     contentEl.style.top = "0";
     contentEl.style.marginTop = "0";
     contentEl.style.marginLeft = "0";
+    el.style.overflow = "";
+    el.style.height = "";
+    if (emalator_inf.innerHTML == "Editor") {
+        el.style.height = contentEl.offsetHeight + "px";
+    } else {
+        if (p.componParam != null && p.componParam.lines != null && p.componParam.lines > 1 
+                && (p.componParam.st_2 == null || p.componParam.st_2 != "text")) {
+            let plusH = (p.componParam.lines - 1) * 1.3 * p.textSize;
+            standH = standH + plusH;
+            el.style.height = standH * MEASURE + px;
+        }
+        el.style.height = standH * MEASURE + px;
+    }
 }
 
 function wrapTextViewW(el, p, pLL, pTT) {

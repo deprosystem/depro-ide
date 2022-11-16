@@ -102,7 +102,30 @@ function selScreen(event) {
     if (currentScreenView != null && currentScreenView.idScreen == event.currentTarget.idScreen) {
         return;
     }
+    offEmulator();
     selScreenView(event.currentTarget);
+}
+
+function selScreenName(name) {
+    if (currentScreen != null && currentScreen.screenName == name) {
+        return;
+    }
+    
+    let ik = listScreen.length;
+    let uu = name.toUpperCase();
+    let scr = -1;
+    for (let i = 0; i < ik; i++) {
+        if (uu == listScreen[i].screenName.toUpperCase()) {
+            scr = i;
+            break;
+        }
+    }
+    let chS = list_screens.children;
+    if (scr > -1) {
+        offEmulator();
+        let sss = chS[scr];
+        selScreenView(chS[scr]);
+    }
 }
 
 function selScreenView(scr, goto) {
@@ -567,7 +590,8 @@ function selComponentAll(el) {
 function jsonNoView(el) {
     return JSON.stringify(el, function(key, value) {
             if (key == "viewElement") {
-                return "";
+//                return "";
+                return null;
             }
             return value;
         });
@@ -575,7 +599,8 @@ function jsonNoView(el) {
 function jsonNoViewParent(el) {
     return JSON.stringify(el, function(key, value) {
             if (key == "viewElement") {
-                return "";
+//                return "";
+                return null;
             }
             if (key == "parent") {
                 return undefined;

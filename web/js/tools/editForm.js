@@ -166,9 +166,18 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
             
                 break;
             case "MultiCheck":
-                if (met.src != null && met.src != "") {
-                    inp = newDOMelement('<img width="20" height="20" src="' + met.src + '" style="margin-top:4px;margin-left:5px;cursor:pointer;">');
-                    inp.addEventListener("click", () => {this.clickMultiCheck(inp, met)}, false);
+                if (met.value != null) {
+                    inp = newDOMelement('<div style="width:' + met.len 
+                            +'px;height:28px;border: 1px solid #bbd4ef;border-radius:5px;position:relative;background-color:#fff">'
+                            +'<div style="position:absolute;top:6px;left:4px;font-size:13px">' + vv + '</div>'
+                            +'<img src="img/chevron_down.png" style="position:absolute;right:0;top:-2px;width:33px;height:33px;">'
+                            +'</div>');
+                    inp.addEventListener("click", () => {this.multiCheck(inp, met)}, false);
+                } else {
+                    if (met.src != null && met.src != "") {
+                        inp = newDOMelement('<img width="20" height="20" src="' + met.src + '" style="margin-top:4px;margin-left:5px;cursor:pointer;">');
+                        inp.addEventListener("click", () => {this.clickMultiCheck(inp, met)}, false);
+                    }
                 }
                 res.append(inp);
                 break;
@@ -365,15 +374,24 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
     
     this.clickMultiCheck = function(inp, met) {
         let str = formListIdElem(currentChildren, met.tags).substring(1);
+        this.selectMulti(inp, met, str);
+    }
+    
+    this.selectMulti = function(inp, met, str) {
         let ls = str.split(",");
         let ik = ls.length;
         let selF = this.edData[met.name].split(",");
         this.contWind = formWind(240, 400, 40, 350, met.title, true, null, "Save", this, "");
         this.contWind.nameField = met.name;
+        this.contWind.inpInp = inp;
         for (let i = 0; i < ik; i++) {
             let itemV = this.oneRowMultiCheck(i, ls[i], selF);
             this.contWind.append(itemV);
         }
+    }
+    
+    this.multiCheck = function(inp, met) {
+        this.selectMulti(inp, met, met.value);
     }
     
     this.oneRowMultiCheck = function(i, item, selF) {
@@ -407,6 +425,9 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
         }
         let nn = this.contWind.nameField;
         this.edData[nn] = res;
+console.log("RES="+res+"<<");
+        let inpDiv = this.contWind.inpInp.querySelector("div");
+        inpDiv.innerHTML = res;
         if (this.cb != null) {
             this.cb.cbEdit(nn);
         }

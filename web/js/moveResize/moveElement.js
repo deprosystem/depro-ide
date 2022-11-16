@@ -231,6 +231,9 @@ function mouseUpNewEl(e) {
 }
 
 function resizeContour(e) {
+    if (e.button == 2) {
+        return;
+    }
     var classN = e.target.className;
     let el = e.currentTarget;
     if (el.android != null) {

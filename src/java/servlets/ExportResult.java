@@ -341,9 +341,6 @@ public class ExportResult extends BaseServlet {
                 Screen sc = parSave.sreens.get(i);
                 String scName = sc.screenName.toLowerCase();
 //System.out.println("scName="+scName+"<<");
-if (scName.equals("myads")) {
-    System.out.println("SCREEN="+gson.toJson(sc));
-}
                 String type = "activity";
                 if (sc.typeScreen == 1) {
                     type = "fragment";
@@ -683,9 +680,9 @@ if (scName.equals("myads")) {
                                         + formStringId(scName, cViewId, String.valueOf(m), mi.title, listString) + screenM + startScr + stEnabled + endM);
                                 if (mi.divider != null && mi.divider) {
                                     if (m == mk1) {
-                                        menu.add("        .divider();");
+                                        menu.add("        .divider();\n");
                                     } else {
-                                        menu.add("        .divider()");
+                                        menu.add("        .divider()\n");
                                     }
                                 }
                             }
@@ -1189,6 +1186,13 @@ if (scName.equals("myads")) {
                 }
                 res = "handler(" + vId + ", VH.ADD_RECORD, R.id." + hh.id + ")";
                 break;
+            case "delete item list":
+                vId = "0";
+                if (stId.length() > 0) {
+                    vId = stId;
+                }
+                res = "handler(" + vId + ", VH.DEL_ITEM_LIST)";
+                break;
             case "nextScreen":
                 vId = "0";
                 if (stId.length() > 0) {
@@ -1519,7 +1523,8 @@ if (scName.equals("myads")) {
     }
     
     private String dravableFromUrl(String url) {
-        if (url == null) return "R.drawable.NULL";
+//        if (url == null) return "R.drawable.NULL";
+        if (url == null) return "0";
         int i = url.lastIndexOf(".");
         int j = url.lastIndexOf("/") + 1;
         String res = "R.drawable." + url.substring(j, i);
@@ -1960,6 +1965,29 @@ if (scName.equals("myads")) {
             case Constants.TOOL:
                 parSave.toolId = p.viewId;
                 break;
+            case Constants.SWIPE_LAYOUT:
+                List<AndroidPar> child = p.children;
+                if (child != null) {
+                    int ik = child.size();
+                    AndroidPar pp;
+                    boolean noSw = true;
+                    for (int i = 0; i < ik; i++) {
+                        pp = child.get(i);
+                        if (pp.viewId.equals("sw_l")) {
+                            if (pp.width > 0) {
+                                noSw = false;
+                            }
+                        } else if (pp.viewId.equals("sw_r")) {
+                            if (pp.width > 0) {
+                                noSw = false;
+                            }
+                        }
+                    }
+                    if (noSw) {
+                        typeEl = "RelativeLayout";
+                    }
+                }
+                break;
             case Constants.MENU_B:
                 parSave.menuId = p.viewId;
                 break;
@@ -2279,21 +2307,6 @@ if (scName.equals("myads")) {
                         parSave.styleTxtInpt.add(styleTool);
                         writer.write(tab + "app:titleTextAppearance=\"@style/" + styleTool + "\"");
                     }
-/*
-                    if (p.textColor != null && p.textColor >= 0) {
-                        writer.write(tab + "app:titleColor=\"" + findColorByIndex(p.textColor, parSave.colors) + "\"");
-                    }
-                    if (p.textSize != null) {
-                        writer.write(tab + "app:titleSize=\"" + dimens(p.textSize) + "\"");
-                    }
-
-                    if (p.imgBack != null && p.imgBack.length() > 0) {
-                        writer.write(tab + "app:imgBack=\"@drawable/" + nameFromUrl(p.imgBack) + "\"");
-                    }
-                    if (p.imgHamburg != null && p.imgHamburg.length() > 0) {
-                        writer.write(tab + "app:imgHamburger=\"@drawable/" + nameFromUrl(p.imgHamburg) + "\"");
-                    }
-*/
                     break;
 
                 case Constants.IMAGEVIEW:
@@ -2471,6 +2484,12 @@ if (scName.equals("myads")) {
                         writer.write(tab + "app:minLength=\"" + p.componParam.st_6 + "\"");
                     }
                     if (noInputType) {
+                        if (p.componParam.st_2 != null && p.componParam.st_2.length() > 0 && ! p.componParam.st_2.equals("none")) {
+                            writer.write(tab + "android:inputType=\"" + p.componParam.st_2.replace(",", "|") + "\"");
+                        }
+                    }
+/*
+                    if (noInputType) {
                         if (p.componParam.st_2 == null) {
                             writer.write(tab + "android:inputType=\"text\"");
                         } else {
@@ -2479,6 +2498,7 @@ if (scName.equals("myads")) {
                             }
                         }
                     }
+*/
                     if (noRestrict) {
                         if (p.componParam.lines != null && p.componParam.lines > 1) {
                             writer.write(tab + "android:lines=\"" + p.componParam.lines + "\"");
@@ -2906,18 +2926,23 @@ if (scName.equals("myads")) {
                     if (child != null) {
                         int ik = child.size();
                         AndroidPar pp;
-                        writer.write(tab + "app:swipeViewId=\"@id/T_0\"");
+                        boolean isSw = false;
                         for (int i = 0; i < ik; i++) {
                             pp = child.get(i);
                             if (pp.viewId.equals("sw_l")) {
                                 if (pp.width > 0) {
                                     writer.write(tab + "app:swipeLeftViewId=\"@id/sw_l\"");
+                                    isSw = true;
                                 }
                             } else if (pp.viewId.equals("sw_r")) {
                                 if (pp.width > 0) {
                                     writer.write(tab + "app:swipeRightViewId=\"@id/sw_r\"");
+                                    isSw = true;
                                 }
                             }
+                        }
+                        if (isSw) {
+                            writer.write(tab + "app:swipeViewId=\"@id/T_0\"");
                         }
                     }
                     break;

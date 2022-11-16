@@ -26,11 +26,6 @@ public class Constants {
             TAGS = "Tags", SPINNER = "Spinner", SEQUENCE = "ScreenSequence", INTRO = "Intro", EDIT_GALLERY = "EditGallery", SWIPE_LAYOUT = "SwipeLayout", 
             SWIPE = "Swipe";
     public static String txtInp = "_txt_inp_";
-/*
-    public static String toolCompon = "com.dpcsa.compon.custom_components.ComponToolBar",
-            listCompon = "androidx.recyclerview.widget.RecyclerView",
-            menu_bCompon = "com.dpcsa.compon.custom_components.ComponMenuB";
-*/
     public static String importMenu = "import com.dpcsa.compon.interfaces_classes.Menu;\n";
     public static String importToolMenu = "import com.dpcsa.compon.interfaces_classes.ToolBarMenu;\n";
     public static String importParamMap = "import com.dpcsa.compon.param.ParamMap;\n";

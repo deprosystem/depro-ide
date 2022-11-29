@@ -603,12 +603,19 @@ function setToLeftOf(el) {
     viewCompon();
 }
 
-function checkVisibility(el) {
+function clickVisibility(el) {
     let check = visibility.src.indexOf("check-sel") == -1;
     currentElement.android.visibility = check;
     setVisibility(check);
 }
-
+/*
+function checkVisibility(el) {
+console.log("checkVisibility");
+    let check = visibility.src.indexOf("check-sel") == -1;
+    currentElement.android.visibility = check;
+    setVisibility(check);
+}
+*/
 function setVisibility(check) {
     if (check) {
         visibility.src = "img/check-sel.png";

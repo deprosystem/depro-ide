@@ -15,5 +15,6 @@ public class SQL {
     
     public static String getListUsers = "SELECT * FROM users WHERE user_name != 'examples' AND user_name != 'jura' AND user_name != '_owner_system'";
     public static String getListProjectInUsers = "SELECT project_name, project_id, app_name, package, project_comment, resurse_ind, logo, host, where_server, date_create, image FROM projects WHERE user_id=";
+    public static String getTemplates = "SELECT project_name,project_title, project_id, project_comment, image, category_name, user_id  FROM projects, category WHERE template = true AND category.category_id = projects.category_id ORDER BY category_name";
 
 }

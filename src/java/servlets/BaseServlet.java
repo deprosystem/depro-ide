@@ -35,7 +35,7 @@ public abstract class BaseServlet extends HttpServlet{
     public Gson gson = new Gson();
     public BaseDB baseDb;
     public boolean isSerwer;
-    public long userExample = 54;
+    public long userExample = 540;
     
     protected abstract void processRequest(HttpServletRequest request, 
             HttpServletResponse response, DataServlet ds);

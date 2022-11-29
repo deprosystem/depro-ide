@@ -67,7 +67,7 @@ function formMenuEl_UX() {
         }
     }
 
-    listMenu_UX[0].children[2].domElement.className = 'subMainMenuNo';
+//    listMenu_UX[0].children[2].domElement.className = 'subMainMenuNo';
 //    listMenu_UX[0].children[5].domElement.className = 'subMainMenuNo';
 }
 

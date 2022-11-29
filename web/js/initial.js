@@ -7,6 +7,7 @@ function initialView(AuthResult) {
     let prof = ar.profile;
     setCookie("auth_token", AuthToken);
     setCookie("user", prof.userName);
+    setCookie("user_id", prof.userId);
     if (prof.userName != undefined && prof.userName.length > 0) {
         info_user.innerHTML = prof.userName.substring(0, 1).toUpperCase();
     }

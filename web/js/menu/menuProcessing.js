@@ -38,18 +38,10 @@ function openProject() {
     doServer("POST", "project/list", cbListProject);
 }
 
-function fromTemplates() {
-    
-}
-
 function saveProject() {
     offEmulator();
     let st = formJsonProject();
     doServer("POST", "project/save", cbSaveProject, st, null, document.body);
-}
-
-function inTemplates() {
-    
 }
 
 function formJsonProject() {

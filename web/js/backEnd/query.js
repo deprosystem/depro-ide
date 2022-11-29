@@ -676,7 +676,7 @@ function saveQuery() {
     }
     
     let SQL = "SELECT " + fields + " FROM " + tables;
-    let qu;
+    let qu = -1;
     currentComponentDescr.model.data[0] = data;
     currentComponentDescr.model.bool_1 = noRequest.src.indexOf("check-sel") > -1;
     let url = currentComponentDescr.model.url;
@@ -688,7 +688,8 @@ function saveQuery() {
         } else {
             qu = parseInt(url);
         }
-    } else {
+    }
+    if (qu == null || isNaN(qu)) {
         qu = -1;
     }
 // Query
@@ -825,7 +826,7 @@ function saveQuery() {
     let original = JSON.stringify(origin_query);
     let nam = currentScreen.screenName + "_" + currentComponent.viewId;
     let dat = {id_query:qu,name_query:nam,type_query:"SELECT",origin_query:original,sql_query:SQL,param_query:strParam, listWhere:JSON.stringify(where_list), orderBy:order_query};
-//console.log("DAT="+JSON.stringify(dat));
+//console.log("hostDomain="+hostDomain+"<< DAT="+JSON.stringify(dat));
     doServerAlien("POST", hostDomain + "query/create", cbQueryCreate, JSON.stringify(dat));
 }
 
@@ -894,7 +895,9 @@ function cbQueryValue(res) {
     }
     let ik;
     let query = JSON.parse(res);
+console.log("RES="+res);
     let originQuery = JSON.parse(query.origin_query);
+console.log("query.origin_query="+query.origin_query);
     if (originQuery.fieldTable != null) {
         let origin = originQuery.fieldTable;
         ik = origin.length;

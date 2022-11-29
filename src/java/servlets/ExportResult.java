@@ -1179,12 +1179,12 @@ public class ExportResult extends BaseServlet {
                     res = "checked(" + stId + stAfter + stNav + ")";
                 }
                 break;
-            case "addRecord":
+            case "add item list":
                 String vId = "0";
                 if (stId.length() > 0) {
                     vId = stId;
                 }
-                res = "handler(" + vId + ", VH.ADD_RECORD, R.id." + hh.id + ")";
+                res = "handler(" + vId + ", VH.ADD_ITEM_LIST, R.id." + hh.id + ")";
                 break;
             case "delete item list":
                 vId = "0";
@@ -1218,7 +1218,11 @@ public class ExportResult extends BaseServlet {
                 if (stId.length() > 0) {
                     vId = stId;
                 }
-                res = "handler(" + vId + ", VH.ACTUAL, " + parId + ")";
+                if (vId == "0") {
+                    res = "actual(" + parId + ")";
+                } else {
+                    res = "actual(" + vId + ", " + parId + ")";
+                }
                 break;
             case "send":
                 vId = "0";

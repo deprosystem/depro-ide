@@ -150,7 +150,6 @@ public class Project extends BaseServlet {
                             }
                             projectDb.changeProject(pc, projectId);
                             sendResult(response, gson.toJson(projectDb.getProjectById(projectId)));
-//                            sendResultOk(response);
                         }
                     }
                     break;
@@ -173,6 +172,51 @@ public class Project extends BaseServlet {
                         sendError(response, "sethost error " + e.toString());
                     }
                     sendResultOk(response);
+                    break;
+                case "/project/templates":
+                    sendResult(response, projectDb.getQueryList(SQL.getTemplates));
+                    break;
+                case "/project/create_from_template":
+                    pc = null;
+                    try {
+                        pc = gson.fromJson(getStringRequest(request), ProjectM.class);
+                        pc.userId = ds.userId;
+                        pc.namePackage = pc.nameProject.toUpperCase() + ".ide";
+                        if (pc.logo == null) {
+                            pc.logo = "";
+                        }
+                        if (pc.comment == null) {
+                            pc.comment = "";
+                        }
+                        if (pc.nameAPP == null || pc.nameAPP.length() == 0) {
+                            pc.nameAPP = pc.nameProject;
+                        }
+                    } catch (JsonSyntaxException | IOException e) {
+                        System.out.println(e);
+                        sendError(response, "Project create error " + e.toString());
+                    }
+                    id = -1;
+                    if (pc != null) {
+                        ProjectM template = projectDb.getProjectById(String.valueOf(pc.projectId));
+                        pc.strings = formStrings(pc.nameAPP);;
+                        pc.colors = template.colors;
+                        pc.dimens = template.dimens;
+                        pc.style = template.style;
+                        pc.style_spec = template.style_spec;
+                        pc.style_check = template.style_check;
+                        pc.drawable = template.drawable;
+                        pc.appParam = template.appParam;
+                        pc.resurseInd = lowerCaseRandom(15);
+                        pc.screens = template.screens.replaceAll(template.resurseInd, pc.resurseInd);
+                        pc.host = template.host;
+                        pc.dateCreate = new Date().getTime();
+                        pc.whereServer = "Server IDE";
+                        id = projectDb.createProjectId(pc);
+                        pc.projectId = id;
+                        createResFromTemplate(ds.patchOutsideProject, pc.resurseInd, template.resurseInd);
+                        projectDb.setLastProject(String.valueOf(ds.userId), String.valueOf(id));
+                        sendResult(response, gson.toJson(pc));
+                    }
                     break;
                 case "/project/delete":
                     if (ds.userId == userExample) {
@@ -219,7 +263,13 @@ public class Project extends BaseServlet {
         formDir(projectPath);
         String mipmapPath = realPath + "mipmap/res";
         copyDir(mipmapPath, projectPath);
-        
+    }
+    
+    private void createResFromTemplate(String basePath, String resurseIndNewProject, String resurseIndTemplate) {
+        String projectPath = basePath + Constants.PROJECTS_DATA + resurseIndNewProject + "/res";
+        formDir(projectPath);
+        String templatePath = basePath + Constants.PROJECTS_DATA + resurseIndTemplate + "/res";
+        copyDir(templatePath, projectPath);
     }
     
     private String formStrings(String appName) {

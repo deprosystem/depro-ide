@@ -165,18 +165,6 @@ function scalePlus() {
         content_src.scroll_y.resize(content_src);
     }
 }
-/*
-function changeRoot() {
-    var child = root.childNodes;
-    var ik = child.length;
-    for (var i = 0; i < ik; i++) {
-        var el = child[i];
-        if (el.android != null) {
-            viewComponElem(el);
-        }
-    }
-}
-*/
 
 function menuhide(el) {
     var currentmenu = el.getElementsByClassName("navbody")[0];

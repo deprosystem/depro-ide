@@ -486,7 +486,7 @@ function CRUD(dat, name, type_crud) {
             res = [{id_table:this.delIdTable,name_table:this.delNameTable}];
             fv = {fields:"",valid:"",indF:[],indV:[],prof:"",indP:[]};
         }
-console.log("RES="+JSON.stringify(res));
+//console.log("RES="+JSON.stringify(res));
         this.param.queryFilds = fv;
         
 //   WHERE

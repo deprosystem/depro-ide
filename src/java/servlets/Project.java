@@ -246,8 +246,17 @@ public class Project extends BaseServlet {
                         sendError(response, "This project cannot be deleted");
                         break;
                     }
-                    projectId = request.getHeader("projectId");
-                    projectDb.deleteProjectId(projectId);
+                    par = null;
+                    try {
+                        String param = getStringRequest(request);
+                        par = gson.fromJson(param, ParamDel.class);
+                    } catch (IOException e) {
+                        System.out.println(e);
+                        sendError(response, "delete project error " + e.toString());
+                        break;
+                    }
+//                    projectId = request.getHeader("projectId");
+                    projectDb.deleteProjectId(par.projectId);
                     sendResultOk(response);
                     break;
             }

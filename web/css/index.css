@@ -1,6 +1,6 @@
 
-:root {--h_header: 35px; 
-       --w_left: 300px; --w_right: 250px; --h_backEnd: 0; --r_data: 150px; --r_emulator: 210px;
+:root {--h_header: 35px; --h_wind_qu: 400px; --w_wind_qu: 300px;
+       --w_left: 300px; --w_right: 250px; --h_backEnd: 0; --r_data: 120px; --r_emulator: 210px;
        --left_compon:0px; --w_ux_p: 60%; --w_ux_r: 0px; 
        --c_line: #2c3336;--c_blue:#1dace9;--c_yelow:#ffc700;--c_content:#FfFBEF; --c_screen:#DAF0FA;--c_screen_hover:#d5f0ff;
        --c_compon:#f7f7f7;--c_component:#fff;--c_input:#cbe4ef;--c_separator:#7ac;--c_scroll:#1DACE9;--c_yelow_lite:#FcFcdF;
@@ -22,6 +22,8 @@ select::-ms-expand {display: none;}
 #compon_ui {position: absolute; background-color: #eee; left: 0px; width: 21%; top: var(--h_header); bottom: 0px;}
 #haracteristicks{position: absolute;overflow-y: hidden; background-color: #eee; right: 0px; width: 24%; top: var(--h_header); bottom: 0px;}
 #backEnd {position: absolute; left: 0; right: 0; top: var(--h_header); height: var(--h_backEnd); overflow-y:hidden;
+           background-color:var(--c_content);transition: height 400ms }
+#dataPanel {position: absolute; left: 0; right: 0; top: var(--h_header); height: var(--h_backEnd); overflow-y:hidden;
            background-color:var(--c_content);transition: height 400ms }
 #content_v{position: absolute; left: var(--w_ux_p); right: var(--w_ux_r); top: var(--h_header); bottom: 0px;
            background-color:var(--c_content);transition: left 400ms, right 400ms;}
@@ -94,7 +96,7 @@ li:hover ul {display: block;}
 
 
 .titleWind {height: 47px;background:#f3f8ff;cursor:move;border-radius: 5px 5px 0px 0px;border-bottom:1px solid #1dace9;}
-.titleWindName {margin-left: 10px;font-size:18px;font-family:Proxima Nova;font-style:normal;font-weight: bold;float:left;}
+.titleWindName {margin-left: 10px;font-size:18px;font-family:Proxima Nova;color:#333;font-weight: bold;float:left;}
 .titleWindClose {margin-right: 10px;cursor: pointer;float: right;}
 
 /*
@@ -171,15 +173,6 @@ li:hover ul {display: block;}
 .file_el {cursor: pointer}
 .file_el:hover {background: gold}
 
-/*              SCROLL          */
-/*
-.viewport {right: 1px; overflow: hidden; position: absolute; left: 0; top: 0px; bottom: 0px;-webkit-user-select: none; user-select: none;}
-.content {position: absolute;overflow-x: hidden; left: 0; right:-17px;height: 100%; overflow-y: scroll;}
-.scrollbar, .scroller {width: 5px; position: absolute; top: 0;}
-.scrollbar {right: 0px; bottom: 0;}
-.scroller {left: 0; border-radius: 2px; background: var(--c_scroll); cursor: pointer;}
-.scroll_line {width: 1px; position: absolute; top: 0;right: 1.5px; bottom: 0;background:var(--c_scroll);}
-*/
 .futer_wind {position:absolute;height:56px;left:0px;right:0px;bottom:0px;border-top: 1px solid #1dace9}
 .projectView {float:left;margin-left:16px;margin-top:16px;width:360px;height:240px;position:relative;background-color:white;border: 1px solid #1dace9;
               box-sizing: border-box;box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.05);border-radius: 4px;}

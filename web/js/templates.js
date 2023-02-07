@@ -17,7 +17,7 @@ function fromTemplates() {
 function cbGetTemplates(res, wind) {
     listTemplates = JSON.parse(res);
     let wList = 300;
-console.log("RES="+res);
+//console.log("RES="+res);
     let list = newDOMelement('<div style="position:absolute;top:0;left:0;bottom:0;width:' + wList + 'px;border-right:1px solid #1dace9;"></div>');
     wind.append(list);
     detailTemplate = newDOMelement('<div style="position:absolute;top:0;right:0;bottom:0;left:' + (wList + 1) + 'px;"></div>');

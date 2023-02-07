@@ -28,6 +28,7 @@ function initialView(AuthResult) {
     let ins = new insertHtml();
 //    ins.get('m_bmPEbody', 'layout/layoutParam.html', m_bmStart);
     currentProject = ar.project;
+
     ins.get('m_bmPEbody', 'layout/layoutParam.html', m_bmStart); // запускает cbCreateProjectDop
     if (currentProject == null) {
         if (ar.listProject != null && ar.listProject.length > 0) {

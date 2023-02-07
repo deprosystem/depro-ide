@@ -31,11 +31,16 @@ function cbAddTable(dat, dopEl) {
     let dd = dopEl.getElementsByClassName("descr_t")[0].value;
     let tableId = dopEl.id_table;
     if (nn != null && nn != "") {
-        
-        if (nn == USER_TABLE_NAME) {
-            
+        let ik = listTables.length;
+        for (let i = 0; i < ik; i++) {
+            let item = listTables[i]
+            if (nn == item.name_table && tableId != item.id_table) {
+                myAlert("There is already a table with the same name");
+                return false;
+            }
         }
-        let ik = dat.length;
+
+        ik = dat.length;
         let ln = "";
         let sep = "";
         for (let i = 0; i < ik; i++) {
@@ -46,7 +51,7 @@ function cbAddTable(dat, dopEl) {
             }
         }
         if (ln.length > 0) {
-            myAlert("No name specified for numbered fields " + ln);
+            myAlert("There is no name in the description of the fields with numbers" + ln);
             return false;
         }
         let hostDomain = currentProject.host;
@@ -139,7 +144,7 @@ function editTable(i) {
 
 function addTableForQuery() {
     if (listTables == null) return;
-    if (listTablesForQuery.length == 3) return;
+    if (listTablesForQuery.length == 5) return;
     let wind = formWind(250, 450, 40, 350, "Choose a table", true);
     let cont = newDOMelement('<div style="position:absolute;left:5px;right:10px"></div>');
     wind.appendChild(cont);
@@ -192,7 +197,7 @@ function formBlockTable(item) {
             +'<div style="margin-top:3px;width:100%;text-align:center;font-size:14px;">' + item.name_table + '</div>'
             +'</div>');
     block.appendChild(title);
-    let selField = newDOMelement('<img onclick="selAllFieldInTable(this)" style="width:18px;height:18px;position:absolute;right:10px;top:3px;cursor:pointer" src="img/check-act.png">');
+    let selField = newDOMelement('<img onclick="selAllFieldInTable(this)" style="width:14px;height:14px;position:absolute;right:10px;top:3px;cursor:pointer" src="img/check-act.png">');
     title.appendChild(selField);
     
     queryTables.appendChild(block);
@@ -266,7 +271,7 @@ function oneFieldTables(idTable, item, el) {
     let rect_1 = name.getBoundingClientRect();
     let descr = newDOMelement('<div style="font-size:10px;color:#555;margin-top:6px;height:11px;width:' + (rect.width - rect_1.width - 20) 
             + 'px;float:left;margin-left:5px;overflow:hidden">' + item.title);
-    let selField = newDOMelement('<img onclick="selFieldInTable(this)" style="width:18px;cursor:pointer;height:18px;position:absolute;right:2px;top:3px;" src="img/check-act.png">');
+    let selField = newDOMelement('<img onclick="selFieldInTable(this)" style="width:14px;cursor:pointer;height:14px;position:absolute;right:2px;top:3px;" src="img/check-act.png">');
     cont.appendChild(descr);
     cont.appendChild(selField);
 }
@@ -359,6 +364,7 @@ function oneFieldView(idTab, item, el) {
     cont.idField = item.id_field;
     cont.name_field = item.name;
     cont.type_field = item.type;
+    cont.title_field = item.title;
     let name = newDOMelement('<div class="name" style="font-size:14px;color:#000;margin-top:2px;float:left;margin-left:3px">' + item.name + '</div>');
     cont.appendChild(name);
     el.appendChild(cont);
@@ -367,16 +373,7 @@ function oneFieldView(idTab, item, el) {
     let descr = newDOMelement('<div style="font-size:10px;color:#555;margin-top:6px;height:11px;width:' + (rect.width - rect_1.width - 20) 
             + 'px;float:left;margin-left:5px;overflow:hidden">' + item.title);
     if (isFormForQuery) {
-/*
-        let selSel = formSelectForEditData("Field,Profile,System dat,System_time", "");
-        selSel.style.width = "80px";
-        selSel.style.border = "none";
-        selSel.style.backgroundColor = "#0000";
-        selSel.style.float = "right";
-        cont.append(selSel);
-        
-*/
-        let selField = newDOMelement('<img style="width:18px;cursor:pointer;height:18px;float:right;margin-right:2px;margin-top:3px;" src="img/check-sel_1.png">');
+        let selField = newDOMelement('<img style="width:14px;cursor:pointer;height:14px;float:right;margin-right:2px;margin-top:3px;" src="img/check-sel_1.png">');
         selField.addEventListener("click", function(){checkElement(selField)}, false);
         cont.append(selField);
 

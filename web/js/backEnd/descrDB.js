@@ -24,6 +24,67 @@ function setHostPanel() {
     }
 }
 
+function dbViewHostPanel() {
+    hostDescr = "Server IDE"; 
+    hostDomain = "";
+    hostPassword = "";
+    hostPanel = null;
+    scrollListDataDB.innerHTML = "";
+    let chHost = editSelect("Where is the server", 110, "Server IDE,Own server", "", "changeHostSel");
+    chHost.style.marginTop = "5px";
+    chHost.style.marginLeft = "5px";
+    scrollListDataDB.appendChild(chHost);
+    
+    hostPanel = newDOMelement('<div style="float:left;clear:both;margin-left:5px;margin-top:5px;display:none"></div>');
+    let domain = editTextParam("Domain name", 200, "", "changeHostDomain");
+    hostPanel.appendChild(domain);
+    scrollListDataDB.appendChild(hostPanel);
+    
+    let buttonSend = createButtonBlue('Send', 70);
+    buttonSend.style.clear = "both";
+    buttonSend.style.marginTop = "24px";
+    buttonSend.addEventListener("click", function(){dbSendDescrHost();}, true);
+    scrollListDataDB.appendChild(buttonSend);
+/*
+    let buttonAddF = createButtonBlue('Send', 70);
+    buttonAddF.style.clear = "both";
+    buttonAddF.style.marginTop = "24px";
+    buttonAddF.addEventListener("click", function(){dbAddF();}, true);
+    scrollListDataDB.appendChild(buttonAddF);
+*/
+}
+
+function dbAddF() {
+    doServerAlien("get", hostDomain + "db/getQuery_1", cbDBAddFGetQu, null, null, document.body);
+}
+
+function cbDBAddFGetQu(res) {
+    let qu = JSON.parse(res);
+console.log("DDDD="+qu.descr_query+"<<");
+}
+
+function dbSendDescrHost() {
+    if (hostDescr == "Server IDE") {
+        hostDomain = "https://apps.dp-ide.com/";
+    }
+    let dat = {whereServer:hostDescr,domain:hostDomain,pass:hostPassword,res_ind:currentProject.resurseInd};
+    doServerAlien("POST", hostDomain + "db/create", cbDBCreateHost, JSON.stringify(dat), null, document.body);
+}
+
+function cbDBCreateHost(res) {
+    currentProject.host = hostDomain;
+    currentProject.whereServer = hostDescr;
+    let dat = {whereServer:hostDescr,domain:hostDomain,pass:hostPassword,res_ind:currentProject.resurseInd};
+    doServer("POST", 'project/sethost', cbDBSetHost, JSON.stringify(dat));
+}
+
+function cbDBSetHost() {
+    let tt = dataDescript.querySelector(".titleBlock");
+    tt.innerHTML = "";
+    tt.append(newDOMelement(dataTabQu));
+    dbViewTable();
+}
+
 function cbGetTables(res) {
     listTables = JSON.parse(res);
     formListTables();
@@ -31,7 +92,7 @@ function cbGetTables(res) {
 
 function formListTables() {
     formListTables_1();
-    setButtonAdd();
+//    setButtonAdd();
 }
 
 function formListTables_1() {
@@ -42,17 +103,16 @@ function formListTables_1() {
         return 0;
     });
 
-    listTablesView.innerHTML = "";
+    scrollListDataDB.innerHTML = "";
     let ik = listTables.length;
     if (ik > 0) {
         for (let i = 0; i < ik; i++) {
-//            oneTableView(i, listTablesView);
-            oneTableView(listTables[i], listTablesView);
+            oneTableView(listTables[i], scrollListDataDB);
         }
     }
-    setButtonAdd();
 }
 
+/*
 function setButtonAdd() {
     if (hostDescr == "Third party API") {
         addTab.innerHTML = "";
@@ -64,10 +124,9 @@ function setButtonAdd() {
         openAdmin.onclick = openAdminWind;
     }
 }
+*/
 
 function oneTableView(item, el) {
-//    let item = listTables[i];
-//    let cont = newDOMelement('<div class="tableInf" onclick="editTable(' + i + ')" style="float:left;width:100%;height:30px;overflow: hidden;cursor:pointer;border-bottom:1px solid #aaf;clear:both"></div>');
     let cont = newDOMelement('<div class="tableInf" onclick="editTable(' + item.id_table + ')" style="float:left;width:100%;height:30px;overflow: hidden;cursor:pointer;border-bottom:1px solid #aaf;clear:both"></div>');
     let name = newDOMelement('<div class="name_t" style="font-size:16px;color:#000;margin-top:5px;float:left;margin-left:5px">' + item.name_table + '</div>');
     cont.appendChild(name);
@@ -78,7 +137,6 @@ function oneTableView(item, el) {
             + 'px;float:left;margin-left:10px;overflow:hidden">' + item.title_table + '</div>');
     cont.appendChild(descr);    
     if (item.name_table != "user") {
-//        let del = newDOMelement('<img onclick="deleteTableAdm(' + i + ');" style="margin-top:11px;float:right;margin-right:7px;cursor:pointer;" width="10" height="10" src="img/del_red.png">');
         let del = newDOMelement('<img onclick="deleteTableAdm(' + item.id_table + ');" style="margin-top:11px;float:right;margin-right:7px;cursor:pointer;" width="10" height="10" src="img/del_red.png">');
         cont.appendChild(del);
     }
@@ -148,7 +206,7 @@ function sendDescrHost() {
 }
 
 function cbCreateHost(res) {
-    setButtonAdd(false);
+//    setButtonAdd(false);
     currentProject.host = hostDomain;
     descr_host.innerHTML = hostDomain;
     currentProject.whereServer = hostDescr;
@@ -167,6 +225,7 @@ function cbSetHost(res) {
 
 function openAdminWind() {
     let hostNew;
+    hostDomain = currentProject.host;
     if (debagStatus) {
         hostNew = hostDomain.replace("apps", "deb-apps");
     } else {

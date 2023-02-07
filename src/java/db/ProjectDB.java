@@ -111,7 +111,7 @@ public class ProjectDB extends BaseDB {
     
     public void deleteProjectId(String id) {
         try (Connection connection = getDBConnection(); Statement statement = connection.createStatement()) {
-            statement.executeUpdate("DELETE FROM projects WHERE project_id = " + id);
+            int ii = statement.executeUpdate("DELETE FROM projects WHERE project_id = " + id);
         } catch (SQLException | ClassNotFoundException ex) {
             System.out.println("changeProject error="+ex);
         }

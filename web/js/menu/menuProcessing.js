@@ -35,7 +35,7 @@ var newProjectForCreate;
 var createChangeProgectOper;
 
 function openProject() {
-    doServer("POST", "project/list", cbListProject);
+    doServer("POST", "project/list", cbListProject, null, null, document.body);
 }
 
 function saveProject() {
@@ -143,7 +143,7 @@ function sendCreateProject(data, oper) {
     } else {
         url = "project/create";
     }
-    doServer("POST", url, cbCreateProject, data, oper);
+    doServer("POST", url, cbCreateProject, data, oper, document.body);
 }
 
 function cbCreateProject(res, oper) {
@@ -155,6 +155,7 @@ function cbCreateProject(res, oper) {
     shutScreen.style.display = "none";
 }
 function cbCreateProjectDop() {
+    dataDescript.innerHTML="";      //    Очистка для работы с данными
     ux_ui_w.style.display = "block";
     plus_screen.style.display = "block";
     corners.style.display = "block";
@@ -362,6 +363,7 @@ function cbSaveProject(res) {
 }
 
 function cbListProject(res) {
+//console.log("RES="+res);
     setListProject(JSON.parse(res));
 }
 
@@ -387,7 +389,7 @@ function oneProject(p, i) {
     let ds = "";
     if (p.dateCreate !=0) {
         let dd = new Date(p.dateCreate);
-        ds = dd.getDay() + "." + dd.getMonth() + "." + dd.getYear();
+        ds = ("0" + dd.getDate()).slice(-2) + "." + ("0" + (dd.getMonth() + 1)).slice(-2) + "." + dd.getFullYear();
     }
     let stUsers = "";
     if (p.listUsers != null && p.listUsers.length > 0) {
@@ -459,29 +461,8 @@ function sendImageProject(id, nameFile, el, title, accept) {
 function cbImageProject(res, par) {
     closeWindow(par.wind);
     doServer("GET", 'images/list', cbGetListImg);
-/*
-    listImage = null;
-    if (par.elImg != null) {
-        let el = par.elImg;
-        let el1 = el.parentElement;
-        let elImg = el1.getElementsByClassName("imgProject");
-        if (elImg != null) {
-            let imgProj = elImg[0];
-            imgProj.style.visibility = "visible";
-            imgProj.src = res + "?" + Math.random();
-        } else {
-            doServer("GET", 'images/list', cbGetListImg);
-//            doServer("GET", 'images/list', cbGetListImgForward);
-        }
-    }
-*/
 }
-/*
-function cbGetListImgForward(res) {
-    if (res == "") return;
-    listImage = JSON.parse(res);
-}
-*/
+
 function projectMenu(e, id, i) {
     let el = e.target;
     if (el.popup == null) {
@@ -523,9 +504,9 @@ function deleteProjectId(project) {
     } else {
         let param = JSON.stringify(dat);
         if (project.host == null) {
-            doServer("POST", "project/del_only", cbDelProj);
+            doServer("POST", "project/del_only", cbDelProj, param, null, document.body);
         } else {
-            doServerAlien("POST", project.host + "db/del_schema", cbDelSchema, param, dat);
+            doServerAlien("POST", project.host + "db/del_schema", cbDelSchema, param, dat, document.body);
         }
     }
 }
@@ -535,7 +516,7 @@ function cbDelSchema(res, param) {
 }
 
 function cbDelProj(res) {
-    if (deleteProjectIdVar == currentProject.projectId) {
+    if (currentProject != null && deleteProjectIdVar == currentProject.projectId) {
         currentProject = null;
     }
     openProject();
@@ -544,7 +525,7 @@ function cbDelProj(res) {
 function selectProject(id) {
     listProjectsScr.innerHTML = "";
     listProjects.style.display = "none";
-    doServer("get", "project/getproject?id=" + id, cbGetProject);
+    doServer("get", "project/getproject?id=" + id, cbGetProject, null, null, document.body);
 }
 
 function cbGetProject(res) {

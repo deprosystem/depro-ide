@@ -61,6 +61,7 @@ function ScrollY(container, localScroll, addEl) {
     container.scroll_y = this;
     this.content = this.viewport.querySelector('.content');
     this.scrollerHeightMin = 25;
+    this.scroller;
     this.step = 20;
     this.pressed = false;
     this.viewportHeight = this.viewport.offsetHeight;
@@ -112,7 +113,8 @@ function ScrollY(container, localScroll, addEl) {
         this.scrollerHeight = parseInt(this.ratio * this.viewportHeight);
         this.scrollerHeight = (this.scrollerHeight < this.scrollerHeightMin) ? this.scrollerHeightMin : this.scrollerHeight;
         if (this.isHide) {
-            if (this.baseHeight == this.scrollerHeight) {
+//            if (this.baseHeight == this.scrollerHeight) {
+            if (this.viewportHeight >= this.contentHeight) {
                 this.scrollbar.style.display = "none";
             } else {
                 this.scrollbar.style.display = "block";
@@ -157,14 +159,16 @@ function ScrollY(container, localScroll, addEl) {
         this.scrollerHeight = parseInt(this.ratio * this.viewportHeight);
         this.scrollerHeight = (this.scrollerHeight < this.scrollerHeightMin) ? this.scrollerHeightMin : this.scrollerHeight;
         this.scroller.style.height = this.scrollerHeight + 'px';
-        
+//console.log("2222 BBBBBB="+getComputedStyle(this.content).bottom+"<<");
+//console.log("RRRRR this.isHide="+this.isHide+" this.viewportHeight="+this.viewportHeight+" this.contentHeight="+this.contentHeight);
         if (this.isHide) {
-            if (this.baseHeight == this.scrollerHeight) {
+            if (this.viewportHeight >= this.contentHeight) {
                 this.scrollbar.style.display = "none";
             } else {
                 this.scrollbar.style.display = "block";
             }
         }
+
         this.scrollerMaxOffset = this.viewportHeight - this.scroller.offsetHeight;
     }
 

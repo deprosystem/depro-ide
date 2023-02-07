@@ -58,12 +58,7 @@ function dataDescr(v, h, addType) {
             +hh
             +vv
         +'</div>'
-/*
-        +'<div style="float:left;margin-left:5px;">'
-            +'<div style="float:left;color:#2228;font-size:10px">Swipe</div>'
-            +'<img onclick="noActiveListClick(this)" style="clear:both;margin-top:5px;float:left;margin-left:5px;" width="14" height="14" src="img/check-act.png">'
-        +'</div>'
-*/
+
         + addT
     +'</div>';
 }
@@ -86,12 +81,7 @@ function dataDescrAdd(v, h) {
             +hh
             +vv
         +'</div>'
-/*
-        +'<div style="float:left;margin-left:5px;">'
-            +'<div style="float:left;color:#2228;font-size:10px">Swipe</div>'
-            +'<img onclick="noActiveListClick(this)" style="clear:both;margin-top:5px;float:left;margin-left:5px;" width="14" height="14" src="img/check-act.png">'
-        +'</div>'
-*/
+
         +'<div style="float:left;margin-left:5px">'
             +'<div style="font-size:10px;color:#2228;">Delete</div>'
             +'<img onclick="delDataType(this);" style="margin-top:6px;margin-left:5px;float:left;clear:both;cursor:pointer;" width="16" height="16" src="img/close-o.png">'
@@ -201,23 +191,268 @@ function isValidModel(mod, tab, viewId) {
 }
 
 function editDataModel(el, ind) {
-    let mv = el.closest(".model_view");
+    let mvP = el.closest(".component_param");
+    let mv = mvP.querySelector(".model_view");
     let sel = mv.querySelector(".model_method");
     selectMethodInModel = sel.options[sel.selectedIndex].value;
+    let num;
+    let p = el.parentElement;
+    if (ind != null) {
+        num = 0;
+    } else {
+        num = getNumDataTYpe(p) + 1;
+    }
     if (selectMethodInModel == "TEST") {
         editDataWind(metaModel, currentComponentDescr.model.data[0], cbSaveDataModel);
     } else if (hostDescr == "Third party API") {
-            let num;
-            let p = el.parentElement;
-            if (ind != null) {
-                num = 0;
-            } else {
-                num = getNumDataTYpe(p) + 1;
-            }
             editDataWind(metaModel, currentComponentDescr.model.data[num], cbSaveDataModel);
         } else {
-            editQueryWind();
+//            editQueryWind();
+//            setModelParam();
+            let tt = currentComponentDescr.type;
+            let isFormForQuery = tt == "Form" || tt == "ScrollForm";
+            new FieldsFromSource(currentComponentDescr.model, num, currentComponentDescr.type.indexOf("Form") > -1);
         }
+}
+
+function setModelParam() {
+    hostDomain = currentProject.host;
+    if (listQuerys == null) {
+        doServerAlien("GET", hostDomain + 'query/list', cbModGetQuerys, null, null, document.body);
+    } else {
+        modListQuerys();
+    }
+}
+
+function cbModGetQuerys(res) {
+//console.log("RES="+res);
+    listQuerys = JSON.parse(res);
+    modListQuerys();
+}
+
+function modListQuerys() {
+    listQuerys.sort(function(a, b){
+        let nameA=a.name_query.toLowerCase(), nameB=b.name_query.toLowerCase();
+        if (nameA < nameB) return -1;
+        if (nameA > nameB) return 1;
+        return 0;
+    });
+
+    let wind = formWind(300, 400, 40, 250, "Choose a request", true, null, null, null, "");
+//    let ww = wind.closest(".wind");
+//    ww.style.left = "5px";
+    let ik = listQuerys.length;
+    if (ik > 0) {
+        for (let i = 0; i < ik; i++) {
+            modOneQueryView(listQuerys[i], wind, i);
+        }
+        let scr = wind.closest('.viewport');
+        scr.scroll_y.resize();
+    }
+}
+
+function modOneQueryView(item, el, i) {
+    let img = "";
+    switch (item.type_query) {
+        case "SELECT":
+            img = "select-tab";
+            break;
+        case "DELETE":
+            img = "del-tab";
+            break;
+        case "INSERT":
+            img = "add-tab";
+            break;
+        case "UPDATE":
+            img = "edit-tab";
+            break;
+    }
+    let descr = item.descr_query;
+    if (descr == null) {
+        descr = "";
+    }
+    let oneDiv = '<div onclick="modEditQuery(this,' + i + ')" style="float:left;width:100%;height:36px;cursor:pointer;border-bottom:1px solid #aaf;clear:both;position:relative">'
+                    +'<img src="img/' + img + '.png" style="width:24px;height:24px;position:absolute;top:3px;left:3px;">'
+                    +'<div class="name_t" style="font-size:14px;color:#000;position:absolute;top:1px;left:30px">' + item.name_query + '</div>'
+                    +'<div class="descr_t" style="font-size:10px;color:#555;position:absolute;top:17px;left:30px;right:0;height:14px;overflow:hidden">' + descr + '</div>'
+                +'</div>';
+    let cont = newDOMelement(oneDiv);
+    el.appendChild(cont);
+}
+
+function modEditQuery(el, ind) {
+//    closeWindow(el);
+    let wind = el.closest(".wind");
+    let wd = el.closest(".dataWindow");
+    wind.style.bottom = "51px";
+    wind.innerHTML = "";
+    wd.style.width = "440px";
+    let item = listQuerys[ind];
+    setTitleWind(wind, "Specify fields for view from query " + item.name_query);
+    currentComponentDescr.model.url = "query/" + currentProject.resurseInd + "/" + item.id_query;
+    let hTitle = 24, wFields = 220, hTitle1 = hTitle + 1;
+    
+    let titleSt = '<div style="height:' + hTitle + 'px;border-bottom:1px solid #1dace9;font-size:14px;position:relative">'
+            +'<div style="width:' + wFields + 'px;text-align:center;margin-top:3px;float:left;">Fields view</div>'
+            +'<div style="height:100%;width:1px;background-color:#1dace9;float:left"></div>'
+            +'<div style="text-align:center;margin-top:3px;float:left;width:' + (wFields - 1) + 'px">Fields query</div>'
+            +'</div>';
+    let controll = createFooter(50);
+    addFooter(wind, controll);
+    let buttonSave = createButtonBlue('Save', 70);
+    controll.append(buttonSave);
+    let buttonCancel = createButtonWeite('Cancel', 70);
+    buttonCancel.addEventListener("click", function(){closeWindow(wind);}, true);
+    controll.append(buttonCancel);
+    wd.append(controll);
+    let title = newDOMelement(titleSt);
+    wind.append(title);
+    let selFieldAll = newDOMelement('<img style="width:14px;height:14px;position:absolute;right:7px;top:3px;cursor:pointer" src="img/check-act.png">');
+    selFieldAll.addEventListener("click", () => {modSelAllFieldInQu(selFieldAll);}, true);
+    title.append(selFieldAll);
+    let fView = newDOMelement('<div class="fView" style="position:absolute;top:' + hTitle1 + 'px;left:0;bottom:0;width:' + wFields 
+            + 'px;border-right:1px solid #1dace9"></div>');
+    let fQuery = newDOMelement('<div class="fQuery" style="position:absolute;top:' + hTitle1 + 'px;right:0;bottom:0;left:' + (wFields - 1) 
+            + 'px;"></div>');
+    wind.append(fView);
+    wind.append(fQuery);
+    buttonSave.addEventListener("click", function(){modSaveQuery(fView);closeWindow(wind);}, true);
+    let fViewPort = formViewScrolY(fView);
+    let fieldsView = fViewPort.querySelector(".viewData");
+    let fQueryPort = formViewScrolY(fQuery);
+    let fieldsQuery = fQueryPort.querySelector(".viewData");
+    let fildsQu = JSON.parse(item.fields_result);
+    let ik = fildsQu.length;
+    for (let i = 0; i < ik; i++) {
+        let it = fildsQu[i];
+        let cont = newDOMelement('<div class="cont_f" style="float:left;width:100%;position:relative;height:24px;border-bottom:1px solid #aaf;clear:both"></div>');
+        let name = newDOMelement('<div style="margin-top:2px;float:left;margin-left:4px;font-size:14px">' + it.name + ' </div>');
+        cont.idField = it.id_field;
+        cont.name_field = it.name;
+        cont.type_field = it.type;
+        cont.title_field = it.title;
+        cont.append(name);
+        fieldsQuery.append(cont);
+        let rect = cont.getBoundingClientRect();
+        let rect_1 = name.getBoundingClientRect();
+        let descr = newDOMelement('<div style="font-size:10px;color:#555;margin-top:7px;height:11px;width:' + (rect.width - rect_1.width - 20) 
+                + 'px;float:left;margin-left:5px;overflow:hidden">' + it.title);
+        cont.appendChild(descr);
+        let selField = newDOMelement('<img style="width:14px;cursor:pointer;height:14px;position:absolute;right:2px;top:4px;" src="img/check-act.png">');
+        cont.appendChild(selField);
+        selField.addEventListener("click", () => {modSelFieldInQu(selField, fieldsView, selFieldAll);}, true);
+    }
+}
+
+function modSelFieldInQu(el, fQuery, selFieldAll) {
+    if (checkElement(el)) {
+        modAddFieldsInQuery(el, fQuery);
+    } else {
+        modDelFieldsInQuery(el, fQuery);
+    }
+    modSetViewAllImg(el, selFieldAll);
+}
+
+function modAddFieldsInQuery(el, fQuery) {
+    let cont = el.closest('.cont_f');
+//    let idF = cont.idField;
+    modOneFieldView(cont, fQuery);
+    let ss = fQuery.closest(".viewport");
+    ss.scroll_y.resize();
+}
+
+function modOneFieldView(item, fQuery) {
+//    let tt = currentComponentDescr.type;
+//    let isFormForQuery = tt == "Form" || tt == "ScrollForm";
+    let cont = newDOMelement('<div class="field" style="float:left;width:100%;position:relative;height:24px;overflow: hidden;border-bottom:1px solid #aaf;clear:both"></div>');
+    cont.idField = item.idField;
+    cont.name_field = item.name_field;
+    cont.type_field = item.type_field;
+    cont.title_field = item.title_field;
+    let name = newDOMelement('<div class="name" style="font-size:14px;color:#000;margin-top:2px;float:left;margin-left:3px">' + item.name_field + '</div>');
+    cont.appendChild(name);
+    fQuery.appendChild(cont);
+    let rect = cont.getBoundingClientRect();
+    let rect_1 = name.getBoundingClientRect();
+    let descr = newDOMelement('<div style="font-size:10px;color:#555;margin-top:6px;height:11px;width:' + (rect.width - rect_1.width - 20) 
+            + 'px;float:left;margin-left:5px;overflow:hidden">' + item.title_field);
+/*    
+    if (isFormForQuery) {
+        let selField = newDOMelement('<img style="width:14px;cursor:pointer;height:14px;float:right;margin-right:2px;margin-top:3px;" src="img/check-sel_1.png">');
+        selField.addEventListener("click", function(){checkElement(selField)}, false);
+        cont.append(selField);
+    }
+*/
+    cont.appendChild(descr);
+}
+
+function modDelFieldsInQuery(el, fQuery) {
+    let cont = el.closest('.cont_f');
+    let idF = cont.idField;
+    let fieldsView = fQuery.children;
+    let ik = fieldsView.length;
+    for (let i = 0; i < ik; i++) {
+        let vv = fieldsView[i];
+        if (idF == vv.idField) {
+            vv.remove();
+            let ss = fQuery.closest(".viewport");
+            ss.scroll_y.resize();
+            break;
+        }
+    }
+}
+
+function modSaveQuery(el) {
+    let elW = el.closest(".dataWindow");
+    let elF = elW.querySelector(".fView");
+    let elV = elF.querySelector(".viewData");
+    let fieldsQQ = elV.children;
+    ik = fieldsQQ.length;
+    let data = [];
+    for (let i = 0; i < ik; i++) {
+        let item = fieldsQQ[i];
+        if (item.type_field.indexOf("erial") == -1) {
+//            let itemData = {name:item.name_field,type:item.type_field,title:item.title};
+            let imgCheck = item.querySelector("IMG");
+            let ed = false;
+            if (imgCheck != null && imgCheck.src.indexOf("check-sel") > -1) {
+                ed = true;
+            }
+            let itemData = {name:item.name_field,type:item.type_field,edit:ed};
+            data.push(itemData);
+        }
+    }
+    currentComponentDescr.model.data[0] = data;
+}
+
+function modSetViewAllImg(el, sel) {
+    let cont = el.closest(".viewData");
+    let child = cont.children;
+    let ik = child.length;
+    let cPl = 0, cMin = 0;
+    for (let i = 0; i < ik; i++) {
+        let itemEl = child[i];
+        let sel = itemEl.getElementsByTagName("img")[0];
+        if (sel.src.indexOf("check-sel") > -1) {
+            cPl++;
+        } else {
+            cMin++;
+        }
+    }
+/*
+    let tabBlock = el.closest(".table_view");
+    let viewData = tabBlock.getElementsByClassName("tab_title")[0];
+    let sel = viewData.getElementsByTagName("img")[0];
+*/
+    if (cMin == 0) {
+        sel.src = "img/check-sel_1.png";
+    } else {
+        if (cPl == 0) {
+            sel.src = "img/check-act.png";
+        } else {
+            sel.src = "img/check-sel-blur.png";
+        }
+    }
 }
 
 function getNumDataTYpe(el) {

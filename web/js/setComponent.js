@@ -990,7 +990,7 @@ function wrapTextViewH(el, p) {
     contentEl.style.marginLeft = "0";
     el.style.overflow = "";
     el.style.height = "";
-    if (emalator_inf.innerHTML == "Editor") {
+    if (emulator_inf.innerHTML == "Editor") {
         el.style.height = contentEl.offsetHeight + "px";
     } else {
         if (p.componParam != null && p.componParam.lines != null && p.componParam.lines > 1 

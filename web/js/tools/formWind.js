@@ -53,6 +53,7 @@ function formWind(w, h, t, l, tit, scroll, cbClose, footName, footListener, colo
     }
     let contW = document.createElement('div');
     contW.style.cssText = "position:absolute;right:0px;bottom:" + bott + "px;left:0px;top:48px;";
+    contW.className = "wind";
     ww.appendChild(contW);
     document.body.append(ww);
     if (scroll != null && scroll) {
@@ -147,6 +148,12 @@ function formWindCenter(w, h, tit) {
     ww.appendChild(contW);
     document.body.append(ww);
     return contW;
+}
+
+function setTitleWind(el, tit) {
+    let ww = el.closest(".dataWindow");
+    let tt = ww.querySelector(".titleWindName");
+    tt.innerHTML = tit;
 }
 
 function createTitle(tit, cbClose) {
@@ -259,14 +266,19 @@ function formViewScrolY(wraperScroll, hide) {
     viewport.className = "viewport";
     viewport.style.top = "0px";
     wraperScroll.appendChild(viewport);
+
     let content = document.createElement('div');
     content.className = "content";
-    content.style.bottom = "0px";
+//    content.style.cssText = "position: absolute;overflow-x: scroll; left: 0; top: 0; right:-17px;bottom: 0; overflow-y: scroll;";
+   content.style.bottom = "0px";
+
+//    let content = newDOMelement('<div class="content" style="position: absolute;overflow-x: scroll; left: 0; top: 0; right:-17px;bottom: 0; overflow-y: scroll;"></div>');
     viewport.appendChild(content);
-    
+//console.log("formViewScrolY 0000 BBB="+getComputedStyle(content).bottom+"<<");
     let viewDataY = document.createElement('div');
     viewDataY.className = "viewData";
-    viewDataY.style.marginRight = "15px";
+    viewDataY.style.cssText = "margin-right:15px; margin-bottom:10px;-webkit-user-select: none; user-select: none;overflow:hidden";
+//    viewDataY.style.marginRight = "15px";
     content.appendChild(viewDataY);
 
     let scrollY = new ScrollY(viewport, true);
@@ -276,6 +288,7 @@ function formViewScrolY(wraperScroll, hide) {
     }
     scrollY.setScrollHide(hhh);
     scrollY.init();
+//console.log("formViewScrolY BBB="+getComputedStyle(content).bottom+"<<");
     return viewport;
 }
 

@@ -23,7 +23,9 @@ function emalator() {
                 emFunction = null;
                 try {
                     emFunction = eval("new em" + cDescr.type + "();");
-                } catch(e) { console.log("ERROR="+e); }
+                } catch(e) { 
+//                    console.log("ERROR="+e); 
+                }
                 if (emFunction != null) {
                     let id = cDescr.componId;
                     cComp = getComponentById(id);
@@ -31,9 +33,9 @@ function emalator() {
                 }
                 this.arrFunc.push(emFunction);
             }
+            isSetEmulator = true;
+            this.emEndProcessing();
         }
-        isSetEmulator = true;
-        this.emEndProcessing();
     }
 
     this.emEndProcessing = function() {
@@ -46,10 +48,10 @@ function emalator() {
                     this.arrFunc[i].setNavigator(i);
                 }
             }
-            if (divProgr != null) {
-                document.body.removeChild(divProgr);
-                divProgr = null;
-            }
+        }
+        if (divProgr != null) {
+            document.body.removeChild(divProgr);
+            divProgr = null;
         }
     }
 

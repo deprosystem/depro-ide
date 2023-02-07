@@ -425,7 +425,7 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
         }
         let nn = this.contWind.nameField;
         this.edData[nn] = res;
-console.log("RES="+res+"<<");
+//console.log("RES="+res+"<<");
         let inpDiv = this.contWind.inpInp.querySelector("div");
         inpDiv.innerHTML = res;
         if (this.cb != null) {

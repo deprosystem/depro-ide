@@ -1,9 +1,9 @@
 // type_query 0 - SELECT,  1 - INSERT, 
 
 var hTitleQuery = 24;
-var wFieldQuery = 280;
+var wFieldQuery = 220;
 var wTypeParamQu = 80;
-var wTableInQuery = 197;
+var wTableInQuery = 175;
 var wOperQuery = 32;
 var wDivParam = wFieldQuery - wOperQuery - wOperQuery - 2;
 var wraperQuery;
@@ -12,7 +12,9 @@ var footerQuery, noRequest;
 var queryTables, queryFields, queryFieldsData, queryQueryData, queryOrder;
 var queryFieldsOrderView;
 var errorQuery;
+var listQuerys;
 var prefixProfileParam = "!!__!!";
+var wdbFieldQuery = 220;
 
 function editQueryWind() {
     let tt = currentComponentDescr.type;
@@ -42,7 +44,7 @@ function editQueryWind() {
     let fields = '<div class="fields_q" style="position:absolute;border-right:1px solid #1dace9;left:0;top:' + (hTitleQuery * 2 + 2) + 'px;width:' + wFieldQuery + 'px;bottom:' + (hFooter + 1) +'px"></div>';
     let tables = '<div class="tables_q" style="position:absolute;;top:' + hTitleQuery_2 + 'px;left:' + (wFieldQuery + 1) + 'px;bottom:' + (hFooter + 1) +'px;right:0"></div>';
     
-    let wind = formWind(900, 590, 40, 250, "Forming a request");
+    let wind = formWind(1130, 590, 40, 250, "Forming a request");
     
     let controll = createFooter(50);
     addFooter(wind, controll);
@@ -56,7 +58,7 @@ function editQueryWind() {
     let windMenu = newDOMelement('<div class="windMenu_q" style="position:absolute;top:0;left:0;right:0;bottom:50px"></div>');
     wind.appendChild(windMenu);
     let titleEl = newDOMelement(title);
-    let addTab = newDOMelement('<img style="margin-top:4px;margin-left:25px;float:left;cursor:pointer;" width="16" height="16" src="img/add_blue.png">');
+    let addTab = newDOMelement('<img style="margin-top:4px;margin-left:25px;float:left;cursor:pointer;" width="14" height="14" src="img/add_blue.png">');
     let order = newDOMelement('<img style="margin-top:6px;margin-right:15px;float:right;cursor:pointer;" width="12" height="12" src="img/sort-2.png">');
     titleEl.appendChild(addTab);
     titleEl.appendChild(order);
@@ -65,7 +67,7 @@ function editQueryWind() {
     if (currentComponentDescr.model.bool_1 != null && currentComponentDescr.model.bool_1) {
         checkQ = "check-sel_1";
     }
-    noRequest = newDOMelement('<img class="checkNoQ" style="width:18px;cursor:pointer;height:18px;float:right;margin-right:10px;margin-top:3px;" src="img/' + checkQ + '.png">');
+    noRequest = newDOMelement('<img class="checkNoQ" style="width:14px;cursor:pointer;height:14px;float:right;margin-right:10px;margin-top:3px;" src="img/' + checkQ + '.png">');
     noRequest.addEventListener("click", function(){checkElement(noRequest)}, false);
     titleEl.append(noRequest);
     titleEl.append(newDOMelement('<div style="margin-top:4px;float:right;margin-right:7px;">No data request</div>'));
@@ -76,7 +78,7 @@ function editQueryWind() {
     windMenu.appendChild(footerEl);
     let titleWhereEl = newDOMelement(titleWhere);
     footerEl.appendChild(titleWhereEl);
-    let addWhere = newDOMelement('<img class="addWhere" style="margin-top:4px;margin-left:25px;display:none;float:left;cursor:pointer;" width="16" height="16" src="img/add_blue.png">');
+    let addWhere = newDOMelement('<img class="addWhere" style="margin-top:4px;margin-left:25px;display:none;float:left;cursor:pointer;" width="14" height="14" src="img/add_blue.png">');
     addWhere.addEventListener("click", function(){
         addWhereForQuery();
     }, true);
@@ -134,7 +136,119 @@ function editQueryWind() {
 
 //console.log("WWWWW="+wind.innerHTML);
 }
+/*
+function dbEditQuery(wind, idQu) {
+    let hFooter = 150;
+    let hTitleQuery_2 = hTitleQuery + 2;
+    selectQueryEl = null;
+    listTablesForQuery.length = 0;
+    let title = '<div style="height:' + hTitleQuery + 'px;border-bottom:1px solid #1dace9;">'
+            +'<div style="width:' + wFieldQuery + 'px;text-align:center;margin-top:3px;float:left;font-size:14px;">Fields</div>'
+            +'<div style="height:100%;width:1px;background-color:#1dace9;float:left"></div>'
+            +'<div style="text-align:center;margin-top:3px;float:left;margin-left:30px;font-size:14px;">Tables</div>'
+            +'</div>';
+    let titleWhere = '<div style="height:' + hTitleQuery + 'px;border-bottom:1px solid #1dace9;">'
+            +'<div style="margin-top:3px;float:left;margin-left:' + wFieldQuery + 'px;font-size:14px;">Where</div>'
+            +'</div>';
+    let footer = '<div style="position:absolute;;border-top:1px solid #1dace9;left:0;bottom:0;right:0;height:' + hFooter +'px"></div>';
+    let fieldsTit = '<div style="position:absolute;border-right:1px solid #1dace9;left:0;top:' + (hTitleQuery + 1) + 'px;width:' + wFieldQuery + 'px;height:' + (hTitleQuery + 1) 
+            +'px;border-bottom:1px solid #1dace9;background-color:#f3f8ff;">'
+            +'<div style="margin-top:4px;float:left;margin-left:5px;">Fields name</div>';
+    fieldsTit += '</div>';
+//    let fields = '<div style="position:absolute;;border-right:1px solid #1dace9;left:0;top:' + hTitleQuery_2 + 'px;width:' + wFieldQuery + 'px;bottom:' + hFooter +'px"></div>';
+    let fields = '<div class="fields_q" style="position:absolute;border-right:1px solid #1dace9;left:0;top:' + (hTitleQuery * 2 + 2) + 'px;width:' + wFieldQuery + 'px;bottom:' + (hFooter + 1) +'px"></div>';
+    let tables = '<div class="tables_q" style="position:absolute;;top:' + hTitleQuery_2 + 'px;left:' + (wFieldQuery + 1) + 'px;bottom:' + (hFooter + 1) +'px;right:0"></div>';
+    
+//    let wind = formWind(1130, 590, 40, 250, "Forming a request");
+    
+    let controll = createFooter(50);
+    addFooter(wind, controll);
+    let buttonSave = createButtonBlue('Save', 70);
+    buttonSave.addEventListener("click", function(){dbSaveQuery();closeWindow(wind);}, true);
+    controll.appendChild(buttonSave);
+    let buttonCancel = createButtonWeite('Cancel', 70);
+    buttonCancel.addEventListener("click", function(event){closeWindow(wind);}, true);
+    controll.appendChild(buttonCancel);
+    
+    let windMenu = newDOMelement('<div class="windMenu_q" style="position:absolute;top:0;left:0;right:0;bottom:50px"></div>');
+    wind.appendChild(windMenu);
+    let titleEl = newDOMelement(title);
+    let addTab = newDOMelement('<img style="margin-top:4px;margin-left:25px;float:left;cursor:pointer;" width="14" height="14" src="img/add_blue.png">');
+    let order = newDOMelement('<img style="margin-top:6px;margin-right:15px;float:right;cursor:pointer;" width="12" height="12" src="img/sort-2.png">');
+    titleEl.appendChild(addTab);
+    titleEl.appendChild(order);
+    titleEl.append(newDOMelement('<div style="margin-top:4px;float:right;margin-right:7px;">Order</div>'));
 
+    windMenu.appendChild(titleEl);
+
+    
+    let footerEl = newDOMelement(footer);
+    footerQuery = footerEl;
+    windMenu.appendChild(footerEl);
+    let titleWhereEl = newDOMelement(titleWhere);
+    footerEl.appendChild(titleWhereEl);
+    let addWhere = newDOMelement('<img class="addWhere" style="margin-top:4px;margin-left:25px;display:none;float:left;cursor:pointer;" width="14" height="14" src="img/add_blue.png">');
+    addWhere.addEventListener("click", function(){
+        addWhereForQuery();
+    }, true);
+    titleWhereEl.appendChild(addWhere);
+    wraperQuery = newDOMelement('<div class="wraperQuery" style="position:absolute;top:' + (hTitleQuery + 1) + 'px;left:0;right:0;bottom:0"></div>')
+    footerEl.appendChild(wraperQuery);
+    let scrollQu = formViewScrolY(wraperQuery);
+    queryQueryData = scrollQu.getElementsByClassName("viewData")[0];
+    
+    windMenu.append(newDOMelement(fieldsTit));
+    queryFields = newDOMelement(fields);
+    windMenu.appendChild(queryFields);
+    queryTables = newDOMelement(tables);
+    windMenu.appendChild(queryTables);
+    order.addEventListener("click", function(){
+        setOrderForQuery();
+    }, true);
+    addTab.addEventListener("click", function(){
+        addTableForQuery();
+    }, true);
+    
+    let fieldsport = document.createElement('div');
+    fieldsport.className = "viewport";
+    fieldsport.style.left = "3px";
+    fieldsport.style.top = "0px";
+    queryFields.appendChild(fieldsport);
+    
+    let fieldsContent = document.createElement('div');
+    fieldsContent.className = "content";
+    fieldsport.appendChild(fieldsContent);
+    
+    queryFieldsData = newDOMelement('<div style="overflow:hidden;margin-right:15px;margin-bottom:10px"></div>');
+    fieldsContent.appendChild(queryFieldsData);
+    
+    let scrollFields = new ScrollY(fieldsport, true);
+    scrollFields.setScrollHide(true);
+    scrollFields.init();
+    
+    if (queryOrder == null) {
+        queryOrder = [];
+    } else {
+        queryOrder.length = 0;
+    }
+    
+    if (listTables != null) {
+        setQueryValue();
+    } else {
+        hostDomain = currentProject.host;
+        hostDescr = currentProject.whereServer;
+        if (hostDomain != null && hostDomain.length > 0  && hostDescr != "Third party API") {
+           doServerAlien("GET", hostDomain + 'tables/list', cbGetListTablesQuery);
+        }
+    }
+
+//console.log("WWWWW="+wind.innerHTML);
+}
+
+function dbSaveQuery(){
+    
+}
+*/
 function setOrderForQuery() {
     let wFields = 180;
     let contWind = formWind(wFields + wFields + 15, 400, 40, 650, "Sorting", false, null, "Save", saveSorting);
@@ -826,6 +940,7 @@ function saveQuery() {
     let original = JSON.stringify(origin_query);
     let nam = currentScreen.screenName + "_" + currentComponent.viewId;
     let dat = {id_query:qu,name_query:nam,type_query:"SELECT",origin_query:original,sql_query:SQL,param_query:strParam, listWhere:JSON.stringify(where_list), orderBy:order_query};
+    hostDomain = currentProject.host;
 //console.log("hostDomain="+hostDomain+"<< DAT="+JSON.stringify(dat));
     doServerAlien("POST", hostDomain + "query/create", cbQueryCreate, JSON.stringify(dat));
 }
@@ -895,9 +1010,9 @@ function cbQueryValue(res) {
     }
     let ik;
     let query = JSON.parse(res);
-console.log("RES="+res);
+//console.log("RES="+res);
     let originQuery = JSON.parse(query.origin_query);
-console.log("query.origin_query="+query.origin_query);
+//console.log("query.origin_query="+query.origin_query);
     if (originQuery.fieldTable != null) {
         let origin = originQuery.fieldTable;
         ik = origin.length;

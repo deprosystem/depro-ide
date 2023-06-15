@@ -35,7 +35,7 @@ function uxSpinner() {
         let drop = {type:"RelativeLayout",typeFull:{name:"RelativeLayout",typeBlock:2},viewId:"__T_drop",below:"__T_head",typeUxUi: "ui",
             visibility:false,gravLayout:{h:4,v:4},gravity:{h:4,v:4},width: -1,height:10,children:[]};
         currentComponent = {type: tt, componId: componId, viewId:viewId, typeUxUi: "ux", componParam:{type:24},
-                typeFull: {name: tt, typeBlock: 10}, gravLayout: {h: 3, v: 3}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
+                typeFull: {name: tt, typeBlock: 10}, gravLayout: {h: 4, v: 4}, gravity: {h:4, v:4}, parent:{android:{itemNav:{},parent:null}}, 
             width:150,height:-2,itemNav:{},viewElement: null,children:[head,drop]};
         currentComponentDescr = {type:tt, componId: componId,model:{method:0,data:[[]],progr:"standard"},view:{viewId: viewId},navigator:[]};
     }

@@ -578,6 +578,7 @@ function CRUD(dat, name, type_crud) {
     //            queryForSave.push({addOr:andOrValue,param:paramValue,typePar:typeParValue,typeValue:typeVal,oper:selOperValue,list:listFieldInTab});
             }
         }
+//        this.param.queryFilds.fields = strParam;
 
 //*********
         let origin_query = {fieldTable:res,where:queryForSave,order:null};
@@ -600,7 +601,7 @@ function CRUD(dat, name, type_crud) {
                 strParam = res[0].name_table;
         }
 
-        this.param.queryFilds.fields = strParam;
+//       this.param.queryFilds.fields = strParam;
         let dat;
         if (qu < 4) {
             dat = {id_query:qu,type_query:this.query.type_query,origin_query:original,sql_query:SQL,param_query:strParam,

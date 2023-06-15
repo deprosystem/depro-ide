@@ -84,7 +84,7 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
         if (met.clazz != null && met.clazz.length > 0) {
             clazz = ' class="' + met.clazz + '"';
         }
-        let res = newDOMelement('<div' + clazz + ' style="float:left;' + this.marg_L + this.marg_T + br + '"></div>');
+        let res = newDOMelement('<div' + clazz + ' style="position:relative;float:left;' + this.marg_L + this.marg_T + br + '"></div>');
         res.append(newDOMelement('<div style="color: #8199A5;font-size: 10px;">' + met.title + '</div>'));
         let inp;
         let vv = this.edData[met.name];
@@ -105,6 +105,11 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
                 inp.addEventListener('keydown', () => {this.clickText(event, met.valid)}, false);
                 inp.addEventListener('keyup', () => {this.clickTextUp(event)}, false);
                 res.append(inp);
+                if (met.clear) {
+                    let cl = newDOMelement('<img src="img/del_red.png" style="position:absolute;cursor:pointer;right:2px;top:19px;width:12px;height:12px;">');
+                    res.append(cl);
+                    cl.addEventListener('click', () => {inp.value = ""; this.edData[met.name] = ""}, false);
+                }
                 break;
             case "Navig":
                 if (after) {
@@ -168,9 +173,9 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
             case "MultiCheck":
                 if (met.value != null) {
                     inp = newDOMelement('<div style="width:' + met.len 
-                            +'px;height:28px;border: 1px solid #bbd4ef;border-radius:5px;position:relative;background-color:#fff">'
-                            +'<div style="position:absolute;top:6px;left:4px;font-size:13px">' + vv + '</div>'
-                            +'<img src="img/chevron_down.png" style="position:absolute;right:0;top:-2px;width:33px;height:33px;">'
+                            +'px;height:28px;border: 1px solid #bbd4ef;border-radius:5px;position:relative;background-color:#fff;overflow-x:hidden">'
+                            +'<div style="position:absolute;top:6px;left:4px;font-size:13px;">' + vv + '</div>'
+                            +'<img src="img/chevron_down.png" style="position:absolute;right:1px;top:2px;width:31px;height:26px;background-color:#fff">'
                             +'</div>');
                     inp.addEventListener("click", () => {this.multiCheck(inp, met)}, false);
                 } else {
@@ -315,8 +320,8 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
             return;
         }
         let elSEl = choiceViewById(currentChildren, val);
-        let list = " " + formIdTagsNoUXGroup(elSEl.children, this.edMeta[i].tags);
-//        let list = " " + formListIdTags(elSEl.children, this.edMeta[i].tags);
+        let list = " " + formIdTagsNoUXGroup(elSEl.children, this.edMeta[1].tags);
+//        let list = " " + formIdTagsNoUXGroup(elSEl.children, this.edMeta[i].tags);
         let arr = list.split(",");
         let ik = arr.length;
         let vv = this.edData[inp.nameField];
@@ -380,7 +385,11 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
     this.selectMulti = function(inp, met, str) {
         let ls = str.split(",");
         let ik = ls.length;
-        let selF = this.edData[met.name].split(",");
+        let namEd = this.edData[met.name];
+        let selF = "";
+        if (namEd != null) {
+            selF = namEd.split(",");
+        }
         this.contWind = formWind(240, 400, 40, 350, met.title, true, null, "Save", this, "");
         this.contWind.nameField = met.name;
         this.contWind.inpInp = inp;
@@ -427,7 +436,9 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
         this.edData[nn] = res;
 //console.log("RES="+res+"<<");
         let inpDiv = this.contWind.inpInp.querySelector("div");
-        inpDiv.innerHTML = res;
+        if (inpDiv != null) {
+            inpDiv.innerHTML = res;
+        }
         if (this.cb != null) {
             this.cb.cbEdit(nn);
         }

@@ -20,7 +20,7 @@ function uiImageView() {
                 +'<img class="check_form_res" onclick="checkFormResourseImg(this);" style="cursor:pointer;margin-top:5px;margin-left:14px" width="16" height="16" src="img/check-act.png">'
             +'</div>'
             +'<div onclick="setImgPlaceholder(event)" style="float:left;cursor:pointer;margin-left:20px;margin-top:12px">'
-                +'<div style="font-size:10px;color:#2228">Image</div>'
+                +'<div style="font-size:10px;color:#2228">Placeholder</div>'
                 +'<img class="imageVPlaceholder" style="border:2px solid #bdf;border-radius:4px;background:#fff" width="24" height="24">'
             +'</div>'
             +'<div style="float:left;margin-left:10px;margin-top:12px">'

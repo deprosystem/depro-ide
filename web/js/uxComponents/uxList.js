@@ -284,7 +284,6 @@ function createViewForListH(el, ind) {
         num = 0;
     } else {
         num = getNumDataTYpe(p);
-//        num = getNumDataTYpe(p) + 1;
     }
     let data = currentComponentDescr.model.data[num];
     if (data.length == 0) {
@@ -300,27 +299,24 @@ function createViewForListH(el, ind) {
             let listView = null;
             for (let s = 0; s < sk; s++) {
                 let item = swipeChild[s];
-//console.log("HHHH SSS="+s+" TTT="+item.android.type+"<< VVV="+item.android.viewId+"<<");
                 if (item.android.type == "RelativeLayout") {
                     listView = item;
                 }
                 break;
             }
             if (listView == null) return;
-            
-            
-//            let listView = listV.children[num];
+
             listView.innerHTML = "";        // Очистить в прототипе экрана
             listView.android.children.length = 0;   // очистить элементы в андроид
-            listView.android.height = WRAP;
+//            listView.android.height = WRAP;
             let item_n = listView.android.itemNav;
             let item_compon = item_n.getElementsByClassName('item-compon')[0];
             item_compon.innerHTML = "";
-            let height = 120;
+            let height = 128;
             let toRightOf = "";
 
             setActive(listView);
-            let imgId = formImgFirst(120, 120, data);
+            let imgId = formImgFirst(120, 120, data, "4", "12");
             if (imgId > -1) {
                 toRightOf = data[imgId].name;
             }
@@ -344,7 +340,7 @@ function createViewForListH(el, ind) {
             }
             Divider.android.viewElement = Divider;
             listSwipe.android.height = height;
-//            listView.android.height = height;
+            listView.android.height = height;
             showElemChilds(listV);
         } else {
             tooltipMessage(el, "You need to describe the data");
@@ -578,130 +574,3 @@ function noActiveListClick(el) {
     currentComponentDescr.view.targetButton = chec;
 }
 
-/*
-function createViewForListH(el, ind) {
-    let num;
-    let p = el.parentElement.parentElement;
-    if (ind != null) {
-        num = 0;
-    } else {
-        num = getNumDataTYpe(p);
-//        num = getNumDataTYpe(p) + 1;
-    }
-    let data = currentComponentDescr.model.data[num];
-    if (data.length == 0) {
-        data = currentComponentDescr.model.data[0];
-    }
-    let listV = currentComponent.viewElement;
-    if (listV != null) {
-        let ik = data.length;
-        if (ik > 0) {
-            let listView = listV.children[num];
-            listView.innerHTML = "";        // Очистить в прототипе экрана
-            listView.android.children.length = 0;   // очистить элементы в андроид
-            listView.android.height = WRAP;
-            let item_n = listView.android.itemNav;
-            let item_compon = item_n.getElementsByClassName('item-compon')[0];
-            item_compon.innerHTML = "";
-            let height = 120;
-            let toRightOf = "";
-
-            setActive(listView);
-            let imgId = formImgFirst(120, 120, data);
-            if (imgId > -1) {
-                toRightOf = data[imgId].name;
-            }
-            let topM = 16;
-            let estimatedHeight = topM;
-            let namePrev = "";
-            for (let i = 0; i < ik; i++) {
-                let item = data[i];
-                if (item.notShow) continue;
-                if (imgId != i) {
-                    formElement(item, toRightOf, namePrev, topM);
-                    currentElement.android.viewElement = currentElement;
-                    namePrev = item.name;
-                    topM = 10;
-                    estimatedHeight += 22;
-                }
-            }
-            let Divider = formDivider();
-            if (height < estimatedHeight) {
-                height = estimatedHeight;
-            }
-            Divider.android.viewElement = Divider;
-            listView.android.height = height;
-            showElemChilds(listV);
-        } else {
-            tooltipMessage(el, "You need to describe the data");
-        }
-    }
-}
-
-function createViewForListV(el, ind) {
-    let num;
-    let p = el.parentElement.parentElement;
-    if (ind != null) {
-        num = 0;
-    } else {
-        num = getNumDataTYpe(p);
-//        num = getNumDataTYpe(p) + 1;
-    }
-    let data = currentComponentDescr.model.data[num];
-    if (data.length == 0) {
-        data = currentComponentDescr.model.data[0];
-    }
-    let listV = currentComponent.viewElement;
-    if (listV != null) {
-        let ik = data.length;
-        if (ik > 0) {
-            let listView = listV.children[num];
-            listView.innerHTML = "";        // Очистить в прототипе экрана
-            listView.android.children.length = 0;   // очистить элементы в андроид
-            listView.android.height = WRAP;
-            let item_n = listView.android.itemNav;
-            let item_compon = item_n.getElementsByClassName('item-compon')[0];
-            item_compon.innerHTML = "";
-            let namePrev = "";
-            let imgHeight = 240;
-            setActive(listView);
-            let imgId = formImgFirst(MATCH, imgHeight, data);
-            if (imgId > -1) {
-                namePrev = data[imgId].name;
-            }
-            let topM = 10;
-            let estimatedHeight = imgHeight + 12;
-            
-            for (let i = 0; i < ik; i++) {
-                let item = data[i];
-                if (item.notShow) continue;
-                if (imgId != i) {
-                    formElement(item, "", namePrev, topM);
-                    currentElement.android.viewElement = currentElement;
-                    namePrev = item.name;
-                    estimatedHeight += 22;
-                }
-            }
-
-            let Divider = formDivider();
-            let pp = Divider.android;
-            pp.viewElement = Divider;
-            if (namePrev != "") {
-                pp.below = namePrev;
-            }
-            pp.gravLayout.v = NONE;
-            pp.topMarg = 12;
-
-            showElemChilds(listV);
-        } else {
-            tooltipMessage(el, "You need to describe the data");
-        }
-    }
-}
-*/
-
-/*
-function changeVisibilityList(el) {
-    currentComponentDescr.view.visibility = el.value;
-}
-*/

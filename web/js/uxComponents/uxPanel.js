@@ -64,6 +64,7 @@ function createViewForPanelV(el) {
     if (currentComponent.type.indexOf("Scroll") > -1) {
         listV = listV.querySelector(".infoItem");
     }
+    let isSpinner = false;
     if (listV != null) {
         let ik = currentComponentDescr.model.data[0].length;
         if (ik > 0) {
@@ -83,6 +84,9 @@ function createViewForPanelV(el) {
             for (let i = 0; i < ik; i++) {
                 let item = currentComponentDescr.model.data[0][i];
                 if (item.notShow) continue;
+                if (item.edit != null && item.edit == "spinner") {
+                    isSpinner = true;
+                }
                 if (imgId != i) {
                     formElement(item, "", namePrev, topM);
                     namePrev = item.name;
@@ -102,7 +106,11 @@ function createViewForPanelV(el) {
                 p.topMarg = 40;
             }
             listV.android.height = MATCH;
-            showElemChilds(listV);
+            if (isSpinner) {
+                setScreenView();
+            } else {
+                showElemChilds(listV);
+            }
         } else {
             tooltipMessage(el, "You need to describe the data");
         }
@@ -114,7 +122,7 @@ function createViewForPanelH(el) {
     if (listV != null) {
         let ik = currentComponentDescr.model.data[0].length;
         if (ik > 0) {
-            let imgHeight = 120;
+            let listVHeight = 128;
             n_selectElement = listV;
             setActive(n_selectElement);
             n_selectElement.innerHTML = "";
@@ -122,7 +130,7 @@ function createViewForPanelH(el) {
             ACTIVE.android.children.length = 0;
             let height = 120;
             let toRightOf = "";
-            let imgId = formImgFirst(height, height, currentComponentDescr.model.data[0]);
+            let imgId = formImgFirst(height, height, currentComponentDescr.model.data[0], 4, 12);
             if (imgId > -1) {
                 toRightOf = currentComponentDescr.model.data[0][imgId].name;
             }
@@ -140,11 +148,11 @@ function createViewForPanelH(el) {
                     estimatedHeight += 22;
                 }
             }
-            if (height < estimatedHeight) {
-                height = estimatedHeight;
+            if (listVHeight < estimatedHeight) {
+                listVHeight = estimatedHeight;
             }
 
-            listV.android.height = height;
+            listV.android.height = listVHeight;
 //            currentElement = listV;
             showElemChilds(listV);
 //            viewCompon();

@@ -13,7 +13,8 @@ function QuerySelect (wind, listTab, idQu, cbQuery) {
     this.wTableInQu = 175;
     this.fieldsOrderView;
     this.queryOrderQu = [];
-    this.as;
+    this.listAlias;
+    this.expresion;
     
     this.init = function() {
         let hFooter = 150;
@@ -27,7 +28,11 @@ function QuerySelect (wind, listTab, idQu, cbQuery) {
                 +'<input class="inpDescr input_style" type="text" style="margin-left:10px;width:400px;height:20px;float:left"/>'
                 +'</div>';
         let title = '<div style="height:' + hTitleQuery + 'px;border-bottom:1px solid #1dace9;">'
-                +'<div style="width:' + wFieldQuery + 'px;text-align:center;margin-top:3px;float:left;font-size:14px;">Fields</div>'
+//                +'<div style="width:' + wFieldQuery + 'px;text-align:center;margin-top:3px;float:left;font-size:14px;">Fields</div>'
+                +'<div style="width:' + wFieldQuery + 'px;float:left;height:100%">'
+                    +'<div style="margin-top:3px;float:left;font-size:14px;margin-left:10px;">Fields</div>'
+                    +'<div class="addExp" style="margin-top:3px;float:left;font-size:14px;margin-left:40px;cursor:pointer;">Add expression</div>'
+                +'</div>'
                 +'<div style="height:100%;width:1px;background-color:#1dace9;float:left"></div>'
                 +'<div style="text-align:center;margin-top:3px;float:left;margin-left:30px;font-size:14px;">Tables</div>'
                 +'</div>';
@@ -55,6 +60,7 @@ function QuerySelect (wind, listTab, idQu, cbQuery) {
         let windMenu = newDOMelement('<div class="windMenu_q" style="position:absolute;top:' + (hTitleQuery + 1) + 'px;left:0;right:0;bottom:50px"></div>');
         this.wind.appendChild(windMenu);
         let titleEl = newDOMelement(title);
+        let addExp = titleEl.querySelector(".addExp");
         let addTab = newDOMelement('<img style="margin-top:4px;margin-left:25px;float:left;cursor:pointer;" width="14" height="14" src="img/add_blue.png">');
         let order = newDOMelement('<img style="margin-top:6px;margin-right:15px;float:right;cursor:pointer;" width="12" height="12" src="img/sort-2.png">');
         titleEl.appendChild(addTab);
@@ -62,7 +68,7 @@ function QuerySelect (wind, listTab, idQu, cbQuery) {
         titleEl.append(newDOMelement('<div style="margin-top:4px;float:right;margin-right:7px;">Order</div>'));
 
         windMenu.appendChild(titleEl);
-
+        addExp.addEventListener("click", () => {this.addExpresion(addExp, true);}, true);
         let footerEl = newDOMelement(footer);
         footerQuery = footerEl;
         windMenu.appendChild(footerEl);
@@ -92,20 +98,6 @@ function QuerySelect (wind, listTab, idQu, cbQuery) {
         if (this.idQu != null && this.idQu > -1) {
             doServerAlien("GET", hostDomain + "query/get?id=" + this.idQu, this, null, {source:1}, this.wind);
         }
-        
-/*
-        if (listTables != null) {
-            if (this.idQu != null && this.idQu > -1) {
-                doServerAlien("GET", hostDomain + "query/get?id=" + this.idQu , cbDBQueryValue, null, null, this.wind);
-            }
-        } else {
-            hostDomain = currentProject.host;
-            hostDescr = currentProject.whereServer;
-            if (hostDomain != null && hostDomain.length > 0  && hostDescr != "Third party API") {
-               doServerAlien("GET", hostDomain + 'tables/list', cbDBGetListTablesQuery, null, this.idQu, this.wind);
-            }
-        }
-*/
     }
     
     this.setQueryValue = function(res) {
@@ -113,6 +105,7 @@ function QuerySelect (wind, listTab, idQu, cbQuery) {
         let ik;
         let query = JSON.parse(res);
         let originQuery = JSON.parse(query.origin_query);
+        this.listAlias = originQuery.listAlias;
         let wind_1 = this.queryTables.closest(".wind");
         let inpName = wind_1.querySelector(".inpName");
         let inpDescr = wind_1.querySelector(".inpDescr");
@@ -161,6 +154,27 @@ function QuerySelect (wind, listTab, idQu, cbQuery) {
                 this.queryOrderQu.push(ord[i]);
             }
         }
+        ik = this.listAlias.length;
+        for (let i = 0; i < ik; i++) {
+            let al = this.listAlias[i];
+            if (al.typeSource == "Expresion") {
+                let cont = newDOMelement('<div class="field" style="float:left;width:100%;position:relative;height:' 
+                        + hItemListFieldsTable + 'px;overflow: hidden;border-bottom:1px solid #aaf;clear:both"></div>');
+                cont.idTable = -1;
+                cont.idField = -1;
+                cont.name_field = al.name_field;
+                cont.type_field = "Expresion";
+                cont.title = "";
+                cont.typeSource = "Expresion";
+                cont.alias = al.alias;
+                this.queryFieldsDataQu.append(cont);
+                cont.addEventListener("contextmenu", () => {
+                    event.preventDefault();event.stopPropagation();
+                    this.addExpresion(cont);
+                }, true);
+                this.setNameFieldView(cont);
+            }
+        }
     }
     
     this.checkSelFieldsInQu = function(el, fields) {
@@ -198,32 +212,65 @@ function QuerySelect (wind, listTab, idQu, cbQuery) {
             sel.src = "img/check-sel_1.png";
         }
     }
-   /*
-    this.addFieldsInQu = function(el) {
-        let cont = el.closest('.cont_f');
-        let idTab = cont.idTable;
-        let idF = cont.idField;
-        let ik = this.listTablesForQu.length;
-        let itemTab = null;
-        for (let i = 0; i < ik; i++) {
-            itemTab = this.listTablesForQu[i];
-            if (itemTab.id_table == idTab) {
-                let fields = itemTab.fields_table;
-                let jk = fields.length;
-                for (let j = 0; j < jk; j++) {
-                    let itemField = fields[j];
-                    if (itemField.id_field == idF) {
-                        oneFieldView(idTab, itemField, this.queryFieldsDataQu);
-                        let ss = this.queryFieldsDataQu.closest(".viewport");
-                        ss.scroll_y.resize();
-                        break;
-                    }
-                }
-                break;
-            }
+    
+    this.addExpresion = function(el, newExp) {
+        let pp = formPopUp(el, 300, 150);
+        let meta_Exp = [
+            {name: "name", title:"Expresion",len:270,type:"Text",clear:true},
+            {name: "alias", title:"Name",len:120,type:"Text",valid:"name_low",clear:true,br:true}
+        ];
+        if (newExp) {
+            this.expresion = {alias:"",name:"",newE:newExp};
+        } else {
+            this.expresion = {alias:el.alias,name:el.name_field,newE:newExp};
+        }
+        new EditForm(meta_Exp, this.expresion, pp);
+        let controll = createFooter(50);
+        pp.append(controll);
+        let buttonOk = createButtonBlue("Save");
+        buttonOk.addEventListener('click', () => {closePopUp(pp);this.saveExpresion(el, newExp)});
+        controll.append(buttonOk);
+        if (! newExp) {
+            let buttonDel = createButtonBlue("Delete");
+            buttonDel.addEventListener('click', () => {closePopUp(pp);this.delExpresion(el)});
+            controll.append(buttonDel);
+        }
+        
+        let buttonCancel = createButtonWeite('Cancel', 70);
+        buttonCancel.addEventListener('click', () => {closePopUp(pp);});
+        controll.append(buttonCancel);
+    }
+    
+    this.saveExpresion = function(el, newExp) {
+        if (newExp) {
+            let cont = newDOMelement('<div class="field" style="float:left;width:100%;position:relative;height:' 
+                    + hItemListFieldsTable + 'px;overflow: hidden;border-bottom:1px solid #aaf;clear:both"></div>');
+            cont.idTable = -1;
+            cont.idField = -1;
+            cont.name_field = this.expresion.name;
+            cont.type_field = "Expresion";
+            cont.title = "";
+            cont.typeSource = "Expresion";
+            cont.alias = this.expresion.alias;
+            this.queryFieldsDataQu.append(cont);
+            cont.addEventListener("contextmenu", () => {
+                event.preventDefault();event.stopPropagation();
+                this.addExpresion(cont);
+            }, true);
+            this.setNameFieldView(cont);
+        } else {
+            el.alias = this.expresion.alias;
+            el.name_field = this.expresion.name;
+            el.innerHTML = "";
+            this.setNameFieldView(el);
         }
     }
-*/
+    
+    this.delExpresion = function(el) {
+        el.remove();
+        let ss = this.queryFieldsDataQu.closest(".viewport");
+        ss.scroll_y.resize();
+    }
     
     this.getTabInQu = function (id) {
         let ik = listTables.length;
@@ -247,7 +294,25 @@ function QuerySelect (wind, listTab, idQu, cbQuery) {
         let inpDescr = wind_1.querySelector(".inpDescr");
         let descrQu = inpDescr.value;
         let childTab = this.queryTables.children;
-        let ik = childTab.length;
+
+        let fieldsQQ = this.queryFieldsDataQu.children;
+        let ik = fieldsQQ.length;
+        let listFields = [];
+        let listAlias = [];
+        let data = [];
+        let itemData;
+        for (let i = 0; i < ik; i++) {
+            let item = fieldsQQ[i];
+            let namF = item.name_field;
+            if (item.alias != null && item.alias.length > 0) {
+                namF = item.alias;
+                listAlias.push({idSource:item.idTable,name_field:item.name_field,typeSource:item.typeSource,idField:item.idField,alias:item.alias});
+            }
+            itemData = {id_field:i,name:namF,type:item.type_field,title:item.title};
+            data.push(itemData);
+        }
+
+        ik = childTab.length;
         let manyTables = false;
         if (ik == 0) return;
         if (ik > 1) {
@@ -258,8 +323,6 @@ function QuerySelect (wind, listTab, idQu, cbQuery) {
         let sepT = "";
         let fields = "";
         let sepF = "";
-        let data = [];
-        let itemData;
         let alias;
         let aliasForF;
         let schema = currentProject.resurseInd;
@@ -285,11 +348,13 @@ function QuerySelect (wind, listTab, idQu, cbQuery) {
             viewTabI = childTab[i];
             let name_table = viewTabI.name_table;
             let id_tab = viewTabI.id_table;
+            let typeSource = viewTabI.typeSource;
             let tab = gatTableById(id_tab);
             let listField = null;
             if (tab != null) {
                 listField = JSON.parse(tab.fields_table);
             }
+
             alias = "";
             aliasForF = "";
             if (manyTables) {
@@ -301,14 +366,27 @@ function QuerySelect (wind, listTab, idQu, cbQuery) {
             let tt = viewTabI.getElementsByClassName("tab_title")[0];
             let selTab = tt.getElementsByTagName("img")[0];
             let cf;
+            let alK = listAlias.length;
             if (selTab.src.indexOf("act") > -1) {
                 cf = 0;
             } else if (selTab.src.indexOf("blur") > -1) {
                 cf = 1;
             } else {
-                cf = 2;
-                fields += sepF + aliasForF + "*";
-                sepF = ", ";
+                isAl = false;
+                for (let al = 0; al < alK; al++) {
+                    let alIt = listAlias[al];
+                    if (alIt.idSource == id_tab && alIt.typeSource == typeSource) {
+                        isAl = true;
+                        break;
+                    }
+                }
+                if (isAl) {
+                    cf = 1;
+                } else {
+                    cf = 2;
+                    fields += sepF + aliasForF + "*";
+                    sepF = ", ";
+                }
             }
             let lF = [];
             if (cf == 1) {
@@ -319,6 +397,14 @@ function QuerySelect (wind, listTab, idQu, cbQuery) {
                     let it = childField[j];
                     if (it.getElementsByTagName('img')[0].src.indexOf("act") < 0) {
                         lF.push(it.idField);
+                        let asName = "";
+                        for (let al = 0; al < alK; al++) {
+                            let alIt = listAlias[al];
+                            if (alIt.idField == it.idField && alIt.idSource == it.idTable && alIt.typeSource == it.typeSource) {
+                                asName = " AS " + alIt.alias;
+                                break;
+                            }
+                        }
                         let aliasObr = "";
                         if (manyTables) {
                             let bk = listAllField.length;
@@ -333,25 +419,27 @@ function QuerySelect (wind, listTab, idQu, cbQuery) {
                                 aliasObr = aliasForF;
                             }
                         }
-                        fields += sepF + aliasObr + it.name_field;
+                        fields += sepF + aliasObr + it.name_field + asName;
                         sepF = ", ";
                     }
                 }
             }
-            let resOneTab = {id_table:viewTabI.id_table,fullness:cf,listFields:lF};
+            let resOneTab = {id_table:viewTabI.id_table,typeSource:viewTabI.typeSource,fullness:cf,listFields:lF};
             res.push(resOneTab);
         }
-
-        let fieldsQQ = this.queryFieldsDataQu.children;
-        ik = fieldsQQ.length;
-        let listFields = [];
+        
+        
+        
+        ik = listAlias.length;
         for (let i = 0; i < ik; i++) {
-            let item = fieldsQQ[i];
-            if (item.type_field.indexOf("erial") == -1) {
-                itemData = {name:item.name_field,type:item.type_field,title:item.title};
-                data.push(itemData);
+            let al = listAlias[i];
+            if (al.typeSource == "Expresion") {
+                fields += sepF + al.name_field + " AS " + al.alias;
             }
         }
+        
+        
+        
         let SQL = "SELECT " + fields + " FROM " + tables;
 
     // Query
@@ -481,13 +569,12 @@ function QuerySelect (wind, listTab, idQu, cbQuery) {
                 }
             }
         }
-        let origin_query = {fieldTable:res,where:queryForSave,order:this.queryOrderQu};
+        let origin_query = {fieldTable:res,where:queryForSave,order:this.queryOrderQu,listAlias:listAlias};
         let original = JSON.stringify(origin_query);
-        let nam = currentScreen.screenName + "_" + currentComponent.viewId;
-
+//        let nam = currentScreen.screenName + "_" + currentComponent.viewId;
+//console.log("SQL="+JSON.stringify(SQL)+"<<");
         let dat = {id_query:this.idQu,name_query:nameQu,descr_query:descrQu,type_query:"SELECT",origin_query:original,sql_query:SQL,
             param_query:strParam, listWhere:JSON.stringify(where_list), orderBy:order_query,fields_result:JSON.stringify(data)};
-//        let dat = {id_query:qu,name_query:nam,type_query:"SELECT",origin_query:original,sql_query:SQL,param_query:strParam, listWhere:JSON.stringify(where_list), orderBy:order_query};
         hostDomain = currentProject.host;
         doServerAlien("POST", hostDomain + "query/create", this, JSON.stringify(dat), 
         {source:2,id:this.idQu,name:nameQu,descr:descrQu,type_query:"SELECT",param_query:strParam,fields_result:JSON.stringify(data)}, document.body);
@@ -916,7 +1003,8 @@ function QuerySelect (wind, listTab, idQu, cbQuery) {
     
     this.formTableQu = function(i) {
         let item = this.listTables[i];
-        let itemForList = {id_table:item.id_table,name_table: item.name_table,title_table:item.title_table,fields_table:JSON.parse(item.fields_table)};
+        item.typeSource = "Table";
+        let itemForList = {id_table:item.id_table,typeSource:item.typeSource,name_table: item.name_table,title_table:item.title_table,fields_table:JSON.parse(item.fields_table)};
         this.listTablesForQu.push(itemForList);
         this.formBlockTableQu(item);
 
@@ -933,6 +1021,7 @@ function QuerySelect (wind, listTab, idQu, cbQuery) {
         let block = newDOMelement('<div class="table_view" style="width:' + this.wTableInQu + 'px;height:100%;float:left;position:relative;border-right:1px solid #1dace9;"></div>');
         block.id_table = item.id_table;
         block.name_table = item.name_table;
+        block.typeSource = item.typeSource;
         let title = newDOMelement('<div class="tab_title" style="height:24px;border-bottom:1px solid #1dace9;position:absolute;left:0;top:0;right:0;background:#f3f8ff;">' 
                 +'<div style="margin-top:3px;width:100%;text-align:center;font-size:14px;">' + item.name_table + '</div>'
                 +'</div>');
@@ -951,7 +1040,7 @@ function QuerySelect (wind, listTab, idQu, cbQuery) {
         let fields = JSON.parse(item.fields_table);
         let ik = fields.length;
         for (let i = 0; i < ik; i++) {
-            this.oneFieldTablesQu(item.id_table, fields[i], viewDataT);
+            this.oneFieldTablesQu(item.id_table, item.typeSource, fields[i], viewDataT);
         }
         let imgAddQuery = footerQuery.getElementsByClassName("addWhere")[0];
         if (imgAddQuery != null) {
@@ -959,7 +1048,7 @@ function QuerySelect (wind, listTab, idQu, cbQuery) {
         }
     }
     
-    this.oneFieldTablesQu = function(idTable, item, el) {
+    this.oneFieldTablesQu = function(idTable, typeSource, item, el) {
         let cont = newDOMelement('<div class="cont_f" style="float:left;width:100%;position:relative;height:' 
                 + hItemListFieldsTable + 'px;overflow: hidden;border-bottom:1px solid #aaf;clear:both"></div>');
         cont.idTable = idTable;
@@ -967,6 +1056,7 @@ function QuerySelect (wind, listTab, idQu, cbQuery) {
         cont.name_field = item.name;
         cont.type_field = item.type;
         cont.title = item.title;
+        cont.typeSource = typeSource;
         let name = newDOMelement('<div style="font-size:14px;color:#000;margin-top:2px;cursor:pointer;float:left;margin-left:3px">' 
                 + item.name + '</div>');
         cont.appendChild(name);
@@ -1022,6 +1112,7 @@ function QuerySelect (wind, listTab, idQu, cbQuery) {
     this.addFieldsInQu = function (el) {
         let cont = el.closest('.cont_f');
         let idTab = cont.idTable;
+        let typeSource = cont.typeSource;
         let idF = cont.idField;
         let ik = this.listTablesForQu.length;
         let itemTab = null;
@@ -1033,7 +1124,7 @@ function QuerySelect (wind, listTab, idQu, cbQuery) {
                 for (let j = 0; j < jk; j++) {
                     let itemField = fields[j];
                     if (itemField.id_field == idF) {
-                        this.oneFieldViewQu(idTab, itemField, this.queryFieldsDataQu);
+                        this.oneFieldViewQu(idTab, typeSource, itemField, this.queryFieldsDataQu);
                         let ss = this.queryFieldsDataQu.closest(".viewport");
                         ss.scroll_y.resize();
                         break;
@@ -1069,7 +1160,7 @@ function QuerySelect (wind, listTab, idQu, cbQuery) {
         }
     }
     
-    this.oneFieldViewQu = function (idTab, item, el) {
+    this.oneFieldViewQu = function (idTab, typeSource, item, el) {
         let cont = newDOMelement('<div class="field" style="float:left;width:100%;position:relative;height:' 
                 + hItemListFieldsTable + 'px;overflow: hidden;border-bottom:1px solid #aaf;clear:both"></div>');
         cont.idTable = idTab;
@@ -1077,23 +1168,64 @@ function QuerySelect (wind, listTab, idQu, cbQuery) {
         cont.name_field = item.name;
         cont.type_field = item.type;
         cont.title = item.title;
-        let name = newDOMelement('<div class="name" style="font-size:14px;color:#000;margin-top:2px;float:left;margin-left:3px">' + item.name + '</div>');
-        cont.append(name);
+        cont.typeSource = typeSource;
         el.append(cont);
         cont.addEventListener("contextmenu", () => {
             event.preventDefault();event.stopPropagation();
             this.setAlias(cont);
         }, true);
+        if (this.listAlias != null) {
+            let alK = this.listAlias.length;
+            cont.alias = "";
+            for (let al = 0; al < alK; al++) {
+                let alIt = this.listAlias[al];
+                if (alIt.idField == item.id_field && alIt.idSource == idTab && alIt.typeSource == typeSource) {
+                    cont.alias = alIt.alias;
+                    break;
+                }
+            }
+        }
+        this.setNameFieldView(cont);
+    }
+    
+    this.setNameFieldView = function(cont) {
+        let nam;
+        if (cont.alias != null && cont.alias.length > 0) {
+            nam = cont.name_field +  ' AS ' + cont.alias;
+        } else {
+            nam = cont.name_field;
+        }
+        let name = newDOMelement('<div class="name" style="font-size:14px;color:#000;margin-top:2px;float:left;margin-left:3px">' 
+                + nam + '</div>');
+        cont.append(name);
         let rect = cont.getBoundingClientRect();
         let rect_1 = name.getBoundingClientRect();
         let descr = newDOMelement('<div style="font-size:10px;color:#555;margin-top:6px;height:11px;width:' + (rect.width - rect_1.width - 20) 
-                + 'px;float:left;margin-left:5px;overflow:hidden">' + item.title);
+                + 'px;float:left;margin-left:5px;overflow:hidden">' + cont.title);
         cont.append(descr);
     }
     
     this.setAlias = function(el) {
         let pp = formPopUp(el, 300, 150);
-        this.as
+        let meta_Alias = [
+            {name: "alias", title:"Alias",len:120,type:"Text",valid:"name_low",clear:true}
+        ]
+        this.alias = {alias:el.alias};
+        new EditForm(meta_Alias, this.alias, pp);
+        let controll = createFooter(50);
+        pp.append(controll);
+        let buttonOk = createButtonBlue("Save");
+        buttonOk.addEventListener('click', () => {closePopUp(pp);this.saveAlias(el)});
+        controll.append(buttonOk);
+        let buttonCancel = createButtonWeite('Cancel', 70);
+        buttonCancel.addEventListener('click', () => {closePopUp(pp);});
+        controll.append(buttonCancel);
+    }
+    
+    this.saveAlias = function(el) {
+        el.alias = this.alias.alias;
+        el.innerHTML = "";
+        this.setNameFieldView(el);
     }
     
     this.setFieldInQu = function(el) {

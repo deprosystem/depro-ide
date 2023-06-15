@@ -11,7 +11,19 @@ function setDataToView(rec, p, cDescr) {
                 case "TextView":
                     p.emId = p.viewId;
                     p.emVal = p.text;
-                    p.text = value;
+                    let form = p.componParam.format;
+                    if (form != null && form.length > 0) {
+                        let offset = new Date().getTimezoneOffset() * 60000;
+//                        Date dd = new Date(value + offset);
+                        if (typeof value === "number") {
+console.log("111 value="+value+" offset="+offset);
+                            p.text = dateFormatV(value + offset, form);
+                        } else {
+                            p.text = value;
+                        }
+                    } else {
+                        p.text = value;
+                    }
                     return;
                 case "Gallery":
                     let ik = value.length;
@@ -41,6 +53,19 @@ function setDataToView(rec, p, cDescr) {
             }
         }
     }
+}
+
+function dateFormatV(val, format) {
+    let dd = new Date(val);
+console.log("VAL="+val+" format="+format+"<<");
+//    let d = dd.getDate();
+    let d = add0("" + dd.getDate())
+    let m = add0("" + (dd.getMonth() + 1));
+    let y = "" + dd.getFullYear();
+    let stDat = format;
+    
+    
+//    return dd.toString(format);
 }
 
 function restoreView(p) {

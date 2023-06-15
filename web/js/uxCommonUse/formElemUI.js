@@ -5,6 +5,7 @@ function formElement(item, toRightOf, namePrev, topM, leftM) {
         case "Timestamp":
         case "Date":
         case "Text":
+        case "Expresion":
             txtView = formTxt(item);
             p = txtView.android;
             break;
@@ -27,6 +28,15 @@ function formElement(item, toRightOf, namePrev, topM, leftM) {
             p = txtView.android;
             if (item.format != null && item.format.length > 0) {
                 p.componParam = {type:3, formatNum:item.format};
+            }
+            break;
+        case "Boolean":
+            if (item.edit != null && item.edit == "checkBox") {
+                txtView = formCheck(item);
+                p = txtView.android;
+            } else {
+                txtView = formTxt(item);
+                p = txtView.android;
             }
             break;
         case "Time":
@@ -55,7 +65,7 @@ function formElement(item, toRightOf, namePrev, topM, leftM) {
             currentElement = curr;
             break;
         case "Select":
-            if (item.edit != null && item.edit) {
+            if (item.edit != null && item.edit == "spinner") {
                 txtView = formSpinner(item);
                 p = txtView.android;
             } else {
@@ -108,7 +118,8 @@ function formDivider() {
     return currentElement;
 }
 
-function formImgFirst(ww, imgHeight, data) {
+function formImgFirst(ww, imgHeight, data, margTop, margLeft) {
+//console.log("formImgFirst margTop="+margTop+"<< margLeft="+margLeft+"<<");
     let item;
     let imgId = -1;
     let ik = data.length;
@@ -125,8 +136,15 @@ function formImgFirst(ww, imgHeight, data) {
         p.viewId = item.name;
         p.viewElement = imgView;
         p.width = ww;
+        if (margTop != null && margTop.length > 0) {
+            p.topMarg = margTop;
+        }
+        if (margLeft != null && margLeft.length > 0) {
+            p.leftMarg = margLeft;
+        }
         namePrev = item.name;
         p.height = imgHeight;
+//console.log("formImgFirst p.topMarg="+p.topMarg+"<< p.leftMarg="+p.leftMarg+"<< margTop="+margTop+"<< margLeft="+margLeft+"<<");
         p.src = "img/picture.png";
     }
     return imgId;
@@ -168,37 +186,6 @@ function formGallery(item) {
     return currentElement;
 }
 
-/*
-function formGallery(item) {
-    currentElement = createNewEl();
-    p = {typeUxUi: "ui"};
-    
-    
-    if (item.edit != null && item.edit) {
-        p.type = "EditGallery";
-        p.typeFull = {name: 'EditText', typeBlock: 0};
-        p.componParam = {type:26};
-    } else {
-        p.type = "Gallery";
-        p.typeFull = {name: 'TextView', typeBlock: 0};
-        p.componParam = {type:8};
-    }
-    
-    
-//    p.type = "Gallery";
-//    p.typeFull = {name: 'Gallery', typeBlock: 0};
-    p.gravLayout = {h:4,v:4};
-    p.gravity = {h:4,v:4};
-    currentElement.android = p;
-    let typeEl = createDivImg();
-    p.viewId = item.name;
-    currentElement.appendChild(typeEl);
-    addNewElement(ACTIVE, currentElement);
-    addNavigatorEl(currentElement);
-    ACTIVE.android.children.push(currentElement.android);
-    return currentElement;
-}
-*/
 function formIndicator(item) {
     currentElement = createNewEl();
     p = {typeUxUi: "ui"};
@@ -223,31 +210,44 @@ function formTxt(item) {
     p = {typeUxUi: "ui"};
     p.componParam = {typeValidTV:"no"};
     let typeEl;
-    if (item.edit != null && item.edit) {
-        p.type = "EditText";
-        p.typeFull = {name: 'EditText', typeBlock: 0};
-        p.textSize = 18;
-        p.componParam.bool_1 = true;
-        p.componParam.st_3 = "actionNext";
-        typeEl = createDivEditText(currentElement);
+    if (item.edit != null) {
+        switch(item.edit) {
+            case "text":
+                p.type = "EditText";
+                p.typeFull = {name: 'EditText', typeBlock: 0};
+                p.textSize = 18;
+                p.componParam.bool_1 = true;
+                p.componParam.st_3 = "actionNext";
+                typeEl = createDivEditText(currentElement);
+                break;
+            case "spinner":
+//                return formSpinner(item);
+                return formSpinner_UX_UI(item);
+/*
+                typeEl = formSpinner_1(currentElement);
+                p = {viewId:item.name,typeUxUi:"ui",type:"Spinner",typeFull:{name: 'Spinner', typeBlock: 0},width:MATCH,height:24,gravLayout:{h:4,v:4},
+                    gravity:{h:4,v:4},rightMarg:12,textColor:12,children:[],componParam:{type:24}};
+                break;
+*/
+        }
     } else {
         p.type = "TextView";
         p.typeFull = {name: 'TextView', typeBlock: 0};
         p.textSize = 16;
         typeEl = createDivText();
     }
-    p.width = MATCH;
-    p.height = WRAP;
-//    p.typeFull = {name: 'TextView', typeBlock: 0};
-    p.gravLayout = {h:4,v:4};
-    p.gravity = {h:4,v:4};
-    currentElement.android = p;
-    p.text = item.name;
-    p.viewId = item.name;
-//    p.textSize = 14;
-    p.letterSpac = '0.0';
-    p.textColor = 12;
-    p.rightMarg = 12;
+    if (p != null) {
+        p.width = MATCH;
+        p.height = WRAP;
+        p.gravLayout = {h:4,v:4};
+        p.gravity = {h:4,v:4};
+        currentElement.android = p;
+        p.text = item.name;
+        p.viewId = item.name;
+        p.letterSpac = '0.0';
+        p.textColor = 12;
+        p.rightMarg = 12;
+    }
     currentElement.appendChild(typeEl);
     addNewElement(ACTIVE, currentElement);
     addNavigatorEl(currentElement);
@@ -267,6 +267,68 @@ function formButton(name) {
     addNewElement(ACTIVE, currentElement);
     addNavigatorEl(currentElement);
     ACTIVE.android.children.push(currentElement.android);
+    return currentElement;
+}
+
+function formSpinner_UX_UI(item) {
+// UX
+    let copyCurrentComponentView = currentComponentView;
+    let copyCurrentComponentDescr = currentComponentDescr;
+    uxFunction = new uxSpinner();
+    let viewId = item.name;
+    let listCompon = currentComponentView.closest(".list_components");
+    
+    currentComponentView = newComponent(viewId);
+    currentComponentView.addEventListener('click', selComponent, true);
+    currentComponentView.addEventListener('focus', selComponent, true);
+    listCompon.append(currentComponentView);
+    
+    list_screens.scrollTop = list_screens.scrollHeight;
+    currentComponentView.componId = idComponentNum;
+    uxFunction.addComponent(idComponentNum, viewId);
+    idComponentNum ++;
+    
+    currentScreen.components.push(currentComponentDescr);
+/*
+    if (currentComponent != null) {
+        currentChildren.push(currentComponent);
+    }
+*/
+    setValueComponent(currentComponentView, currentComponent, currentComponentDescr);
+    currentComponentView = copyCurrentComponentView;
+    currentComponentDescr = copyCurrentComponentDescr;
+    return formSpinnerUI(item);
+    
+/*
+    let typeEl = createDivText();
+    typeEl.innerHTML = item.name;
+    el.append(typeEl);
+    
+    let px24 = 24 * DENSITY + "px";
+    let img = newDOMelement('<img src="img/android_arrow_down.png" style="width:' + px24 + ';height:' + px24 + ';position:absolute;right:0">');
+    el.append(img);
+    return currentElement;
+*/
+}
+
+function formSpinnerUI(item) {
+    currentElement = createNewEl();
+/*
+    let p = {viewId:item.name,typeUxUi:"ui",type:"Spinner",typeFull:{name: 'Spinner', typeBlock: 0},width:MATCH,height:24,gravLayout:{h:4,v:4},gravity:{h:4,v:4},
+        rightMarg:12,textColor:12,children:[],componParam:{type:24}};
+*/
+    currentElement.android = currentComponent;
+    let typeEl = createDivText();
+    typeEl.innerHTML = item.name;
+    currentElement.append(typeEl);
+    addNewElement(ACTIVE, currentElement);
+    addNavigatorEl(currentElement);
+    ACTIVE.android.children.push(currentElement.android);
+/*    
+    let px24 = 24 * DENSITY + "px";
+    let img = newDOMelement('<img src="img/android_arrow_down.png" style="width:' + px24 + ';height:' + px24 + ';position:absolute;right:0">');
+    currentElement.append(img);
+*/
     return currentElement;
 }
 

@@ -257,7 +257,7 @@ function resizeContour(e) {
         var y = e.pageY;
         hideContourEl();
         currentElement = createNewEl();
-        p = {typeUxUi: "ui",children:[]};
+        p = {typeUxUi: "ui",children:[],viewId:""};
         p.type = typeInsert;
         p.typeFull = insertTypeFull;
         p.gravLayout = {};

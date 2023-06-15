@@ -9,7 +9,7 @@ function formWind(w, h, t, l, tit, scroll, cbClose, footName, footListener, colo
         if (colorFon.length > 0) {
             backGr = "background-color:" + colorFon + ";";
         }
-        panelFon = newDOMelement('<div style="width:100%;height:100%;' + backGr + 'position:absolute;z-index:1;"></div>');
+        panelFon = newDOMelement('<div class="qwert" style="width:100%;height:100%;' + backGr + 'position:absolute;z-index:1;"></div>');
         document.body.append(panelFon);
     }
     let ww = document.createElement('div');
@@ -70,6 +70,7 @@ function formPopUp(el, w, h) {
     let y = parseInt(xy.top + xy.height + 2);
     let dv = document.createElement('div');
     dv.className = "windPopUp";
+    dv.style.boxShadow = "0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)";
     let wD = document.documentElement.clientWidth;
     if ((wD - x) < w) {
         x = wD - w - 20;
@@ -154,6 +155,14 @@ function setTitleWind(el, tit) {
     let ww = el.closest(".dataWindow");
     let tt = ww.querySelector(".titleWindName");
     tt.innerHTML = tit;
+}
+
+function setHelp(el, url) {
+    let ww = el.closest(".dataWindow");
+    let tt = ww.querySelector(".titleWind");
+    let quest = newDOMelement('<img src="img/question_blue.png" style="position:absolute;width:12px;height:12px;right:30px;top:16px;cursor:pointer">');
+    quest.addEventListener('click', () => {window.open(url);});
+    tt.append(quest);
 }
 
 function createTitle(tit, cbClose) {
@@ -269,16 +278,11 @@ function formViewScrolY(wraperScroll, hide) {
 
     let content = document.createElement('div');
     content.className = "content";
-//    content.style.cssText = "position: absolute;overflow-x: scroll; left: 0; top: 0; right:-17px;bottom: 0; overflow-y: scroll;";
    content.style.bottom = "0px";
-
-//    let content = newDOMelement('<div class="content" style="position: absolute;overflow-x: scroll; left: 0; top: 0; right:-17px;bottom: 0; overflow-y: scroll;"></div>');
     viewport.appendChild(content);
-//console.log("formViewScrolY 0000 BBB="+getComputedStyle(content).bottom+"<<");
     let viewDataY = document.createElement('div');
     viewDataY.className = "viewData";
     viewDataY.style.cssText = "margin-right:15px; margin-bottom:10px;-webkit-user-select: none; user-select: none;overflow:hidden";
-//    viewDataY.style.marginRight = "15px";
     content.appendChild(viewDataY);
 
     let scrollY = new ScrollY(viewport, true);
@@ -288,7 +292,6 @@ function formViewScrolY(wraperScroll, hide) {
     }
     scrollY.setScrollHide(hhh);
     scrollY.init();
-//console.log("formViewScrolY BBB="+getComputedStyle(content).bottom+"<<");
     return viewport;
 }
 

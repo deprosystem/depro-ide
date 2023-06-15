@@ -1,4 +1,4 @@
-//var selectMethodInModel = "";
+
 let uxModel1 = '<div class="model_view" style="height:40px;">'
         +'<div style="float:left;"><div style="color:#2228;font-size: 10px;margin-left:4px">Method</div>'
         +'<select class="model_method type_screen select_';
@@ -9,7 +9,18 @@ let uxModel2 = '" onchange="changeMethod(this)" style="width:120px;"><option>GET
             +'<option>POST_DB</option><option>INSERT_DB</option><option>DEL_DB</option><option>UPDATE_DB</option><option>NULL</option></select>'
         +'</div>'
         +'<div class="param_method" style="float:left;margin-left:10px;"></div>';
+/*
+let uxModel1 = '<div class="model_view" style="height:40px;">'
+        +'<div style="float:left;"><div style="color:#2228;font-size: 10px;margin-left:4px">Data source</div>'
+        +'<select class="model_method type_screen select_';
 
+let uxModel2 = '" onchange="changeMethod(this)" style="width:120px;"><option>Database IDE</option><option>API</option><option>Local database</option>' 
+            +'<option>API</option><option>TEST</option>'
+            +'<option>JSON</option><option>PARAMETERS</option>'
+            +'<option>GLOBAL</option><option>ARGUMENTS</option><option>PROFILE</option><option>FIELD</option><option>NULL</option></select>'
+        +'</div>'
+        +'<div class="param_method" style="float:left;margin-left:10px;"></div>';
+*/
 let pmUrl = '<div style="display:inline-block;"><div style="color:#2228;font-size:10px;margin-left:4px">URL</div>'
             +'<input class="url input_style" onkeyup="return clickUpURL(event)" style="color:#000a" type="text" size="20" value=""/>'
             +'</div>';
@@ -125,26 +136,22 @@ function changeMethod(el) {
     currentComponentDescr.model.method = el.selectedIndex;
     let el_1 = el.parentElement;
     let el_2 = el_1.parentElement.getElementsByClassName("param_method");
-//    selectMethodInModel = "";
     if (el_2 != null) {
         let pm = el_2[0];
-//        selectMethodInModel = el.options[el.selectedIndex].value;
         switch (el.options[el.selectedIndex].value) {
             case "POST":
             case "FILTER":
             case "GET":
+                pm.innerHTML = "";
                 if (hostDescr == "Third party API") {
                     pm.innerHTML = pmUrl + pmParamUrl + pmProgr;
                     setValueGetPost();
                 } else {
                     let dd = new EditForm(metaGET, currentComponentDescr.model, pm, null, null, true);
-//                    pm.innerHTML = pmProgr;
-//                    setValueQuery();
                 }
                 break;
             case "TEST":
                 pm.innerHTML = pmTest;
-//                selectMethodInModel = "TEST";
                 break;
             case "PARAMETERS":
                 pm.innerHTML = pmParamUrl;
@@ -194,7 +201,7 @@ function editDataModel(el, ind) {
     let mvP = el.closest(".component_param");
     let mv = mvP.querySelector(".model_view");
     let sel = mv.querySelector(".model_method");
-    selectMethodInModel = sel.options[sel.selectedIndex].value;
+    let selectMethodInModel = sel.options[sel.selectedIndex].value;
     let num;
     let p = el.parentElement;
     if (ind != null) {
@@ -202,6 +209,32 @@ function editDataModel(el, ind) {
     } else {
         num = getNumDataTYpe(p) + 1;
     }
+    switch (selectMethodInModel) {
+        case "TEST":
+            editDataWind(metaModel, currentComponentDescr.model.data[0], cbSaveDataModel);
+            break;
+        case "NULL":
+            if (currentComponentDescr.type.indexOf("Form") > -1) {
+                new FieldsFromSource(currentComponentDescr.model, num, true, new ChoiceTableFields());
+            }
+            break;
+        default:
+            if (hostDescr == "Third party API") {
+                editDataWind(metaModel, currentComponentDescr.model.data[num], cbSaveDataModel);
+            } else {
+                let tt = currentComponentDescr.type;
+                let ed = currentComponentDescr.type.indexOf("Form") > -1;
+                let wSource;
+                if (ed) {
+                    wSource = new ChoiceTableFields();
+                } else {
+                    wSource = new ChoiceQueryFields();
+                }
+                new FieldsFromSource(currentComponentDescr.model, num, ed, wSource);
+            }
+            break;
+    }
+/*
     if (selectMethodInModel == "TEST") {
         editDataWind(metaModel, currentComponentDescr.model.data[0], cbSaveDataModel);
     } else if (hostDescr == "Third party API") {
@@ -210,9 +243,10 @@ function editDataModel(el, ind) {
 //            editQueryWind();
 //            setModelParam();
             let tt = currentComponentDescr.type;
-            let isFormForQuery = tt == "Form" || tt == "ScrollForm";
+//            let isFormForQuery = tt == "Form" || tt == "ScrollForm";
             new FieldsFromSource(currentComponentDescr.model, num, currentComponentDescr.type.indexOf("Form") > -1);
         }
+*/
 }
 
 function setModelParam() {

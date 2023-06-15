@@ -530,6 +530,7 @@ function selectProject(id) {
 
 function cbGetProject(res) {
     listTables = null;
+    listQuerys = null;
     cbCreateProject(res, 2);
     show_data.style.display = "block";
     shutScreen.style.display = "none";
@@ -660,7 +661,8 @@ function generateProjectF(apk) {
         doServer("GET", url + "?projectId=" + currentProject.projectId, cbGenerateProject, null, windMenu, wind, errorAPK, attent);
 //        doServer("GET", url + "?projectId=" + currentProject.projectId, cbGenerateProject, null, windMenu, windMenu, errorAPK, attent);
     } else {
-        closeWindow(windMenu);
+        closeDataWindow(windMenu);
+//        closeWindow(windMenu);
     }
 }
 
@@ -688,16 +690,7 @@ function validDeclare() {
                 if (newLevelErrors < ls.levelErrors) {
                     newLevelErrors = ls.levelErrors;
                 }
-/*
-                if (divErr != null) {
-                    divErr.style.backgroundColor = colorsEroor[newLevelErrors];
-                }
-*/
             }
-/* else {
-                divErr.style.backgroundColor = colorsEroor[0];
-            } 
-*/
         }
     }
     ik = listValueAppParam.length;
@@ -761,15 +754,13 @@ function validDeclare() {
             }
         }
     }
-//    let divErr = currentScreenView.getElementsByClassName("error_screen")[0];
     if (strError != "") {
-//        divErr.style.backgroundColor = colorsEroor[newLevelErrors];
+console.log("strError strError");
         var wind = formWind(500, 400, 35, 270, "Error in project");
         wind.style.paddingLeft = "4px";
         wind.innerHTML = strError;
         return false;
     } else {
-//        divErr.style.backgroundColor = colorsEroor[0];
         return true;
     }
 }

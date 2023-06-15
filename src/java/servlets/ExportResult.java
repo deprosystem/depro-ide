@@ -1730,19 +1730,19 @@ public class ExportResult extends BaseServlet {
                                         }
                                     }
                                     if (comp != null) {
-                                        if ((comp.view.toolInDrawer != null && comp.view.toolInDrawer) ||
-                                                (comp.view.menubInDrawer != null && comp.view.menubInDrawer)) {
-                                            AndroidPar apTool = null, apMenu = null;
-                                            for (int j = 0; j < ik; j++) {
-                                                AndroidPar apJ = elScreen.children.get(j);
-                                                if (apJ.type.equals(Constants.TOOL)) {
-                                                    apTool = apJ;
-                                                } else {
-                                                    if (apJ.type.equals(Constants.MENU_B)) {
-                                                        apMenu = apJ;
-                                                    }
+                                        AndroidPar apTool = null, apMenu = null;
+                                        for (int j = 0; j < ik; j++) {
+                                            AndroidPar apJ = elScreen.children.get(j);
+                                            if (apJ.type.equals(Constants.TOOL)) {
+                                                apTool = apJ;
+                                            } else {
+                                                if (apJ.type.equals(Constants.MENU_B)) {
+                                                    apMenu = apJ;
                                                 }
                                             }
+                                        }
+                                        if ((comp.view.toolInDrawer != null && comp.view.toolInDrawer) ||
+                                                (comp.view.menubInDrawer != null && comp.view.menubInDrawer)) {
                                             createDrawer(ap, apTool, apMenu, tab0, writer, parSave, elScreen.children);
                                             parSave.noToolMenu = true;
                                             parSave.noDrawer = true;
@@ -2472,11 +2472,19 @@ public class ExportResult extends BaseServlet {
                         if (p.componParam.st_9 != null && p.componParam.st_9.length() > 0) {
                             writer.write(tab + "app:validPassword=\"" + p.componParam.st_9 + "\"");
                         }
+/*
                         if (p.componParam.st_10 != null && p.componParam.st_10.length() > 0) {
                             writer.write(tab + "app:idShowPassword=\"@id/" + p.componParam.st_10 + "\"");
                         }
                         if (p.componParam.st_11 != null && p.componParam.st_11.length() > 0) {
                             writer.write(tab + "app:idHidePassword=\"@id/" + p.componParam.st_11 + "\"");
+                        }
+*/
+                        if (p.componParam.st_10 != null && p.componParam.st_10.length() > 0) {
+                            writer.write(tab + "app:idShowImg=\"@drawable/" + nameFromUrl(p.componParam.st_10) + "\"");
+                        }
+                        if (p.componParam.st_11 != null && p.componParam.st_11.length() > 0) {
+                            writer.write(tab + "app:idHideImg=\"@drawable/" + nameFromUrl(p.componParam.st_11) + "\"");
                         }
                         if (p.componParam.st_12 != null && p.componParam.st_12.length() > 0) {
                             writer.write(tab + "app:equalsId=\"@id/" + p.componParam.st_12 + "\"");

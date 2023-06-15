@@ -49,6 +49,7 @@ function hideControlHeader() {
     }
     ux_ui_w.style.display = "none";
     emulator.style.display = "none";
+    palette.style.display = "none";
     dataControll.style.display = "block";
     hostDomain = currentProject.host;
     if (dataDescript.children.length == 0) {
@@ -66,6 +67,7 @@ function showControlHeader() {
     }
     ux_ui_w.style.display = "block";
     emulator.style.display = "block";
+    palette.style.display = "block";
     dataControll.style.display = "none";
 }
 
@@ -149,6 +151,7 @@ function dbViewTable() {
 
 function dbViewQuery() {
     if (listQuerys == null) {
+        hostDomain = currentProject.host;
         doServerAlien("GET", hostDomain + 'query/list', cbDBGetQuerys, null, null, listDataDB);
     } else {
         dbSelectOper(1);
@@ -209,23 +212,53 @@ function oneQueryView(item, el) {
 
 function editQuery(id) {
     let wind = formWind(1130, 625, 40, 250, "Editing a request");
-//    dbEditQuery(wind, id);
     let quSel = new QuerySelect(wind, listTables, id, cbQuery);
-//    quSel.init();
 }
 
 function deleteQuertAdm(id) {
-    
+    event.stopPropagation();
+    let ind = getQueryPosition(id);
+    if (ind > -1) {
+        let item = listQuerys[ind];
+        myAlert("The " + item.name_query + " query and all its data will be deleted permanently.<br />Proceed?", "Proceed", proceedDelQuery, item);
+    }
+}
+
+function proceedDelQuery(item) {
+    let t = {id_query:item.id_query};
+    doServerAlien("POST", hostDomain + "query/del_query", cbDelQuery, JSON.stringify(t), item);
+}
+
+function cbDelQuery(res, item) {
+    let i_1 = getQueryPosition(item.id_query);
+    listQuerys.splice(i_1, 1);
+    dbListQuerys();
+}
+
+function getQueryPosition(id) {
+    let ik = listQuerys.length;
+    for (let i = 0; i < ik; i++) {
+        if (id == listQuerys[i].id_query) {
+            return i;
+        }
+    }
+    return - 1;
 }
 
 function dbAddQueryChoose() {
     let cc = '<div style="margin-top: 24px">'
         +'<div style="margin-top: 7px"><label><input type="radio" name="choice" value="SELECT" checked/> <span style="font-weight:bold">SELECT</span> - get data from multiple tables</label></div>'
+        +'<div style="margin-top: 7px"><label><input type="radio" name="choice" value="INNER JOIN"/> <span style="font-weight:bold">INNER JOIN</span></label></div>'
+        +'<div style="margin-top: 7px"><label><input type="radio" name="choice" value="LEFT JOIN"/> <span style="font-weight:bold">LEFT JOIN</span> - left outer join</label></div>'
+        +'<div style="margin-top: 7px"><label><input type="radio" name="choice" value="RIGHT JOIN"/> <span style="font-weight:bold">RIGHT JOIN</span> - right outer join</label></div>'
+        +'<div style="margin-top: 7px"><label><input type="radio" name="choice" value="UNION"/> <span style="font-weight:bold">UNION</span> - used to combine the results</label></div>'
+        +'<div style="margin-top: 7px"><label><input type="radio" name="choice" value="INTERSECT"/> <span style="font-weight:bold">INTERSECT</span> - returns all rows present strictly in both sets</label></div>'
+        +'<div style="margin-top: 7px"><label><input type="radio" name="choice" value="EXCEPT"/> <span style="font-weight:bold">EXCEPT</span> - returns all rows present in the first set but not in the second</label></div>'
         +'<div style="margin-top: 7px"><label><input type="radio" name="choice" value="INSERT" /> <span style="font-weight:bold">INSERT</span> - adds data to table</label></div>'
         +'<div style="margin-top: 7px"><label><input type="radio" name="choice" value="UPDATE" /> <span style="font-weight:bold">UPDATE</span> - replaces data in a table</label></div>'
         +'<div style="margin-top: 7px"><label><input type="radio" name="choice" value="DELETE" /> <span style="font-weight:bold">DELETE</span> - deletes data in a table</label></div>'
         +'</div>';
-    document.documentElement.style.setProperty('--w_wind_qu', "300px");
+    document.documentElement.style.setProperty('--w_wind_qu', "450px");
     document.documentElement.style.setProperty('--h_wind_qu', "400px");
     let wind = formWind(300, 400, 40, 250, "Forming a request");
     let ww = wind.closest(".dataWindow");
@@ -298,12 +331,11 @@ function dbProcessQuery(wind, type) {
 }
 
 function cbQuery(res, par) {
-//console.log("RES="+res+"<< PAR="+JSON.stringify(par));
     let idPar = par.id;
     let item;
     if (idPar < 0) {
         let resD = JSON.parse(res);
-        item = {id_query:resD.id,name_query:par.name,descr_query:par.descr,type_query:par.type_query,param_query:par.param_query,fields_result:par.fields_result};
+        item = {id_query:resD.id_query,name_query:par.name,descr_query:par.descr,type_query:par.type_query,param_query:par.param_query,fields_result:par.fields_result};
         listQuerys.push(item);
         dbListQuerys();
     } else {

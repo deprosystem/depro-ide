@@ -21,37 +21,38 @@ function doServer(metod, url, callBack, data, paramCallBack, progress, cbError, 
                 } else {
                     callBack.cbDoServer(req.responseText, paramCallBack);
                 }
-/*
-                if (paramCallBack != null) {
-                    callBack(req.responseText, paramCallBack);
-                } else {
-                    callBack(req.responseText);
-                }
-*/
             } else {
                 let resEr = req.responseText;
 console.log("AJAX="+resEr);
-                if (resEr.indexOf("<!doctype") > -1 || resEr.indexOf("<html>") > -1) {
+                let begRes = "";
+                if (resEr.length > 9) {
+                    begRes = resEr.substring(0, 9).toLowerCase();
+                }
+                if (begRes == "<!doctype") {
                     let wwind = new formWind(700, 450, 50, 200, "Error", true, null, null, null, "");
                     wwind.innerHTML = resEr;
                 } else {
-                    let mes = JSON.parse(resEr).message;
-                    dialogError("Server error", "status=" + req.status + " " + mes);
+                    let errObj = JSON.parse(resEr);
+                    let mes = errObj.message;
+                    dialogError("Server error", "status=" + req.status + " " + mes, errObj.title);
                 }
                 if (cbError != null) {
-                    cbError(req.responseText, paramCallBack);
-                }
-//                alert("doServer status=" + req.status + " " + mes);
+                    if (cbError.cbErrorServer != null) {
+                        cbError.cbErrorServer(resEr, paramCallBack);
+                    } else {
+                        cbError(resEr, paramCallBack);
+                    }
+                } 
             }
         }
     };
-//    data=data||null;
     if (progress != null) {
         divProgress = windProgr(progress, txtProgress);
         document.body.append(divProgress);
     }
     req.send(data);
 }
+
 
 function downloadFile(urlToSend) {
     var req = new XMLHttpRequest();
@@ -88,7 +89,7 @@ function downloadFile(urlToSend) {
     req.send();
 }
 
-function doServerAlien(metod, url, callBack, data, paramCallBack, progress, cbError){
+function doServerAlien(metod, url, callBack, data, paramCallBack, progress, cbError, txtProgress){
     var req = initRequest();
     let divProgress;
     req.open(metod, url, true);
@@ -114,29 +115,31 @@ function doServerAlien(metod, url, callBack, data, paramCallBack, progress, cbEr
                 } else {
                     callBack.cbDoServer(req.responseText, paramCallBack);
                 }
-/*
-                if (paramCallBack != null) {
-                    if (callBack.cbDoServer == null) {
-                        callBack(req.responseText, paramCallBack);
-                    } else {
-                        callBack.cbDoServer(req.responseText, paramCallBack);
-                    }
-                } else {
-                    callBack(req.responseText);
-                }
-*/
             } else {
-console.log("AJAX="+req.responseText);
-                var mes = JSON.parse(req.responseText).message;
-                dialogError("Server error", "status=" + req.status + " " + mes);
-                if (cbError != null) {
-                    cbError(req.responseText);
+                let resEr = req.responseText;
+console.log("AJAX="+resEr);
+                let begRes = "";
+                if (resEr.length > 9) {
+                   begRes = resEr.substring(0, 9).toLowerCase();
                 }
-//                alert("doServer status=" + req.status + " " + mes);
+                if (begRes == "<!doctype") {
+                   let wwind = new formWind(700, 450, 50, 200, "Error", true, null, null, null, "");
+                   wwind.innerHTML = resEr;
+                } else {
+                   let errObj = JSON.parse(resEr);
+                   let mes = errObj.message;
+                   dialogError("Server error", "status=" + req.status + " " + mes, errObj.title);
+                }
+                if (cbError != null) {
+                    if (cbError.cbErrorServer != null) {
+                        cbError.cbErrorServer(resEr, paramCallBack);
+                    } else {
+                        cbError(resEr, paramCallBack);
+                    }
+                }
             }
         }
     };
-//    data=data||null;
     if (progress != null) {
         divProgress = windProgr(progress);
         document.body.append(divProgress);

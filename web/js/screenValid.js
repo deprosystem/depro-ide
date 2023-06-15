@@ -1,10 +1,10 @@
 var colorsEroor = ["#0000","#ffc700","#f00"];
 var heightScreen = 70;
-
+/*
 function screenValid() {
     
 }
-
+*/
 function oneScreenValid(scrD, scrV, generalCheck) {
     let newErrors = "";
     let newLevelErrors = 0;

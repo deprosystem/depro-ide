@@ -99,6 +99,9 @@
         <script src="js/uxComponents/uxIntro.js" ></script>
         <script src="js/uxComponents/uxEditGallery.js" ></script>
         
+        <script src="js/palette/colorCircle.js"></script>
+        <script src="js/palette/palette.js"></script>
+        
         <script src="js/scroll/scrollY.js"></script>
         <script src="js/scroll/ScrollItem.js"></script>
         <script src="js/scroll/resizeScrollItem.js"></script>
@@ -148,6 +151,8 @@
         <script src="js/backEnd/query.js" ></script>
         <script src="js/backEnd/dbQuery.js" ></script>
         <script src="js/backEnd/crud.js" ></script>
+        <script src="js/backEnd/choiceTableFields.js" ></script>
+        <script src="js/backEnd/choiceQueryFields.js" ></script>
         <script src="js/backEnd/descrDB.js" ></script>
         <script src="js/backEnd/fieldsFromSource.js" ></script>
         <script src="js/backEnd/metaDataBackEnd.js" ></script>
@@ -180,6 +185,10 @@
             
             <div onclick="setComponentsScr()" id="emulator" style="cursor: pointer;float: left;height: 100%;margin-left: 10px;">
                 <div id="emulator_inf" style="text-align: center;margin-top:12px;color:#ffffffcc;">Preview</div>
+            </div>
+            
+            <div id="palette" onclick="setPalette()" style="cursor: pointer;float: left;height: 100%;margin-left: 10px;">
+                <div id="emulator_inf" style="text-align: center;margin-top:12px;color:#ffffffcc;">Palette</div>
             </div>
             
             <div id="dataControll" style="float: left;height: 100%;margin-left: 30px;display: none">

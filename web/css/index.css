@@ -1,5 +1,5 @@
 
-:root {--h_header: 35px; --h_wind_qu: 400px; --w_wind_qu: 300px;
+:root {--h_header: 35px; --h_wind_qu: 400px; --w_wind_qu: 450px;
        --w_left: 300px; --w_right: 250px; --h_backEnd: 0; --r_data: 120px; --r_emulator: 210px;
        --left_compon:0px; --w_ux_p: 60%; --w_ux_r: 0px; 
        --c_line: #2c3336;--c_blue:#1dace9;--c_yelow:#ffc700;--c_content:#FfFBEF; --c_screen:#DAF0FA;--c_screen_hover:#d5f0ff;
@@ -181,8 +181,8 @@ li:hover ul {display: block;}
 
 .progress {position: absolute; display: none;margin-top: 50px;margin-left: 190px;width: 50px;height: 50px;-webkit-animation: infinite rotate-block 1s;-moz-animation: infinite rotate-block 1s;
         -o-animation: infinite rotate-block 1s;animation: infinite rotate-block 1s;}
-.progress_center {position: absolute;top: 50%;left: 50%;width: 50px;margin-left: -25px;margin-top: -25px;height: 50px;-webkit-animation: infinite rotate-block 1s;-moz-animation: infinite rotate-block 1s;
-        -o-animation: infinite rotate-block 1s;animation: infinite rotate-block 1s;}
+.progress_center {position: absolute;top: 50%;left: 50%;width: 50px;margin-left: -25px;margin-top: -25px;height: 50px;-webkit-animation: linear infinite rotate-block 1s;-moz-animation: infinite rotate-block 1s;
+        -o-animation: linear infinite rotate-block 1s;animation: linear infinite rotate-block 1s;}
 @-webkit-keyframes rotate-block {0%   {-webkit-transform: rotate(0deg);}100% {-webkit-transform: rotate(360deg);}}
 @-moz-keyframes rotate-block {0%   {-moz-transform: rotate(0deg);}100% {-moz-transform: rotate(360deg);}}
 @-o-keyframes rotate-block {0%   {-o-transform: rotate(0deg);}100% {-o-transform: rotate(360deg);}}
@@ -208,4 +208,4 @@ li:hover ul {display: block;}
 .colorErrorL2 {color:#f00}
 
 .tooltip {position: fixed;padding:4px;border: 1px solid #ffc700;border-radius:5px;text-align: center;background:var(--c_content);
-         box-shadow: 3px 3px 3px rgba(0, 0, 0, .3);z-index: 10}
+         box-shadow: 3px 3px 3px rgba(0, 0, 0, .3);z-index: 30}

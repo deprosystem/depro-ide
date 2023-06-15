@@ -1,5 +1,6 @@
 function initialView(AuthResult) {
     debagStatus = window.location.hostname.startsWith("deb-") || window.location.hostname.indexOf("localhost") != -1;
+
     eventFocusBlur();
     listTables = null;
     var ar = JSON.parse(AuthResult);

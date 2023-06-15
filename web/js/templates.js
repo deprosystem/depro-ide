@@ -10,6 +10,7 @@ var detailTemplate;
 
 function fromTemplates() {
     let wind = formWind(650, 400, 40, 200, "Template", null, null, "Choose", templateChoose, "");
+    setHelp(wind, "https://docs.google.com/document/d/1iYRvK_JAz67laVPot_pCEUa0sM9Jp3hSJZMMG4qmtxQ/edit#bookmark=id.76hk6wuhx5tt");
     doServer("POST", "project/templates", cbGetTemplates, null, wind, wind);
 
 }
@@ -17,7 +18,6 @@ function fromTemplates() {
 function cbGetTemplates(res, wind) {
     listTemplates = JSON.parse(res);
     let wList = 300;
-//console.log("RES="+res);
     let list = newDOMelement('<div style="position:absolute;top:0;left:0;bottom:0;width:' + wList + 'px;border-right:1px solid #1dace9;"></div>');
     wind.append(list);
     detailTemplate = newDOMelement('<div style="position:absolute;top:0;right:0;bottom:0;left:' + (wList + 1) + 'px;"></div>');
@@ -30,7 +30,7 @@ function cbGetTemplates(res, wind) {
     list.append(cont);
     let my = newDOMelement('<div style="height:100%;flex-grow:1;text-align:center"><div onclick="clickOwnerTemplates(this)" style="margin:4px;cursor:pointer">My</div></div>');
     let sys = newDOMelement('<div style="height:100%;flex-grow:1;text-align:center"><div onclick="clickOwnerTemplates(this)" style="margin:4px;cursor:pointer">System</div></div>');
-    let cast = newDOMelement('<div style="height:100%;flex-grow:1;text-align:center"><div onclick="clickOwnerTemplates(this)" style="margin:4px;cursor:pointer">Castom</div></div>');
+    let cast = newDOMelement('<div style="height:100%;flex-grow:1;text-align:center"><div onclick="clickOwnerTemplates(this)" style="margin:4px;cursor:pointer">Custom</div></div>');
     cont.append(my);
     cont.append(sys);
     cont.append(cast);

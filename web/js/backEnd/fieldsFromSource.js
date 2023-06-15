@@ -1,20 +1,28 @@
-function FieldsFromSource(model, ind, editC) {
+function FieldsFromSource(model, ind, editC, choiseSource) {
     this.model = model;
     this.ind = ind;
     this.editC = editC;
     this.wind;
+    this.choiseSource = choiseSource;
     this.idNewQuery = -1;
+    let typeEdit = "text,spinner,checkBox,seekBar,switch,radioBox,none";
     
-    let hTitle = 24, wFields = 220, hTitle1 = hTitle + 1;
+    let hTitle = 24, wFields = 280, hTitle1 = hTitle + 1;
     
     this.init = function() {
-        wind = formWind(440, 400, 40, 250, "Specify fields for view from query ", null, null, null, null, "");
+        this.choiseSource.cb = this;
+        wind = formWind(515, 450, 40, 250, "Specify fields for view from the " + this.choiseSource.source, null, null, null, null, "");
         wind.style.bottom = "51px";
         let wd = wind.closest(".dataWindow");
+        let editF = "";
+        if (this.editC) {
+            editF = '<div style="position:absolute;top:7px;left:215px;font-size:10px;width:42px;">Edit type</div>'
+        }
         let titleSt = '<div style="height:' + hTitle + 'px;border-bottom:1px solid #1dace9;font-size:14px;position:relative">'
                 +'<div style="width:' + wFields + 'px;text-align:center;margin-top:3px;float:left;">Fields view</div>'
+                +editF
                 +'<div style="height:100%;width:1px;background-color:#1dace9;float:left"></div>'
-                +'<div style="text-align:center;margin-top:3px;float:left;width:' + (wFields - 1) + 'px">Fields query</div>'
+                +'<div style="text-align:center;margin-top:3px;float:left;width:220px">Fields in data source</div>'
                 +'</div>';
         let controll = createFooter(50);
         addFooter(wind, controll);
@@ -22,7 +30,7 @@ function FieldsFromSource(model, ind, editC) {
         buttonSave.addEventListener("click", () => {this.saveFieldsSource();closeDataWindow(wind);}, true);
         controll.append(buttonSave);
         if (this.ind == 0) {
-            let buttonChang = createButtonBlue('Change query');
+            let buttonChang = createButtonBlue('Change data source');
             buttonChang.addEventListener("click", () => {this.changeQuery();}, true);
             controll.append(buttonChang);
         }
@@ -46,111 +54,39 @@ function FieldsFromSource(model, ind, editC) {
         this.fQueryPort = formViewScrolY(this.fQuery);
         this.fieldsQuery = this.fQueryPort.querySelector(".viewData");
         this.wind = wind;
-        this.hostDomain = currentProject.host;
-        if (listQuerys == null) {
-            doServerAlien("GET", this.hostDomain + 'query/list', this, null, null, wind);
-        } else {
-            this.setFieldsSource();
+        if (this.model.idQuery == -1) {
+            this.model.idQuery = null;
         }
-    }
-    
-    this.cbDoServer = function(res) {
-        listQuerys = JSON.parse(res);
-        this.setFieldsSource();
-    }
-    
-    this.setFieldsSource = function() {
         if (this.model.idQuery != null) {
-            let item = this.getQueryById();
+            this.idNewQuery = this.model.idQuery;
+            let item = this.choiseSource.getSourceById(this.model.idQuery);
             if (item != null) {
                 this.setFieldsSource_1(item);
             }
         }
     }
-    
-    this.getQueryById = function() {
-        this.idNewQuery = this.model.idQuery;
-        let ik = listQuerys.length;
-        for (let i = 0; i < ik; i++) {
-            let item = listQuerys[i];
-            if (item.id_query == this.model.idQuery) {
-                return item;
-            }
-        }
-        return null;
-    }
-    
-    this.changeQuery = function() {
-        listQuerys.sort(function(a, b){
-            let nameA=a.name_query.toLowerCase(), nameB=b.name_query.toLowerCase();
-            if (nameA < nameB) return -1;
-            if (nameA > nameB) return 1;
-            return 0;
-        });
 
-        let wind = formWind(300, 400, 40, 250, "Choose a request", true, null, null, null, "");
-        let ik = listQuerys.length;
-        if (ik > 0) {
-            for (let i = 0; i < ik; i++) {
-                this.oneQueryView(i, wind, i);
-            }
-            let scr = wind.closest('.viewport');
-            scr.scroll_y.resize();
-        }
+    this.changeQuery = function() {
+        this.choiseSource.choiceSource();
     }
-    
-    this.oneQueryView = function(i, el) {
-        let item = listQuerys[i];
-        let img = "";
-        switch (item.type_query) {
-            case "SELECT":
-                img = "select-tab";
-                break;
-            case "DELETE":
-                img = "del-tab";
-                break;
-            case "INSERT":
-                img = "add-tab";
-                break;
-            case "UPDATE":
-                img = "edit-tab";
-                break;
-        }
-        let descr = item.descr_query;
-        if (descr == null) {
-            descr = "";
-        }
-        let oneDiv = '<div  style="float:left;width:100%;height:36px;cursor:pointer;border-bottom:1px solid #aaf;clear:both;position:relative">'
-                        +'<img src="img/' + img + '.png" style="width:24px;height:24px;position:absolute;top:3px;left:3px;">'
-                        +'<div class="name_t" style="font-size:14px;color:#000;position:absolute;top:1px;left:30px">' + item.name_query + '</div>'
-                        +'<div class="descr_t" style="font-size:10px;color:#555;position:absolute;top:17px;left:30px;right:0;height:14px;overflow:hidden">' + descr + '</div>'
-                    +'</div>';
-        let cont = newDOMelement(oneDiv);
-        cont.addEventListener("click", () => {this.setFieldsSource_2(i, el);}, true);
-        el.appendChild(cont);
-    }
-    
-    this.setFieldsSource_2 = function(i, el) {
-        closeDataWindow(el);
-        let item = listQuerys[i];
-        if (item.id_query == this.idNewQuery) {
-            return;
-        }
-        this.idNewQuery = item.id_query;
-        this.setFieldsSource_1(item);
-    }
-    
+
     this.setFieldsSource_1 = function(item) {
+        if (item.id != null) {
+            this.idNewQuery = item.id;
+        }
+//console.log("ITEM="+JSON.stringify(item));
+        this.paramQuery = item.param;
         this.selFieldAll.src = "img/check-act.png";
         this.fieldsQuery.innerHTML = "";
         this.fieldsView.innerHTML = "";
-        setTitleWind(this.wind, "Specify fields for view from query <span style='color:#009fff;font-size:22px'>" + item.name_query + "</span>");
+        setTitleWind(this.wind, "Specify fields for view from the " + this.choiseSource.source + " <span style='color:#009fff;font-size:22px'>" + item.name + "</span>");
 
-        let fildsQu = JSON.parse(item.fields_result);
+        let fildsQu = JSON.parse(item.fields);
         let ik = fildsQu.length;
         for (let i = 0; i < ik; i++) {
             let it = fildsQu[i];
-            let cont = newDOMelement('<div class="cont_f" style="float:left;width:100%;position:relative;height:24px;border-bottom:1px solid #aaf;clear:both"></div>');
+//console.log("setFieldsSource_1 it.name="+it.name+"<<");
+            let cont = newDOMelement('<div class="cont_f" style="float:left;width:100%;position:relative;height:28px;border-bottom:1px solid #aaf;clear:both"></div>');
             let name = newDOMelement('<div style="margin-top:2px;float:left;margin-left:4px;font-size:14px">' + it.name + ' </div>');
             cont.idField = it.id_field;
             cont.name_field = it.name;
@@ -163,7 +99,7 @@ function FieldsFromSource(model, ind, editC) {
             let descr = newDOMelement('<div style="font-size:10px;color:#555;margin-top:7px;height:11px;width:' + (rect.width - rect_1.width - 20) 
                     + 'px;float:left;margin-left:5px;overflow:hidden">' + it.title);
             cont.append(descr);
-            let selField = newDOMelement('<img style="width:14px;cursor:pointer;height:14px;position:absolute;right:2px;top:4px;" src="img/check-act.png">');
+            let selField = newDOMelement('<img style="width:14px;cursor:pointer;height:14px;position:absolute;right:4px;top:4px;" src="img/check-act.png">');
             cont.append(selField);
             selField.addEventListener("click", () => {this.selFieldInQu(selField);}, true);
         }
@@ -184,7 +120,7 @@ function FieldsFromSource(model, ind, editC) {
                 if (nam == it.name_field) {
                     let img = it.querySelector("img");
                     img.src = "img/check-sel_1.png";
-                    this.addFieldsInQuery(img, item.edit);
+                    this.addFieldsInQuery(it, item.edit);
                     break;
                 }
             }
@@ -223,7 +159,7 @@ function FieldsFromSource(model, ind, editC) {
     }
     
     this.oneFieldView = function(item, ed) {
-        let cont = newDOMelement('<div class="field" style="float:left;width:100%;position:relative;height:24px;overflow: hidden;border-bottom:1px solid #aaf;clear:both"></div>');
+        let cont = newDOMelement('<div class="field" style="float:left;width:100%;position:relative;height:28px;overflow: hidden;border-bottom:1px solid #aaf;clear:both"></div>');
         cont.idField = item.idField;
         cont.name_field = item.name_field;
         cont.type_field = item.type_field;
@@ -236,6 +172,21 @@ function FieldsFromSource(model, ind, editC) {
         let descr = newDOMelement('<div style="font-size:10px;color:#555;margin-top:6px;height:11px;width:' + (rect.width - rect_1.width - 20) 
                 + 'px;float:left;margin-left:5px;overflow:hidden">' + item.title_field);
         cont.appendChild(descr);
+        
+        if (this.editC) {
+            let vv = "";
+            if (ed != null) {
+                vv = ed;
+            }
+            if (item.type_field == "Img" || item.type_field == "Gallery") {
+                vv = "none";
+            }
+            let selType = formSelectForEditData(typeEdit, vv);
+            selType.className = "sel select_" + browser;
+            selType.style.cssText = "width:80px;font-size:12px;color:#110000;position:absolute;right:3px;";
+            cont.append(selType);
+        }
+/*
         if (this.editC) {
             let imgSrc = "img/check-act.png";
             if (ed) {
@@ -245,6 +196,7 @@ function FieldsFromSource(model, ind, editC) {
             selField.addEventListener("click", function(){checkElement(selField)}, false);
             cont.append(selField);
         }
+*/
     }
     
     this.setViewAllImg = function() {
@@ -285,11 +237,13 @@ function FieldsFromSource(model, ind, editC) {
         for (let i = 0; i < ik; i++) {
             let itemEl = child[i];
             let sel = itemEl.querySelector("img");
+//            this.addFieldsInQuery(sel);
+
             if (sel.src.indexOf("check-sel") == -1) {
                 this.addFieldsInQuery(sel);
-//                addFieldsInQuery(sel);
                 sel.src = "img/check-sel_1.png";
             }
+
         }
     }
     
@@ -307,31 +261,25 @@ function FieldsFromSource(model, ind, editC) {
     }
     
     this.saveFieldsSource = function() {
-        if (this.ind ==0 && this.idNewQuery != this.model.idQuery) {
+        if (this.ind == 0 && this.idNewQuery != this.model.idQuery) {
             this.model.idQuery = this.idNewQuery;
             this.model.url = "query/" + currentProject.resurseInd + "/" + this.idNewQuery;
-            let ik = model.data.length;
+            let ik = this.model.data.length;
             for (let i = 1; i < ik; i++) {
-                model.data[i].length = 0;
+                this.model.data[i].length = 0;
             }
         }
-        
-        
+        this.model.param = this.paramQuery;
+//console.log("this.model.param="+this.model.param+"<<");
         let fieldsQQ = this.fieldsView.children;
         ik = fieldsQQ.length;
-        let data = model.data[this.ind];
+        let data = this.model.data[this.ind];
         data.length = 0;
         for (let i = 0; i < ik; i++) {
             let item = fieldsQQ[i];
-            if (item.type_field.indexOf("erial") == -1) {
-                let imgCheck = item.querySelector("IMG");
-                let ed = false;
-                if (imgCheck != null && imgCheck.src.indexOf("check-sel") > -1) {
-                    ed = true;
-                }
-                let itemData = {name:item.name_field,type:item.type_field,edit:ed};
-                data.push(itemData);
-            }
+            let itemData = {name:item.name_field,type:item.type_field};
+//console.log("saveFieldsSource itemData="+JSON.stringify(itemData));
+            data.push(itemData);
         }
     }
     

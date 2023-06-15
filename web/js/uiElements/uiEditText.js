@@ -1,5 +1,5 @@
 function uiEditText() {
-    let inputTypeEd = "text,textCapCharacters,textCapWords,textCapSentences,textAutoCorrect,textAuto,Complete,textMultiLine,textImeMultiLine,textNoSuggestions,textUri,textEmailAddress,textEmailSubject,textShortMessage,textLongMessage,textPersonName,textPostalAddress,textPassword,textVisiblePassword,textWebEditText,textFilter,textPhonetic,number,numberSigned,numberDecimal,phone,datetime,date,time";
+    let inputTypeEd = "text,textCapCharacters,textCapWords,textCapSentences,textMultiLine,textImeMultiLine,textNoSuggestions,textUri,textEmailAddress,textEmailSubject,textShortMessage,textLongMessage,textPersonName,textPostalAddress,textPassword,textVisiblePassword,textWebEditText,textFilter,textPhonetic,number,numberSigned,numberDecimal,phone,datetime,date,time";
     let uiParamView = 
         '<div id="uiParamTextView" style="float:left;width:100%;">'
             +'<div class="text_style_ui" style="float: left;">Value</div>'
@@ -46,7 +46,7 @@ function uiEditText() {
         +'</div>';
 
     let meta= [
-        {name: "st_2", title:"inputType",len:150,type:"MultiCheck",value:inputTypeEd,br:true},
+        {name: "st_2", title:"inputType",len:200,type:"MultiCheck",value:inputTypeEd,br:true},
         {name: "st_3", title:"imeOptions",type:"Select",value:"actionNext,actionDone,none"},
         
         {type:"Line"},
@@ -61,8 +61,10 @@ function uiEditText() {
         {name: "st_8", title:"maxValue",type:"Text",len:40,valid:"float"},
         {name: "bool_5", title:"Password",type:"Check",br:true},
         {name: "st_9", title:"Rule",type:"Text",len:40,valid:"password",clazz:"pass_attr"},
-        {name: "st_10", title:"Show",len:80,type:"SelectId",clazz:"pass_attr",br:true},
-        {name: "st_11", title:"Hide",len:80,type:"SelectId",clazz:"pass_attr"},
+//        {name: "st_10", title:"Show",len:80,type:"SelectId",clazz:"pass_attr",br:true},
+//        {name: "st_11", title:"Hide",len:80,type:"SelectId",clazz:"pass_attr"},
+        {name: "st_10", title:"Show",len:80,type:"Img",clazz:"pass_attr",br:true},
+        {name: "st_11", title:"Hide",len:80,type:"Img"},
         {name: "st_12", title:"Equals",len:80,type:"SelectId",tags:"EditText",clazz:"pass_attr"}
     ]
 
@@ -89,6 +91,9 @@ function uiEditText() {
             txHint.value = p.componParam.st_1;
         } else {
             txHint.value = "";
+        }
+        if (p.componParam.st_2 == null || p.componParam.st_2.length == 0) {
+            p.componParam.st_2 = "text";
         }
         if (p.formResourse != null) {
             let cfr = contentAttributes.getElementsByClassName("check_form_res")[0];

@@ -436,7 +436,6 @@ function viewComponElem(el) {
             }
         }
     }
-
     if (p.gravLayout.v == null || p.gravLayout.v == "" || p.gravLayout.v == NONE) {
         if (p.below != null && p.below != "") {
             let below = -1;
@@ -622,7 +621,6 @@ function viewComponElem(el) {
             break;
     }
 
-//    el.style.id = p.id;
     if (p.type != "SeekBar") {
         setBackgoundEl(el, p);
     }

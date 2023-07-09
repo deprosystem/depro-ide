@@ -403,7 +403,7 @@ function EditData(meta, data, domEl, obrSave, dopEl, move_1) {
                 if (isSyst && item.system.indexOf(',' + met.name + ',') == -1) {
                     readOnl = "disabled = 'disabled'";
                 }
-                inp = newDOMelement('<input type="text" name="' + met.name + '" size="' + met.len + '" style="margin-left:3px;margin-right:3px;border:none"' + readOnl +  '>');
+                inp = newDOMelement('<input type="text" name="' + met.name + '" size="' + met.len + '" style="margin-left:3px;margin-right:3px;outline:none;border:none"' + readOnl +  '>');
                 if (item != null) {
                     let nameV = met.name;
                     let vv = item[nameV];

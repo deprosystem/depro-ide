@@ -9,6 +9,7 @@ import entity.Profile;
 import entity.TokenUser;
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,6 +37,17 @@ public class Auth extends BaseServlet {
                 if (user == null || ! user.password.equals(userC.password)) {
                     sendError(response, ERR.NO_USER);
                 } else {
+                    if (user.codeConfirm != 0) {
+                        if (user.codeConfirm != userC.codeConfirm) {
+                            sendError(response, ERR.CODE_ERR);
+                        } else {
+                            if (user.tymeActualCode < new Date().getTime()) {
+                                sendError(response, ERR.CODE_NOACTUAL);
+                            } else {
+                                userDB.setCodeConfirm(user);
+                            }
+                        }
+                    }
                     count = 0;
                     do {
                         ds.token = createRandomStr(30);
@@ -54,6 +66,8 @@ public class Auth extends BaseServlet {
                     AuthResult ar = new AuthResult();
                     ar.token = ds.token;
                     user.password = null;
+                    user.codeConfirm = 0;
+                    user.tymeActualCode = 0;
                     ar.profile = user;
                     ProjectDB projectDb = new ProjectDB(request);
                     if (user.projectId > -1) {
@@ -74,6 +88,8 @@ public class Auth extends BaseServlet {
                 user = userDB.getUser(userC.login);
                 if (user == null) {
                     userC.resurseInd = createRandomStr(20);
+                    userC.codeConfirm = getRandomInt(1000, 10000);
+                    userC.tymeActualCode = new Date().getTime() + 600000;
                     long id = -1;
                     id = userDB.createUserId(userC);
                     if (id > -1) {
@@ -87,14 +103,18 @@ public class Auth extends BaseServlet {
                             sendError(response, ERR.NO_USER);
                             break;
                         }
+                        WorkEmail we = new WorkEmail();
+                        we.send(userC);
                         AuthResult ar = new AuthResult();
                         ar.token = ds.token;
                         userC.password = null;
+                        userC.codeConfirm = 0;
                         ar.profile = userC;
                         sendResult(response, gson.toJson(ar));
                     } else {
                         sendError(response, ERR.USER_DB_ERR);
                     }
+
                 } else {
                     sendError(response, ERR.USER_EXISTS);
                 }

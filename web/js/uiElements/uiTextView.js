@@ -14,7 +14,7 @@ function uiTextView() {
                     +'<div style="font-size:10px;color:#2228">Format</div>'
                     +'<select class="select_format type_screen select_' + browser 
                     +'" onchange="changeFormatTV(this)" style="width:88px;font-size:12px;color:#110000;"><option>no</option><option>dd.MM.yy</option>'
-                    +'<option>dd.MMM.yy</option><option>dd.MMM.yy</option><option>yy.MM.dd</option><option>12 345</option><option>12 345.67</option><option>12 345.678</option></select>'
+                    +'<option>d.M.yy</option><option>dd.MMM.yy</option><option>yy.MM.dd</option><option>12 345</option><option>12 345.67</option><option>12 345.678</option></select>'
                 +'</div>'
             +'</div>'
             +'<div style="margin-top: 5px;float: left;clear:both">'

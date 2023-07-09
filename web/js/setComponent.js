@@ -554,6 +554,7 @@ function viewComponElem(el) {
             break;
         case "ImageView":
             contentEl = el.getElementsByClassName("image")[0];
+//console.log("contentEl width="+contentEl.style.width+"<< class="+contentEl.className+"<<");
             imgEl = el.getElementsByTagName("img")[0];
             if (imgEl == null) {
                 let p_src = p.src;
@@ -576,8 +577,8 @@ function viewComponElem(el) {
                             + (parseInt(pc.bl) * MEASURE) + "px";
                     imgEl.style.borderRadius = stR;
                 } else {
-                    contentEl.style.width = "";
-                    contentEl.style.height = "";
+//                    contentEl.style.width = "";
+//                    contentEl.style.height = "";
                     if (pLL > 0) {
                         contentEl.style.marginLeft = pLL + px;
                     }
@@ -592,6 +593,7 @@ function viewComponElem(el) {
                     }
                 }
             }
+//console.log("11111 contentEl width="+contentEl.style.width+"<< class="+contentEl.className+"<<");
             if (p.componParam != null && p.componParam.borderColor != null && p.componParam.w_bord != null) {
                 imgEl.style.border = p.componParam.w_bord + "px solid " + findColorByIndex(p.componParam.borderColor);
             } else {
@@ -911,6 +913,7 @@ function relativeL(el, p, pLL, pTT, pRR, pBB, margR) {
             var elDivImg = el.getElementsByClassName('image')[0];
             if (elDivImg == null) {
                 elDivImg = createDivImg();
+console.log("elDivImg width="+elDivImg.style.width+"<< class="+elDivImg.className+"<<");
                 el.appendChild(elDivImg);
             }
             elDivImg.innerHTML = '<IMG SRC="'+ p.src +'" style="width:100%;height:100%;pointer-events: none;">';

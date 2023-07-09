@@ -1,4 +1,6 @@
 function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
+// after = true - Вызвана из EditForm применяется когда при заполнении полей какому нибудь полю нужно также выполнить EditForm, например в навигаторе
+    
     if (meta == null || domEl == null || data == null) {
         return null;
     };
@@ -63,6 +65,117 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
         }
     }
     
+    this.getView = function(name) {
+        let ch = this.edDomEl.children;
+        let ik = ch.length;
+        for (let i = 0; i < ik; i++) {
+            let item = ch[i];
+            if (item.nameField == name) {
+                return item;
+            }
+        }
+        return null;
+    }
+    
+    this.isValid = function() {
+        let ik = this.edMeta.length;
+        let arrValid;
+        let valid;
+        let nameVal;
+        for (let i = 0; i < ik; i++) {
+            let met = this.edMeta[i];
+            if (met.validSend != null && met.validSend.length > 0) {
+                arrValid = met.validSend.split(" ");
+                let jk = arrValid.length; 
+                for (let j = 0; j < jk; j++) {
+                    nameVal = arrValid[j].split("=");
+                    let res = this.isOneValid(nameVal[0], nameVal[1], met);
+                    if (res.length > 0) {
+                        return res;
+                    }
+                }
+            }
+        }
+        return "";
+    }
+    
+    this.isOneValid = function(nameV, valueV, met) {
+        let valueField = this.edData[met.name];
+        let intV;
+        let ik;
+        switch (nameV) {
+            case "notEmpty":
+                if (valueField == null || valueField.length == 0) {
+                    return "Field " + met.title + " must be filled";
+                }
+                break;
+            case "minLen":
+                intV = parseInt(valueV);
+                if (valueField == null || valueField.length < intV) {
+                    return "Field " + met.title + " must have at least " + intV + " characters";
+                }
+                break;
+            case "len":
+                intV = parseInt(valueV);
+                if (valueField == null || valueField.length != intV) {
+                    return "Field " + met.title + " must contain " + intV + " characters";
+                }
+                break;
+            case "pass":
+                ik = valueV.length;
+                for (let i = 0; i < ik; i++) {
+                    let c = valueV.charAt(i);
+                    switch (c) {
+                        case 'a':
+                            if ( ! this.inDiapason(valueField, 97, 122)) {
+                                return "Field " + met.title + " must contain at least one small letter";
+                            }
+                        case 'A':
+                            if ( ! this.inDiapason(valueField, 65, 90)) {
+                                return "Field " + met.title + " must contain at least one capital letter";
+                            }
+                        case '0':
+                            if ( ! this.inDiapason(valueField, 48, 57)) {
+                                return "Field " + met.title + " must contain at least one number";
+                            }
+                        case '@':
+                            if ( ! this.inDiapason(valueField, 32, 47)) {
+                                return "Field " + met.title + " must contain at least one special character";
+                            }
+                    }
+                    
+                }
+                break;
+            case "email":
+                let reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+                if ( ! reg.test(valueField)) {
+                   return "Field " + met.title + " incorrect email";
+                }
+                break;
+            case "number":
+                ik = valueField.length;
+                for (let i = 0; i <ik; i++) {
+                    let c = valueField[i];
+                    if ( c < "0" || c > "9") {
+                        return "Field " + met.title + " must contain only numbers";
+                    }
+                }
+                break;
+        }
+        return ""
+    }
+    
+    this.inDiapason = function(st, min, max) {
+        let ik = st.length;
+        for (let i = 0; i <ik; i++) {
+            let c = st.charCodeAt(i);
+            if ( c >= min && c <= max) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     this.oneField = function(i) {
         let met = this.edMeta[i];
         let br = "";
@@ -93,6 +206,8 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
         }
         switch (met.type) {
             case "Text":
+            case "Password":
+            case "Email":
                 let ww;
                 if (met.len == -1) {
                     ww = "100%;box-sizing: border-box";
@@ -100,7 +215,12 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
                 } else {
                     ww = met.len + "px";
                 }
-                inp = newDOMelement('<input class="input_style" style="width:' + ww+ ';" value="' + vv + '"/>');
+                let type_inp = met.type.toLowerCase();
+                let autoCompl = "";
+                if (met.type == "Password") {
+                    autoCompl = ' autocomplete="new-password" ';
+                }
+                inp = newDOMelement('<input class="input_style" type=' + type_inp + autoCompl + ' style="width:' + ww+ ';" value="' + vv + '"/>');
                 inp.nameField = met.name;
                 inp.addEventListener('keydown', () => {this.clickText(event, met.valid)}, false);
                 inp.addEventListener('keyup', () => {this.clickTextUp(event)}, false);
@@ -309,6 +429,7 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
                 res.append(inp);
                 break;
         }
+        res.nameField = met.name;
         return res;
     }
     
@@ -533,8 +654,8 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
     
     this.clickText = function(event, valid) {
         let k = event.key;
-        if (k == "ArrowRight" || k == "ArrowLeft" || k == "Tab" 
-            || k == "Home" || k == "End" || k == "Backspace" || k == "Delete") {
+        if (k == "ArrowRight" || k == "ArrowLeft" || k == "Tab" || k == "ShiftKey" || k == "Insert"
+            || k == "Home" || k == "End" || k == "Backspace" || k == "Delete" || k == "Shift") {
             return true;
         }
         let targ;
@@ -589,8 +710,8 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
                     }
                     break;
                 case "number":
-                    kC = event.keyCode;
-                    if (kC < 48 || kC > 57) {
+                    kUp = event.key;
+                    if (kUp < "0" || kUp > "9") {
                         event.preventDefault();
                         tooltipMessage(event.currentTarget, "Only numbers");
                     }
@@ -615,14 +736,16 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
                         return true;
                     } else {
                         event.preventDefault();
-                        tooltipMessage(event.target, "Only numbers");
+                        tooltipMessage(event.target, "Only numbers, sign and dot");
                         return false;
                     }
                     break;
                 case "password":
-                    if ("aA0@".indexOf(k) == -1) {
+                    kUp = event.key.toUpperCase();
+                    targ = event.target;
+                    if ( ! ((kUp >= "A" && kUp <= "Z") || (kUp >= " " && kUp <= "/") || (kUp >= "0" && kUp <= "9")))  {
                         event.preventDefault();
-                        tooltipMessage(event.currentTarget, "Only a A 0 @");
+                        tooltipMessage(targ, "Only english letters, numbers and special character");
                     }
                     break;
             }

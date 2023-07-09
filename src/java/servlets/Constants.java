@@ -72,5 +72,15 @@ public class Constants {
         "androidx.viewpager.widget.ViewPager",                      // 25    INTRO
         "com.dpcsa.compon.custom_components.SwipeLayout",            // 26 
     };
-
+    
+    public static String textMail = "<!DOCTYPE html><html><head><title>TODO supply a title</title><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" 
+            + "</head><body>"
+            +"<div style='width:500px;font-size:14px;text-align:center'>"
+            +"<img width='50' height='50' src='https://ide.dp-ide.com/img/logo_blue.png' style='display:inline-block'>"
+            +"<div>Helo ";
+    public static String textMail_1 = "!</div><div>Confirmation code to enter the site DePro</div>"
+            +"<div style='width:300px;height:80px;background-color:#e0f0ff;margin-top:24px;display:inline-block;text-align:center;'>" 
+            + "<div style='font-size:28px;margin-top:5px;'>";
+    public static String textMail_2 = "</div><div style='margin-top:5px;color:red'>Your code will expire after 10 minutes</div></div></div></body></html>";
 }
+

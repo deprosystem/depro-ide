@@ -26,6 +26,9 @@ public class UserDB extends BaseDB{
                 user.password = res.getString("password");
                 user.userName = res.getString("user_name");
                 user.login = res.getString("login");
+                user.codeConfirm = res.getInt("code_confirm");
+                user.tymeActualCode = res.getLong("tyme_actual");
+                user.email = res.getString("email");
                 user.resurseInd = res.getString("resurse_ind");
             }
         } catch (SQLException | ClassNotFoundException ex) {
@@ -36,9 +39,11 @@ public class UserDB extends BaseDB{
     
     public long createUserId(Profile user) {
         long res = -1;
+        String str = "";
         try (Connection connection = getDBConnection(); Statement statement = connection.createStatement()) {
-            String str = "INSERT INTO users (login, user_name, password, resurse_ind, project_id, screen_id) VALUES ('"
-                    + user.login + "','" + user.userName + "','" + user.password + "','" + user.resurseInd + "',-1,-1);";
+            str = "INSERT INTO users (login, user_name, password, resurse_ind, code_confirm, tyme_actual, email, project_id, screen_id) VALUES ('"
+                    + user.login + "','" + user.userName + "','" + user.password + "','" + user.resurseInd + "'," + user.codeConfirm  
+                    + "," + user.tymeActualCode + ",'" + user.email + "',-1,-1);";
             int updateCount = statement.executeUpdate(str, Statement.RETURN_GENERATED_KEYS);
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
               if (generatedKeys.next()) {
@@ -49,9 +54,20 @@ public class UserDB extends BaseDB{
               }
             }
         } catch (SQLException | ClassNotFoundException ex) {
+            System.out.println("createUserId SQL="+str);
             System.out.println("createUserId error="+ex);
         }
         return res;
+    }
+    
+    public void setCodeConfirm(Profile user) {
+        long tt = new Date().getTime();
+        String strUpd = "UPDATE users SET code_confirm=0 WHERE login = " + user.login;
+        try (Connection connection = getDBConnection(); Statement statement = connection.createStatement()) {
+            statement.executeUpdate(strUpd);
+        } catch (SQLException | ClassNotFoundException ex) {
+            System.out.println("changeProject error="+ex);
+        }
     }
     
     public int setToken(String token, long userId, String resurseInd) {

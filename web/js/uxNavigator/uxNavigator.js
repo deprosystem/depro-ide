@@ -21,7 +21,7 @@ function saveNavigator(dat) {
             let scr = item.param;
             if (scr != null && scr != "") {
                 if (noScreen(scr)) {
-                    createScreen(false, scr, "", 0);
+                    createScreen(false, scr, "", currentScreen.typeScreen);
                 }
             }
         }

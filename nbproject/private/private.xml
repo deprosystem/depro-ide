@@ -3,14 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Yurii/Documents/NetBeansProjects/DeProIDE/web/js/emulator/setDataToView.js</file>
-            <file>file:/C:/Users/Yurii/Documents/NetBeansProjects/DeProIDE/web/js/emulator/workEmulator.js</file>
+            <file>file:/C:/Users/Yurii/Documents/NetBeansProjects/DeProIDE/src/java/db/UserDB.java</file>
+            <file>file:/C:/Users/Yurii/Documents/NetBeansProjects/DeProIDE/src/java/servlets/Users.java</file>
+            <file>file:/C:/Users/Yurii/Documents/NetBeansProjects/DeProIDE/src/java/db/ProjectDB.java</file>
             <file>file:/C:/Users/Yurii/Documents/NetBeansProjects/DeProIDE/src/java/servlets/ExportResult.java</file>
-            <file>file:/C:/Users/Yurii/Documents/NetBeansProjects/DeProIDE/web/js/emulator/emList.js</file>
-            <file>file:/C:/Users/Yurii/Documents/NetBeansProjects/DeProIDE/web/js/emulator/setComponentsScr.js</file>
-            <file>file:/C:/Users/Yurii/Documents/NetBeansProjects/DeProIDE/web/js/emulator/emModel.js</file>
-            <file>file:/C:/Users/Yurii/Documents/NetBeansProjects/DeProIDE/web/js/tools/date.js</file>
-            <file>file:/C:/Users/Yurii/Documents/NetBeansProjects/DeProIDE/web/js/tools/showList.js</file>
+            <file>file:/C:/Users/Yurii/Documents/NetBeansProjects/DeProIDE/web/js/admin/AdminUsers.js</file>
+            <file>file:/C:/Users/Yurii/Documents/NetBeansProjects/DeProIDE/web/js/admin/AdminProjects.js</file>
+            <file>file:/C:/Users/Yurii/Documents/NetBeansProjects/DeProIDE/web/admin_asdf.html</file>
         </group>
     </open-files>
 </project-private>

@@ -30,6 +30,7 @@ function posSlash(st) {
 }
 
 function getCommander() {
+    commanderPanel.style.display = "block";
     currentProject = null;
     doServer("GET", "commander/list", cbCommander);
 }

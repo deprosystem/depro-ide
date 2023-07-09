@@ -7,5 +7,7 @@ public class Profile {
     public String userName;
     public long projectId;
     public String resurseInd;
-    public long screenId;
+    public long screenId, tymeActualCode;
+    public int codeConfirm;
+    public String email;
 }

@@ -16,7 +16,6 @@ function setDataToView(rec, p, cDescr) {
                         let offset = new Date().getTimezoneOffset() * 60000;
 //                        Date dd = new Date(value + offset);
                         if (typeof value === "number") {
-console.log("111 value="+value+" offset="+offset);
                             p.text = dateFormatV(value + offset, form);
                         } else {
                             p.text = value;
@@ -54,20 +53,49 @@ console.log("111 value="+value+" offset="+offset);
         }
     }
 }
-
+/*
 function dateFormatV(val, format) {
-    let dd = new Date(val);
-console.log("VAL="+val+" format="+format+"<<");
-//    let d = dd.getDate();
-    let d = add0("" + dd.getDate())
-    let m = add0("" + (dd.getMonth() + 1));
-    let y = "" + dd.getFullYear();
+    let inp = newDOMelement('<input type="date"/>');
+    inp.valueAsNumber = val;
+    let ar = inp.value.split("-");
+    let d = ar[2];
+    let m = ar[1];
+    let y = ar[0];
     let stDat = format;
-    
-    
+    if (format.indexOf("yyyy") > -1) {
+        stDat = stDat.replace("yyyy", y);
+    } else {
+        if (format.indexOf("yy") > -1) {
+            let y2 = y.substring(2, 4);
+            stDat = stDat.replace("yy", y2);
+        }
+    }
+    if (format.indexOf("dd") > -1) {
+        stDat = stDat.replace("dd", d);
+    } else {
+        if (format.indexOf("d") > -1) {
+            let d1 = d;
+            if (d1.indexOf("0") == 0) {
+                d1 = d1.replace("0","");
+            }
+            stDat = stDat.replace("d", d1);
+        }
+    }
+    if (format.indexOf("MM") > -1) {
+        stDat = stDat.replace("MM", m);
+    } else {
+        if (format.indexOf("M") > -1) {
+            let m1 = m;
+            if (m1.indexOf("0") == 0) {
+                m1 = m1.replace("0","");
+            }
+            stDat = stDat.replace("M", m1);
+        }
+    }
+    return stDat;
 //    return dd.toString(format);
 }
-
+*/
 function restoreView(p) {
     let id = p.viewId;
     if (p.emId != null && p.emId != "") {

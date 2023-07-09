@@ -13,7 +13,11 @@ function myAlert(txt, cbTxt, cbFunc, param) {
     if (cbTxt != null) {
         let btnBl = createButtonBlue(cbTxt, 80);
         btnBl.style.marginTop = "20px";
-        btnBl.addEventListener("click", function(){cautionBlockAll.remove();cbFunc(param);}, false);
+        if (cbFunc.cbForAlert == null) {
+            btnBl.addEventListener("click", function(){cautionBlockAll.remove();cbFunc(param);}, false);
+        } else {
+            btnBl.addEventListener("click", function(){cautionBlockAll.remove();cbFunc.cbForAlert(param);}, false);
+        }
         caution.appendChild(btnBl);
     }
     let btnWeite = createButtonWeite("Cancel", 80);

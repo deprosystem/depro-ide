@@ -216,6 +216,7 @@ function formTxt(item) {
                 p.type = "EditText";
                 p.typeFull = {name: 'EditText', typeBlock: 0};
                 p.textSize = 18;
+                p.textColor = 12;
                 p.componParam.bool_1 = true;
                 p.componParam.st_3 = "actionNext";
                 typeEl = createDivEditText(currentElement);
@@ -233,7 +234,13 @@ function formTxt(item) {
     } else {
         p.type = "TextView";
         p.typeFull = {name: 'TextView', typeBlock: 0};
-        p.textSize = 16;
+        if (item.name == "title") {
+            p.textSize = 22;
+            p.textColor = 13;
+        } else {
+            p.textSize = 16;
+            p.textColor = 12;
+        }
         typeEl = createDivText();
     }
     if (p != null) {
@@ -245,7 +252,6 @@ function formTxt(item) {
         p.text = item.name;
         p.viewId = item.name;
         p.letterSpac = '0.0';
-        p.textColor = 12;
         p.rightMarg = 12;
     }
     currentElement.appendChild(typeEl);

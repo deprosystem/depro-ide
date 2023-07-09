@@ -234,7 +234,6 @@ public class Project extends BaseServlet {
                     }
                     if (par != null) {
                         String basePath = ds.patchOutsideProject;
-//                        String userProjPath = Constants.USERS_DATA + ds.userResurseInd + "/" + par.nameProject;
                         String projectPath = Constants.PROJECTS_DATA + par.schema;
                         deleteDir(basePath + projectPath);
                         projectDb.deleteProjectId(par.projectId);
@@ -255,7 +254,6 @@ public class Project extends BaseServlet {
                         sendError(response, "delete project error " + e.toString());
                         break;
                     }
-//                    projectId = request.getHeader("projectId");
                     projectDb.deleteProjectId(par.projectId);
                     sendResultOk(response);
                     break;

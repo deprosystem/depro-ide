@@ -17,7 +17,6 @@ function emList() {
     }
     
     this.cbDoServer = function(res) {
-//console.log("RES="+res);
         this.data = JSON.parse(res);
         if (this.data != null && this.data.length > 0) {
             this.setEmulator(this.data);

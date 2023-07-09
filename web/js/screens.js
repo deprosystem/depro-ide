@@ -83,7 +83,7 @@ function crScreenForList(scrP) {
     let crScreen = {screenName: scrP.scrN, screenId: scrP.scrNum, screenComment: "", animate: 0, typeScreen: scrP.scrT, 
         title: scrP.scrTit, titleParam: "", components: [], textErrors: "", levelErrors: 0, navigator:[], initData:[]};
     crScreen.layout =  {type:"RelativeLayout",typeFull:{name:"RelativeLayout",typeBlock:2},parent:null,width:-1,height:-1,gravLayout:{h:4,v:4},
-        gravity:{h:4,v:4},itemNav:{},viewId:"root", children:[]};
+        gravity:{h:4,v:4},itemNav:{},viewId:"root",background:19,children:[]};
     return crScreen;
 }
 

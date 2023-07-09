@@ -177,33 +177,7 @@ public class ProjectDB extends BaseDB {
         }
         return pm;
     }
-/*
-    public ProjectM getParam(String id) {
-        ProjectM pm = null;
-        try (Connection connection = getDBConnection(); Statement statement = connection.createStatement()) {
-            ResultSet res = statement.executeQuery(SQL.getProjectById + inQuotes(id) + ";");
-            if (res.next()) {
-                pm = new ProjectM();
-                pm.projectId = res.getLong("project_id");
-                pm.nameProject = res.getString("project_name");
-                pm.namePackage = res.getString("package");
-                pm.nameAPP = res.getString("app_name");
-                pm.comment = res.getString("project_comment");
-                pm.logo = res.getString("logo");
-                pm.colors = res.getString("color");
-                pm.strings = res.getString("strings");
-                pm.dimens = res.getString("dimens");
-                pm.style = res.getString("style");
-                pm.screens = res.getString("screens");
-                pm.drawable = res.getString("drawable");
-                pm.resurseInd = res.getString("resurse_ind");
-            }
-        } catch (SQLException | ClassNotFoundException ex) {
-            System.out.println("getProjectById error="+ex);
-        }
-        return pm;
-    }
-*/
+
     public void setLastProject(String idUser, String idProject) {
         String strUpd = "UPDATE users SET ";
         strUpd += "project_id = " + idProject + " WHERE user_id = " + idUser;

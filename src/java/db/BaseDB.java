@@ -138,6 +138,7 @@ public class BaseDB {
             }
         } catch (SQLException | ClassNotFoundException ex) {
             System.out.println("getQueryList error="+ex);
+            return "error="+ex;
         }
         result.append("]");
         return result.toString();

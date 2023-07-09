@@ -326,7 +326,7 @@ function createViewForListH(el, ind) {
             for (let i = 0; i < ik; i++) {
                 let item = data[i];
                 if (item.notShow) continue;
-                if (imgId != i) {
+                if (imgId != i && item.type.indexOf("serial") == -1) {
                     formElement(item, toRightOf, namePrev, topM);
                     currentElement.android.viewElement = currentElement;
                     namePrev = item.name;
@@ -394,11 +394,10 @@ function createViewForListV(el, ind) {
             }
             let topM = 10;
             let estimatedHeight = imgHeight + 12;
-            
             for (let i = 0; i < ik; i++) {
                 let item = data[i];
                 if (item.notShow) continue;
-                if (imgId != i) {
+                if (imgId != i && item.type.indexOf("serial") == -1) {
                     formElement(item, "", namePrev, topM);
                     currentElement.android.viewElement = currentElement;
                     namePrev = item.name;

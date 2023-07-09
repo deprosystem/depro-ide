@@ -108,6 +108,7 @@
         
         <script src="js/editData/metaData.js" ></script>
         <script src="js/editData/editArrayData.js" ></script>
+        <script src="js/editData/formLogin.js" ></script>
         <script src="js/tools/windListView.js"></script>
         <script src="js/tools/scrollX.js"></script>
         <script src="js/tools/tool.js"></script>
@@ -116,6 +117,7 @@
         <script src="js/tools/uiEditParam.js"></script>
         <script src="js/tools/keyTools.js"></script>
         <script src="js/tools/imgColor.js"></script>
+        <script src="js/tools/dateWork.js"></script>
         <script src="js/tools/shakeAnimate.js"></script>
         <script src="js/tools/selectBlock.js"></script>
         <script src="js/tools/validEditField.js"></script>
@@ -157,7 +159,15 @@
         <script src="js/backEnd/fieldsFromSource.js" ></script>
         <script src="js/backEnd/metaDataBackEnd.js" ></script>
     </head>
-    <body>
+    <body onload="formLogin();">
+<!--
+        <div id="loginPanel" style="position: absolute; background:#eee; left: 0;top: 0;right: 0;bottom: 0;
+                z-index: 110; display: flex; align-items: center; justify-content: center">
+            <iframe id="loginFrame" name="frameAuth" src="login.html" height="350" width="420" style="border: 1px solid #1dace9;;border-radius:8px;background:white">
+                
+            </iframe>
+        </div>
+-->
         <div id="header">
             <img width="35" height="35" src="img/logo_blue.png" style="float: left;margin-right: 5px;">
             <div id="panel_hamburger" onclick="mainMenuShow()">
@@ -624,15 +634,22 @@
             <div style="width: 100%;height: 24px;"><img onclick="closeListProj()" width="18" height="18" style="margin-top: 6px; margin-left: 20px;cursor:pointer" src="img/del_red_pres.png"></div>
             <div id="listProjectsScr" class="viewport" style="top:24px"></div>
         </div>
+<!--
         <div id="loginPanel" style="position: absolute; background:#eee; left: 0;top: 0;right: 0;bottom: 0;
                 z-index: 110; display: flex; align-items: center; justify-content: center">
             <iframe id="loginFrame" name="frameAuth" src="login.html" height="350" width="420" style="border: 1px solid #1dace9;;border-radius:8px;background:white">
                 
             </iframe>
         </div>
+-->
+        <div id="loginPanel" style="position: absolute; background:#eee; left: 0;top: 0;right: 0;bottom: 0;
+                display: flex; align-items: center; justify-content: center">
+        </div>
+
         <div id="shutScreen" style="position: absolute;top: 35px;left: 0;right: 0;bottom: 0; background: #eaeaea;display: none"></div>
 
         <script src="js/tools/scrollCustom.js"></script>
+        <script src="js/editData/formLogin.js"></script>
 
     </body>
 </html>

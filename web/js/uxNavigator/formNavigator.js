@@ -41,8 +41,11 @@ function FormNavigator() {
             if (uxFunction != null) {
                 this.hiddenHandlers = uxFunction.hiddenHandlers;
             }
-        } 
-
+        }
+        
+        if (this.isScreen == null) {
+            this.hiddenHandlers += "Push,";
+        }
         if (aft) {
             this.hiddenHandlers = hiddenAfterHandlers;
         }

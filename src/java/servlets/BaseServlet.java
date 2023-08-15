@@ -262,6 +262,7 @@ System.out.println("query="+ds.query);
     }
     
     public void deleteDir(String dir) {
+System.out.println("deleteDir DIR="+dir+"<<");
         File dirF = new File(dir);
         if( dirF.exists()) {
             if(dirF.isDirectory()) {

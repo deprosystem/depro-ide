@@ -23,10 +23,10 @@ public class Auth extends BaseServlet {
         Profile user = null;
         String data = "";
         int count;
-        
         UserDB userDB = new UserDB(request);
         switch (ds.query) {
             case "/auth/login":
+                
                 try {
                     data = getStringRequest(request);
                     userC = gson.fromJson(data, Profile.class);
@@ -60,7 +60,6 @@ public class Auth extends BaseServlet {
                     TokenUser tu = baseDb.getUserByToken(ds.token);
                     ds.userId = tu.userId;
                     ds.userResurseInd = tu.userResurseInd;
-//                    String basePath = request.getServletContext().getRealPath("") + File.separator;
                     String basePath = ds.patchOutsideProject;
                     formDir(basePath + Constants.USERS_DATA + ds.userResurseInd);
                     AuthResult ar = new AuthResult();

@@ -29,7 +29,7 @@ console.log("AJAX="+resEr);
                     begRes = resEr.substring(0, 9).toLowerCase();
                 }
                 if (begRes == "<!doctype") {
-                    let wwind = new formWind(700, 450, 50, 200, "Error", true, null, null, null, "");
+                    let wwind = new formWind(700, 450, 50, 200, "Error", null, null, null, null, "");
                     wwind.innerHTML = resEr;
                 } else {
                     let errObj = JSON.parse(resEr);

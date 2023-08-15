@@ -4,6 +4,13 @@
 
 
 
+[{"screenId":32,"progectId":"udCpDWahD4D102J","screenName":"Main","screenComment":"","childrenScr":"","typeScreen":0,"animate":0,"title":"","titleParam":"","navigator":"","initData":"","elements":"{"type":"RelativeLayout","typeFull":{"name":"RelativeLayout","typeBlock":2},"parent":null,"width":-1,"height":-1,"gravLayout":{"h":4,"v":4},"gravity":{"h":4,"v":4},"itemNav":{},"viewId":"root","children":[]}","data_change":1690668155302}]
+
+
+
+
+
+
 
 
 

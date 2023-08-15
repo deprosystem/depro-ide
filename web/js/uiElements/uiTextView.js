@@ -311,5 +311,6 @@ function changeSingleLineTV(vv) {
 */
 function maxLineTV(el) {
     currentElement.android.componParam.maxLine = el.value;
+    viewCompon();
 }
 

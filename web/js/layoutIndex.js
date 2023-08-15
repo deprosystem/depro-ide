@@ -31,8 +31,7 @@
     var selectViewElement;
     
     var sizeDevice;
-    var sizeDeviceArray = [[425, 897, "Samsung A10"], [426, 948, "Samsung A51"], [428, 929, "Samsung M31"], [440, 977, "Samsung A72"]];
-//    var sizeDeviceArray = [[360, 640], [420, 748], [420, 800], [480, 800]];
+    var sizeDeviceArray = [[360, 640, "Nexus 5"], [425, 897, "Samsung A10"], [426, 948, "Samsung A51"], [428, 929, "Samsung M31"], [440, 977, "Samsung A72"]];
     var screenW; // dp
     var screenH; // dp
     var screenWpx;
@@ -40,9 +39,8 @@
     
     var projectId = 0, projectName = "";
     var screenId = 0, screenName = "", screenData = "";
-    
+
     onload = function () {
-      /* Определяем браузер */
       var br = navigator.userAgent;
       if (br.indexOf("Opera") > -1) {
           browser = 'o';
@@ -113,7 +111,7 @@ console.log("ux_ui.clientWidth="+ux_ui.clientWidth);
         var strSel = '<select name="device" class=select_' + browser + ' id="id-device" onchange="changeDevice(value)" style="width: 180px;height:26px">\n';
         for (var i = 0; i < sizeDeviceArray.length; i++) {
             var d = sizeDeviceArray[i];
-            if (i == 0) {
+            if (i == 1) {
                 strSel += '<option selected value="' + i + '">' + d[0] + '*' + d[1] + ' ' + d[2] + '</option>\n';
             } else {
                 strSel += '<option value="' + i + '">' + d[0] + '*' + d[1] + ' ' + d[2] + '</option>\n';

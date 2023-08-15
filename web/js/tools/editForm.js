@@ -222,8 +222,9 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
                 }
                 inp = newDOMelement('<input class="input_style" type=' + type_inp + autoCompl + ' style="width:' + ww+ ';" value="' + vv + '"/>');
                 inp.nameField = met.name;
-                inp.addEventListener('keydown', () => {this.clickText(event, met.valid)}, false);
-                inp.addEventListener('keyup', () => {this.clickTextUp(event)}, false);
+//                inp.addEventListener('keydown', () => {thi7s.clickText(event, met.valid)}, false);
+//                inp.addEventListener('keyup', () => {this.clickTextUp(event)}, false);
+                inp.addEventListener('input', () => {this.inputText(event, met)});
                 res.append(inp);
                 if (met.clear) {
                     let cl = newDOMelement('<img src="img/del_red.png" style="position:absolute;cursor:pointer;right:2px;top:19px;width:12px;height:12px;">');
@@ -555,7 +556,6 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
         }
         let nn = this.contWind.nameField;
         this.edData[nn] = res;
-//console.log("RES="+res+"<<");
         let inpDiv = this.contWind.inpInp.querySelector("div");
         if (inpDiv != null) {
             inpDiv.innerHTML = res;
@@ -641,7 +641,7 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
         let el = event.target;
         this.edData[el.nameField] = el.value;
         if (this.cb != null) {
-            this.cb.cbEdit(el.nameField);
+            this.cb.cbEdit(el.nameField, event);
         }
     }
     
@@ -652,104 +652,246 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
         }
     }
     
+    this.inputText = function(event, met) {
+//        console.log("edData="+this.edData[met.name]+"<< tag="+event.target.value+"<< selectionStart="+event.target.selectionStart+"<< selectionEnd="+event.target.selectionEnd);
+        let valid = met.valid;
+        let el = event.target;
+        let val = el.value;
+        if (valid != null){
+            let mes = this.inputValid(val, valid);
+            if (mes.length == 0) {
+                this.edData[met.name] = val;
+                if (this.cb != null) {
+                    this.cb.cbEdit(met.name);
+                }
+            } else {
+                el.value = this.edData[met.name];
+                tooltipMessage(el, mes);
+            }
+        } else {
+            this.edData[met.name] = val;
+            if (this.cb != null) {
+                this.cb.cbEdit(met.name);
+            }
+        }
+    }
+    
+    this.inputValid = function(val, valid) {
+        let ik = val.length;
+        let kUp;
+        switch (valid) {
+            case "latin":
+                for (let i = 0; i < ik; i++) {
+                    kUp = val[i].toUpperCase();
+                    if ( ! ((kUp >= "A" && kUp <= "Z") || kUp == "_" || (kUp >= "0" && kUp <= "9")))  {
+                        return "Only english letters, _ and numbers";
+                    } else {
+                        if ( i == 0 && kUp >= "0" && kUp <= "9") {
+                            return "The first character cannot be a digit";
+                        }
+                    }
+                }
+                break;
+            case "name_low":
+                for (let i = 0; i < ik; i++) {
+                    kUp = val[i]
+                    if ( ! ((kUp >= "a" && kUp <= "z") || kUp == "_" || (kUp >= "0" && kUp <= "9")))  {
+                        return "English small letters only, _ and numbers";
+                    } else {
+                        if (i == 0 && kUp >= "0" && kUp <= "9") {
+                            return "The first character cannot be a digit";
+                        }
+                    }
+                }
+                break;
+            case "list_var":
+                for (let i = 0; i < ik; i++) {
+                    kUp = val[i].toUpperCase();
+                    if ( ! ((kUp >= "A" && kUp <= "Z") || kUp == "_" || kUp == "," || (kUp >= "0" && kUp <= "9")))  {
+                        return "Only english letters, _ and numbers";
+                    } else {
+                        if (targ.value.length == 0 ) {
+                            if ((kUp >= "0" && kUp <= "9") || kUp == ',') {
+                                return "The first character cannot be a digit";
+                            }
+                        } else {
+                            if ( i == 0 && ((kUp >= "0" && kUp <= "9") || kUp == ',')) {
+                                return "The first character cannot be a digit";
+                            }
+                        }
+                    }
+                }
+                break;
+            case "number":
+                for (let i = 0; i < ik; i++) {
+                    kUp = val[i];
+                    if (kUp < "0" || kUp > "9") {
+                        return "Only numbers";
+                    }
+                }
+                break;
+            case "float":
+                for (let i = 0; i < ik; i++) {
+                    kUp = val[i];
+                    if ((kUp >= "0"  && kUp <= "9") || kUp == "-" || kUp == ".") {
+                        if (kUp == "-") {
+                            if (i > 0) {
+                                return "Minus not at the beginning";                            }
+                        } else if (kUp == ".") {
+                            if (val.indexOf(".") > -1) {
+                                return "The point is already there";
+                            }
+                        }
+                    } else {
+                        return "The point is already there";
+                    }
+                }
+                break;
+            case "password":
+                for (let i = 0; i < ik; i++) {
+                    kUp = val[i].toUpperCase();
+                    if ( ! ((kUp >= "A" && kUp <= "Z") || (kUp >= " " && kUp <= "/") || (kUp >= "0" && kUp <= "9")))  {
+                        return "Only english letters, numbers and special character";
+                    }
+                }
+                break;
+        }
+        return "";
+    }
+/*
+    this.whatPasted = function(inp, met) {
+        let vDat = this.edData[met.name];
+        let vField = inp.value;
+        let nDat = 0;
+        if (vDat != null) {
+            nDat = vDat.length;
+        }
+        let nField = vField.length;
+        let sel = inp.selectionStart;
+        let nEvInp = nField - nDat;
+        let vEvInp = vField.substring(sel - nEvInp, sel);
+        let beforeInsertion = vField.substring(0, sel - nEvInp);
+console.log("whatPasted="+vEvInp+"<< beforeInsertion="+beforeInsertion+"<<");
+        if (vEvInp.length > 1) {
+            this.edData[met.name] = beforeInsertion;
+            inp.value = beforeInsertion;
+        }
+    }
+*/           
+/*                                                                           
     this.clickText = function(event, valid) {
+console.log("clickText event.key="+event.key+"<< selectionStart="+event.target.selectionStart);
         let k = event.key;
         if (k == "ArrowRight" || k == "ArrowLeft" || k == "Tab" || k == "ShiftKey" || k == "Insert"
             || k == "Home" || k == "End" || k == "Backspace" || k == "Delete" || k == "Shift") {
             return true;
         }
-        let targ;
-        let kUp;
-        let firstCh;
-        let kC;
-        if (valid != null) {
-            switch (valid) {
-                case "latin":
-                    kUp = event.key.toUpperCase();
-                    targ = event.target;
-                    if ( ! ((kUp >= "A" && kUp <= "Z") || kUp == "_" || (kUp >= "0" && kUp <= "9")))  {
-                        event.preventDefault();
-                        tooltipMessage(targ, "Only english letters, _ and numbers");
-                    } else {
-                        if ( targ.selectionStart == 0 && k >= "0" && k <= "9") {
-                            event.preventDefault();
-                            tooltipMessage(targ, "The first character cannot be a digit");
-                        }
-                    }
-                    break;
-                case "name_low":
-                    targ = event.target;
-                    if ( ! ((k >= "a" && k <= "z") || k == "_" || (k >= "0" && k <= "9")))  {
-                        event.preventDefault();
-                        tooltipMessage(targ, "English small letters only, _ and numbers");
-                    } else {
-                        if (targ.value.length == 0 && k >= "0" && k <= "9") {
-                            event.preventDefault();
-                            tooltipMessage(targ, "The first character cannot be a digit");
-                        }
-                    }
-                    break;
-                case "list_var":
-                    targ = event.target;
-                    kUp = event.key.toUpperCase();
-                    if ( ! ((kUp >= "A" && kUp <= "Z") || kUp == "_" || kUp == "," || (kUp >= "0" && kUp <= "9")))  {
-                        event.preventDefault();
-                        tooltipMessage(targ, "Только английские буквы, _ и цифры");
-                    } else {
-                        if (targ.value.length == 0 ) {
-                            if ((k >= "0" && k <= "9") || k == ',') {
-                                event.preventDefault();
-                                tooltipMessage(targ, "The first character cannot be a digit");
-                            }
-                        } else {
-                            if ( targ.selectionStart == 0 && ((k >= "0" && k <= "9") || k == ',')) {
-                                event.preventDefault();
-                                tooltipMessage(targ, "The first character cannot be a digit");
-                            }
-                        }
-                    }
-                    break;
-                case "number":
-                    kUp = event.key;
-                    if (kUp < "0" || kUp > "9") {
-                        event.preventDefault();
-                        tooltipMessage(event.currentTarget, "Only numbers");
-                    }
-                    break;
-                case "float":
-                    kC = event.keyCode;
-                    if ((kC > 47 && kC < 58) || kC == 173 || k == ".") {
-                        if (kC == 173) {
-                            if (event.target.selectionStart > 0) {
-                                event.preventDefault();
-                                tooltipMessage(event.target, "Minus not at the beginning");
-                                return false;
-                            }
-                        } else if (k == ".") {
-                            let vv = event.target.value;
-                            if (vv.indexOf(".") > -1) {
-                                event.preventDefault();
-                                tooltipMessage(event.target, "The point is already there");
-                                return false;
-                            }
-                        }
-                        return true;
-                    } else {
-                        event.preventDefault();
-                        tooltipMessage(event.target, "Only numbers, sign and dot");
-                        return false;
-                    }
-                    break;
-                case "password":
-                    kUp = event.key.toUpperCase();
-                    targ = event.target;
-                    if ( ! ((kUp >= "A" && kUp <= "Z") || (kUp >= " " && kUp <= "/") || (kUp >= "0" && kUp <= "9")))  {
-                        event.preventDefault();
-                        tooltipMessage(targ, "Only english letters, numbers and special character");
-                    }
-                    break;
-            }
         } 
+    }
+
+    this.clickTextDop = function(targ, k, KC, valid, event) {
+        let kUp = k.toUpperCase();
+        switch (valid) {
+            case "latin":
+//                kUp = event.key.toUpperCase();
+//                targ = event.target;
+                if ( ! ((kUp >= "A" && kUp <= "Z") || kUp == "_" || (kUp >= "0" && kUp <= "9")))  {
+                    this.preventAndMess(event, targ, "Only english letters, _ and numbers");
+//                    event.preventDefault();
+//                    tooltipMessage(targ, "Only english letters, _ and numbers");
+                } else {
+                    if ( targ.selectionStart == 0 && k >= "0" && k <= "9") {
+                        this.preventAndMess(event, targ, "The first character cannot be a digit");
+//                        event.preventDefault();
+//                        tooltipMessage(targ, "The first character cannot be a digit");
+                    }
+                }
+                break;
+            case "name_low":
+//                targ = event.target;
+                if ( ! ((k >= "a" && k <= "z") || k == "_" || (k >= "0" && k <= "9")))  {
+                    this.preventAndMess(event, targ, "English small letters only, _ and numbers");
+//                    event.preventDefault();
+//                    tooltipMessage(targ, "English small letters only, _ and numbers");
+                } else {
+                    if (targ.value.length == 0 && k >= "0" && k <= "9") {
+                        this.preventAndMess(event, targ, "The first character cannot be a digit");
+//                        event.preventDefault();
+//                        tooltipMessage(targ, "The first character cannot be a digit");
+                    }
+                }
+                break;
+            case "list_var":
+//                targ = event.target;
+//                kUp = event.key.toUpperCase();
+                if ( ! ((kUp >= "A" && kUp <= "Z") || kUp == "_" || kUp == "," || (kUp >= "0" && kUp <= "9")))  {
+                    this.preventAndMess(event, targ, "Only english letters, _ and numbers");
+//                    event.preventDefault();
+//                    tooltipMessage(targ, "Только английские буквы, _ и цифры");
+                } else {
+                    if (targ.value.length == 0 ) {
+                        if ((k >= "0" && k <= "9") || k == ',') {
+                            this.preventAndMess(event, targ, "The first character cannot be a digit");
+//                            event.preventDefault();
+//                            tooltipMessage(targ, "The first character cannot be a digit");
+                        }
+                    } else {
+                        if ( targ.selectionStart == 0 && ((k >= "0" && k <= "9") || k == ',')) {
+                            this.preventAndMess(event, targ, "The first character cannot be a digit");
+//                            event.preventDefault();
+//                            tooltipMessage(targ, "The first character cannot be a digit");
+                        }
+                    }
+                }
+                break;
+            case "number":
+//                kUp = event.key;
+                if (k < "0" || k > "9") {
+                    this.preventAndMess(event, targ, "Only numbers");
+//                    event.preventDefault();
+//                    tooltipMessage(event.currentTarget, "Only numbers");
+                }
+                break;
+            case "float":
+//                kC = event.keyCode;
+                if ((kC > 47 && kC < 58) || kC == 173 || k == ".") {
+                    if (kC == 173) {
+                        if (event.target.selectionStart > 0) {
+                            this.preventAndMess(event, targ, "Minus not at the beginning");
+//                            event.preventDefault();
+//                            tooltipMessage(event.target, "Minus not at the beginning");
+                            return false;
+                        }
+                    } else if (k == ".") {
+                        let vv = event.target.value;
+                        if (vv.indexOf(".") > -1) {
+                            this.preventAndMess(event, targ, "The point is already there");
+//                            event.preventDefault();
+//                            tooltipMessage(event.target, "The point is already there");
+                            return false;
+                        }
+                    }
+                    return true;
+                } else {
+                    this.preventAndMess(event, targ, "Only numbers, sign and dot");
+                    return false;
+                }
+                break;
+            case "password":
+//                kUp = event.key.toUpperCase();
+//                targ = event.target;
+                if ( ! ((kUp >= "A" && kUp <= "Z") || (kUp >= " " && kUp <= "/") || (kUp >= "0" && kUp <= "9")))  {
+                    this.preventAndMess(event, targ, "Only english letters, numbers and special character");
+                }
+                break;
+        }
+    }
+*/
+    this.preventAndMess = function(event, targ, mes) {
+        if (event != null) {
+            event.preventDefault();
+            tooltipMessage(targ, mes);
+        }
     }
     
     this.formEditColor = function(name, vv) {

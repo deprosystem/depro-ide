@@ -1,11 +1,14 @@
 function formLogin() {
     
+    
+this.tttDDDlll;
+    
+    
     this.regView;
     this.logView;
     let dataLog = [];
     let metaLog = [
         {name: "log", title:"Login",len:300,type:"Text", validSend:"minLen=2",valid:"latin"},
-//        {name: "pass", title:"Password",len:300,type:"Password",valid:"password",validSend:"minLen=5 pass=aA0&"},
         {name: "pass", title:"Password",len:300,type:"Password",valid:"password",validSend:"minLen=2"},
         {name: "viewpas", title:"Show password",type:"Check"},
     ];
@@ -28,7 +31,8 @@ function formLogin() {
     this.editCode;
     this.panelCode;
     this.panel = newDOMelement('<div style="position:relative;height:350px;width:420px;border: 1px solid #1dace9;border-radius:8px;background:white"></div>');
-    loginPanel.append(panel);
+    loginPanel.append(this.panel);
+    this.panel.addEventListener('keydown', () => {if( event.code === 'Enter' ) this.send();});
     let sendPanel = newDOMelement('<div style="position:absolute;height:50px;width:100%;bottom:0px;border-top: 1px solid #1dace9;"></div>');
     panel.append(sendPanel);
     let bootSend = createButtonBlue("Send");

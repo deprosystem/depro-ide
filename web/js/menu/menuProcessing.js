@@ -23,6 +23,7 @@ var isStylesSpecChange = false;
 var isStylesCheckChange = false;
 var isDrawableChange = false;
 var isDimensChange = false;
+var isPushChange = false;
 var isUX = true;
 var isScreenChange = false;
 var isLayoutChange = false;
@@ -33,6 +34,7 @@ var deleteProjectIdVar;
 var popupMenuParamProj;
 var newProjectForCreate;
 var createChangeProgectOper;
+var pushNotif;
 
 function openProject() {
     doServer("POST", "project/list", cbListProject, null, null, document.body);
@@ -89,6 +91,20 @@ function formAppParam() {
     return res;
 }
 
+function pushProject() {
+    pushNotif.edit();
+}
+/*
+function processPushFiles(files) {
+    let file = files[0];
+    let reader = new FileReader();
+    reader.onload = function (e) {
+        let result = e.target.result;
+        console.log(result+"<<");
+    };
+    reader.readAsText(file);
+}
+*/
 function createProject() {
     formCreateProject(1);
 }
@@ -156,9 +172,11 @@ function cbCreateProject(res, oper) {
 }
 function cbCreateProjectDop() {
     dataDescript.innerHTML="";      //    Очистка для работы с данными
+
     ux_ui_w.style.display = "block";
     plus_screen.style.display = "block";
     corners.style.display = "block";
+
     listTablesView.innerHTML = "";
     listTables = null;
     showModeUX();

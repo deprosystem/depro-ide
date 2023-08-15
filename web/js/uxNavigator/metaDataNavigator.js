@@ -9,6 +9,7 @@ var handlerGroups = [
     {group:"Autch",items:"sign in,sign up,edit profile,setToken,setProfile"},
     {group:"Animation",items:"springScale"},
     {group:"Other",items:"dialUp,exit,clear form"},
+    {group:"Push",items:"drawer,selectTab,selectMenu,selectList,reset"},
 ];
 
 var listMetaHandlers = [

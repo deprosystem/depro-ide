@@ -178,7 +178,9 @@ function setParamCompon() {
     hideGrav.style.display = "none";
     hideBackgr.style.display = "none";
     hideBALR.style.display = "none";
-    hideMarg.style.display = "none";
+    if(typeof hideMarg !== 'undefined'){
+        hideMarg.style.display = "none";
+    }
     hidePad.style.display = "none";
     if (paramCompon.hideParam != null || paramCompon.hideParam > 0) {
         let hid = paramCompon.hideParam;

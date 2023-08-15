@@ -3,6 +3,7 @@ var delta_x_wind, delta_y_wind;
 var h_footerWind = 50;
 
 function formWind(w, h, t, l, tit, scroll, cbClose, footName, footListener, colorFon) {
+//     cbClose может быть как строкой с названием функции так и функцией
     let panelFon;
     if (colorFon != null) {
         let backGr = "";
@@ -56,15 +57,14 @@ function formWind(w, h, t, l, tit, scroll, cbClose, footName, footListener, colo
     contW.className = "wind";
     ww.appendChild(contW);
     document.body.append(ww);
-    if (scroll != null && scroll) {
+    if (scroll) {
         let scrollQu = formViewScrolY(contW);
         return scrollQu.getElementsByClassName("viewData")[0];
-    } else {
-        return contW;
-    }
+    };
+    return contW;
 }
 
-function formPopUp(el, w, h) {
+function formPopUp(el, w, h, title) {
     let xy = getCoordsEl(el);
     let x = parseInt(xy.left + 5);
     let y = parseInt(xy.top + xy.height + 2);
@@ -88,6 +88,10 @@ function formPopUp(el, w, h) {
         dv.panelFon.remove();
         dv.remove();
     });
+    if (title != null && title.length > 0) {
+        let tit = newDOMelement('<div style="height:24px;position: absolute;left: 0;top: 0; right: 0;background-color: #f4ffff;border-radius:0px 4px 4px 0px;"><div style="text-align:center;margin-top:3px">' + title + '</div></div>');
+        dv.append(tit);
+    }
     document.body.append(dv);
     return dv;
 }
@@ -166,18 +170,38 @@ function setHelp(el, url) {
 }
 
 function createTitle(tit, cbClose) {
-    let cb = "false";
-    if (cbClose != null && cbClose != "") {
-        cb = cbClose + "(this)";
+    let str;
+    let strClick = "";
+    if (cbClose != null) {
+        if (typeof cbClose == "string") {
+            let cb = "false";
+            if (cbClose.length > 0) {
+                cb = cbClose + "(this)";
+                strClick = "onclick='closeDataWindow(this, " + cb + ")'";
+            } else {
+                strClick = "onclick='closeDataWindow(this)'";
+            }
+        }
+    } else {
+        strClick = "onclick='closeDataWindow(this)'";
     }
-    let container = document.createElement('div')
-    var str = "<div class='titleWind' onmousedown='moveWind(event)'>"
+
+    str = "<div class='titleWind' onmousedown='moveWind(event)'>"
                 +"<div style='float:left;height:100%;display:flex;flex-direction:row;align-items:center'><div class='titleWindName'>" + tit + "</div></div>"
-//                +"<div style='float:right;height:100%;display:flex;flex-direction:row;align-items:center'><IMG SRC='img/x_blue.png' class='titleWindClose' onclick='" + cb + "closeDataWindow(event)'></div>"
-                +"<div style='float:right;height:100%;display:flex;flex-direction:row;align-items:center'><IMG SRC='img/x_blue.png' class='titleWindClose' onclick='closeDataWindow(this, " + cb + ")'></div>"
+                +"<div class='contImg' style='float:right;height:100%;display:flex;flex-direction:row;align-items:center'></div>"
             +"</div>";
-    container.innerHTML = str;
-    return container.firstChild;
+    let titView = newDOMelement(str);
+    let imgClose = newDOMelement("<IMG SRC='img/x_blue.png' class='titleWindClose' " + strClick + ">");
+    let contImg = titView.querySelector(".contImg");
+    contImg.append(imgClose);
+    if (cbClose != null && typeof cbClose != "string") {
+        if (cbClose.cbCloseWind != null) {
+            imgClose.addEventListener('click', () => {closeDataWindow(imgClose, cbClose.cbCloseWind(imgClose))});
+        } else {
+            imgClose.addEventListener('click', () => {closeDataWindow(imgClose, cbClose(imgClose))});
+        }
+    }
+    return titView;
 }
 
 function closeDataWindow(el, no) {

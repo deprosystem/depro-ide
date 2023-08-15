@@ -907,13 +907,11 @@ function relativeL(el, p, pLL, pTT, pRR, pBB, margR) {
         }
     }
 
-//    if (p.type == "ImageView" || p.type == "Gallery" || p.type == "EditGallery" || p.type == "Map") {
     if (p.type == "ImageView" || p.type == "Gallery" || p.type == "Map") {
         if (p.src != null && p.src != '') {
             var elDivImg = el.getElementsByClassName('image')[0];
             if (elDivImg == null) {
                 elDivImg = createDivImg();
-console.log("elDivImg width="+elDivImg.style.width+"<< class="+elDivImg.className+"<<");
                 el.appendChild(elDivImg);
             }
             elDivImg.innerHTML = '<IMG SRC="'+ p.src +'" style="width:100%;height:100%;pointer-events: none;">';
@@ -985,22 +983,30 @@ console.log("elDivImg width="+elDivImg.style.width+"<< class="+elDivImg.classNam
 function wrapTextViewH(el, p) {
     let contentEl = el.getElementsByClassName("text")[0];
     let tS = parseInt(p.textSize);
-    let standH = tS;
+    let standH = tS * 1.3;
     contentEl.style.top = "0";
     contentEl.style.marginTop = "0";
     contentEl.style.marginLeft = "0";
-    el.style.overflow = "";
+    el.style.overflowY = "";
+    el.style.overflowX = "";
     el.style.height = "";
-    if (emulator_inf.innerHTML == "Editor") {
-        el.style.height = contentEl.offsetHeight + "px";
-    } else {
-        if (p.componParam != null && p.componParam.lines != null && p.componParam.lines > 1 
-                && (p.componParam.st_2 == null || p.componParam.st_2 != "text")) {
-            let plusH = (p.componParam.lines - 1) * 1.3 * p.textSize;
-            standH = standH + plusH;
-            el.style.height = standH * MEASURE + px;
+
+    let rect = contentEl.getBoundingClientRect();
+    let oH = contentEl.offsetHeight;
+    if (oH > 0) {
+        maxLine = 1;
+        if (p.componParam != null && p.componParam.maxLine != null && p.componParam.maxLine > 1) {
+            maxLine = p.componParam.maxLine;
         }
-        el.style.height = standH * MEASURE + px;
+        let maxH = maxLine * tS * MEASURE * 1.146;
+        if (contentEl.offsetHeight > maxH) {
+            el.style.height = maxH + "px";
+            el.style.overflowY = "hidden";
+        } else {
+            el.style.height = contentEl.offsetHeight + "px";
+        }
+    } else {
+        el.style.height = standH * MEASURE + "px";
     }
 }
 

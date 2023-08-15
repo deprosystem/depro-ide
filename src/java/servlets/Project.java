@@ -47,6 +47,7 @@ public class Project extends BaseServlet {
             if ( ! realPath.endsWith(File.separator)) {
                 realPath += File.separator;
             }
+            String res;
             switch (ds.query) {
                 case "/project/create":
                     if (ds.userId == userExample) {
@@ -232,13 +233,22 @@ public class Project extends BaseServlet {
                         sendError(response, "delete project error " + e.toString());
                         break;
                     }
+                    res = "";
                     if (par != null) {
                         String basePath = ds.patchOutsideProject;
                         String projectPath = Constants.PROJECTS_DATA + par.schema;
                         deleteDir(basePath + projectPath);
-                        projectDb.deleteProjectId(par.projectId);
+//                        projectDb.deleteProjectId(par.projectId);
+                        res = projectDb.deleteProjectId(par.projectId);
+                        if (res.indexOf("error") == 0) {
+                            sendError(response, res);
+                        } else {
+                            sendResultOk(response);
+                        }
+                    } else {
+                        sendError(response, "project/delete no options to delete");
+//                        sendResultOk(response);
                     }
-                    sendResultOk(response);
                     break;
                 case "/project/del_only":
                     if (ds.userId == userExample) {

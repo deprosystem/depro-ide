@@ -95,9 +95,14 @@ function dbServer() {
     }
 }
 
-function dbAPI() {
+function dbPush() {
     dataDescript.innerHTML="";
     setBorderDB(1);
+}
+
+function dbAPI() {
+    dataDescript.innerHTML="";
+    setBorderDB(2);
 }
 
 function dbLocal() {
@@ -113,14 +118,14 @@ function dbLocal() {
                 +'</div>';
             
     dataDescript.innerHTML="";
-    setBorderDB(2);
+    setBorderDB(3);
     dataDescript.append(newDOMelement(dataTabQuLocal));
     dataDescript.append(newDOMelement('<div class="list" style="position:absolute;left:0;top:25px;right:0;bottom:0"></div>'));
 }
 
 function dbGoogleSh() {
     dataDescript.innerHTML="";
-    setBorderDB(3);
+    setBorderDB(4);
 }
 
 function setBorderDB(j) {

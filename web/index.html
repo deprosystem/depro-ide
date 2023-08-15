@@ -75,6 +75,7 @@
         <script src="js/uxCommonUse/model.js" ></script>
         <script src="js/uxCommonUse/metaModel.js" ></script>
         <script src="js/uxCommonUse/choiseComponent.js" ></script>
+        <script src="js/uxCommonUse/pushNotifications.js" ></script>
         <script src="js/uxCommonUse/formElemUI.js" ></script>
         <script src="js/uxComponents/uxPager.js" ></script>
         <script src="js/uxComponents/uxTabLayout.js" ></script>
@@ -107,6 +108,7 @@
         <script src="js/scroll/resizeScrollItem.js"></script>
         
         <script src="js/editData/metaData.js" ></script>
+        <script src="js/editData/listEdit.js" ></script>
         <script src="js/editData/editArrayData.js" ></script>
         <script src="js/editData/formLogin.js" ></script>
         <script src="js/tools/windListView.js"></script>
@@ -204,6 +206,10 @@
             <div id="dataControll" style="float: left;height: 100%;margin-left: 30px;display: none">
                 <div class="source" onclick="dbServer()" style="cursor: pointer;float: left;height: 100%;">
                     <div style="height: 18px;margin-top:8px;color:#fff;">DB on server</div>
+                </div>
+                <div style="float: left;width: 1px;height: 25px;margin-top: 5px;margin-left: 8px;margin-right: 8px;background-color: #eee"></div>
+                <div class="source" onclick="dbPush()" style="cursor: pointer;float: left;height: 100%;">
+                    <div style="height: 18px;margin-top:8px;color:#fff;"> Push </div>
                 </div>
                 <div style="float: left;width: 1px;height: 25px;margin-top: 5px;margin-left: 8px;margin-right: 8px;background-color: #eee"></div>
                 <div class="source" onclick="dbAPI()" style="cursor: pointer;float: left;height: 100%;">
@@ -463,9 +469,7 @@
                     <div id="scaleValue" style="float: left;width: 50px;text-align: center;margin-top: 7px">100%</div>
                     <img id="scalePlus" width="24" height="24" onclick="scalePlus()" style="float: left;margin-top: 2px;cursor: pointer" src="img/plus.png">
                 </div>
-<!--                <div id="dev" style="height: 100%; float: right; margin-right: 20px"></div>     -->
                 <div id="dev" style="width: 180px;position: absolute;right: 130px;top: 2px"></div>
-
             </div>
 
         </div>

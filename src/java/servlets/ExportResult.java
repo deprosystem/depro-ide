@@ -13,15 +13,19 @@ import android.SwitchParam;
 import android.TabLayout;
 import com.google.gson.JsonSyntaxException;
 import db.ProjectDB;
+import entity.Channel;
 import entity.Component;
 import entity.DataServlet;
 import entity.ItemVisibility;
 import entity.ListAppParam;
+import entity.ListCan;
 import entity.ListComponent;
 import entity.ListItemResurces;
 import entity.ListItemStyle;
 import entity.ListScreen;
+import entity.Notification;
 import entity.ParamSave;
+import entity.PushNotif;
 import entity.Screen;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -97,8 +101,13 @@ public class ExportResult extends BaseServlet {
         parSave.addApp = new ArrayList();
         parSave.schema = projectM.resurseInd;
         parSave.addPermish = new HashSet();
+        parSave.plaginGradle = new HashSet();
+        parSave.addImplement = new HashSet();
+        parSave.addClassPath = new HashSet();
+        
         parSave.styleTxtInpt = new HashSet();
         parSave.isCamera = false;
+        parSave.havePush = false;
         parSave.importD = new HashSet();
         String basePath = ds.patchOutsideProject;
         String realPath = request.getServletContext().getRealPath("");
@@ -108,8 +117,11 @@ public class ExportResult extends BaseServlet {
         String resPath = userProjPath + "/app/src/main/res";
         parSave.realPath = realPath;
         parSave.resPath = resPath;
-        String pack = projectM.namePackage.replaceAll("\\.", "/");
+        String packN = projectM.namePackage + "." + projectM.nameProject;
+        String pack = packN.replaceAll("\\.", "/");
         String javaPath = userProjPath + "/app/src/main/java/" + pack;
+        parSave.basePath = basePath;
+        parSave.userProjPath = userProjPath;
         int lengthBase = (basePath + userPath).length();
         setColorAlpha(projectM);
         switch (ds.query) {
@@ -119,7 +131,7 @@ public class ExportResult extends BaseServlet {
                 createDepro(realPath, basePath + javaPath, projectM, parSave);
                 createAppParam(basePath + javaPath, projectM, parSave);
                 arChange = new ItemChange[] {
-                    new ItemChange("#pack#", projectM.namePackage),
+                    new ItemChange("#pack#", projectM.namePackage + "." + projectM.nameProject),
                     new ItemChange("#start_act#", parSave.nameClassStart),
                     new ItemChange("#start_screen#", parSave.nameScreenStart.toUpperCase()),
                     new ItemChange("#proj#", projectM.nameProject)
@@ -133,11 +145,14 @@ public class ExportResult extends BaseServlet {
                     formDir(basePath + resPath + "/xml");
                     copyFile(realPath + "/android_base/file_paths_xml", basePath + resPath + "/xml/file_paths.xml");
                 }
-                setFileAndroid(realPath + "/android_base/gradle_mod", basePath + userProjPath + "/app/build.gradle", arChange);
+                if (parSave.havePush) {
+                    setFileAndroid(realPath + "/android_base/push_service", basePath + javaPath + "/PushService.java", arChange);
+                }
+                setGradleAndroid(realPath + "/android_base/gradle_mod", basePath + userProjPath + "/app/build.gradle", arChange, parSave);
                 setFileAndroid(realPath + "/android_base/start_activity", basePath + javaPath + "/" + parSave.nameClassStart + ".java", arChange);
                 setManifestAndroid(realPath + "/android_base/manifest", basePath + userProjPath + "/app/src/main/AndroidManifest.xml", arChange, parSave);
                 setFileAndroid(realPath + "/android_base/my_app", basePath + javaPath + "/MyApp.java", arChange);
-                copyFile(realPath + "/android_base/gradle_proj", basePath + userProjPath + "/build.gradle");
+                setGradleAndroid(realPath + "/android_base/gradle_proj", basePath + userProjPath + "/build.gradle", arChange, parSave);
                 
                 copyFile(realPath + "/android_base/gradle-wrapper.properties", basePath + userProjPath + "/gradle/wrapper/gradle-wrapper.properties");
                 copyFile(realPath + "/android_base/gradle-wrapper.jar", basePath + userProjPath + "/gradle/wrapper/gradle-wrapper.jar");
@@ -253,7 +268,7 @@ public class ExportResult extends BaseServlet {
         try {
             ListAppParam param = gson.fromJson(pr.appParam, ListAppParam.class);
             try (FileWriter writer = new FileWriter(path + "/MyParams.java", false)) {
-                writer.write("package " + pr.namePackage + ";\n\n");
+                writer.write("package " + pr.namePackage + "." + pr.nameProject + ";\n\n");
                 writer.write("import com.dpcsa.compon.param.AppParams;\n\n");
                 writer.write("public class MyParams extends AppParams {\n\n");
                 writer.write("    @Override\n");
@@ -812,6 +827,9 @@ public class ExportResult extends BaseServlet {
                             declare.add(tab12 + ".componentPhoto(R.id." + comp.view.title + phId + idStrPerm + phParam + endComp);
                             addCameraPermishen(realPath + "/android_base/provider", parSave);
                             break;
+                        case Constants.SUBSCRIBE_FIREBASE:
+                            declare.add(tab12 + ".subscribeTopic(R.id." + comp.view.title + ", \"" + comp.view.selectedField + "\"" + endComp);
+                            break;
                         case Constants.EDIT_GALLERY:
                             idStrPerm = ", 0";
                             if (comp.view.selectedField != null && comp.view.selectedField.length() > 0) {
@@ -853,14 +871,69 @@ public class ExportResult extends BaseServlet {
                             }
                             declare.add(tab12 + ".componentIntro(" + formModel(comp) + " R.id." + comp.view.viewId + ", R.layout.item_" + scName + "_" 
                                     + comp.view.viewId + "_0" + plus + minus + tabL + parI + endComp);
-//                                    , R.id." + comp.view.plusId +
-//                                    ", R.id." + comp.view.minusId + ", R.id." + comp.view.tabLayout +
-//                                    ", R.id." + comp.view.param + endComp);
                             break;
                     }
                 }
             }
-            writer.write("package " + pr.namePackage + ";\n\n");
+            
+            if (pr.push != null && pr.push.length() > 0) {
+                PushNotif pushN = gson.fromJson(pr.push, PushNotif.class);
+                List<Channel> listC = pushN.notif;
+                int ikCan = listC.size();
+                if (ikCan > 0) {
+                    addPushPermishen(realPath + "/android_base/push_for_manif", parSave);
+                    createFileFromString(pushN.config, parSave.basePath + parSave.userProjPath + "/app/google-services.json");
+                    parSave.plaginGradle.add("apply plugin: 'com.google.gms.google-services'");
+                    parSave.addImplement.add("implementation 'com.google.firebase:firebase-messaging:20.0.1'");
+                    parSave.addClassPath.add("classpath 'com.google.gms:google-services:4.3.3'");
+                    parSave.havePush = true;
+                }
+                declare.add("\n");
+                for (int i = 0; i < ikCan; i++) {
+                    Channel item = listC.get(i);
+                    if (item.name != null && item.name.length() > 0 
+                            && item.txt != null && item.txt.length() > 0 
+                            && item.screen != null && item.screen.length() > 0) {
+                        parSave.importD.add(Constants.importance + item.importance + ";\n");
+                        declare.add("        channel(\"" + item.name + "\", \"" + item.txt +"\", IMPORTANCE_" + item.importance + ", " + item.screen + "Activity.class,");
+                        List<Notification> notifi = item.notices;
+                        int jkNot = notifi.size();
+                        declare.add("\n            notices(");
+                        for (int j = 0; j < jkNot; j++) {
+                            Notification itemN = notifi.get(j);
+                            if (j > 0) {
+                                declare.add(",");
+                            }
+                            declare.add("\n            notice(\"" + itemN.name + "\")");
+                            declare.add("\n                .lotPushs(\"" + itemN.txt + "\", true)");
+                            if (itemN.large != null && itemN.large.length() > 0) {
+                                declare.add("\n                .iconLarge(" + dravableFromUrl(item.large) + ")"); 
+                            }
+                            if (itemN.icon != null && itemN.icon.length() > 0) {
+                                if (itemN.color == null || itemN.color.length() == 0) {
+                                    itemN.color = "1";
+                                }
+                                declare.add("\n                .icon(" + dravableFromUrl(itemN.icon) + ", getColor(" 
+                                    + findColorResourse(Integer.valueOf(itemN.color), parSave.colors) + "))");
+                            }
+                        }
+                        declare.add("))\n");
+                    }
+                    if (item.icon != null && item.icon.length() > 0) {
+                        declare.add("            .icon(" + dravableFromUrl(item.icon) + ")"); 
+                    }
+                    if (item.large != null && item.large.length() > 0) {
+                        declare.add("\n            .iconLarge(" + dravableFromUrl(item.large) + ")"); 
+                    }
+                    if (item.color != null && item.color.length() > 0) {
+                        declare.add("\n            .iconColor(" + findColorResourse(Integer.valueOf(item.color), parSave.colors) + ")"); 
+                    }
+                    declare.add(";\n");
+                }
+            }
+            declare.add("    }\n");
+            
+            writer.write("package " + pr.namePackage + "." + pr.nameProject + ";\n\n");
             writer.write("import com.dpcsa.compon.base.DeclareScreens;\n");
             for (String stI : parSave.importD) {
                 writer.write(stI);
@@ -871,7 +944,7 @@ public class ExportResult extends BaseServlet {
             for (String stD : declare) {
                 writer.write(stD);
             }
-            writer.write("    }\n");
+
             int mk = menu.size();
             if (mk > 0) {
                 writer.write("\n");
@@ -3062,6 +3135,25 @@ public class ExportResult extends BaseServlet {
         createStyles(path, parSave);
     }
     
+    private void addPushPermishen(String pathIn, ParamSave parSave) {
+        if (parSave.havePush) {
+            return;
+        }
+        try {
+            FileReader reader = new FileReader(pathIn);
+            Scanner scan = new Scanner(reader);
+            while (scan.hasNextLine()) {
+                String line = scan.nextLine();
+                parSave.addApp.add(line + "\n");
+            }
+            reader.close();
+            parSave.addPermish.add("<uses-permission android:name=\"com.google.android.providers.gsf.permission.READ_GSERVICES\"/>");
+            parSave.havePush = true;
+        } catch (IOException ex) {
+            System.out.println("addPushPermishen error=" + ex);
+        }
+    }
+    
     private void addCameraPermishen(String pathIn, ParamSave parSave) {
         if (parSave.isCamera) {
             return;
@@ -3080,6 +3172,57 @@ public class ExportResult extends BaseServlet {
             parSave.isCamera = true;
         } catch (IOException ex) {
             System.out.println("addCameraPermishen error=" + ex);
+        }
+    }
+    
+    public void setGradleAndroid(String pathIn, String pathOut, ItemChange[] arCh, ParamSave parSave) {
+        try {
+            FileReader reader = new FileReader(pathIn);
+            FileWriter writer = new FileWriter(pathOut, false);
+            Scanner scan = new Scanner(reader);
+            while (scan.hasNextLine()) {
+                String line = scan.nextLine();
+                int i = line.indexOf("#");
+                if (i < 0) {
+                    writer.write(line + "\n");
+                } else {
+                    int i1 = line.indexOf("#", i + 1);
+                    String par = line.substring(i, i1 + 1);
+                    switch (par) {
+                        case "#add_impl#":
+                            for (String st : parSave.addImplement) {
+                                writer.write(tab4 + st);
+                            }
+                            writer.write("\n");
+                            break;
+                        case "#add_plagin#":
+                            for (String st : parSave.plaginGradle) {
+                                writer.write(tab4 + st + "\n");
+                            }
+//                            writer.write("\n");
+                            break;
+                        case "#add_classpath#":
+                            for (String st : parSave.addClassPath) {
+                                writer.write(tab4 + st + "\n");
+                            }
+//                            writer.write("\n");
+                            break;
+                        default:
+                            for (ItemChange ic : arCh) {
+                                if (ic.name.equals(par)) {
+                                    writer.write(line.replace(ic.name, ic.value) + "\n");
+                                    break;
+                                }
+                            }
+                    }
+
+                }
+            }
+            writer.flush();
+            writer.close();
+            reader.close();
+        } catch (IOException ex) {
+            System.out.println("setGradleAndroid error=" + ex);
         }
     }
     

@@ -24,13 +24,14 @@ public class Constants {
             PLUS_MINUS = "PlusMinus", RATINGS = "Ratings", SWITCH = "Switch", CHECKBOX = "CheckBox", TOTAL = "Total", PHOTO = "Photo",
             MAP = "Map", SHEET = "SheetBottom", TEXTVIEW = "TextView", EDITTEXT = "EditText", CALENDAR = "Calendar", SEEKBAR = "SeekBar", 
             TAGS = "Tags", SPINNER = "Spinner", SEQUENCE = "ScreenSequence", INTRO = "Intro", EDIT_GALLERY = "EditGallery", SWIPE_LAYOUT = "SwipeLayout", 
-            SWIPE = "Swipe";
+            SWIPE = "Swipe", SUBSCRIBE_FIREBASE = "SubscribeFirebase";
     public static String txtInp = "_txt_inp_";
     public static String importMenu = "import com.dpcsa.compon.interfaces_classes.Menu;\n";
     public static String importToolMenu = "import com.dpcsa.compon.interfaces_classes.ToolBarMenu;\n";
     public static String importParamMap = "import com.dpcsa.compon.param.ParamMap;\n";
     public static String importMultiply = "import com.dpcsa.compon.interfaces_classes.Multiply;\n";
     public static String importViewHandler = "import com.dpcsa.compon.interfaces_classes.ViewHandler;\n";
+    public static String importance = "import static android.app.NotificationManager.IMPORTANCE_";
     
     public static String[] animate = {"No", "LR", "RL", "BT", "TB"};
     public static String[] scaleType = {"centerCrop", "center"};

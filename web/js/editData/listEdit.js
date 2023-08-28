@@ -1,7 +1,6 @@
 function ListEdit(meta, data, cont, cb, tag) {
     this.meta = meta;
     this.data = data;
-    this.cont = cont;
     this.cb = cb;
     this.tag = tag;
     this.selRow = -1;
@@ -14,6 +13,7 @@ function ListEdit(meta, data, cont, cb, tag) {
     let dividerStr = '<div style="float:left;width:0.7px;height:100%;background-color:#1dace9;"></div>';
     let dividerTitleStr = '<div style="float:left;width:0.7px;height:100%;background-color:#1dace9;cursor:col-resize"></div>';
     let delStr = '<div style="float:left;height:100%;width:25px;"></div>';
+    let containerStr = '<div style="position:absolute;left:0;top:' + (heightTitle + 1) + 'px;right:0;bottom:2px;overflow-y:auto;"></div>';
     
     this.init = function() {
         let row;
@@ -22,7 +22,7 @@ function ListEdit(meta, data, cont, cb, tag) {
 
         let divTitle = newDOMelement(rowStr);
         divTitle.style.fontWeight = "600";
-        this.cont.append(divTitle);
+        cont.append(divTitle);
         
         for (let i = 0; i < ikM; i++) {
             dv = document.createElement('div');
@@ -41,6 +41,8 @@ function ListEdit(meta, data, cont, cb, tag) {
         let delCell = newDOMelement(delStr);
         divTitle.append(delCell);
         divTitle.append(newDOMelement(dividerStr));
+        this.cont = newDOMelement(containerStr);
+        cont.append(this.cont);
         for (let j = 0; j < ikD; j++) {
             row = this.newRow(j);
             this.cont.append(row);
@@ -87,6 +89,7 @@ function ListEdit(meta, data, cont, cb, tag) {
                 ww = 24;
 //                let hh = 24;
                 let margImg = "";
+                cell.style.textAlign = "center";
                 if (met.widthImg != null) {
                     ww = met.widthImg;
 //                    hh = met.widthImg;
@@ -274,13 +277,27 @@ function ListEdit(meta, data, cont, cb, tag) {
     }
     
     this.delRow = function(row) {
+        event.stopPropagation();
         let ind = row.ind;
+        let ch = this.cont.children;
+        if (this.selRow > -1) {
+            ch[this.selRow].style.backgroundColor = "";
+        }
         this.data.splice(ind, 1);
         row.remove();
-        let ch = this.cont.children;
         let ik = ch.length;
-        for (let i = 1; i < ik; i++) {
-            ch[i].ind = i - 1;
+        for (let i = 0; i < ik; i++) {
+            ch[i].ind = i;
+        }
+        if (ind >= ik) {
+            ind = ik - 1;
+        }
+        this.selRow = ind;
+        if (ind > -1) {
+            ch[this.selRow].style.backgroundColor = "#eff";
+        }
+        if (this.cb != null) {
+            this.cb.cbChangeRow(ind, this.tag);
         }
     }
     
@@ -329,7 +346,7 @@ function ListEdit(meta, data, cont, cb, tag) {
     
     this.upDown = function (cC, cR) {
         let ch = this.cont.children;
-        let row = ch[cR + 1];
+        let row = ch[cR];
         let cells = row.getElementsByClassName('col');
         let cellSel = cells[cC];
         let newInput = cellSel.querySelector("input");
@@ -339,11 +356,12 @@ function ListEdit(meta, data, cont, cb, tag) {
     
     this.selectRow = function(i) {
         let ch = this.cont.children;
+        let ik = ch.length;
         if (this.selRow > -1) {
-            ch[this.selRow + 1].style.backgroundColor = "";
+            ch[this.selRow].style.backgroundColor = "";
         }
         this.selRow = i;
-        ch[this.selRow + 1].style.backgroundColor = "#eff";
+        ch[this.selRow].style.backgroundColor = "#eff";
         if (this.cb != null) {
             this.cb.cbChangeRow(i, this.tag);
         }

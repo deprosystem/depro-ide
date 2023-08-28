@@ -58,7 +58,7 @@ public class Project extends BaseServlet {
                     try {
                         pc = gson.fromJson(getStringRequest(request), ProjectM.class);
                         pc.userId = ds.userId;
-                        pc.namePackage = pc.nameProject.toUpperCase() + ".ide";
+//                        pc.namePackage = pc.nameProject.toUpperCase() + ".ide";
                         if (pc.logo == null) {
                             pc.logo = "";
                         }
@@ -84,6 +84,7 @@ public class Project extends BaseServlet {
                         pc.appParam = formAppParam();
                         pc.screens = formScreens();
                         pc.resurseInd = lowerCaseRandom(15);
+                        pc.push = "";
                         pc.host = "";
                         pc.dateCreate = new Date().getTime();
                         pc.whereServer = "Server IDE";
@@ -182,7 +183,7 @@ public class Project extends BaseServlet {
                     try {
                         pc = gson.fromJson(getStringRequest(request), ProjectM.class);
                         pc.userId = ds.userId;
-                        pc.namePackage = pc.nameProject.toUpperCase() + ".ide";
+//                        pc.namePackage = pc.nameProject.toUpperCase() + ".ide";
                         if (pc.logo == null) {
                             pc.logo = "";
                         }

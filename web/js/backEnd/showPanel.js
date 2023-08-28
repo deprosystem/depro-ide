@@ -96,8 +96,8 @@ function dbServer() {
 }
 
 function dbPush() {
-    dataDescript.innerHTML="";
     setBorderDB(1);
+    new pushServer();
 }
 
 function dbAPI() {

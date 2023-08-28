@@ -16,6 +16,7 @@ public class ProjectM {
     public String colors;
     public String dimens;
     public String drawable;
+    public String push;
     public String screens;
     public String resurseInd;
     public long dateCreate;

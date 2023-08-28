@@ -10,10 +10,10 @@ import projects.ItemStyle;
 
 public class ParamSave {
     public String nameAPP, nameScreenStart, nameClassStart, realPath, resPath;
-    public String currentScreen, path, schema;
+    public String currentScreen, path, schema, basePath, userProjPath;
     public String toolId, menuId, scrollId;
     public String pathLayoutItem;
-    public boolean noToolMenu, noDrawer, noFragmContainer, isCamera;
+    public boolean noToolMenu, noDrawer, noFragmContainer, isCamera, havePush;
     public Screen currentScreenObj;
     public int typeScreen;
     public List<String> arrayString;
@@ -24,7 +24,7 @@ public class ParamSave {
     public ListItemResurces colors, drawable, strings;
     public List<ItemStyle> styles;
     public ListSwitchParam switchSpec, styleCheck;
-    public HashSet<String> importD;
+    public HashSet<String> importD, plaginGradle, addImplement, addClassPath;
     
     public List<ItemResurces> getListString() {
         if (listString == null) {

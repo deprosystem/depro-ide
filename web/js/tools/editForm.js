@@ -1,4 +1,4 @@
-function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
+function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen, margLeft) {
 // after = true - Вызвана из EditForm применяется когда при заполнении полей какому нибудь полю нужно также выполнить EditForm, например в навигаторе
     
     if (meta == null || domEl == null || data == null) {
@@ -24,7 +24,12 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
             } else {
                this.marg_T = "";
             }
-            this.marg_L = "";
+            if (margLeft != null && margLeft > 0) {
+                this.marg_L = "margin-left:" + margLeft + "px;";
+            } else {
+               this.marg_L = "";
+            }
+//            this.marg_L = "";
         } else {
             this.marg_T = "margin-top:5px;";
             this.marg_L = "margin-left:7px;";
@@ -44,7 +49,12 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
                         } else {
                            this.marg_T = "";
                         }
-                        this.marg_L = "";
+                        if (margLeft != null && margLeft > 0) {
+                            this.marg_L = "margin-left:" + margLeft + "px;";
+                        } else {
+                           this.marg_L = "";
+                        }
+//                        this.marg_L = "";
                     } else {
                         this.marg_T = "margin-top:5px;";
                         this.marg_L = "margin-left:7px;";
@@ -179,31 +189,58 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
     this.oneField = function(i) {
         let met = this.edMeta[i];
         let br = "";
+        this.marg_T = "";
+        this.marg_L = "";
+        if (marg) {
+            if (margTop != null && margTop > 0) {
+                this.marg_T = "margin-top:" + margTop + "px;";
+            } else {
+               this.marg_T = "";
+            }
+            if (margLeft != null && margLeft > 0) {
+                this.marg_L = "margin-left:" + margLeft + "px;";
+            } else {
+               this.marg_L = "";
+            }
+//            this.marg_L = "";
+        } else {
+            this.marg_T = "margin-top:5px;";
+            this.marg_L = "margin-left:7px;";
+        }
         if (met.br) {
             br = "clear:both;"
-            if (marg) {
-                if (margTop != null && margTop > 0) {
-                    this.marg_T = "margin-top:" + margTop + "px;";
-                } else {
-                   this.marg_T = "";
-                }
-                this.marg_L = "";
-            } else {
-                this.marg_T = "margin-top:5px;";
-                this.marg_L = "margin-left:7px;";
-            }
+            this.marg_L = "";
+        }
+        if (met.margL != null) {
+            this.marg_L = "margin-left:" + met.margL + "px;";
+        }
+        if (met.margT != null) {
+            this.marg_T = "margin-top:" + met.margT + "px;";
         }
         let clazz = "";
         if (met.clazz != null && met.clazz.length > 0) {
             clazz = ' class="' + met.clazz + '"';
         }
-        let res = newDOMelement('<div' + clazz + ' style="position:relative;float:left;' + this.marg_L + this.marg_T + br + '"></div>');
-        res.append(newDOMelement('<div style="color: #8199A5;font-size: 10px;">' + met.title + '</div>'));
+        let marg_R = "";
+        if (met.margR != null && met.margR > 0) {
+            marg_R = "margin-right:" + met.margR + "px";
+        }
+        let flo;
+        if (met.float == "right") {
+            flo = "float:right;"
+        } else {
+            flo = "float:left;" + this.marg_L;
+        }
+        let res = newDOMelement('<div' + clazz + ' style="position:relative;' + flo + marg_R + this.marg_T + br + '"></div>');
+        if (met.tLocation == null) {
+            res.append(newDOMelement('<div style="color: #8199A5;font-size: 10px;">' + met.title + '</div>'));
+        }
         let inp;
         let vv = this.edData[met.name];
         if (vv == null) {
             vv = "";
         }
+        let wh;
         switch (met.type) {
             case "Text":
             case "Password":
@@ -263,6 +300,32 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
                 break;
             case "Line":
                 res = newDOMelement('<div style="float: left;clear:both;height:1px;border-bottom:1px solid #1DACEf;width:100%;margin-top:3px;margin-bottom:3px"></div>');
+                break;
+            case "ImgLabel":
+                wh = "20";
+                if (met.len != null) {
+                    wh = met.len;
+                }
+                res.innerHTML = "";
+                inp = newDOMelement('<img style="margin-top:14px;" width="' + wh + '" height="' + wh + '" src="' + met.src + '">');
+                res.append(inp);
+                res.name = met.name;
+                break;
+            case "FileToStr":
+                let widt = "";
+                if (met.len != null) {
+                    widt = ' style="width:' + met.len + 'px;"';
+                }
+                res.innerHTML = "";
+                inp = newDOMelement('<div class="button_blue"' + widt + '>'
+                    +'<div style="text-align:center;margin-left:7px;margin-right:7px;margin-top:7px;color:#fff;">' + met.title + '</div>'+'</div>');
+                inp.style.marginLeft = "0px";
+                inp.style.marginTop = "10px";
+                let inputFile = newDOMelement('<input type="file" accept=".json" style="display: none"/>');
+                res.append(inputFile);
+                inp.addEventListener("click", function(){inputFile.click();}, true);
+                inputFile.addEventListener("change", () => {this.processFiles(inputFile, met)}, true);
+                res.append(inp);
                 break;
             case "SelectId":
                 inp = newDOMelement('<select class = "select_' + browser + '">');
@@ -333,6 +396,23 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
                 inp.nameField = met.name;
                 res.append(inp);
                 break;
+            case "Click":
+                wh = 16;
+                if (met.wh != null && met.wh > 0) {
+                    wh = met.wh;
+                }
+                let topClick = 26 - wh / 2;
+                inp = newDOMelement('<img style="float:left;margin-top:' + topClick + 'px;" width="' + wh + '" height="' + wh + '" src="' + met.img + '">');
+                let colorLab = "";
+                if (met.color != null && met.color.length > 0) {
+                    colorLab = "color:" + met.color + ";";
+                }
+                let lab = newDOMelement('<div style="float:left;margin-top:18px;margin-left:7px;' + colorLab + '">' + met.title + '</div>');
+                res.addEventListener("click", () => {this.clickClick(met)}, false);
+                res.style.cursor = "pointer";
+                res.append(inp);
+                res.append(lab);
+                break;
             case "Check":
                 if (vv == "") {
                     vv = false;
@@ -385,7 +465,6 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
             case "Click":
                 inp = newDOMelement('<img class="imageV" style="margin-top:3px;cursor:pointer;" width="24" height="24" src="' 
                         + met.img + '">');
-//                res.addEventListener("click", () => {clickCustom(met.name)}, false);
                 res.addEventListener("click", () => {this.clickCustom(met.name)}, false);
                 res.append(inp);
                 break;
@@ -432,6 +511,42 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
         }
         res.nameField = met.name;
         return res;
+    }
+    
+    this.setVisibility = function(name, value) {
+        let ch = this.edDomEl.children;
+        let ik = ch.length;
+        for (let i = 0; i < ik; i++) {
+            let item = ch[i];
+            if (item.name == name) {
+                if (value) {
+                    item.style.display = "block";
+                } else {
+                    item.style.display = "none";
+                }
+                break;
+            }
+        }
+    }
+    
+    this.clickClick = function(met) {
+        if (this.cb != null) {
+            this.cb.cbEdit(met.name);
+        }
+    }
+    
+    this.processFiles = function(inputFile, met) {
+        let file = inputFile.files[0];
+        let reader = new FileReader();
+        reader.onload = (e) => {
+            this.edData[met.name] = e.target.result;
+            if (this.cb != null) {
+                this.cb.cbEdit(met.name);
+            }
+//            this.pushData.config = e.target.result;
+//            this.isJson.style.display = "block";
+        };
+        reader.readAsText(file);
     }
     
     this.formListCheck = function(inp, val) {
@@ -685,6 +800,18 @@ function EditForm(meta, data, domEl, after, cbEdit, marg, margTop, isScreen) {
                     kUp = val[i].toUpperCase();
                     if ( ! ((kUp >= "A" && kUp <= "Z") || kUp == "_" || (kUp >= "0" && kUp <= "9")))  {
                         return "Only english letters, _ and numbers";
+                    } else {
+                        if ( i == 0 && kUp >= "0" && kUp <= "9") {
+                            return "The first character cannot be a digit";
+                        }
+                    }
+                }
+                break;
+            case "name_var":
+                for (let i = 0; i < ik; i++) {
+                    kUp = val[i].toUpperCase();
+                    if ( ! ((kUp >= "A" && kUp <= "Z") || kUp == "_" || (kUp >= "0" && kUp <= "9") || kUp == "."))  {
+                        return "Only english letters, _ . and numbers";
                     } else {
                         if ( i == 0 && kUp >= "0" && kUp <= "9") {
                             return "The first character cannot be a digit";

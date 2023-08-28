@@ -520,6 +520,7 @@ function plusComponName(name) {
 }
 */
 function selComponType(name) {
+console.log("NAME="+name+"<<")
     if (currentComponentView != null) {
         currentComponentView.className = "component";
     }

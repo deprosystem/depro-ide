@@ -67,6 +67,7 @@ function formJsonProject() {
     if (listAppParam != null) {
         par.appParam = JSON.stringify(formAppParam());
     };
+    par.push = pushNotif.getJson();
     par.screens = JSON.stringify(listScreen, function(key, value) {
             if (key == "viewElement") {
                 return undefined;
@@ -118,17 +119,19 @@ function formCreateProject(oper) {      //  oper = 1 - create, 0 - chang
     let titl;
     let create = [
         {name: "nameProject", title:"* Project name",len:-1,type:"Text",valid:"latin"},
+        {name: "namePackage", title:"* Package name",len:-1,type:"Text",valid:"name_var",br:true},
         {name: "comment", title:"Description",type:"Textarea",rows:3,br:true}
     ]
     if (oper == null) {
         h = 450;
         titl = "Change Project";
         create.push({name: "logo", title:"Logo",type:"Img",br:true});
-        newProjectForCreate = {nameProject:currentProject.nameProject,comment:currentProject.comment,logo:currentProject.logo};
+        newProjectForCreate = {nameProject:currentProject.nameProject,comment:currentProject.comment,logo:currentProject.logo,
+            namePackage:currentProject.namePackage};
     } else {
         h = 400;
         titl = "New project";
-        newProjectForCreate = {};
+        newProjectForCreate = {namePackage:"ide.depro"};
     }
     createChangeProgectOper = oper;
     let wind = formWind(300, h, 40, 200, titl, null, null, "Send", sendServCreate, "");
@@ -144,7 +147,8 @@ function formCreateProject(oper) {      //  oper = 1 - create, 0 - chang
 }
 
 function sendServCreate() {
-    if (newProjectForCreate.nameProject == null || newProjectForCreate.nameProject.length == 0) {
+    if (newProjectForCreate.nameProject == null || newProjectForCreate.nameProject.length == 0
+    || newProjectForCreate.namePackage == null || newProjectForCreate.namePackage.length == 0) {
         myAlert("You need to fill in the fields with *");
         return true;
     } else {
@@ -359,6 +363,7 @@ function openMenu() {
 //    listMenu_UX[0].children[2].domElement.className = 'subMainMenu';
     listMenu_UX[0].children[3].domElement.className = 'subMainMenu';
     listMenu_UX[0].children[4].domElement.className = 'subMainMenu';
+    listMenu_UX[0].children[5].domElement.className = 'subMainMenu';
 //    listMenu_UX[0].children[5].domElement.className = 'subMainMenu';
     listMenu_UX[1].children[0].domElement.className = 'subMainMenu';
     listMenu_UX[1].children[1].domElement.className = 'subMainMenu';

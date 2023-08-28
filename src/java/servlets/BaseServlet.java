@@ -217,6 +217,21 @@ System.out.println("query="+ds.query);
         }
     }
     
+    public void createFileFromString(String st, String pathOut) {
+        try {
+            FileWriter writer = new FileWriter(pathOut, false);
+            Scanner scan = new Scanner(st);
+            while (scan.hasNextLine()) {
+                String line = scan.nextLine();
+                writer.write(line + "\n");
+            }
+            writer.flush();
+            writer.close();
+        } catch (IOException ex) {
+            Logger.getLogger(BaseServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public String createRandomStr(int len) {
         String alf = "ABCDEFGHIJKLMNOPQRSTUVWXYZqwertyuiopasdfghjklzxcvbnm1234567890_";
         Random random = new Random();

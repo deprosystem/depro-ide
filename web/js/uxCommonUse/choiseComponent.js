@@ -5,6 +5,7 @@ var groupComponents = [
     {group:"Media",item:"Photo,Video,EditGallery"},
     {group:"Google",item:"Map"},
     {group:"Widgets",item:"Drawer,Web"},
+    {group:"Push",item:"SubscribeServer,SubscribeFirebase"},
     {group:"Other",item:"PlusMinus,Total,Tags"},
 ];
 
